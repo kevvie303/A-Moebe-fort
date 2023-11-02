@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Retriever</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
+    <link rel="icon" href="static/img/favicon.png" type="image/png">
+</head>
+<body>
+    <h1>List of Sensors</h1>
+    <table>
+        <tr>
+            <th>Sensor Name</th>
+            <th>Type</th>
+            <th>Pin</th>
+            <th>Raspberry Pi</th>
+        </tr>
+        {% for sensor in sensors %}
+        <tr>
+            <td style="text-align: center;">{{ sensor.name }}</td>
+            <td style="text-align: center;">{{ sensor.type }}</td>
+            <td style="text-align: center;">{{ sensor.pin }}</td>
+            <td style="text-align: center;">{{ sensor.pi }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/add_sensor" class="button-style">Add Sensor</a>
+    <a href="/retriever" class="button-style">Back to main page</a>
+</body>
+</html>

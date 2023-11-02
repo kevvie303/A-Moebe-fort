@@ -1,0 +1,77 @@
+[
+    {
+        "task": "tree-lights",
+        "description": "Players have thrown the balls in the treehouses in the correct order",
+        "state": "pending"
+    },
+    {
+        "task": "number-feel",
+        "description": "Players have felt the right numbers, 0128, and filled it in, in the keypad",
+        "state": "pending"
+    },
+    {
+        "task": "dog-house",
+        "description": "players have used the scrabble letters to create the word M-A-X code (318)",
+        "state": "pending"
+    },
+    {
+        "task": "kite-count",
+        "description": "Players have counted the shapes and found the code, 7867 or 8978, and filled it in, in the keypad",
+        "state": "pending"
+    },
+    {
+        "task": "fence-decrypt",
+        "description": "players have decrypted the code in the doghouse using the fence's alphabet. Code: 5038",
+        "state": "pending"
+    },
+    {
+        "task": "flowers",
+        "description": "players have put the flowers in the correct order and read can get the code from the bottom of the plants. Code: 1527",
+        "state": "pending"
+    },
+    {
+        "task": "woef-woef",
+        "description": "woef woef woef woef",
+        "state": "pending"
+    },
+    {
+        "task": "max-vacation",
+        "description": "Players have spotted and ordered the vacations in the right order code (6123)",
+        "state": "pending"
+    },
+    {
+        "task": "paw-maze",
+        "description": "players have solved the maze",
+        "state": "pending"
+    },
+    {
+        "task": "squeekuence",
+        "description": "players have used the squeeky-toy in the correct rhythm",
+        "state": "pending"
+    },
+    {
+        "task": "sinus-game",
+        "description": "players have put the sinus wave correctly and and gotten the code from the center speaker (####)",
+        "state": "pending"
+    },
+    {
+        "task": "glow-wire",
+        "description": "players have solved the wires code (3456)",
+        "state": "pending"
+    },
+    {
+        "task": "mirror-see",
+        "description": "players have seen the numbers through the mirrors code (794)",
+        "state": "pending"
+    },
+    {
+        "task": "bone-slide",
+        "description": "players have gotten the cyllinders out of the dogtoy. (code 216)",
+        "state": "pending"
+    },
+    {
+        "task": "squid-game",
+        "description": "players have moved the 4 squidge to the center of the track. ",
+        "state": "pending"
+    }
+]

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Retriever</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
+    <link rel="icon" href="static/img/favicon.png" type="image/png">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+
+    <!-- header -->
+    <header class="retriever-logo">
+        <a href="/" class="back-button"><img src="static/img/back.svg" alt="Go back button"></a>
+        <figure class="logo-container">
+            <img src="static/img/retrieverlogo.svg" alt="Retriever Logo">
+        </figure>
+    </header>
+
+    <!-- nav -->
+    <nav class="important-controls">
+        <div class="time-elapsed">
+            <p>Elapsed</p>
+            <p id="time-played">00:00</p>
+        </div>
+
+        <div class="game-controls">
+            <button id="media-popup" class="icon"><img src="static/img/media.svg" alt="Button to the media controls"></button>
+            <button id="time-popup" class="icon"><img src="static/img/time.svg" alt="Button to time settings"></button>
+            <button id="pi-popup" class="icon"><img src="static/img/pi.svg" alt="Button to Pi settings"></button>
+            <button id="abort-button" class="icon"><img src="static/img/game.svg" alt="Button to abort the room"></button>
+        </div>
+
+        <div class="time-remaining">
+            <p>Remaining</p>
+            <p id="time-left">60:00</p>
+        </div>
+    </nav>
+
+    <!-- media section -->
+    <section class="media-hidden hidden">
+        <article class="media">
+            <button class="close-media close"><img src="static/img/abort.svg" alt="Close button"></button>
+
+            <h2>Media</h2>
+            <div>
+                <button id="select-file-button" class="button-style">Select Song</button>
+                <button onClick="openMediaControlPage()" class="button-style">Control media</button>
+                <button id="stop-music-button" class="button-style">Force stop music</button>
+                <button id="fade-out-music-button" class="button-style">Fade out background before hint</button>
+                <button id="fade-in-music-button" class="button-style">Fade in background after hint</button>
+                <p id="music-list">
+                    Music files will be dynamically added here
+                </p>
+            </div>
+
+            <div id="status-display"></div>
+        </article>
+    </section>
+
+    <!-- time section -->
+    <section class="time-hidden hidden">
+        <article class="time">
+            <button class="close-time close"><img src="static/img/abort.svg" alt="Close button"></button>
+
+            <h2>Time controls</h2>
+
+            <div class="time-display">
+
+                <div class="timer">
+                    <p>Played<strong id="time-played">00:00</strong></p>
+                    <p>Left: <strong id="time-left">60:00</strong></p>
+                </div>
+                
+                <div class="speed-display">
+                    <p id="speed-display">Speed: 1x</p>
+                </div>
+            </div>
+
+            <div class="time-controls">
+                <div class="speed-up-slow-down">
+                    <button id="speed-up-button" class="button-style main-button">Speed Up</button>
+                    <button id="slow-down-button" class="button-style main-button">Slow Down</button>
+                </div>
+                <div class="reset-speed">
+                    <button id="reset-button" class="button-style main-button">Reset Speed</button>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <!-- pi controls -->
+    <section class="pi-hidden hidden">
+        <article class="pi">
+            <button class="close-pi close"><img src="static/img/abort.svg" alt="Close button"></button>
+
+            <h2>Pi controls</h2>
+            <table id="status-table">
+                <!-- Table will be populated dynamically -->
+            </table>
+            <div class="reboot">
+                <h3>Reboot</h3>
+
+                <div class="pies">
+                    <button id="reboot-pi-mag" class="button-style">Reboot top pi</button>
+                    <button id="reboot-pi-music" class="button-style">Reboot mid pi</button>
+                    <button id="reboot-tree-pi" class="button-style">Reboot tree pi</button>
+                </div>
+            </div>
+
+            <div class="backup">
+                <h3>Backup</h3>
+
+                <div class="pies">
+                    <button id="backup-top-pi" class="button-style">Backup top pi</button>
+                    <button id="backup-middle-pi" class="button-style">Backup mid pi</button>
+                    <button id="backup-tree-pi" class="button-style">Backup the tree pi</button>
+                </div>
+            </div>
+            <a href="/list_sensors">Add Sensor</a>
+            <div class="pi-status">
+                 <!-- Updaten van de aanwezige pi's en hun status -->
+
+                <table id="status-table">
+                    <!-- Table will be populated dynamically -->
+                </table>
+            </div>
+                
+            </div>
+        </article>
+    </section>
+
+    <!-- game control -->
+    <section class="game-hidden hidden">
+        <article class="game-controls">
+            <button class="close-game close"><img src="static/img/abort.svg" alt="Close button"></button>
+
+            <h2>Game controls</h2>
+
+            <div class="game-buttons">
+                <button id="start-game-button" class="button-style">Start game</button>
+                <button id="snooze-game-button" class="button-style">Snooze game</button>
+                <button id="prepare-game-button" class="button-style">Prepare game</button>
+                <!-- <button id="pause-button"><img class="icon" src="static/img/pause.svg" alt="Pause game button"></button>
+                <button id="continue-button" style="display: none;"><img src="static/img/pause.svg" alt="Pause game button"></button> -->
+                <button class=" abort-button button-style">Abort game</button>
+
+            </div>
+
+            <div class="abort hidden">
+                <p>Are you sure you want to abort the game?</p>
+
+                <button id="end-game-button" class="button-style">Yes, abort game</button>
+            </div>
+
+            <p class="confirmation hidden">Game aborted</p>
+        </article>
+    </section>
+
+    <!-- HIDE FROM HERE -->
+    <section class="tasks-hidden hidden">
+        <article class="task-control">
+            <button class="close-tasks close"><img src="static/img/abort.svg" alt="Close button"></button>
+    
+            <h2 class="task-title"></h2>
+    
+            <div class="task-control-container">
+                <p class="task-description"></p>
+    
+                <p class="current-state">Currently: <strong></strong></p>
+    
+                <div class="button-container">
+                    <button class="button-style solved-button">Solve</button>
+                    <button class="button-style pending-button">Pending</button>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <!-- wake button na snooze -->
+    <nav id="nav-snooze-status"></nav>
+    <button id="wake-button" class="button-style" style="display: none;">Wake</button>
+    <section class="control-container">
+
+        <div id="prepare-result" class="hidden">
+            <p id="prepare-status" class="centered-text">Preparing...</p>
+            <div id="results-section">
+            </div>
+        </div>
+
+        <!-- svg-->
+        <section class="light-container">
+            <article class="lights">
+                <img src="../static/img/room-layout.svg" alt="Layout of the room">
+                <figure class="light-buttons">
+                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-1'); console.log('Clicked on Light-1');">
+                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-3'); console.log('Clicked on Light-3');">
+                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-2'); console.log('Clicked on Light-2');">
+                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-4'); console.log('Clicked on Light-4');">
+                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-5'); console.log('Clicked on Light-5');">
+                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-6'); console.log('Clicked on Light-6');">
+                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-7'); console.log('Clicked on Light-7');">
+                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-8'); console.log('Clicked on Light-8');">
+                </figure>        
+            </article>
+        </section>
+    <!-- main -->
+
+    <section class="tasks">
+        <h2>Tasks</h2>
+
+        <div id="task-list"></div>        
+
+        <button id="add-task-button" class="button-style">Add Task</button>
+
+        <!-- Modal -->
+        <div id="task-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-task">&times;</span>
+                <label for="task-name">Task Name:</label>
+                <input type="text" id="task-name">
+                <label for="task-description">Task Description:</label>
+                <input type="text" id="task-description">
+                <button id="save-task-button" class="button-style">Save Task</button>
+            </div>
+        </div>
+        <button id="remove-task-button" class="button-style">Remove Task</button>
+
+        <!-- Modal for Task Removal -->
+        <div id="remove-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-remove">&times;</span>
+                <h2>Select a Task to Remove</h2>
+                <ul id="task-removal-list"></ul>
+                <button id="confirm-remove-button" class="button-style">Confirm Removal</button>
+            </div>
+        </div>
+        <button id="edit-task-button" class="button-style">Edit Task</button>
+        <div id="edit-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-edit">&times;</span>
+                <h2>Select a Task to Edit</h2>
+                <ul id="task-edit-list"></ul>
+            </div>
+        </div>
+        <div id="edit-task-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-edit-task">&times;</span>
+                <h2>Edit Task</h2>
+                <label for="edit-task-name">Task Name:</label>
+                <input type="text" id="edit-task-name">
+                <label for="edit-task-description">Task Description:</label>
+                <input type="text" id="edit-task-description">
+                <button id="save-edit-task-button" class="button-style">Save Changes</button>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- locks section-->
+    <section class="locks">
+        <h2>Locks</h2>
+
+        <article class="lock-control">
+            <div class="lock">
+                <p>entrance-door-lock</p>
+                <div class="lock-buttons">
+                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
+                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
+                </div>
+            </div>
+            
+            <div class="lock">
+                <p>doghouse-lock</p>
+                <div class="lock-buttons">
+                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
+                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
+                </div>
+            </div>
+
+            <div class="lock">
+                <p>shed-door-lock</p>
+                <div class="lock-buttons">
+                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
+                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
+                </div>
+            </div>
+            <div class="lock">
+                <p>lab-hatch-lock</p>
+                <div class="lock-buttons">
+                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
+                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
+                </div>
+            </div>
+            <div class="lock">
+                <p>sliding-door-lock</p>
+                <div class="lock-buttons">
+                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
+                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
+                </div>
+            </div>
+            <div class="lock">
+                <p>ball-drop-lock</p>
+                <div class="lock-buttons">
+                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
+                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
+                </div>
+            </div>
+            <div class="lock">
+                <p>sinus-shootinglock</p>
+                <div class="lock-buttons">
+                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
+                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
+                </div>
+            </div>
+            <div class="lock">
+                <p>should-balls-drop</p>
+                <div class="lock-buttons">
+                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
+                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
+                </div>
+            </div>
+        </article>
+        <p id="balls-status">Balls will {{ balls_drop_status }}</p>
+        <div class="lock">
+            <p>exit-door-lock</p>
+            <div class="lock-buttons">
+                <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
+                <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="lock-status">
+        <h2>Status</h2>
+
+        <div class="status">
+            <div id="maglock-status-container"></div>
+            <div id="ir-sensor-status-container"></div>
+            <div id="sensor-status-container"></div>
+            <p id="keypad-shed-code">Shed keypad code: <strong></strong></p>
+        </div>
+    </section>
+
+    <a href="{{ url_for('pin_info') }}" class="pin-info button-style">GPIO pin information</a>
+
+        <!-- <article class="media-play">
+            <h2>Play media</h2>
+
+            <div class="buttons">
+
+                <div class="button-container">
+                    <button id="select-file-button" class="button-style main-button">Select Song</button> -->
+                    <!-- <button id="pause-music-button" class="button-style main-button">Pause Music</button> -->
+                    <!-- <button id="resume-music-button" class="button-style main-button">Resume Music</button> -->
+                    <!-- <button id="stop-music-button" class="button-style main-button">Force stop music</button>
+                    <button id="add-music-button">Add media to the PI</button>
+            <button onclick="openMediaControlPage()">Control Media</button>
+                </div>
+            </div>
+        </article> -->
+
+    </section>
+
+    <footer>
+        <img src="static/img/thebrinkescaperooms.svg" alt="The Brink Escaperooms">
+    </footer>
+
+    
+
+    <script src="{{ url_for('static', filename='js/sketch.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+</html>

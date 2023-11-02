@@ -1,0 +1,3 @@
+{% for pi_status in pi_statuses %}
+<p id="{{ pi_status.name }}-status">{{ pi_status.name }} ({{ pi_status.ip_address }}): <strong>{{ pi_status.ssh_active }}</strong></p>
+{% endfor %}

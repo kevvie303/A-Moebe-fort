@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>File Selection</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
+    <link rel="icon" href="static/img/favicon.png" type="image/png">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <section class="selection-container file-selection-container">
+        <h1>File Selection</h1>
+        <ul class="file-selection-list">
+            {% for file in music_files %}
+                <li class="file-select">
+                    {{ file }}
+                    <div class="button-container">
+                        <button class="button-style garden-play-button button" data-file="{{ file }}">Garden</button>
+                        <button class="button-style garage-alley-play-button button" data-file="{{ file }}">Garage-alley</button>
+                        <button class="button-style lab-play-button button" data-file="{{ file }}">Lab</button>
+                        <!-- <button class="all-play-button" data-file="{{ file }}">All-play</button> -->
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+    
+
+    <script src="{{ url_for('static', filename='js/sketch_file_selection.js') }}"></script>
+</body>
+</html>

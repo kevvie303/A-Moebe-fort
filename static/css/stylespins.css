@@ -1,0 +1,35 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .header {
+    background-color: #ff6f61;
+    color: white;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .module {
+    background-color: white;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    margin: 20px;
+    padding: 20px;
+  }
+  
+  h2 {
+    color: #ff6f61;
+    margin-top: 0;
+  }
+  
+  p {
+    margin: 10px 0;
+  }
+  
+  strong {
+    color: #ff6f61;
+    text-decoration: underline;
+}

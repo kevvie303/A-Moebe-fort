@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
+    <link rel="icon" href="static/img/favicon.png" type="image/png">
+</head>
+<body>
+    <h1>Add a New Item</h1>
+    <form method="POST" action="/add_sensor">
+        <label for="name">Item Name:</label>
+        <input type="text" name="name" required><br>
+
+        <label for="type">Item Type:</label>
+        <select name="type" required>
+            <option value="Sensor">Sensor</option>
+            <option value="light">Light</option>
+            <option value="maglock">Maglock</option>
+        </select><br>
+
+        <label for="pin">Item Pin:</label>
+        <input type="number" name="pin" required><br>
+
+        <label for="pi">Connected to Raspberry Pi:</label>
+        <select name="pi" required>
+            <option value="top-pi">Top-Pi</option>
+            <option value="middle-pi">Middle-Pi</option>
+            <option value="tree-pi">Tree-Pi</option>
+        </select><br>
+
+        <input type="submit" value="Submit">
+    </form>
+    <a href="/list_sensors" class="button-style">Back to List</a>
+</body>
+</html>

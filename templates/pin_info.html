@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escape Room Module Information</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/stylespins.css') }}">
+</head>
+<body>
+  <div class="header">
+    <h1>Escape Room Module Information</h1>
+  </div>
+
+
+  <div class="module">
+    <h2>Top-pi</h2>
+    <p><strong>NOTE:</strong> Elke maglock heeft zijn eigen power supply nodig van 12W (12V, 1A), dit wordt verder niet beschreven.</p>
+    <p><strong>Blacklight (relay):</strong> Pin 17 + GND</p>
+    <p><strong>Portal-light (relay):</strong> Pin 10 + GND</p>
+    <p><strong>Exit-door-lock (relay):</strong> Pin 21 + GND</p>
+    <p><strong>Lab-hatch-lock (relay):</strong> Pin 20 + GND</p>
+    <p><strong>Sliding-door-lock (relay):</strong> Pin 16 + GND</p>
+    <p><strong>Ball-drop-lock (relay):</strong> Pin 6 + GND</p>
+    <p><strong>Light-1-shed (relay):</strong> Pin 15 + GND</p>
+    <p><strong>Light-1-alley (relay):</strong> Pin 25 + GND</p>
+    <p><strong>Sinus-shooting-lock (relay/deprecated):</strong> Pin 18 + GND</p>
+  </div>
+  </div>
+  
+  <div class="module">
+    <h2>Middle-pi</h2>
+    <p><strong>top_left_kraken:</strong> Pin 15 + GND</p>
+    <p><strong>bottom_right_kraken:</strong> Pin 23 + GND</p>
+    <p><strong>top_right_kraken:</strong> Pin 20 + GND</p>
+    <p><strong>bottom_left_kraken:</strong> Pin 16 + GND</p>
+    <p><strong>maze-IR:</strong> Pin 18 + GND</p>
+    <p><strong>NOTE:</strong> De lampen van de krakens zijn ANODES, dat betekent dat ze het verkeerde signaal afgeven wanneer ze aan gaan. (Als ze zeggen dat ze aan staan, staan ze uit).</p>
+    <p><strong>top_left_kraken_light:</strong> Pin 4 + GND</p>
+    <p><strong>top_right_kraken_light:</strong> Pin 7 + GND</p>
+    <p><strong>bottom_left_kraken_light:</strong> Pin 1 + GND</p>
+    <p><strong>bottom_right_kraken_light:</strong> Pin 8 + GND</p>
+  </div>
+  
+  <div class="module">
+    <h2>Tree-pi</h2>
+    <p><strong>Green house</strong></p>
+    <p><strong>IR Sensor:</strong> Pin 14 + VCC(5v) + GND</p>
+    <p><strong>LEDs:</strong> Pin 15 + GND</p>
+    <p><strong>Red house</strong></p>
+    <p><strong>IR Sensors:</strong> Pin 20 + VCC(5v) + GND</p>
+    <p><strong>LEDs:</strong> Pin 21 + GND</p>
+    <p><strong>Blue house</strong></p>
+    <p><strong>IR Sensors:</strong> Pin 18 + VCC(5v) + GND</p>
+    <p><strong>LEDs:</strong> Pin 23 + GND</p>
+    <p><strong>Light-1-garden (relay):</strong> Pin 1 + GND</p>
+    <p><strong>Light-2-garden (relay):</strong> Pin 7 + GND</p>
+    <p><strong>Light-3-garden (relay):</strong> Pin 12 + GND</p>
+    <p><strong>Light-4-garden (relay):</strong> Pin 8 + GND</p>
+  </div>
+
+  <div class="module gpio-info">
+    <h2>Understanding GPIO Pins</h2>
+    <p>General Purpose Input/Output (GPIO) pins op deze pi's worden gebruikt om verschillende modules aan te sluiten en te gebruiken.</p>
+    <p>Als je de draden wilt aansluiten op de juiste pins, is het belangrijk om te kijken naar het <strong>GPIO nummer, niet de fysieke pin zelf.</strong></p>
+    <p>Hierboven staat beschreven exact welke draden waarheen zouden moeten gaan. Als iets niet werkt, kun je hertraceren of ze nog aangesloten zijn.</p>
+    <p>Let wel op, sommige modules hebben een "VCC" en een "GND", het staat niet beschreven waar ze aangesloten zijn, omdat het niet persé uitmaakt waar (zolang maar wel aan GND of VCC).</p>
+    <p>Hieronder een foto van welke pin exact waar zit (dit is identiek voor de 3b, 3b+ en 4b):</p>
+    <img src="{{ url_for('static', filename='img/pinout.webp') }}" alt="GPIO Pins Diagram" width="50%">
+  </div>
+
+</body>
+</html>

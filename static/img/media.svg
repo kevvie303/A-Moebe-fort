@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #6aafef;
+      }
+    </style>
+  </defs>
+  <polygon class="cls-1" points="60.78 45.73 54.21 45.73 54.21 1.44 60.78 .04 60.78 45.73"/>
+  <ellipse class="cls-1" cx="50.17" cy="46.94" rx="10.78" ry="7.59" transform="translate(-9.44 12.79) rotate(-13.29)"/>
+  <polygon class="cls-1" points="60.78 5.94 20.5 14.76 17.86 8.86 60.79 .04 60.78 5.94"/>
+  <polygon class="cls-1" points="24.43 54.95 17.86 54.95 17.86 8.86 24.43 9.26 24.43 54.95"/>
+  <ellipse class="cls-1" cx="13.83" cy="56.17" rx="10.78" ry="7.59" transform="translate(-12.54 4.68) rotate(-13.29)"/>
+</svg>

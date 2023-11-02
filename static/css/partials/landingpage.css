@@ -1,0 +1,130 @@
+/*
+############
+landing page
+############
+*/
+.landing-page .rooms {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.landing-page .rooms .retriever-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.landing-page .rooms .retriever-container .retriever-link {
+  align-self: center;
+  background: var(--secondary-background-color);
+  padding: 30px;
+  border-radius: 15px;
+  width: 80%;
+}
+.landing-page .rooms .retriever-container .retriever-link .preview {
+  display: flex;
+  justify-content: space-around;
+  border-radius: 15px;
+  gap: 10px;
+}
+.landing-page .rooms .retriever-container .retriever-link p {
+  align-self: end;
+}
+.landing-page .rooms .retriever-container .retriever-link p:first-of-type {
+  color: var(--secondary-button-color);
+}
+.landing-page .rooms .retriever-container .retriever-link p:last-of-type {
+  color: var(--primary-button-color);
+}
+.landing-page .rooms .retriever-container .controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+.landing-page .rooms .retriever-container .controls .control {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+.landing-page .rooms .retriever-container .controls .control a,
+.landing-page .rooms .retriever-container .controls .control button {
+  width: 150px;
+}
+.landing-page .rooms .retriever-container .controls .info {
+  display: flex;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.landing-page .rooms .retriever-container .controls .info a {
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.landing-page .rooms .media {
+  margin: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/*
+#############
+media queries
+#############
+*/
+@media (min-width: 576px) {
+  .landing-page .rooms .retriever-container .retriever-link {
+    width: 70%;
+  }
+  .landing-page .rooms .retriever-container .retriever-link .preview {
+    justify-content: space-evenly;
+    gap: 0;
+  }
+  .landing-page .rooms .retriever-container .retriever-link .preview p {
+    font-size: 18px;
+  }
+  .landing-page .rooms .retriever-container .controls a {
+    width: 20%;
+  }
+}
+@media (min-width: 768px) {
+  .landing-page .rooms {
+    gap: 30px;
+  }
+  .landing-page .rooms .retriever-container {
+    gap: 30px;
+  }
+  .landing-page .rooms .retriever-container .retriever-link {
+    width: 500px;
+  }
+  .landing-page .rooms .retriever-container .controls {
+    gap: 20px;
+  }
+  .landing-page .rooms .retriever-container .controls a {
+    width: 150px;
+  }
+}
+@media (min-width: 992px) {
+  .landing-page .rooms .retriever-container .retriever-link .preview p {
+    font-size: 20px;
+  }
+}
+@media (min-width: 1200px) {
+  .landing-page .rooms {
+    gap: 40px;
+  }
+  .landing-page .rooms .retriever-container {
+    gap: 40px;
+  }
+  .landing-page .rooms .retriever-container .controls {
+    gap: 30px;
+  }
+  .landing-page .rooms .retriever-container .controls a {
+    font-size: 18px;
+  }
+  .landing-page .rooms .retriever-container .retriever-link .preview p {
+    font-size: 20px;
+  }
+}/*# sourceMappingURL=landingpage.css.map */
