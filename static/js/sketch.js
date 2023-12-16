@@ -591,6 +591,7 @@ $(document).ready(function () {
       // Show the "Wake" button
       $("#wake-button").show();
       $(".important-controls").hide();
+
     }
   });
 

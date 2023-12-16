@@ -1,77 +1,67 @@
 [
     {
-        "task": "tree-lights",
-        "description": "Players have thrown the balls in the treehouses in the correct order",
+        "task": "Wastafel-sleutel",
+        "description": "Spelers hebben met de magneet de sleutel uit de wastafel gevist",
         "state": "pending"
     },
     {
-        "task": "number-feel",
-        "description": "Players have felt the right numbers, 0128, and filled it in, in the keypad",
+        "task": "Medicijnkastje-open",
+        "description": "Spelers hebben het kastje boven de wastafel opengemaakt met de sleutel, hierin zit een ketting.",
         "state": "pending"
     },
     {
-        "task": "dog-house",
-        "description": "players have used the scrabble letters to create the word M-A-X code (318)",
+        "task": "Pov-cijfers",
+        "description": "De mensen moeten op een specifieke plek(ken) in de kamer staan om de juiste cijfers te zien, de code hieruit opent een kastje.",
         "state": "pending"
     },
     {
-        "task": "kite-count",
-        "description": "Players have counted the shapes and found the code, 7867 or 8978, and filled it in, in the keypad",
+        "task": "Streepjes-tellen",
+        "description": "In de kamer verstopt staan allemaal streepjes, deze kunnen de mensen tellen. Hieruit komt de code 153 voor de kist. Hierin zit een pakje kaarten en de mal voor de posters.",
         "state": "pending"
     },
     {
-        "task": "fence-decrypt",
-        "description": "players have decrypted the code in the doghouse using the fence's alphabet. Code: 5038",
+        "task": "Poster",
+        "description": "Door de mal goed over de poster te leggen kunnen de spelers een bepaalde code aflezen, deze code opent de la.",
         "state": "pending"
     },
     {
-        "task": "flowers",
-        "description": "players have put the flowers in the correct order and read can get the code from the bottom of the plants. Code: 1527",
+        "task": "Geheime-deur",
+        "description": "Als alle bovenstaande puzzels zijn opgelost, gaat de geheime deur naar de guards-room open.",
         "state": "pending"
     },
     {
-        "task": "woef-woef",
-        "description": "woef woef woef woef",
+        "task": "Stroomstoring",
+        "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
         "state": "pending"
     },
     {
-        "task": "max-vacation",
-        "description": "Players have spotted and ordered the vacations in the right order code (6123)",
+        "task": "Cijfers-voelen",
+        "description": "Mensen voelen onderaan de stoel en vinden een code, door deze in te vullen op de keypad gaat de onderste la met een personeelspas open.",
         "state": "pending"
     },
     {
-        "task": "paw-maze",
-        "description": "players have solved the maze",
+        "task": "Radio",
+        "description": "De spelers hebben goed geluisterd naar de radio en een code onderschept, dit zorgt voor toegang tot de 3e ruimte.",
         "state": "pending"
     },
     {
-        "task": "squeekuence",
-        "description": "players have used the squeeky-toy in the correct rhythm",
+        "task": "Personeelspas-scannen",
+        "description": "Het linkerhek gaat open zodra de pas gescand is.",
         "state": "pending"
     },
     {
-        "task": "sinus-game",
-        "description": "players have put the sinus wave correctly and and gotten the code from the center speaker (####)",
+        "task": "Namen-combineren",
+        "description": "Bij de wastafels moeten de juiste namen bij de juiste wastafels komen, hierdoor vallen de schoenen onder de wastafels vandaan.",
         "state": "pending"
     },
     {
-        "task": "glow-wire",
-        "description": "players have solved the wires code (3456)",
+        "task": "Schoentje-zetten",
+        "description": "De schoenen staan op de juiste plek, dit is 1 vd 2 benodigdheden voor de kast.",
         "state": "pending"
     },
     {
-        "task": "mirror-see",
-        "description": "players have seen the numbers through the mirrors code (794)",
-        "state": "pending"
-    },
-    {
-        "task": "bone-slide",
-        "description": "players have gotten the cyllinders out of the dogtoy. (code 216)",
-        "state": "pending"
-    },
-    {
-        "task": "squid-game",
-        "description": "players have moved the 4 squidge to the center of the track. ",
+        "task": "Jassen-hangen",
+        "description": "Onderaan de wasbak staan tekens, hang de jassen aan de juiste symbolen. Dit is 1 vd 2 benodigdheden voor de kast.",
         "state": "pending"
     }
 ]

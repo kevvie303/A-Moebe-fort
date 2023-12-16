@@ -19,12 +19,12 @@ import paho.mqtt.client as mqtt
 load_dotenv()
 app = Flask(__name__)
 #command = 'python relay_control.py'
-loadMqtt = True
+loadMqtt = False
 ssh = None
 stdin = None
 pi2 = None
 pi3 = None
-romy = False
+romy = True
 last_keypad_code = None
 aborted = False
 fade_duration = 3  # Fade-out duration in seconds
@@ -124,33 +124,11 @@ def on_message(client, userdata, message):
     print(sensor_states)
     if check_rule("maze-sensor"):
         if check_task_state("paw-maze") == "pending":
-            #solve_task("paw-maze")
             print("solved")
-            #scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
-            #pi3.exec_command("mpg123 -a hw:0,0 Music/squeek.mp3")
-    #if check_rule("top_left_kraken") and kraken1 == False:
-        #pi2.exec_command('raspi-gpio set 4 op dh')
-        #kraken1 = True
-    #if check_rule("top_right_kraken") and kraken2 == False:
-        #pi2.exec_command('raspi-gpio set 7 op dh')
-        #kraken2 = True
-    #if check_rule("bottom_right_kraken") and kraken3 == False:
-        #pi2.exec_command('raspi-gpio set 8 op dh')
-        #kraken3 = True
-    #if check_rule("bottom_left_kraken") and kraken4 == False:
-        #pi2.exec_command('raspi-gpio set 1 op dh')
-        #kraken4 = True
-    #if check_rule("top_left_light") or check_rule("top_right_light") or check_rule("bottom_left_light") or check_rule("bottom_right_light"):
-        #print("not solved")
-    #else:
-        #pi2.exec_command("mpg123 -a hw:2,0 Music/gelukt.mp3 \n raspi-gpio set 4 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 8 op dl \n raspi-gpio set 1 op dl")
-        #time.sleep(3)
-        #ssh.exec_command("raspi-gpio set 16 op dh")
-        #time.sleep(6)
-        #if should_balls_drop == True:
-            #ssh.exec_command("raspi-gpio set 6 op dh")
-        #load_command = f'echo "load /home/pi/Music/Dogsout.mp3" | sudo tee /tmp/mpg123_fifo'
-        #pi2.exec_command(load_command)
+    if check_rule("entrance_door"):
+        current_game_state = get_game_status()
+        if current_game_state == {'status': 'prepared'}:
+            start_timer()
     global sequence
     if check_rule("green_house_ir") and sequence == 0:
         task_state = check_task_state("tree-lights")
@@ -322,10 +300,10 @@ def execute_delete_locks_script():
 def trigger():
     # Process the data and respond as needed
     return jsonify({'message': 'Data received successfully'})
-@app.route('/retriever')
-def retriever():
+@app.route('/krijgsgevangenis')
+def pow():
     balls_drop_status = 'drop' if should_balls_drop else 'not drop'
-    return render_template('retriever.html', balls_drop_status=balls_drop_status)
+    return render_template('pow.html', balls_drop_status=balls_drop_status)
 def start_scripts():
     global should_sound_play
     #pi2.exec_command('python sensor_board.py')
@@ -336,7 +314,7 @@ def start_scripts():
     #pi3.exec_command('python ir.py')
     sensor_thread.start()
     monitor_thread.start()
-    update_retriever_status('awake')
+    update_game_status('awake')
     pi2.exec_command('python mqtt.py')
     time.sleep(0.5)
     pi2.exec_command('nohup python status.py > /dev/null 2>&1 &')    
@@ -766,10 +744,8 @@ def get_task_status():
     
 @app.route('/solve_task/<task_name>', methods=['POST'])
 def solve_task(task_name):
-    global squeak_job, bird_job, code1, code2, code3, code4, code5
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
-    global sequence, should_hint_shed_play
-    global codesCorrect
+    game_status = get_game_status()
     try:
         with open(file_path, 'r+') as file:
             tasks = json.load(file)
@@ -778,182 +754,22 @@ def solve_task(task_name):
                 task['state'] = 'solved'
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
-        if task_name == "paw-maze":
-            print(task)
-            if squeak_job == False:
-                scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
-                squeak_job = True
-            pi3.exec_command("mpg123 -a hw:0,0 Music/squeek.mp3")
+        if task_name == "Stroomstoring":
+            if game_status == {'status': 'playing'}:
+                cause_shortcircuit()
         elif task_name == "woef-woef":
-            retriever_status = get_retriever_status()
-            if retriever_status == {'status': 'playing'}:
+            if game_status == {'status': 'playing'}:
                 if bird_job == True:
                     scheduler.remove_job('birdjob')
                     bird_job = False
                 pi3.exec_command("mpg123 -a hw:0,0 Music/hok.mp3 \n raspi-gpio set 4 op dh")
-        elif task_name == "squeekuence":
-            ssh.exec_command("raspi-gpio set 20 op dh")
-            retriever_status = get_retriever_status()
-            print(retriever_status)
-            if retriever_status == {'status': 'playing'}:
-                pi2.exec_command("sudo python sinus_game.py")
-                print("executed")
-                time.sleep(4)
-                pi2.exec_command("mpg123 -a hw:2,0 Music/lab_intro.mp3")
-                time.sleep(4)
-                load_command = f'echo "load /home/pi/Music/Background.mp3" | sudo tee /tmp/mpg123_fifo \n echo "volume 25" | sudo tee /tmp/mpg123_fifo'
-                pi2.exec_command(load_command)
-                time.sleep(1)
-                command = f'echo "volume 8" | sudo tee /tmp/mpg123_fifo'
-                stdin, stdout, stderr = pi3.exec_command(command)
-            if squeak_job == True:
-                scheduler.remove_job('squeakjob')
-                squeak_job = False
-        elif task_name == "flowers":
-            code1 = True
-            codesCorrect += 1
-            ssh.exec_command("raspi-gpio set 1 op dh")
-            fade_music_out()
-            time.sleep(2)
-            pi3.exec_command('mpg123 -a hw:0,0 Music/bloemen.mp3')
-            ssh.exec_command("raspi-gpio set 1 op dl")
-            time.sleep(10)
-            if codesCorrect == 3 or codesCorrect == 4:
-                fade_music_in()
-            elif codesCorrect == 2 or codesCorrect == 1:
-                print(codesCorrect)
-            elif code5 == False:
-                fade_music_in()
-        elif task_name == "kite-count":
-            code2 = True
-            codesCorrect += 1
-            ssh.exec_command("raspi-gpio set 1 op dh")
-            fade_music_out()
-            time.sleep(2)
-            pi3.exec_command('mpg123 -a hw:0,0 Music/vlieger.mp3')
-            ssh.exec_command("raspi-gpio set 1 op dl")
-            time.sleep(5)
-            if codesCorrect == 3 or codesCorrect == 4:
-                fade_music_in()
-            elif codesCorrect == 2 or codesCorrect == 1:
-                print(codesCorrect)
-            elif code5 == False:
-                fade_music_in()
-        elif task_name == "number-feel":
-            code3 = True
-            codesCorrect += 1
-            ssh.exec_command("raspi-gpio set 1 op dh")
-            fade_music_out()
-            time.sleep(2)
-            pi3.exec_command('mpg123 -a hw:0,0 Music/plantenbak.mp3')
-            ssh.exec_command("raspi-gpio set 1 op dl")
-            time.sleep(5)
-            if codesCorrect == 3 or codesCorrect == 4:
-                fade_music_in()
-            elif codesCorrect == 2 or codesCorrect == 1:
-                print(codesCorrect)
-            elif code5 == False:
-                fade_music_in()
-        elif task_name == "fence-decrypt":
-            code4 = True
-            codesCorrect += 1
-            ssh.exec_command("raspi-gpio set 1 op dh")
-            fade_music_out()
-            time.sleep(2)
-            pi3.exec_command('mpg123 -a hw:0,0 Music/hek.mp3')
-            ssh.exec_command("raspi-gpio set 1 op dl")
-            time.sleep(5)
-            if codesCorrect == 3 or codesCorrect == 4:
-                fade_music_in()
-            elif codesCorrect == 2 or codesCorrect == 1:
-                print(codesCorrect)
-            elif code5 == False:
-                fade_music_in()
-        elif task_name == "sinus-game":
-            pi2.exec_command("sudo pkill -f sinus_game.py")
-            time.sleep(0.5)
-            pi2.exec_command("sudo python sinus_override.py")
-        elif task_name == "squid-game":
-            retriever_status = get_retriever_status()
-            if retriever_status == {'status': 'playing'}:
-                pi2.exec_command("raspi-gpio set 4 op dh \n raspi-gpio set 7 op dh \n raspi-gpio set 8 op dh \n raspi-gpio set 1 op dh \n mpg123 -a hw:2,0 Music/gelukt.mp3")
-                time.sleep(3)
-                ssh.exec_command("raspi-gpio set 16 op dh")
-                time.sleep(6)
-                if should_balls_drop == True:
-                    ssh.exec_command("raspi-gpio set 6 op dh")
-                load_command = f'echo "load /home/pi/Music/Dogsout.mp3" | sudo tee /tmp/mpg123_fifo'
-                pi2.exec_command(load_command)
-        elif task_name == "tree-lights":
-            if bird_job == True:
-                scheduler.remove_job('birdjob')
-                bird_job = False
-            retriever_status = get_retriever_status()
-            if retriever_status == {'status': 'playing'}:
-                code5 = True
-                print("3")
-                pi3.exec_command("raspi-gpio set 23 op dh")
-                fade_out_thread = threading.Thread(target=fade_music_out)
-                fade_out_thread.start()
-                time.sleep(1)
-                pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
-                time.sleep(1)
-                pi3.exec_command("raspi-gpio set 23 op dh \n raspi-gpio set 21 op dh \n raspi-gpio set 15 op dh")
-                time.sleep(1)
-                pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
-                time.sleep(1)
-                pi3.exec_command("raspi-gpio set 23 op dh \n raspi-gpio set 21 op dh \n raspi-gpio set 15 op dh")
-                time.sleep(1)
-                pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
-                sequence = 0
-                time.sleep(1)
-                pi3.exec_command("mpg123 -a hw:0,0 Music/boom.mp3")
-                time.sleep(7)
-                if code1 and code2 and code3 and code4 and code5:
-                    print("executed")
-                    time.sleep(7)
-                    pi3.exec_command('mpg123 -a hw:0,0 Music/schuur_open.mp3')
-                    time.sleep(5)
-                    fade_music_in()
-                    pi3.exec_command('raspi-gpio set 16 op dh')
-                    code1 = False
-                    code2 = False
-                    code3 = False
-                    code4 = False
-                    code5 = False
-                else:
-                    fade_in_thread = threading.Thread(target=fade_music_in)
-                    fade_in_thread.start()
-        if code1 and code2 and code3 and code4 and code5:
-            print("executed")
-            time.sleep(2)
-            pi3.exec_command('mpg123 -a hw:0,0 Music/schuur_open.mp3')
-            time.sleep(5)
-            fade_music_in()
-            pi3.exec_command('raspi-gpio set 16 op dh')
-            code1 = False
-            code2 = False
-            code3 = False
-            code4 = False
-            code5 = False
-        if codesCorrect == 2:
-            codesCorrect += 1
-            time.sleep(2)
-            pi3.exec_command('mpg123 -a hw:0,0 Music/goed_bezig.mp3')
-            time.sleep(6)
-            fade_music_in()
-        if codesCorrect == 1 and should_hint_shed_play == True:
-            should_hint_shed_play = False
-            time.sleep(2)
-            pi3.exec_command('mpg123 -a hw:0,0 Music/after1code.mp3')
-            time.sleep(4)
-            fade_music_in()
-        print(code1, code2, code3, code4, code5)
         with app.app_context():
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error updating task'})
-    
+
+def cause_shortcircuit():
+    return "shortcircuited"
 @app.route('/pend_task/<task_name>', methods=['POST'])
 def pend_task(task_name):
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
@@ -976,7 +792,7 @@ def reset_task_statuses():
     global sequence
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
     sequence = 0
-    update_retriever_status('awake')
+    update_game_status('awake')
     try:
         with open(file_path, 'r') as file:
             tasks = json.load(file)
@@ -1006,7 +822,7 @@ def reset_puzzles():
     code3 = False
     code4 = False
     code5 = False
-    update_retriever_status('awake')
+    update_game_status('awake')
     pi3.exec_command('raspi-gpio set 16 op dl')
     pi2.exec_command('sudo pkill -f sinus_game.py')
     pi2.exec_command('pkill -f sensor_board.py')
@@ -1023,28 +839,28 @@ def reset_puzzles():
     return "puzzles reset"
 
 # Function to read the retriever status from the JSON file
-def read_retriever_status():
+def read_game_status():
     with open('json/retrieverStatus.json', 'r') as file:
         data = json.load(file)
     return data.get('status', 'awake')  # Default status is 'awake'
 
 # Function to update the retriever status in the JSON file
-def update_retriever_status(status):
+def update_game_status(status):
     data = {"status": status}
     with open('json/retrieverStatus.json', 'w') as file:
         json.dump(data, file)
 
-@app.route('/get_retriever_status', methods=['GET'])
-def get_retriever_status():
-    retriever_status = read_retriever_status()
-    return {"status": retriever_status}
+@app.route('/get_game_status', methods=['GET'])
+def get_game_status():
+    game_status = read_game_status()
+    return {"status": game_status}
 
 @app.route('/wake_room', methods=['POST'])
 def wake_room():
     # Update the retriever status to 'awake'
     pi3.exec_command('raspi-gpio set 12 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 1 op dl \n raspi-gpio set 8 op dl')
     ssh.exec_command('raspi-gpio set 15 op dl \n raspi-gpio set 25 op dl')
-    update_retriever_status('awake')
+    update_game_status('awake')
     return "room awakened"
 @app.route('/control_light', methods=['POST'])
 def control_light():
@@ -1108,7 +924,7 @@ def snooze_game():
     ssh.exec_command('raspi-gpio set 15 op dh \n raspi-gpio set 25 op dh \n raspi-gpio set 6 op dh \n raspi-gpio set 16 op dh \n raspi-gpio set 20 op dh \n raspi-gpio set 21 op dh')
     pi3.exec_command('raspi-gpio set 16 op dh')
     pi3.exec_command('raspi-gpio set 25 op dh')
-    update_retriever_status('snoozed')
+    update_game_status('snoozed')
     return "room snoozed"
 @app.route('/add_task', methods=['POST'])
 def add_task():
@@ -1267,8 +1083,8 @@ def control_maglock():
             return 'Maglock entrance-door-lock is now locked'
         elif action == "unlocked":
             pi3.exec_command("raspi-gpio set 25 op dh")
-            retriever_status = get_retriever_status()
-            if retriever_status == {'status': 'prepared'}:
+            game_status = get_game_status()
+            if game_status == {'status': 'prepared'}:
                 start_timer()
             return 'Maglock entrance-door-lock is now unlocked'
     elif maglock == "doghouse-lock":
@@ -1298,8 +1114,8 @@ def control_maglock():
             return 'blacklight locked'
         elif action == "unlocked":
             ssh.exec_command("raspi-gpio set 21 op dh")
-            retriever_status = get_retriever_status()
-            if retriever_status == {'status': 'playing'}:
+            game_status = get_game_status()
+            if game_status == {'status': 'playing'}:
                 fade_music_out3()
                 stop_timer()
             return 'exit unlocked'
@@ -1670,9 +1486,9 @@ def start_timer():
     if bird_job == False:
         scheduler.add_job(start_bird_sounds, 'interval', minutes=1, id='birdjob')
         bird_job = True
-    update_retriever_status('playing')
+    update_game_status('playing')
     if timer_thread is None or not timer_thread.is_alive():
-        timer_value = 5400  # Reset timer value to 60 minutes
+        timer_value = 3600  # Reset timer value to 60 minutes
         write_timer_value(timer_value)
         timer_running = True
         timer_thread = threading.Thread(target=update_timer)
@@ -1689,7 +1505,7 @@ def start_timer():
 @app.route('/timer/stop', methods=['POST'])
 def stop_timer():
     global timer_thread, timer_running, timer_value, kraken1, kraken2, kraken3, kraken4, bird_job
-    update_retriever_status('awake')
+    update_game_status('awake')
     pi2.exec_command("raspi-gpio set 4 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 8 op dl \n raspi-gpio set 1 op dl")
     kraken1 = False
     kraken2 = False
@@ -1862,9 +1678,9 @@ def prepare_game():
     pi2.exec_command("raspi-gpio set 4 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 8 op dl \n raspi-gpio set 1 op dl")
     print("Preparing game...")  # Add this line for debugging
     # Perform the checks and generate the result message
-    retriever_status = get_retriever_status()
-    print(retriever_status)
-    if retriever_status != {'status': 'prepared'}:
+    game_status = get_game_status()
+    print(game_status)
+    if game_status != {'status': 'prepared'}:
         start_mqtt()
         codesCorrect = 0
         pi3.exec_command('echo "volume 65" | sudo tee /tmp/mpg123_fifo')
@@ -1876,7 +1692,7 @@ def prepare_game():
         pi2.exec_command('echo "volume 25" | sudo tee /tmp/mpg123_fifo \n sudo pkill -f sinus_override.py')
     time.sleep(1)
     print("Preparation complete.")
-    if retriever_status != {'status': 'prepared'}:
+    if game_status != {'status': 'prepared'}:
         pi2.exec_command("nohup python status.py > /dev/null 2>&1 &")
         load_command = f'echo "load /home/pi/Music/Lounge.mp3" | sudo tee /tmp/mpg123_fifo \n echo "volume 65" | sudo tee /tmp/mpg123_fifo'
         pi3.exec_command(load_command)
@@ -1886,7 +1702,7 @@ def prepare_game():
     response = {
         "message": results
     }
-    update_retriever_status('prepared')
+    update_game_status('prepared')
     return jsonify(response), 200
 
 if romy == False:

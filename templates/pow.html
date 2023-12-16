@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Retriever</title>
+    <title>Prisoners of War</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
     <link rel="icon" href="static/img/favicon.png" type="image/png">
@@ -16,7 +16,7 @@
     <header class="retriever-logo">
         <a href="/" class="back-button"><img src="static/img/back.svg" alt="Go back button"></a>
         <figure class="logo-container">
-            <img src="static/img/retrieverlogo.svg" alt="Retriever Logo">
+            <img src="static/img/handcuffs-free-1.svg" alt="Retriever Logo">
         </figure>
     </header>
 
@@ -105,9 +105,7 @@
                 <h3>Reboot</h3>
 
                 <div class="pies">
-                    <button id="reboot-pi-mag" class="button-style">Reboot top pi</button>
-                    <button id="reboot-pi-music" class="button-style">Reboot mid pi</button>
-                    <button id="reboot-tree-pi" class="button-style">Reboot tree pi</button>
+                    <button id="reboot-pi-mag" class="button-style">Reboot...pi</button>
                 </div>
             </div>
 
@@ -115,9 +113,7 @@
                 <h3>Backup</h3>
 
                 <div class="pies">
-                    <button id="backup-top-pi" class="button-style">Backup top pi</button>
-                    <button id="backup-middle-pi" class="button-style">Backup mid pi</button>
-                    <button id="backup-tree-pi" class="button-style">Backup the tree pi</button>
+                    <button id="backup-top-pi" class="button-style">Backup...pi</button>
                 </div>
             </div>
             <a href="/list_sensors">Add Sensor</a>
@@ -192,7 +188,7 @@
         </div>
 
         <!-- svg-->
-        <section class="light-container">
+        <!-- <section class="light-container">
             <article class="lights">
                 <img src="../static/img/room-layout.svg" alt="Layout of the room">
                 <figure class="light-buttons">
@@ -206,7 +202,7 @@
                     <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-8'); console.log('Clicked on Light-8');">
                 </figure>        
             </article>
-        </section>
+        </section> -->
     <!-- main -->
 
     <section class="tasks">
@@ -272,59 +268,7 @@
                     <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
                 </div>
             </div>
-            
-            <div class="lock">
-                <p>doghouse-lock</p>
-                <div class="lock-buttons">
-                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
-                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
-                </div>
-            </div>
 
-            <div class="lock">
-                <p>shed-door-lock</p>
-                <div class="lock-buttons">
-                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
-                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
-                </div>
-            </div>
-            <div class="lock">
-                <p>lab-hatch-lock</p>
-                <div class="lock-buttons">
-                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
-                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
-                </div>
-            </div>
-            <div class="lock">
-                <p>sliding-door-lock</p>
-                <div class="lock-buttons">
-                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
-                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
-                </div>
-            </div>
-            <div class="lock">
-                <p>ball-drop-lock</p>
-                <div class="lock-buttons">
-                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
-                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
-                </div>
-            </div>
-            <div class="lock">
-                <p>sinus-shootinglock</p>
-                <div class="lock-buttons">
-                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
-                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
-                </div>
-            </div>
-            <div class="lock">
-                <p>should-balls-drop</p>
-                <div class="lock-buttons">
-                    <button class="turn-on-button icon"><img src="static/img/lock.svg" alt="Lock"></button>
-                    <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
-                </div>
-            </div>
-        </article>
-        <p id="balls-status">Balls will {{ balls_drop_status }}</p>
         <div class="lock">
             <p>exit-door-lock</p>
             <div class="lock-buttons">
@@ -332,9 +276,10 @@
                 <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
             </div>
         </div>
+    </article>
 
     </section>
-
+    <!--TODO: rename to a more sensible name-->
     <section class="lock-status">
         <h2>Status</h2>
 
@@ -342,7 +287,7 @@
             <div id="maglock-status-container"></div>
             <div id="ir-sensor-status-container"></div>
             <div id="sensor-status-container"></div>
-            <p id="keypad-shed-code">Shed keypad code: <strong></strong></p>
+            <p id="keypad-shed-code">Placeholder keypad <strong></strong></p>
         </div>
     </section>
 
@@ -367,7 +312,8 @@
     </section>
 
     <footer>
-        <img src="static/img/thebrinkescaperooms.svg" alt="The Brink Escaperooms">
+        <!-- TODO: New svg of pow -->
+        <!-- <img src="static/img/thebrinkescaperooms.svg" alt="The Brink Escaperooms"> -->
     </footer>
 
     
