@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for
 from flask_cors import CORS
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room
 import json
 import paramiko
 import atexit
@@ -18,6 +18,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import paho.mqtt.client as mqtt
 load_dotenv()
 app = Flask(__name__)
+socketio = SocketIO(app)
 #command = 'python relay_control.py'
 loadMqtt = False
 ssh = None
@@ -53,6 +54,7 @@ codesCorrect = 0
 bird_job = False
 squeak_job = False
 should_hint_shed_play = False
+CHECKLIST_FILE = 'json/checklist_data.json'
 #logging.basicConfig(level=logging.DEBUG)  # Use appropriate log level
 active_ssh_connections = {}
 CORS(app)
@@ -163,8 +165,88 @@ def on_message(client, userdata, message):
             pi3.exec_command("raspi-gpio set 21 op dl")
             pi3.exec_command("raspi-gpio set 15 op dl")
             sequence = 0
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+    join_room('all_clients')
+    emit('join_room_ack', {'room': 'all_clients'})
+@app.route('/lock', methods=['POST'])
+def lock_route():
+    try:
+        task = request.json.get('task', '')
+        is_checked = request.json.get('isChecked', False)
 
-    #print(f"Received sensor state for {sensor_name}: {sensor_state}")
+        if is_checked:
+            execute_lock_command(task)
+        else:
+            execute_unlock_command(task)
+
+        # Update the checklist status
+        update_checklist(task, is_checked)
+        socketio.emit('checklist_update', {'task': task, 'isChecked': is_checked}, room="all_clients")
+        print(f"Locking action executed successfully for task: {task}, isChecked: {is_checked}")
+        return jsonify({'success': True, 'message': 'Locking action executed successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+def execute_lock_command(task):
+    try:
+        # Add logic to map tasks to corresponding SSH commands for locking
+        if task == "Doe de entree deur dicht":
+            print("locked")
+            #command = "raspi-gpio set 25 op dl"
+            #stdin, stdout, stderr = pi3.exec_command(command)
+            # You can handle the command execution results if needed
+        # Add more mappings as needed
+    except Exception as e:
+        print(f"Error executing lock command: {str(e)}")
+
+def execute_unlock_command(task):
+    try:
+        # Add logic to map tasks to corresponding SSH commands for unlocking
+        if task == "Doe de entree deur dicht":
+            print("unlocked")
+            #command = "raspi-gpio set 25 op u"
+            #stdin, stdout, stderr = pi3.exec_command(command)
+            # You can handle the command execution results if needed
+        # Add more mappings as needed
+    except Exception as e:
+        print(f"Error executing unlock command: {str(e)}")
+
+def update_checklist(task, is_checked):
+    try:
+        # Read the current checklist data
+        with open(CHECKLIST_FILE, 'r') as file:
+            checklist_data = json.load(file)
+
+        # Find the task in the checklist and update its completed status
+        for item in checklist_data:
+            if item['task'] == task:
+                item['completed'] = is_checked
+
+        # Write the updated data back to the file
+        with open(CHECKLIST_FILE, 'w') as file:
+            json.dump(checklist_data, file, indent=2)
+    except Exception as e:
+        print(f"Error updating checklist: {str(e)}")
+@app.route('/get-checklist', methods=['GET'])
+def get_checklist_route():
+    try:
+        checklist = get_checklist()
+        return jsonify({'success': True, 'checklist': checklist})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+def get_checklist():
+    try:
+        # Read the current checklist data
+        with open(CHECKLIST_FILE, 'r') as file:
+            checklist_data = json.load(file)
+
+        return checklist_data
+    except Exception as e:
+        print(f"Error getting checklist: {str(e)}")
+        return []
 def check_task_state(task_name):
     json_file_path = 'json/tasks.json'  # Set the path to your JSON file
     with open(json_file_path, 'r') as json_file:
@@ -1714,6 +1796,6 @@ def index():
     return render_template('index.html')
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, handle_interrupt)
-    app.run(host='0.0.0.0', port=80)
+    socketio.run(app, host='0.0.0.0', port=80)
     if romy == False:
         atexit.register(cleanup)

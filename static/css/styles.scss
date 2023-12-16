@@ -794,7 +794,7 @@ main {
 .control-container .locks,
 .control-container .lock-status,
 .control-container .tasks,
-.control-container #prepare-result {
+.control-container #reset-list-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -806,8 +806,34 @@ main {
   border-radius: 15px;
   padding: 20px 30px;
   background: var(--secondary-background-color);
+ul#reset-list {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+  }
+
+  input[type="checkbox"] {
+    margin-right: 10px;
+  }
 }
 
+.control-container #prepare-result {
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+  margin: 0 20px;
+  max-width: 500px;
+  /* width: 80%; */
+  border-radius: 15px;
+  padding: 20px 30px;
+  background: var(--secondary-background-color);
+}
 /*
 #############
 light control
@@ -1088,7 +1114,8 @@ preparing
   .control-container .locks,
   .control-container .lock-status,
   .control-container .tasks,
-  .control-container #prepare-result {
+  .control-container #prepare-result,
+  .control-container #reset-list-container {
     width: 400px;
     align-self: center;
     margin: 0;
@@ -1107,7 +1134,8 @@ preparing
   .control-container .locks,
   .control-container .lock-status,
   .control-container .tasks,
-  .control-container #prepare-result {
+  .control-container #prepare-result,
+  .control-container #reset-list-container {
     width: 450px;
     // width: 500px;
     padding: 30px 40px;
@@ -1217,3 +1245,9 @@ input[type="text"] {
 poeplampen
 ##########
 */
+#reset-list-container {
+  display: none;
+}
+#reset-list li {
+  margin-bottom: 10px;
+}

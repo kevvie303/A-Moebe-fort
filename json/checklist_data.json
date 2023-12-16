@@ -1,0 +1,42 @@
+[
+  {
+    "task": "Doe de entree deur dicht",
+    "completed": false
+  },
+  {
+    "task": "Reset de cijfercode op het slot",
+    "completed": false
+  },
+  {
+    "task": "Plaats de ontbrekende sleutel terug in de kluis",
+    "completed": false
+  },
+  {
+    "task": "Sluit het geheime luik",
+    "completed": false
+  },
+  {
+    "task": "Herstel de oorspronkelijke staat van de boekenkast",
+    "completed": false
+  },
+  {
+    "task": "Zet alle puzzelstukken terug op hun oorspronkelijke plek",
+    "completed": false
+  },
+  {
+    "task": "Reset de piano naar de standaardtoonladder",
+    "completed": false
+  },
+  {
+    "task": "Vouw de kaart met aanwijzingen terug op de juiste manier",
+    "completed": false
+  },
+  {
+    "task": "Schakel het alarmsysteem opnieuw in",
+    "completed": false
+  },
+  {
+    "task": "Berg alle hints en aanwijzingen op",
+    "completed": false
+  }
+]

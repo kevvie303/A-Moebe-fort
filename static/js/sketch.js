@@ -267,10 +267,10 @@ $(document).ready(function () {
   updateAllMaglockStatuses("http://192.168.0.114:5001");
 
   // Update maglock statuses periodically
-  setInterval(function () {
+  /*setInterval(function () {
     updateAllMaglockStatuses("http://192.168.0.104:5000");
     updateAllMaglockStatuses("http://192.168.0.114:5001");
-  }, 500); // Update every 2 seconds
+  }, 500); // Update every 2 seconds*/
 });
 
 $(document).ready(function () {
@@ -412,7 +412,7 @@ $(document).ready(function () {
   updateAllIRSensorStatuses("http://192.168.0.114:5001");
 
   // Update normal sensor statuses periodically
-  setInterval(function () {
+ /* setInterval(function () {
     updateAllSensorStatuses("http://192.168.0.104:5000");
     updateAllSensorStatuses("http://192.168.0.105:5001");
     updateLastKeypadCode("http://192.168.0.104:5000");
@@ -421,7 +421,7 @@ $(document).ready(function () {
   // Update IR sensor statuses periodically
   setInterval(function () {
     updateAllIRSensorStatuses("http://192.168.0.114:5001");
-  }, 500);
+  }, 500);*/
 });
 
 $(document).ready(function () {
@@ -478,13 +478,13 @@ $(document).ready(function () {
     intervalId = setInterval(function () {
       updateTimers();
     }, 1000);
-    $(".tasks, .locks, .lock-status, .pin-info").show();
+    $(".tasks, .locks, .lock-status, .pin-info, #reset-list-container").show();
     $("#continue-button, #prepare-result").hide();
     $("#pause-button").show();
   });
 
   $("#end-game-button").click(function () {
-    $(".tasks, .locks, .lock-status, .pin-info").show();
+    $(".tasks, .locks, .lock-status, .pin-info, #reset-list-container").show();
     $("#prepare-result").hide();
     $("#pause-button, #prepare-game-button").show();
     clearInterval(intervalId);
@@ -510,7 +510,7 @@ $(document).ready(function () {
     $("#nav-snooze-status").text("Room Snoozed");
     // Show the "Wake" button
     $("#wake-button").show();
-    $(".important-controls").hide();
+    $(".important-controls, #reset-list-container").hide();
   });
   $("#speed-up-button").click(function () {
     $.post("/timer/speed", { change: 0.1 }, function (data) {
@@ -584,7 +584,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   // Check the retriever status from the JSON file
-  $.get("/get_retriever_status", function (data) {
+  $.get("/get_game_status", function (data) {
     if (data.status === "snoozed") {
       // Display snoozed status in the nav
       $("#nav-snooze-status").text("Room Snoozed");
@@ -608,7 +608,7 @@ $(document).ready(function () {
     });
   });
   // Check the retriever status from the JSON file
-  $.get("/get_retriever_status", function (data) {
+  $.get("/get_game_status", function (data) {
     if (data.status === "prepared") {
       // Hide everything from the comment "HIDE FROM HERE"
       hideFromHere();
@@ -618,7 +618,7 @@ $(document).ready(function () {
   function hideFromHere() {
     // Add CSS to hide the sections
     console.log("test");
-    $(".tasks, .lock-status, .pin-info").hide();
+    $(".tasks, .lock-status, .pin-info, #reset-list-container").hide();
   }
 });
 
@@ -1153,7 +1153,7 @@ $(document).ready(function () {
   function performPreparation() {
     prepareButton.hide();
     prepareResult.show();
-    $(".tasks, .lock-status, .pin-info").hide();
+    $(".tasks, .lock-status, .pin-info, #reset-list-container").hide();
     prepareStatus.html("Preparing...");
     clearInterval(updateStatusInterval);
     updatePlayStatus = setInterval(updatePlayingStatus, 1000);
@@ -1200,7 +1200,7 @@ $(document).ready(function () {
   }
   function updateRetrieverStatus() {
     console.log("hi");
-    $.get("/get_retriever_status", function (data) {
+    $.get("/get_game_status", function (data) {
       if (data.status === "prepared") {
         prepareButton.hide();
         performPreparation(); // Trigger the preparation function
@@ -1208,25 +1208,25 @@ $(document).ready(function () {
     });
   }
   function updatePlayingStatus() {
-    $.get("/get_retriever_status", function (data) {
+    $.get("/get_game_status", function (data) {
       if (data.status === "playing") {
         console.log("hii");
         clearInterval(updatePlayStatus);
         prepareButton.hide();
-        $(".tasks, .locks, .lock-status, .pin-info").show();
+        $(".tasks, .locks, .lock-status, .pin-info, #reset-list-container").show();
         $("#prepare-result").hide();
       }
     });
   }
-  $.get("/get_retriever_status", function (data) {
+  $.get("/get_game_status", function (data) {
     if (data.status === "playing") {
       clearInterval(updatePlayStatus);
       prepareButton.hide();
-      $(".tasks, .locks, .lock-status, .pin-info").show();
+      $(".tasks, .locks, .lock-status, .pin-info, #reset-list-container").show();
       $("#prepare-result, #snooze-game-button").hide();
     }
   });
-  $.get("/get_retriever_status", function(data) {
+  $.get("/get_game_status", function(data) {
     if (data.status === 'awake') {
         console.log("hii")
         clearInterval(updateWakeStatus);
@@ -1238,4 +1238,125 @@ $(document).ready(function () {
   prepareButton.click(function () {
     performPreparation(); // Trigger the preparation function on button click
   });
+});
+
+
+let programmaticChange = false;
+
+
+async function sendLockRequest(task, isChecked) {
+    try {
+        const response = await fetch('/lock', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ task, isChecked }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            console.log('Locking action executed successfully');
+        } else {
+            console.error('Error executing locking action:', data.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const socket = io({ transports: ['websocket'] });
+
+  // Event listener for Socket.IO connection
+  socket.on('connect', () => {
+      console.log('Connected to Socket.IO');
+      socket.emit('join_room', { room: 'all_clients' });
+  });
+
+  // Event listener for joining a room acknowledgment
+  socket.on('join_room_ack', (data) => {
+      console.log('Joined room:', data.room);
+      // Fetch and display the initial checklist when the client joins the room
+      updateChecklist();
+  });
+
+  // Event listener for checklist updates
+  socket.on('checklist_update', (data) => {
+      console.log('Received checklist_update event:', data);
+      // Update your checklist UI based on the received data
+      updateChecklist();
+  });
+
+  // ... (other event listeners) ...
+
+  // Function to update the checklist UI
+  async function updateChecklist() {
+    try {
+        // Fetch game status using $.get
+        $.get("/get_game_status", function (data) {
+            if (data.status === "awake") {
+                // If the game is "awake," proceed to fetch and display the checklist
+                fetchAndDisplayChecklist();
+            } else {
+                // If the game is not "awake," hide the reset list
+                hideResetList();
+            }
+        });
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function fetchAndDisplayChecklist() {
+    // Fetch checklist data
+    fetch('/get-checklist')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Checklist data:', data.checklist);
+                displayChecklist(data.checklist);
+            } else {
+                console.error('Error getting checklist:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+function hideResetList() {
+    const resetListContainer = document.getElementById('reset-list-container');
+    resetListContainer.style.display = 'none';
+}
+
+  // Function to display the checklist
+  function displayChecklist(checklist) {
+      const resetList = document.getElementById('reset-list');
+      resetList.innerHTML = ''; // Clear existing checklist items
+
+      checklist.forEach(item => {
+          const listItem = document.createElement('li');
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.id = item.task.replace(/\s/g, '');
+          checkbox.checked = item.completed;
+
+          const label = document.createElement('label');
+          label.textContent = item.task;
+          label.setAttribute('for', checkbox.id);
+
+          listItem.appendChild(checkbox);
+          listItem.appendChild(label);
+
+          resetList.appendChild(listItem);
+
+          checkbox.addEventListener('change', async () => {
+              const isChecked = checkbox.checked;
+              const task = label.textContent.trim();
+              await sendLockRequest(task, isChecked);
+          });
+      });
+  }
 });
