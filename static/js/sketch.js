@@ -1377,30 +1377,39 @@ function hideResetList() {
 
   // Function to display the checklist
   function displayChecklist(checklist) {
-      const resetList = document.getElementById('reset-list');
-      resetList.innerHTML = ''; // Clear existing checklist items
+    const resetList = document.getElementById('reset-list');
+    resetList.innerHTML = ''; // Clear existing checklist items
 
-      checklist.forEach(item => {
-          const listItem = document.createElement('li');
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.id = item.task.replace(/\s/g, '');
-          checkbox.checked = item.completed;
+    checklist.forEach(item => {
+        const listItem = document.createElement('li');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = item.task.replace(/\s/g, '');
+        checkbox.checked = item.completed;
 
-          const label = document.createElement('label');
-          label.textContent = item.task;
-          label.setAttribute('for', checkbox.id);
+        const label = document.createElement('label');
+        label.textContent = item.task;
+        label.setAttribute('for', checkbox.id);
 
-          listItem.appendChild(checkbox);
-          listItem.appendChild(label);
+        // Apply line-through style if the task is completed
+        if (item.completed) {
+            label.style.textDecoration = 'line-through';
+        }
 
-          resetList.appendChild(listItem);
+        listItem.appendChild(checkbox);
+        listItem.appendChild(label);
 
-          checkbox.addEventListener('change', async () => {
-              const isChecked = checkbox.checked;
-              const task = label.textContent.trim();
-              await sendLockRequest(task, isChecked);
-          });
-      });
-  }
+        resetList.appendChild(listItem);
+
+        checkbox.addEventListener('change', async () => {
+            if (!programmaticChange) {
+                programmaticChange = true;
+                const isChecked = checkbox.checked;
+                const task = label.textContent.trim();
+                await sendLockRequest(task, isChecked);
+                programmaticChange = false;
+            }
+        });
+    });
+}
 });
