@@ -1,0 +1,52 @@
+@import "../helpers/_variables";
+
+nav.important-controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  background: var(--secondary-background-color);
+  padding: 10px 0;
+  div.time-elapsed,
+  div.time-remaining {
+    align-self: center;
+  }
+  div.time-remaining {
+    text-align: right;
+  }
+  div.game-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    a {
+      width: var(--icon-sm);
+      height: var(--icon-sm);
+    }
+  }
+}
+
+/*
+#############
+media queries
+#############
+*/
+
+@media (min-width: 576px) {
+  .important-controls {
+    justify-content: center;
+    gap: 80px;
+  }
+}
+
+@media (min-width: 768px) {
+  .important-controls {
+    justify-content: center;
+    gap: 120px;
+  }
+}
+
+@media (min-width: 992px) {
+  .important-controls {
+    gap: 150px;
+  }
+}
