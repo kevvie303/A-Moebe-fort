@@ -141,6 +141,7 @@ custom variables
   --locked: #f36060;
   --unlocked: #53c951;
   --pending: #8c8c8c;
+  --skip: #a09be7;
   /* --primary-button-color: #53C951;
     --primary-button-color-darker: #38af36;
     --secondary-button-color: #F36060;
@@ -168,6 +169,10 @@ custom variables
 .unlocked,
 .solved {
   color: var(--unlocked);
+}
+
+.skip {
+  color: var(--skip);
 }
 
 .pending {
@@ -632,6 +637,10 @@ header .logo-container {
 
 .tasks-hidden .task-control .task-control-container .button-container button.overdue-button {
   background: var(--locked);
+}
+
+.tasks-hidden .task-control .task-control-container .button-container button.skip-button {
+  background: var(--skip);
 }
 
 /*

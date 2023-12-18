@@ -854,6 +854,7 @@ function openTaskPopup(task) {
   const taskDescription = taskPopup.querySelector(".task-description");
   const currentState = taskPopup.querySelector(".current-state strong");
   const solvedButton = taskPopup.querySelector(".solved-button");
+  const skipButton = taskPopup.querySelector(".skip-button");
   const pendingButton = taskPopup.querySelector(".pending-button");
 
   // Populate the popup with task details
@@ -864,16 +865,20 @@ function openTaskPopup(task) {
   // Clear any existing event listeners
   solvedButton.onclick = null;
   pendingButton.onclick = null;
+  skipButton.onclick = null;
 
   // Show the appropriate button based on the task state
-  if (task.state === "solved") {
+  if (task.state === "solved" || task.state === "skipped") {
     solvedButton.style.display = "none";
+    skipButton.style.display = "none";
     pendingButton.style.display = "block";
     pendingButton.onclick = () => markAsPending(task.task);
   } else {
     solvedButton.style.display = "block";
+    skipButton.style.display = "block";
     pendingButton.style.display = "none";
     solvedButton.onclick = () => markAsSolved(task.task);
+    skipButton.onclick = () => markAsSkipped(task.task);
   }
 
   // Display the popup
@@ -904,7 +909,23 @@ async function markAsSolved(taskName) {
     console.error("Error marking as solved:", error);
   }
 }
+async function markAsSkipped(taskName) {
+  console.log(`Marking ${taskName} as skipped...`);
+  try {
+    const response = await fetch(`/skip_task/${taskName}`, {
+      method: "POST",
+    });
 
+    const data = await response.json();
+    console.log(data.message);
+
+    closeTaskPopup(); // Close the popup
+    fetchTasks(); // Refresh the list
+    console.log();
+  } catch (error) {
+    console.error("Error marking as skipped:", error);
+  }
+}
 async function markAsPending(taskName) {
   console.log(`Marking ${taskName} as pending...`);
   try {

@@ -850,7 +850,49 @@ def solve_task(task_name):
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error updating task'})
+@app.route('/skip_task/<task_name>', methods=['POST'])
+def skip_task(task_name):
+    global bird_job, code1, code2, code3, code4, code5, sequence, codesCorrect
+    file_path = os.path.join(current_dir, 'json', 'tasks.json')
 
+    try:
+        with open(file_path, 'r+') as file:
+            tasks = json.load(file)
+
+        for task in tasks:
+            if task['task'] == task_name:
+                task['state'] = 'skipped'
+        if task_name == "Wastafel-sleutel":
+            print("skipped!")
+        elif task_name == "flowers":
+            code1 = True
+            codesCorrect += 1
+        elif task_name == "kite-count":
+            code2 = True
+            codesCorrect += 1
+        elif task_name == "number-feel":
+            code3 = True
+            codesCorrect += 1
+        elif task_name == "fence-decrypt":
+            code4 = True
+            codesCorrect += 1
+        if code1 and code2 and code3 and code4 and code5:
+            print("executed")
+            pi3.exec_command('mpg123 -a hw:0,0 Music/schuur_open.mp3')
+            pi3.exec_command('raspi-gpio set 16 op dh')
+            code1 = False
+            code2 = False
+            code3 = False
+            code4 = False
+            code5 = False
+        with open(file_path, 'w') as file:
+            json.dump(tasks, file, indent=4)
+
+        # You can add any additional logic here for handling skipped tasks if needed.
+
+        return jsonify({'message': 'Task skipped successfully'})
+    except (FileNotFoundError, json.JSONDecodeError):
+        return jsonify({'message': 'Error skipping task'})
 def cause_shortcircuit():
     return "shortcircuited"
 @app.route('/pend_task/<task_name>', methods=['POST'])
