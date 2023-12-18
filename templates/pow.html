@@ -23,7 +23,7 @@
     <!-- nav -->
     <nav class="important-controls">
         <div class="time-elapsed">
-            <p>Elapsed</p>
+            <p>Verstreken</p>
             <p id="time-played">00:00</p>
         </div>
 
@@ -35,7 +35,7 @@
         </div>
 
         <div class="time-remaining">
-            <p>Remaining</p>
+            <p>Resterend</p>
             <p id="time-left">60:00</p>
         </div>
     </nav>
@@ -47,11 +47,11 @@
 
             <h2>Media</h2>
             <div>
-                <button id="select-file-button" class="button-style">Select Song</button>
-                <button onClick="openMediaControlPage()" class="button-style">Control media</button>
-                <button id="stop-music-button" class="button-style">Force stop music</button>
-                <button id="fade-out-music-button" class="button-style">Fade out background before hint</button>
-                <button id="fade-in-music-button" class="button-style">Fade in background after hint</button>
+                <button id="select-file-button" class="button-style">Selecteer nummer</button>
+                <button onClick="openMediaControlPage()" class="button-style">Beheer media</button>
+                <button id="stop-music-button" class="button-style">Stop ALLE muziek</button>
+                <button id="fade-out-music-button" class="button-style">Maak muziek zachter voor hint</button>
+                <button id="fade-in-music-button" class="button-style">Maak muziek harder na hint</button>
                 <p id="music-list">
                     Music files will be dynamically added here
                 </p>
@@ -66,27 +66,27 @@
         <article class="time">
             <button class="close-time close"><img src="static/img/abort.svg" alt="Close button"></button>
 
-            <h2>Time controls</h2>
+            <h2>Tijd beheren</h2>
 
             <div class="time-display">
 
                 <div class="timer">
-                    <p>Played<strong id="time-played">00:00</strong></p>
-                    <p>Left: <strong id="time-left">60:00</strong></p>
+                    <p>Gespeeld: <strong id="time-played">00:00</strong></p>
+                    <p>Over: <strong id="time-left">60:00</strong></p>
                 </div>
                 
                 <div class="speed-display">
-                    <p id="speed-display">Speed: 1x</p>
+                    <p id="speed-display">Snelheid: 1x</p>
                 </div>
             </div>
 
             <div class="time-controls">
                 <div class="speed-up-slow-down">
-                    <button id="speed-up-button" class="button-style main-button">Speed Up</button>
-                    <button id="slow-down-button" class="button-style main-button">Slow Down</button>
+                    <button id="speed-up-button" class="button-style main-button">Versnellen</button>
+                    <button id="slow-down-button" class="button-style main-button">Vertragen</button>
                 </div>
                 <div class="reset-speed">
-                    <button id="reset-button" class="button-style main-button">Reset Speed</button>
+                    <button id="reset-button" class="button-style main-button">Terug naar 1x</button>
                 </div>
             </div>
         </article>
@@ -136,7 +136,7 @@
                 <option value="adults">Volwassenen</option>
                 <option value="kids">Kinderen</option>
             </select>
-            <button id="prepare-game-modal-button" class="button-style">Prepare game</button>
+            <button id="prepare-game-modal-button" class="button-style">Spel voorbereiden</button>
         </div>
     </div>
     <!-- game control -->
@@ -147,22 +147,22 @@
             <h2>Game controls</h2>
 
             <div class="game-buttons">
-                <button id="start-game-button" class="button-style">Start game</button>
-                <button id="snooze-game-button" class="button-style">Snooze game</button>
-                <button id="prepare-game-button" class="button-style">Prepare game</button>
+                <button id="start-game-button" class="button-style">Spel starten</button>
+                <button id="snooze-game-button" class="button-style">Kamer afsluiten</button>
+                <button id="prepare-game-button" class="button-style">Spel voorbereiden</button>
                 <!-- <button id="pause-button"><img class="icon" src="static/img/pause.svg" alt="Pause game button"></button>
                 <button id="continue-button" style="display: none;"><img src="static/img/pause.svg" alt="Pause game button"></button> -->
-                <button class=" abort-button button-style">Abort game</button>
+                <button class=" abort-button button-style">Spel stoppen</button>
 
             </div>
 
             <div class="abort hidden">
-                <p>Are you sure you want to abort the game?</p>
+                <p>Weet je ZEKER dat je het spel wilt stoppen? Doe dit pas als allerlaatste oplossing als de kamer gespeeld wordt. Bel bij problemen eerst beheerder.</p>
 
-                <button id="end-game-button" class="button-style">Yes, abort game</button>
+                <button id="end-game-button" class="button-style">Ja, ik weet het zeker</button>
             </div>
 
-            <p class="confirmation hidden">Game aborted</p>
+            <p class="confirmation hidden">Spel gestopt.</p>
         </article>
     </section>
 
@@ -176,7 +176,7 @@
             <div class="task-control-container">
                 <p class="task-description"></p>
     
-                <p class="current-state">Currently: <strong></strong></p>
+                <p class="current-state">Momenteel: <strong></strong></p>
     
                 <div class="button-container">
                     <button class="button-style solved-button">Solve</button>
@@ -189,7 +189,7 @@
 
     <!-- wake button na snooze -->
     <nav id="nav-snooze-status"></nav>
-    <button id="wake-button" class="button-style" style="display: none;">Wake</button>
+    <button id="wake-button" class="button-style" style="display: none;">Wakker maken</button>
     <section class="control-container">
 
         <div id="prepare-result" class="hidden">
@@ -221,11 +221,11 @@
         </ul>
     </div>
     <section class="tasks">
-        <h2>Tasks</h2>
+        <h2>Puzzels</h2>
 
         <div id="task-list"></div>        
 
-        <button id="add-task-button" class="button-style">Add Task</button>
+        <button id="add-task-button" class="button-style">Voeg puzzel toe</button>
 
         <!-- Modal -->
         <div id="task-modal" class="modal">
@@ -238,7 +238,7 @@
                 <button id="save-task-button" class="button-style">Save Task</button>
             </div>
         </div>
-        <button id="remove-task-button" class="button-style">Remove Task</button>
+        <button id="remove-task-button" class="button-style">Verwijder puzzel</button>
 
         <!-- Modal for Task Removal -->
         <div id="remove-modal" class="modal">
