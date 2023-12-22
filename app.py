@@ -28,6 +28,7 @@ pi3 = None
 romy = True
 last_keypad_code = None
 aborted = False
+player_type = None
 fade_duration = 3  # Fade-out duration in seconds
 fade_interval = 0.1  # Interval between volume adjustments in seconds
 fade_steps = int(fade_duration / fade_interval)  # Number of fade steps
@@ -849,7 +850,49 @@ def solve_task(task_name):
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error updating task'})
+@app.route('/skip_task/<task_name>', methods=['POST'])
+def skip_task(task_name):
+    global bird_job, code1, code2, code3, code4, code5, sequence, codesCorrect
+    file_path = os.path.join(current_dir, 'json', 'tasks.json')
 
+    try:
+        with open(file_path, 'r+') as file:
+            tasks = json.load(file)
+
+        for task in tasks:
+            if task['task'] == task_name:
+                task['state'] = 'skipped'
+        if task_name == "Wastafel-sleutel":
+            print("skipped!")
+        elif task_name == "flowers":
+            code1 = True
+            codesCorrect += 1
+        elif task_name == "kite-count":
+            code2 = True
+            codesCorrect += 1
+        elif task_name == "number-feel":
+            code3 = True
+            codesCorrect += 1
+        elif task_name == "fence-decrypt":
+            code4 = True
+            codesCorrect += 1
+        if code1 and code2 and code3 and code4 and code5:
+            print("executed")
+            pi3.exec_command('mpg123 -a hw:0,0 Music/schuur_open.mp3')
+            pi3.exec_command('raspi-gpio set 16 op dh')
+            code1 = False
+            code2 = False
+            code3 = False
+            code4 = False
+            code5 = False
+        with open(file_path, 'w') as file:
+            json.dump(tasks, file, indent=4)
+
+        # You can add any additional logic here for handling skipped tasks if needed.
+
+        return jsonify({'message': 'Task skipped successfully'})
+    except (FileNotFoundError, json.JSONDecodeError):
+        return jsonify({'message': 'Error skipping task'})
 def cause_shortcircuit():
     return "shortcircuited"
 @app.route('/pend_task/<task_name>', methods=['POST'])
@@ -1155,13 +1198,16 @@ def lock_entrance_door():
     ssh.exec_command("raspi-gpio set 17 dl")
     return "locked door"
 def control_maglock():
-    global squeak_job, should_balls_drop
+    global squeak_job, should_balls_drop, player_type
     maglock = request.form.get('maglock')
     action = request.form.get('action')
-    
     if maglock == "entrance-door-lock":
         if action == "locked":
-            pi3.exec_command("raspi-gpio set 25 op dl")
+            if player_type == 'adults':
+                print("adults")
+            elif player_type == 'kids':
+                print('kids')
+            #pi3.exec_command("raspi-gpio set 25 op dl")
             return 'Maglock entrance-door-lock is now locked'
         elif action == "unlocked":
             pi3.exec_command("raspi-gpio set 25 op dh")
@@ -1740,7 +1786,7 @@ def start_mqtt():
     ssh.exec_command('python mqtt.py')
 @app.route('/prepare', methods=['POST'])
 def prepare_game():
-    global codesCorrect, kraken1, kraken2, kraken3, kraken4, should_hint_shed_play
+    global codesCorrect, kraken1, kraken2, kraken3, kraken4, should_hint_shed_play, player_type
     global code1
     global code2
     global code3
@@ -1757,7 +1803,9 @@ def prepare_game():
     kraken3 = False
     kraken4 = False
     should_hint_shed_play = True
-    pi2.exec_command("raspi-gpio set 4 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 8 op dl \n raspi-gpio set 1 op dl")
+    player_type = request.form.get('playerType')
+    print(player_type)
+    #pi2.exec_command("raspi-gpio set 4 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 8 op dl \n raspi-gpio set 1 op dl")
     print("Preparing game...")  # Add this line for debugging
     # Perform the checks and generate the result message
     game_status = get_game_status()

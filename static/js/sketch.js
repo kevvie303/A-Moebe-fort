@@ -854,6 +854,7 @@ function openTaskPopup(task) {
   const taskDescription = taskPopup.querySelector(".task-description");
   const currentState = taskPopup.querySelector(".current-state strong");
   const solvedButton = taskPopup.querySelector(".solved-button");
+  const skipButton = taskPopup.querySelector(".skip-button");
   const pendingButton = taskPopup.querySelector(".pending-button");
 
   // Populate the popup with task details
@@ -864,16 +865,20 @@ function openTaskPopup(task) {
   // Clear any existing event listeners
   solvedButton.onclick = null;
   pendingButton.onclick = null;
+  skipButton.onclick = null;
 
   // Show the appropriate button based on the task state
-  if (task.state === "solved") {
+  if (task.state === "solved" || task.state === "skipped") {
     solvedButton.style.display = "none";
+    skipButton.style.display = "none";
     pendingButton.style.display = "block";
     pendingButton.onclick = () => markAsPending(task.task);
   } else {
     solvedButton.style.display = "block";
+    skipButton.style.display = "block";
     pendingButton.style.display = "none";
     solvedButton.onclick = () => markAsSolved(task.task);
+    skipButton.onclick = () => markAsSkipped(task.task);
   }
 
   // Display the popup
@@ -904,7 +909,23 @@ async function markAsSolved(taskName) {
     console.error("Error marking as solved:", error);
   }
 }
+async function markAsSkipped(taskName) {
+  console.log(`Marking ${taskName} as skipped...`);
+  try {
+    const response = await fetch(`/skip_task/${taskName}`, {
+      method: "POST",
+    });
 
+    const data = await response.json();
+    console.log(data.message);
+
+    closeTaskPopup(); // Close the popup
+    fetchTasks(); // Refresh the list
+    console.log();
+  } catch (error) {
+    console.error("Error marking as skipped:", error);
+  }
+}
 async function markAsPending(taskName) {
   console.log(`Marking ${taskName} as pending...`);
   try {
@@ -1141,62 +1162,88 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 $(document).ready(function () {
-  var updateStatusInterval = setInterval(updateRetrieverStatus, 1000); // Name the interval variable updateStatusInterval
+  var prepareButton = $("#prepare-game-button");
+  var playerTypeModal = $("#playerTypeModal");
+  var prepareGameModalButton = $("#prepare-game-modal-button");
+  var updateStatusInterval = setInterval(updateRetrieverStatus, 1000);
   var updatePlayStatus;
   var updateWakeStatus;
-  var prepareButton = $("#prepare-game-button");
   var prepareResult = $("#prepare-result");
   var prepareStatus = $("#prepare-status");
   var resultsSection = $("#results-section");
 
+  // Show the player type modal when the "Prepare game" button is clicked
+  prepareButton.on("click", function () {
+      playerTypeModal.show();
+  });
+
+  // Close the modal if the close button or outside the modal is clicked
+  $(".close").on("click", function () {
+      playerTypeModal.hide();
+  });
+
+  // Handle the "Prepare game" button inside the modal
+  prepareGameModalButton.on("click", function () {
+      var selectedPlayerType = $("#player-type").val();
+      playerTypeModal.hide(); // Close the modal
+
+      // Only proceed with preparation if a player type is selected
+      if (selectedPlayerType) {
+          performPreparation(selectedPlayerType);
+      } else {
+          alert("Please select a player type.");
+      }
+  });
+
   // Function to perform the preparation steps
-  function performPreparation() {
-    prepareButton.hide();
-    prepareResult.show();
-    $(".tasks, .lock-status, .pin-info, #reset-list-container").hide();
-    prepareStatus.html("Preparing...");
-    clearInterval(updateStatusInterval);
-    updatePlayStatus = setInterval(updatePlayingStatus, 1000);
-    $.ajax({
-      type: "POST",
-      url: "/prepare",
-      success: function (response) {
-        prepareStatus.html(
-          "Prepared - Status: OK. Game will start when door is open or start game has been clicked"
-        );
+  function performPreparation(playerType) {
+      prepareButton.hide();
+      prepareResult.show();
+      $(".tasks, .lock-status, .pin-info, #reset-list-container").hide();
+      prepareStatus.html("Preparing...");
+      clearInterval(updateStatusInterval);
+      updatePlayStatus = setInterval(updatePlayingStatus, 1000);
 
-        // Debugging: Output the response.message to the console
-        console.log(response.message);
+      // Use the playerType variable in your preparation logic
+      $.ajax({
+          type: "POST",
+          url: "/prepare",
+          data: { playerType: playerType },
+          success: function (response) {
+              prepareStatus.html(
+                  "Prepared - Status: OK. Game will start when door is open or start game has been clicked"
+              );
 
-        resultsSection.empty();
+              // Debugging: Output the response.message to the console
+              console.log(response.message);
 
-        // Loop through the JSON data and create a neat display
-        // Loop through the JSON data and create a neat display
-        for (var device in response.message) {
-          var deviceStatus = response.message[device];
-          var deviceDiv = $("<div>").addClass("device-status"); // Apply the centered-text class
-          var header = $("<h3>").text(device);
-          deviceDiv.append(header);
+              resultsSection.empty();
 
-          var statusContainer = $("<div>").addClass("prepare-status-container"); // Create a container for status elements
+              // Loop through the JSON data and create a neat display
+              for (var device in response.message) {
+                  var deviceStatus = response.message[device];
+                  var deviceDiv = $("<div>").addClass("device-status");
+                  var header = $("<h3>").text(device);
+                  deviceDiv.append(header);
 
-          for (var script in deviceStatus) {
-            var status = deviceStatus[script];
-            var statusText = status ? "Running" : "Not Running";
-            var scriptDiv = $("<div>").addClass("script-status"); // Apply the centered-text class
-            scriptDiv.html(`<p>${script}: ${statusText}</p`);
-            statusContainer.append(scriptDiv);
-          }
+                  var statusContainer = $("<div>").addClass("prepare-status-container");
 
-          // Append the status container under the deviceDiv
-          deviceDiv.append(statusContainer);
-          resultsSection.append(deviceDiv);
-        }
-      },
-      error: function () {
-        prepareStatus.html("Error occurred during preparation.");
-      },
-    });
+                  for (var script in deviceStatus) {
+                      var status = deviceStatus[script];
+                      var statusText = status ? "Running" : "Not Running";
+                      var scriptDiv = $("<div>").addClass("script-status");
+                      scriptDiv.html(`<p>${script}: ${statusText}</p`);
+                      statusContainer.append(scriptDiv);
+                  }
+
+                  deviceDiv.append(statusContainer);
+                  resultsSection.append(deviceDiv);
+              }
+          },
+          error: function () {
+              prepareStatus.html("Error occurred during preparation.");
+          },
+      });
   }
   function updateRetrieverStatus() {
     console.log("hi");
@@ -1234,9 +1281,6 @@ $(document).ready(function () {
         $("#prepare-game-button").show();
         $("#prepare-result").hide();
     }
-  });
-  prepareButton.click(function () {
-    performPreparation(); // Trigger the preparation function on button click
   });
 });
 
@@ -1333,30 +1377,39 @@ function hideResetList() {
 
   // Function to display the checklist
   function displayChecklist(checklist) {
-      const resetList = document.getElementById('reset-list');
-      resetList.innerHTML = ''; // Clear existing checklist items
+    const resetList = document.getElementById('reset-list');
+    resetList.innerHTML = ''; // Clear existing checklist items
 
-      checklist.forEach(item => {
-          const listItem = document.createElement('li');
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.id = item.task.replace(/\s/g, '');
-          checkbox.checked = item.completed;
+    checklist.forEach(item => {
+        const listItem = document.createElement('li');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = item.task.replace(/\s/g, '');
+        checkbox.checked = item.completed;
 
-          const label = document.createElement('label');
-          label.textContent = item.task;
-          label.setAttribute('for', checkbox.id);
+        const label = document.createElement('label');
+        label.textContent = item.task;
+        label.setAttribute('for', checkbox.id);
 
-          listItem.appendChild(checkbox);
-          listItem.appendChild(label);
+        // Apply line-through style if the task is completed
+        if (item.completed) {
+            label.style.textDecoration = 'line-through';
+        }
 
-          resetList.appendChild(listItem);
+        listItem.appendChild(checkbox);
+        listItem.appendChild(label);
 
-          checkbox.addEventListener('change', async () => {
-              const isChecked = checkbox.checked;
-              const task = label.textContent.trim();
-              await sendLockRequest(task, isChecked);
-          });
-      });
-  }
+        resetList.appendChild(listItem);
+
+        checkbox.addEventListener('change', async () => {
+            if (!programmaticChange) {
+                programmaticChange = true;
+                const isChecked = checkbox.checked;
+                const task = label.textContent.trim();
+                await sendLockRequest(task, isChecked);
+                programmaticChange = false;
+            }
+        });
+    });
+}
 });
