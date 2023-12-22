@@ -294,10 +294,6 @@ states
   color: var(--unlocked);
 }
 
-.skip {
-  color: var(--skip);
-}
-
 .pending {
   color: var(--pending);
 }
@@ -1117,53 +1113,6 @@ media queries
   --icon-md: 24px;
   --icon-lg: 40px;
   --icon-xl: 48px;
-}
-
-.close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  color: #aaa;
-  font-size: 24px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-}
-
-/* Add hover and focus styles for the modal content */
-.modal-content:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* Additional styles for the close button */
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-/* Add styles for the select and button in the modal content */
-#player-type {
-  margin-bottom: 10px;
-  padding: 8px;
-}
-
-#prepare-game-modal-button {
-  background-color: #4caf50;
-  color: white;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-}
-
-#prepare-game-modal-button:hover {
-  background-color: #45a049;
 }
 
 footer {
