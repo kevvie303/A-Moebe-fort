@@ -2,7 +2,13 @@
 
 footer {
   text-align: center;
-  font-style: italic;
-  margin-bottom: 15px;
-  margin-top: auto;
+  background: var(--secondary-background-color);
+  padding: 0.5em 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1;
+  a:hover {
+    text-decoration: underline;
+  }
 }
