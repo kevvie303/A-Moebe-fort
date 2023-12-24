@@ -133,17 +133,7 @@
             </div>
         </article>
     </section>
-    <div id="playerTypeModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <label for="player-type">Gaan kinderen of volwassen spelen:</label>
-            <select id="player-type" name="player-type">
-                <option value="adults">Volwassenen</option>
-                <option value="kids">Kinderen</option>
-            </select>
-            <button id="prepare-game-modal-button" class="button-style">Prepare game</button>
-        </div>
-    </div>
+
     <!-- game control -->
     <section class="game-hidden hidden-popup hidden">
         <article class="game-controls popup">
@@ -166,6 +156,18 @@
             </div>
 
             <p class="confirmation hidden">Game aborted</p>
+        </article>
+    </section>
+
+    <section id="playerTypeModal" class="prepare-hidden hidden-popup hidden modal">
+        <article class="modal-content popup">
+            <span class="close">&times;</span>
+            <label for="player-type">Gaan kinderen of volwassen spelen:</label>
+            <select id="player-type" name="player-type">
+                <option value="adults">Volwassenen</option>
+                <option value="kids">Kinderen</option>
+            </select>
+            <button id="prepare-game-modal-button" class="button-style">Prepare game</button>
         </article>
     </section>
 
