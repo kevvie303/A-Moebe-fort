@@ -6,14 +6,15 @@ buttons
 #######
 */
 
-button {
+button,
+a {
   background: none;
   border: none;
   &:active {
-    border: 1px solid black;
+    border: 2px solid #161616;
   }
   &:focus {
-    border: 2px dotted black;
+    border: 3px solid #161616;
     outline: none;
   }
 }
@@ -24,6 +25,7 @@ button {
   border-radius: 5px;
   color: var(--secondary-text-color);
   align-items: center;
+  width: 150px;
   cursor: pointer;
   background: var(--button-color);
   text-align: center;

@@ -14,7 +14,6 @@
 
     <!-- header -->
     <header class="retriever-logo header-logo">
-        <a href="/" class="back-button"><img src="static/img/back.svg" alt="Go back button"></a>
         <figure class="logo-container">
             <img src="static/img/handcuffs-free-1.svg" alt="Retriever Logo">
         </figure>
@@ -101,22 +100,28 @@
             <table id="status-table">
                 <!-- Table will be populated dynamically -->
             </table>
-            <div class="reboot">
-                <h3>Reboot</h3>
 
-                <div class="pies">
-                    <button id="reboot-pi-mag" class="button-style">Reboot...pi</button>
+            <article class="pi-buttons">
+                <div class="pi-controls">
+                    <div class="reboot">
+                        <h3>Reboot</h3>
+
+                        <div class="pies">
+                            <button id="reboot-pi-mag" class="button-style">Reboot...pi</button>
+                        </div>
+                    </div>
+
+                    <div class="backup">
+                        <h3>Backup</h3>
+
+                        <div class="pies">
+                            <button id="backup-top-pi" class="button-style">Backup...pi</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+                <a href="/list_sensors" class="button-style">Add Sensor</a>
+            </article>
 
-            <div class="backup">
-                <h3>Backup</h3>
-
-                <div class="pies">
-                    <button id="backup-top-pi" class="button-style">Backup...pi</button>
-                </div>
-            </div>
-            <a href="/list_sensors">Add Sensor</a>
             <div class="pi-status">
                  <!-- Updaten van de aanwezige pi's en hun status -->
 
@@ -150,8 +155,6 @@
                 <button id="start-game-button" class="button-style">Start game</button>
                 <button id="snooze-game-button" class="button-style">Snooze game</button>
                 <button id="prepare-game-button" class="button-style">Prepare game</button>
-                <!-- <button id="pause-button"><img class="icon" src="static/img/pause.svg" alt="Pause game button"></button>
-                <button id="continue-button" style="display: none;"><img src="static/img/pause.svg" alt="Pause game button"></button> -->
                 <button class=" abort-button button-style">Abort game</button>
 
             </div>
@@ -211,7 +214,12 @@
 
         <div id="task-list"></div>        
 
-        <button id="add-task-button" class="button-style">Add Task</button>
+        <article class="task-button-container">
+            <button id="add-task-button" class="button-style">Add Task</button>
+            <button id="remove-task-button" class="button-style">Remove Task</button>
+            <button id="edit-task-button" class="button-style">Edit Task</button>
+        </article>
+        
 
         <!-- Modal -->
         <div id="task-modal" class="modal">
@@ -223,8 +231,7 @@
                 <input type="text" id="task-description">
                 <button id="save-task-button" class="button-style">Save Task</button>
             </div>
-        </div>
-        <button id="remove-task-button" class="button-style">Remove Task</button>
+        </div> 
 
         <!-- Modal for Task Removal -->
         <div id="remove-modal" class="modal">
@@ -235,7 +242,7 @@
                 <button id="confirm-remove-button" class="button-style">Confirm Removal</button>
             </div>
         </div>
-        <button id="edit-task-button" class="button-style">Edit Task</button>
+        
         <div id="edit-modal" class="modal">
             <div class="modal-content">
                 <span class="close-edit modal-close">&times;</span>
@@ -346,9 +353,7 @@
     </section>
 
     <footer>
-        <!-- TODO: New svg of pow -->
-        <!-- <img src="static/img/thebrinkescaperooms.svg" alt="The Brink Escaperooms"> -->
-        <a href="index.html">Rooms</a>
+        <a href="/">Kamers</a>
     </footer>
 
     

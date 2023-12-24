@@ -1,6 +1,8 @@
 @import "../helpers/_variables";
 
 nav.important-controls {
+  position: sticky;
+  top: 0;
   display: flex;
   flex-direction: row;
   justify-content: space-around;

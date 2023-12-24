@@ -49,10 +49,6 @@ section.media-hidden {
       text-align: center;
       align-items: center;
       width: 100%;
-      button,
-      a {
-        width: 150px;
-      }
     }
   }
 }
@@ -95,12 +91,6 @@ section.time-hidden {
         display: flex;
         width: fit-content;
       }
-      div.speed-up-slow-down,
-      div.reset-speed {
-        button {
-          width: 150px;
-        }
-      }
     }
   }
 }
@@ -113,15 +103,28 @@ pi
 
 section.pi-hidden {
   article.pi {
-    div.reboot,
-    div.backup {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      div.pies {
+    article.pi-buttons {
+      div.pi-controls {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         gap: 10px;
+        width: 100%;
+        justify-content: center;
+        div.reboot,
+        div.backup {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          width: fit-content;
+          div.pies {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+          }
+        }
+      }
+      a {
+        align-self: center;
       }
     }
   }
@@ -143,9 +146,9 @@ section.game-hidden {
   article.game-controls {
     div.game-buttons {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       gap: 10px;
-      width: 100%;
+      width: fit-content;
       justify-content: center;
     }
     div.abort {
@@ -274,7 +277,7 @@ section.tasks-hidden {
       display: flex;
       flex-direction: column;
       gap: 20px;
-      width: 70%;
+      width: 80%;
       p.current-state {
         display: flex;
         flex-direction: row;

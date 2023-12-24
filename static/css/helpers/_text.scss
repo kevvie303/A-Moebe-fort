@@ -9,7 +9,7 @@ standard styles
 h1,
 h2,
 h3 {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Koulen", sans-serif;
   text-align: center;
 }
 
@@ -37,6 +37,21 @@ input {
   font-size: 16px;
   text-decoration: none;
   color: black;
+}
+
+body.landing-page {
+  header {
+    figure {
+      figcaption {
+        color: var(--secondary-text-color);
+      }
+    }
+  }
+  section.rooms {
+    h2 {
+      color: var(--secondary-text-color);
+    }
+  }
 }
 
 /*
@@ -100,7 +115,14 @@ media queries
     font-size: 28px;
   }
 
-  p {
+  p,
+  label {
     font-size: 18px;
+  }
+
+  footer {
+    a {
+      font-size: 18px;
+    }
   }
 }

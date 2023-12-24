@@ -5,9 +5,9 @@
   --button-color-hover: rgb(70, 132, 190);
   --locked: #de4646;
   --unlocked: #37a835;
-  --pending: #8c8c8c;
-  --text-color: #000000;
-  --secondary-text-color: #ffffff;
+  --pending: #545454;
+  --text-color: #050505;
+  --secondary-text-color: #efefef;
   --sm: 576px;
   --md: 768px;
   --lg: 992px;
@@ -26,9 +26,9 @@
   --button-color-hover: rgb(70, 132, 190);
   --locked: #de4646;
   --unlocked: #37a835;
-  --pending: #8c8c8c;
-  --text-color: #000000;
-  --secondary-text-color: #ffffff;
+  --pending: #545454;
+  --text-color: #050505;
+  --secondary-text-color: #efefef;
   --sm: 576px;
   --md: 768px;
   --lg: 992px;
@@ -48,7 +48,7 @@ standard styles
 h1,
 h2,
 h3 {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Koulen", sans-serif;
   text-align: center;
 }
 
@@ -76,6 +76,13 @@ input {
   font-size: 16px;
   text-decoration: none;
   color: black;
+}
+
+body.landing-page header figure figcaption {
+  color: var(--secondary-text-color);
+}
+body.landing-page section.rooms h2 {
+  color: var(--secondary-text-color);
 }
 
 /*
@@ -126,7 +133,11 @@ media queries
   h3 {
     font-size: 28px;
   }
-  p {
+  p,
+  label {
+    font-size: 18px;
+  }
+  footer a {
     font-size: 18px;
   }
 }
@@ -140,56 +151,55 @@ landing page
   flex-direction: column;
   gap: 20px;
 }
-.landing-page .rooms .retriever-container {
+.landing-page .rooms .krijgsgevangenis-container {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-.landing-page .rooms .retriever-container .retriever-link {
+.landing-page .rooms .krijgsgevangenis-container .krijgsgevangenis-link {
   align-self: center;
   background: var(--secondary-background-color);
   padding: 30px;
   border-radius: 15px;
   width: 80%;
 }
-.landing-page .rooms .retriever-container .retriever-link .preview {
+.landing-page .rooms .krijgsgevangenis-container .krijgsgevangenis-link .preview {
   display: flex;
   justify-content: space-around;
   border-radius: 15px;
   gap: 10px;
 }
-.landing-page .rooms .retriever-container .retriever-link p {
-  align-self: end;
+.landing-page .rooms .krijgsgevangenis-container .krijgsgevangenis-link p {
+  align-self: center;
 }
-.landing-page .rooms .retriever-container .retriever-link p:first-of-type {
+.landing-page .rooms .krijgsgevangenis-container .krijgsgevangenis-link p:first-of-type {
   color: var(--secondary-button-color);
 }
-.landing-page .rooms .retriever-container .retriever-link p:last-of-type {
+.landing-page .rooms .krijgsgevangenis-container .krijgsgevangenis-link p:last-of-type {
   color: var(--primary-button-color);
 }
-.landing-page .rooms .retriever-container .controls {
+.landing-page .rooms .krijgsgevangenis-container .krijgsgevangenis-link:hover {
+  box-shadow: 0px 0px 10px #161616;
+}
+.landing-page .rooms .krijgsgevangenis-container .controls {
   display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: center;
   width: 100%;
 }
-.landing-page .rooms .retriever-container .controls .control {
+.landing-page .rooms .krijgsgevangenis-container .controls .control {
   display: flex;
   flex-direction: row;
   justify-content: center;
   gap: 10px;
   width: 100%;
 }
-.landing-page .rooms .retriever-container .controls .control a,
-.landing-page .rooms .retriever-container .controls .control button {
-  width: 150px;
-}
-.landing-page .rooms .retriever-container .controls .info {
+.landing-page .rooms .krijgsgevangenis-container .controls .info {
   display: flex;
   width: fit-content;
 }
-.landing-page .rooms .retriever-container .controls .info a {
+.landing-page .rooms .krijgsgevangenis-container .controls .info a {
   width: fit-content;
 }
 .landing-page .rooms .media {
@@ -205,17 +215,17 @@ media queries
 #############
 */
 @media (min-width: 576px) {
-  .landing-page .rooms .retriever-container .retriever-link {
+  .landing-page .rooms .krijgsgevangenis-container .krijgsgevangenis-link {
     width: 70%;
   }
-  .landing-page .rooms .retriever-container .retriever-link .preview {
+  .landing-page .rooms .krijgsgevangenis-container .krijgsgevangenis-link .preview {
     justify-content: space-evenly;
     gap: 0;
   }
-  .landing-page .rooms .retriever-container .retriever-link .preview p {
+  .landing-page .rooms .krijgsgevangenis-container .krijgsgevangenis-link .preview p {
     font-size: 18px;
   }
-  .landing-page .rooms .retriever-container .controls a {
+  .landing-page .rooms .krijgsgevangenis-container .controls a {
     width: 20%;
   }
 }
@@ -223,21 +233,18 @@ media queries
   .landing-page .rooms {
     gap: 30px;
   }
-  .landing-page .rooms .retriever-container {
+  .landing-page .rooms .krijgsgevangenis-container {
     gap: 30px;
   }
-  .landing-page .rooms .retriever-container .retriever-link {
+  .landing-page .rooms .krijgsgevangenis-container .krijgsgevangenis-link {
     width: 500px;
   }
-  .landing-page .rooms .retriever-container .controls {
+  .landing-page .rooms .krijgsgevangenis-container .controls {
     gap: 20px;
-  }
-  .landing-page .rooms .retriever-container .controls a {
-    width: 150px;
   }
 }
 @media (min-width: 992px) {
-  .landing-page .rooms .retriever-container .retriever-link .preview p {
+  .landing-page .rooms .krijgsgevangenis-container .krijgsgevangenis-link .preview p {
     font-size: 20px;
   }
 }
@@ -245,16 +252,16 @@ media queries
   .landing-page .rooms {
     gap: 40px;
   }
-  .landing-page .rooms .retriever-container {
+  .landing-page .rooms .krijgsgevangenis-container {
     gap: 40px;
   }
-  .landing-page .rooms .retriever-container .controls {
+  .landing-page .rooms .krijgsgevangenis-container .controls {
     gap: 30px;
   }
-  .landing-page .rooms .retriever-container .controls a {
+  .landing-page .rooms .krijgsgevangenis-container .controls a {
     font-size: 18px;
   }
-  .landing-page .rooms .retriever-container .retriever-link .preview p {
+  .landing-page .rooms .krijgsgevangenis-container .krijgsgevangenis-link .preview p {
     font-size: 20px;
   }
 }
@@ -265,9 +272,9 @@ media queries
   --button-color-hover: rgb(70, 132, 190);
   --locked: #de4646;
   --unlocked: #37a835;
-  --pending: #8c8c8c;
-  --text-color: #000000;
-  --secondary-text-color: #ffffff;
+  --pending: #545454;
+  --text-color: #050505;
+  --secondary-text-color: #efefef;
   --sm: 576px;
   --md: 768px;
   --lg: 992px;
@@ -296,6 +303,7 @@ states
 
 .pending {
   color: var(--pending);
+  font-style: italic;
 }
 
 #time-played {
@@ -386,9 +394,9 @@ main {
   --button-color-hover: rgb(70, 132, 190);
   --locked: #de4646;
   --unlocked: #37a835;
-  --pending: #8c8c8c;
-  --text-color: #000000;
-  --secondary-text-color: #ffffff;
+  --pending: #545454;
+  --text-color: #050505;
+  --secondary-text-color: #efefef;
   --sm: 576px;
   --md: 768px;
   --lg: 992px;
@@ -405,15 +413,18 @@ main {
 buttons
 #######
 */
-button {
+button,
+a {
   background: none;
   border: none;
 }
-button:active {
-  border: 1px solid black;
+button:active,
+a:active {
+  border: 2px solid #161616;
 }
-button:focus {
-  border: 2px dotted black;
+button:focus,
+a:focus {
+  border: 3px solid #161616;
   outline: none;
 }
 
@@ -423,6 +434,7 @@ button:focus {
   border-radius: 5px;
   color: var(--secondary-text-color);
   align-items: center;
+  width: 150px;
   cursor: pointer;
   background: var(--button-color);
   text-align: center;
@@ -446,9 +458,9 @@ button:focus {
   --button-color-hover: rgb(70, 132, 190);
   --locked: #de4646;
   --unlocked: #37a835;
-  --pending: #8c8c8c;
-  --text-color: #000000;
-  --secondary-text-color: #ffffff;
+  --pending: #545454;
+  --text-color: #050505;
+  --secondary-text-color: #efefef;
   --sm: 576px;
   --md: 768px;
   --lg: 992px;
@@ -530,9 +542,9 @@ header.retriever-logo {
   --button-color-hover: rgb(70, 132, 190);
   --locked: #de4646;
   --unlocked: #37a835;
-  --pending: #8c8c8c;
-  --text-color: #000000;
-  --secondary-text-color: #ffffff;
+  --pending: #545454;
+  --text-color: #050505;
+  --secondary-text-color: #efefef;
   --sm: 576px;
   --md: 768px;
   --lg: 992px;
@@ -590,10 +602,6 @@ section.media-hidden article.media div {
   align-items: center;
   width: 100%;
 }
-section.media-hidden article.media div button,
-section.media-hidden article.media div a {
-  width: 150px;
-}
 
 /*
 ####
@@ -629,27 +637,34 @@ section.time-hidden article.time div.time-controls div.reset-speed {
   display: flex;
   width: fit-content;
 }
-section.time-hidden article.time div.time-controls div.speed-up-slow-down button,
-section.time-hidden article.time div.time-controls div.reset-speed button {
-  width: 150px;
-}
 
 /*
 ##
 pi
 ##
 */
-section.pi-hidden article.pi div.reboot,
-section.pi-hidden article.pi div.backup {
+section.pi-hidden article.pi article.pi-buttons div.pi-controls {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
 }
-section.pi-hidden article.pi div.reboot div.pies,
-section.pi-hidden article.pi div.backup div.pies {
+section.pi-hidden article.pi article.pi-buttons div.pi-controls div.reboot,
+section.pi-hidden article.pi article.pi-buttons div.pi-controls div.backup {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: fit-content;
+}
+section.pi-hidden article.pi article.pi-buttons div.pi-controls div.reboot div.pies,
+section.pi-hidden article.pi article.pi-buttons div.pi-controls div.backup div.pies {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+section.pi-hidden article.pi article.pi-buttons a {
+  align-self: center;
 }
 
 .pi-hidden .pi .pi-buttons {
@@ -665,9 +680,9 @@ game
 */
 section.game-hidden article.game-controls div.game-buttons {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 10px;
-  width: 100%;
+  width: fit-content;
   justify-content: center;
 }
 section.game-hidden article.game-controls div.abort p {
@@ -772,7 +787,7 @@ section.tasks-hidden article.task-control div.task-control-container {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 70%;
+  width: 80%;
 }
 section.tasks-hidden article.task-control div.task-control-container p.current-state {
   display: flex;
@@ -841,9 +856,9 @@ section.control-container section.tasks div.modal div.modal-content input[type=t
   --button-color-hover: rgb(70, 132, 190);
   --locked: #de4646;
   --unlocked: #37a835;
-  --pending: #8c8c8c;
-  --text-color: #000000;
-  --secondary-text-color: #ffffff;
+  --pending: #545454;
+  --text-color: #050505;
+  --secondary-text-color: #efefef;
   --sm: 576px;
   --md: 768px;
   --lg: 992px;
@@ -901,6 +916,9 @@ section.control-container section.control {
   background: var(--secondary-background-color);
 }
 section.control-container section.control ul#reset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   list-style: none;
   padding: 0;
   text-align: left;
@@ -924,15 +942,25 @@ section.control-container section.lock-status article.lock-control,
 section.control-container section.lock-status div.status {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
 }
 section.control-container section.tasks div#task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   list-style-type: none;
   text-align: left;
 }
 section.control-container section.tasks div#task-list p {
   display: flex;
   justify-content: space-between;
+  cursor: pointer;
+}
+section.control-container section.tasks article.task-button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
 }
 section.control-container section.locks div.lock {
   display: flex;
@@ -1008,16 +1036,6 @@ media queries
     width: 450px;
     padding: 30px 40px;
   }
-  section.control-container section.locks article.lock-control div.lock,
-  section.control-container section.locks article.lock-control p,
-  section.control-container section.locks div.status div.lock,
-  section.control-container section.locks div.status p,
-  section.control-container section.lock-status article.lock-control div.lock,
-  section.control-container section.lock-status article.lock-control p,
-  section.control-container section.lock-status div.status div.lock,
-  section.control-container section.lock-status div.status p {
-    margin: 0 30px;
-  }
 }
 @media (min-width: 1200px) {
   section.control-container section.locks article.lock-control div.lock div.lock-buttons button.turn-on-button,
@@ -1033,9 +1051,9 @@ media queries
   --button-color-hover: rgb(70, 132, 190);
   --locked: #de4646;
   --unlocked: #37a835;
-  --pending: #8c8c8c;
-  --text-color: #000000;
-  --secondary-text-color: #ffffff;
+  --pending: #545454;
+  --text-color: #050505;
+  --secondary-text-color: #efefef;
   --sm: 576px;
   --md: 768px;
   --lg: 992px;
@@ -1048,6 +1066,8 @@ media queries
 }
 
 nav.important-controls {
+  position: sticky;
+  top: 0;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -1101,9 +1121,9 @@ media queries
   --button-color-hover: rgb(70, 132, 190);
   --locked: #de4646;
   --unlocked: #37a835;
-  --pending: #8c8c8c;
-  --text-color: #000000;
-  --secondary-text-color: #ffffff;
+  --pending: #545454;
+  --text-color: #050505;
+  --secondary-text-color: #efefef;
   --sm: 576px;
   --md: 768px;
   --lg: 992px;

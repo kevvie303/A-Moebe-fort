@@ -46,6 +46,9 @@ section.control-container {
     padding: 20px 30px;
     background: var(--secondary-background-color);
     ul#reset-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
       list-style: none;
       padding: 0;
       text-align: left;
@@ -80,17 +83,27 @@ section.control-container {
     div.status {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 5px;
     }
   }
   section.tasks {
     div#task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
       list-style-type: none;
       text-align: left;
       p {
         display: flex;
         justify-content: space-between;
+        cursor: pointer;
       }
+    }
+    article.task-button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
     }
   }
   section.locks {
@@ -191,7 +204,7 @@ media queries
       div.status {
         div.lock,
         p {
-          margin: 0 30px;
+          // margin: 0 30px;
         }
       }
     }
