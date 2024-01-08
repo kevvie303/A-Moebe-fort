@@ -20,12 +20,12 @@ load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
 #command = 'python relay_control.py'
-loadMqtt = False
+loadMqtt = True
 ssh = None
 stdin = None
 pi2 = None
 pi3 = None
-romy = True
+romy = False
 last_keypad_code = None
 aborted = False
 player_type = None
@@ -34,11 +34,7 @@ fade_interval = 0.1  # Interval between volume adjustments in seconds
 fade_steps = int(fade_duration / fade_interval)  # Number of fade steps
 sensor_1_triggered = False
 sensor_2_triggered = False
-ip1home = '192.168.1.19'
-ip1brink = '192.168.0.104'
-ip2home = '192.168.1.28'
-ip2brink = '192.168.0.105'
-ip3brink = '192.168.0.114'
+ip_guard_room = '192.168.50.218'
 sequence = 0
 should_sound_play = True
 should_balls_drop = True
@@ -68,7 +64,7 @@ log.setLevel(logging.ERROR)
 def turn_on_api():
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(ip1brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+    ssh.connect(ip_guard_room, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
     ssh.exec_command('nohup sudo -E python status.py > /dev/null 2>&1 &')
     establish_ssh_connection()
 
@@ -77,21 +73,21 @@ def establish_ssh_connection():
     if ssh is None or not ssh.get_transport().is_active():
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(ip1brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+        ssh.connect(ip_guard_room, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
         ssh.exec_command('pkill -f mqtt.py')
-    global pi2
-    if pi2 is None or not pi2.get_transport().is_active():
-        pi2 = paramiko.SSHClient()
-        pi2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        pi2.connect(ip2brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-        pi2.exec_command('pkill -f mqtt.py')
+    #global pi2
+    #if pi2 is None or not pi2.get_transport().is_active():
+       # pi2 = paramiko.SSHClient()
+       # pi2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        #pi2.connect(ip2brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+        #pi2.exec_command('pkill -f mqtt.py')
 
-    global pi3
-    if pi3 is None or not pi3.get_transport().is_active():
-        pi3 = paramiko.SSHClient()
-        pi3.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        pi3.connect(ip3brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-        pi3.exec_command('pkill -f mqtt.py \n python status.py')
+    #global pi3
+    #if pi3 is None or not pi3.get_transport().is_active():
+     #   pi3 = paramiko.SSHClient()
+      #  pi3.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+       # pi3.connect(ip3brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+        #pi3.exec_command('pkill -f mqtt.py \n python status.py')
 
 def monitor_ssh_connections():
     while True:
@@ -102,7 +98,7 @@ def monitor_ssh_connections():
 # Start the monitoring thread
 monitor_thread = threading.Thread(target=monitor_ssh_connections)
 monitor_thread.daemon = True  # Make the thread a daemon to exit when the main program exits
-broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
+broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
 
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
@@ -293,6 +289,8 @@ def check_rule(item_name):
                 return True
             elif item_type == "maglock" and item["state"] == "Locked":
                 return True
+            elif item_type == "button" and item["state"] == "Locked":
+                return True
             else:
                 return False
         else:
@@ -398,13 +396,13 @@ def start_scripts():
     sensor_thread.start()
     monitor_thread.start()
     update_game_status('awake')
-    pi2.exec_command('python mqtt.py')
+    #pi2.exec_command('python mqtt.py')
     time.sleep(0.5)
-    pi2.exec_command('nohup python status.py > /dev/null 2>&1 &')    
+    #pi2.exec_command('nohup python status.py > /dev/null 2>&1 &')    
     time.sleep(0.5)
-    pi3.exec_command('python mqtt.py')
+    #pi3.exec_command('python mqtt.py')
     time.sleep(0.5)
-    pi3.exec_command('nohup python status.py > /dev/null 2>&1 &')
+    #pi3.exec_command('nohup python status.py > /dev/null 2>&1 &')
     time.sleep(0.5)
     ssh.exec_command('python mqtt.py')
     #scheduler.add_job(monitor_sensor_statuses, 'interval', seconds=0.1)
@@ -1411,7 +1409,7 @@ def add_sensor():
         # Save the updated sensor data to the JSON file
         with open('json/sensor_data.json', 'w') as json_file:
             json.dump(sensors, json_file, indent=4)
-        ssh_sessions = [ssh, pi2, pi3]
+        ssh_sessions = [ssh]
 
         success_message = "Script sent successfully to the following IP addresses:<br>"
 
@@ -1537,7 +1535,7 @@ def reboot_mag_pi():
     time.sleep(40)
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(ip1brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+    #ssh.connect(ip1brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
     time.sleep(2)
     ssh.exec_command('python status.py')
     #stdin = ssh.exec_command(command)[0]
@@ -1555,7 +1553,7 @@ def reboot_music_pi():
     time.sleep(40)
     pi2 = paramiko.SSHClient()
     pi2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    pi2.connect(ip2brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+    #pi2.connect(ip2brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
     time.sleep(3)
     pi2.exec_command('python status.py')
     #pi2.exec_command('python sensor_board.py')
