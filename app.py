@@ -35,6 +35,7 @@ fade_steps = int(fade_duration / fade_interval)  # Number of fade steps
 sensor_1_triggered = False
 sensor_2_triggered = False
 ip_guard_room = '192.168.50.218'
+ip_corridor = '192.168.50.197'
 sequence = 0
 should_sound_play = True
 should_balls_drop = True
@@ -75,12 +76,12 @@ def establish_ssh_connection():
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(ip_guard_room, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
         ssh.exec_command('pkill -f mqtt.py')
-    #global pi2
-    #if pi2 is None or not pi2.get_transport().is_active():
-       # pi2 = paramiko.SSHClient()
-       # pi2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        #pi2.connect(ip2brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-        #pi2.exec_command('pkill -f mqtt.py')
+    global pi2
+    if pi2 is None or not pi2.get_transport().is_active():
+        pi2 = paramiko.SSHClient()
+        pi2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        pi2.connect(ip_corridor, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+        pi2.exec_command('pkill -f mqtt.py')
 
     #global pi3
     #if pi3 is None or not pi3.get_transport().is_active():
@@ -1213,12 +1214,40 @@ def control_maglock():
             if game_status == {'status': 'prepared'}:
                 start_timer()
             return 'Maglock entrance-door-lock is now unlocked'
+    elif maglock == "zwaailamp-groen-kids":
+        if action == "locked":
+            pi2.exec_command("raspi-gpio set 21 op dl")
+            return 'Zwaailamp aan'
+        elif action == "unlocked":
+            pi2.exec_command("raspi-gpio set 21 op dh")
+            return 'Zwaailamp uit'
+    elif maglock == "zwaailamp-rood-kids":
+        if action == "locked":
+            pi2.exec_command("raspi-gpio set 27 op dl")
+            return 'Zwaailamp aan'
+        elif action == "unlocked":
+            pi2.exec_command("raspi-gpio set 27 op dh")
+            return 'Zwaailamp uit'
+    elif maglock == "zwaailamp-groen-volwassen":
+        if action == "locked":
+            pi2.exec_command("raspi-gpio set 13 op dl")
+            return 'Zwaailamp aan'
+        elif action == "unlocked":
+            pi2.exec_command("raspi-gpio set 13 op dh")
+            return 'Zwaailamp uit'
+    elif maglock == "zwaailamp-rood-volwassen":
+        if action == "locked":
+            pi2.exec_command("raspi-gpio set 4 op dl")
+            return 'Zwaailamp aan'
+        elif action == "unlocked":
+            pi2.exec_command("raspi-gpio set 4 op dh")
+            return 'Zwaailamp uit'
     elif maglock == "doghouse-lock":
         if action == "locked":
-            pi3.exec_command("raspi-gpio set 4 op dl")
+            pi3.exec_command("raspi-gpio set 13 op dl")
             return 'Maglock doghouse-lock is now locked'
         elif action == "unlocked":
-            pi3.exec_command("raspi-gpio set 4 op dh")
+            pi3.exec_command("raspi-gpio set 13 op dh")
             return 'Maglock doghouse-lock is now unlocked'
     elif maglock == "shed-door-lock":
         if action == "locked":

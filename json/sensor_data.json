@@ -18,6 +18,6 @@
         "type": "button",
         "pin": 16,
         "pi": "guard_room_pi",
-        "state": "Triggered"
+        "state": "Not Triggered"
     }
 ]
