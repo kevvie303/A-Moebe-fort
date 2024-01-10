@@ -1,0 +1,107 @@
+@import "../helpers/_variables";
+
+/*
+######
+states
+######
+*/
+
+.locked,
+.overdue {
+  color: var(--locked);
+}
+
+.unlocked,
+.solved {
+  color: var(--unlocked);
+}
+
+.pending {
+  color: var(--pending);
+  font-style: italic;
+}
+
+#time-played {
+  color: var(--locked);
+}
+
+#time-left {
+  color: var(--unlocked);
+}
+
+.hidden {
+  display: none;
+}
+
+.shown {
+  display: block;
+  opacity: 1;
+}
+
+.message-shown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/*
+###############
+standard styles
+###############
+*/
+
+*,
+html,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+figure {
+  margin-bottom: 0;
+}
+
+ul {
+  list-style-type: none;
+}
+
+img {
+  height: auto;
+  max-width: 100%;
+  width: auto;
+}
+
+body {
+  background: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+main {
+  overflow-x: hidden;
+}
+
+/*
+  #############
+  media queries
+  #############
+  */
+
+@media (min-width: 576px) {
+  body {
+    gap: 30px;
+  }
+}
+
+@media (min-width: 768px) {
+  body {
+    gap: 40px;
+  }
+}

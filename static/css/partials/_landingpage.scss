@@ -10,12 +10,12 @@ landing page
     flex-direction: column;
     gap: 20px;
 
-    .retriever-container {
+    .krijgsgevangenis-container {
       display: flex;
       flex-direction: column;
       gap: 20px;
 
-      .retriever-link {
+      .krijgsgevangenis-link {
         align-self: center;
         background: var(--secondary-background-color);
         padding: 30px;
@@ -30,7 +30,7 @@ landing page
         }
 
         p {
-          align-self: end;
+          align-self: center;
 
           &:first-of-type {
             color: var(--secondary-button-color);
@@ -39,6 +39,9 @@ landing page
           &:last-of-type {
             color: var(--primary-button-color);
           }
+        }
+        &:hover {
+          box-shadow: 0px 0px 10px #161616;
         }
       }
 
@@ -55,11 +58,6 @@ landing page
           justify-content: center;
           gap: 10px;
           width: 100%;
-
-          a,
-          button {
-            width: 150px;
-          }
         }
 
         .info {
@@ -90,8 +88,8 @@ media queries
 @media (min-width: 576px) {
   .landing-page {
     .rooms {
-      .retriever-container {
-        .retriever-link {
+      .krijgsgevangenis-container {
+        .krijgsgevangenis-link {
           width: 70%;
           .preview {
             justify-content: space-evenly;
@@ -115,16 +113,13 @@ media queries
   .landing-page {
     .rooms {
       gap: 30px;
-      .retriever-container {
+      .krijgsgevangenis-container {
         gap: 30px;
-        .retriever-link {
+        .krijgsgevangenis-link {
           width: 500px;
         }
         .controls {
           gap: 20px;
-          a {
-            width: 150px;
-          }
         }
       }
     }
@@ -134,8 +129,8 @@ media queries
 @media (min-width: 992px) {
   .landing-page {
     .rooms {
-      .retriever-container {
-        .retriever-link {
+      .krijgsgevangenis-container {
+        .krijgsgevangenis-link {
           .preview {
             p {
               font-size: 20px;
@@ -151,7 +146,7 @@ media queries
   .landing-page {
     .rooms {
       gap: 40px;
-      .retriever-container {
+      .krijgsgevangenis-container {
         gap: 40px;
         .controls {
           gap: 30px;
@@ -159,7 +154,7 @@ media queries
             font-size: 18px;
           }
         }
-        .retriever-link {
+        .krijgsgevangenis-link {
           .preview {
             p {
               font-size: 20px;

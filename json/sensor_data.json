@@ -3,7 +3,21 @@
         "name": "entrance_door",
         "type": "Sensor",
         "pin": 18,
-        "pi": "cell",
+        "pi": "guard_room_pi",
+        "state": "Triggered"
+    },
+    {
+        "name": "light",
+        "type": "Sensor",
+        "pin": 12,
+        "pi": "guard_room_pi",
+        "state": "Triggered"
+    },
+    {
+        "name": "camera_button",
+        "type": "button",
+        "pin": 16,
+        "pi": "guard_room_pi",
         "state": "Not Triggered"
     }
 ]

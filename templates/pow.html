@@ -6,15 +6,14 @@
     <title>Prisoners of War</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
-    <link rel="icon" href="static/img/favicon.png" type="image/png">
+    <link rel="icon" href="static/img/logo.png" type="image/png">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 </head>
 <body>
 
     <!-- header -->
-    <header class="retriever-logo">
-        <a href="/" class="back-button"><img src="static/img/back.svg" alt="Go back button"></a>
+    <header class="retriever-logo header-logo">
         <figure class="logo-container">
             <img src="static/img/handcuffs-free-1.svg" alt="Retriever Logo">
         </figure>
@@ -41,8 +40,8 @@
     </nav>
 
     <!-- media section -->
-    <section class="media-hidden hidden">
-        <article class="media">
+    <section class="media-hidden hidden-popup hidden">
+        <article class="media popup">
             <button class="close-media close"><img src="static/img/abort.svg" alt="Close button"></button>
 
             <h2>Media</h2>
@@ -62,8 +61,8 @@
     </section>
 
     <!-- time section -->
-    <section class="time-hidden hidden">
-        <article class="time">
+    <section class="time-hidden hidden-popup hidden">
+        <article class="time popup">
             <button class="close-time close"><img src="static/img/abort.svg" alt="Close button"></button>
 
             <h2>Tijd beheren</h2>
@@ -93,30 +92,36 @@
     </section>
 
     <!-- pi controls -->
-    <section class="pi-hidden hidden">
-        <article class="pi">
+    <section class="pi-hidden hidden-popup hidden">
+        <article class="pi popup">
             <button class="close-pi close"><img src="static/img/abort.svg" alt="Close button"></button>
 
             <h2>Pi controls</h2>
             <table id="status-table">
                 <!-- Table will be populated dynamically -->
             </table>
-            <div class="reboot">
-                <h3>Reboot</h3>
 
-                <div class="pies">
-                    <button id="reboot-pi-mag" class="button-style">Reboot...pi</button>
+            <article class="pi-buttons">
+                <div class="pi-controls">
+                    <div class="reboot">
+                        <h3>Reboot</h3>
+
+                        <div class="pies">
+                            <button id="reboot-pi-mag" class="button-style">Reboot...pi</button>
+                        </div>
+                    </div>
+
+                    <div class="backup">
+                        <h3>Backup</h3>
+
+                        <div class="pies">
+                            <button id="backup-top-pi" class="button-style">Backup...pi</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+                <a href="/list_sensors" class="button-style">Add Sensor</a>
+            </article>
 
-            <div class="backup">
-                <h3>Backup</h3>
-
-                <div class="pies">
-                    <button id="backup-top-pi" class="button-style">Backup...pi</button>
-                </div>
-            </div>
-            <a href="/list_sensors">Add Sensor</a>
             <div class="pi-status">
                  <!-- Updaten van de aanwezige pi's en hun status -->
 
@@ -140,19 +145,19 @@
         </div>
     </div>
     <!-- game control -->
-    <section class="game-hidden hidden">
-        <article class="game-controls">
+    <section class="game-hidden hidden-popup hidden">
+        <article class="game-controls popup">
             <button class="close-game close"><img src="static/img/abort.svg" alt="Close button"></button>
 
             <h2>Game controls</h2>
 
             <div class="game-buttons">
-                <button id="start-game-button" class="button-style">Spel starten</button>
-                <button id="snooze-game-button" class="button-style">Kamer afsluiten</button>
-                <button id="prepare-game-button" class="button-style">Spel voorbereiden</button>
+                <button id="start-game-button" class="button-style">Start game</button>
+                <button id="snooze-game-button" class="button-style">Snooze game</button>
+                <button id="prepare-game-button" class="button-style">Prepare game</button>
                 <!-- <button id="pause-button"><img class="icon" src="static/img/pause.svg" alt="Pause game button"></button>
                 <button id="continue-button" style="display: none;"><img src="static/img/pause.svg" alt="Pause game button"></button> -->
-                <button class=" abort-button button-style">Spel stoppen</button>
+                <button class=" abort-button button-style">Abort game</button>
 
             </div>
 
@@ -166,9 +171,21 @@
         </article>
     </section>
 
+    <section id="playerTypeModal" class="prepare-hidden hidden-popup hidden modal">
+        <article class="modal-content popup">
+            <span class="close">&times;</span>
+            <label for="player-type">Gaan kinderen of volwassen spelen:</label>
+            <select id="player-type" name="player-type">
+                <option value="adults">Volwassenen</option>
+                <option value="kids">Kinderen</option>
+            </select>
+            <button id="prepare-game-modal-button" class="button-style">Prepare game</button>
+        </article>
+    </section>
+
     <!-- HIDE FROM HERE -->
-    <section class="tasks-hidden hidden">
-        <article class="task-control">
+    <section class="tasks-hidden hidden-popup hidden">
+        <article class="task-control popup">
             <button class="close-tasks close"><img src="static/img/abort.svg" alt="Close button"></button>
     
             <h2 class="task-title"></h2>
@@ -189,7 +206,7 @@
 
     <!-- wake button na snooze -->
     <nav id="nav-snooze-status"></nav>
-    <button id="wake-button" class="button-style" style="display: none;">Wakker maken</button>
+    <button id="wake-button" class="button-style" style="display: none;">Wake</button>
     <section class="control-container">
 
         <div id="prepare-result" class="hidden">
@@ -198,39 +215,23 @@
             </div>
         </div>
 
-        <!-- svg-->
-        <!-- <section class="light-container">
-            <article class="lights">
-                <img src="../static/img/room-layout.svg" alt="Layout of the room">
-                <figure class="light-buttons">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-1'); console.log('Clicked on Light-1');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-3'); console.log('Clicked on Light-3');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-2'); console.log('Clicked on Light-2');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-4'); console.log('Clicked on Light-4');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-5'); console.log('Clicked on Light-5');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-6'); console.log('Clicked on Light-6');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-7'); console.log('Clicked on Light-7');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-8'); console.log('Clicked on Light-8');">
-                </figure>        
-            </article>
-        </section> -->
     <!-- main -->
-    <div id="reset-list-container">
+    <section id="reset-list-container" class="reset-list control">
         <h2>Reset Lijst</h2>
         <ul id="reset-list">
         </ul>
     </div>
     <section class="tasks">
-        <h2>Puzzels</h2>
+        <h2>Tasks</h2>
 
         <div id="task-list"></div>        
 
-        <button id="add-task-button" class="button-style">Voeg puzzel toe</button>
+        <button id="add-task-button" class="button-style">Add Task</button>
 
         <!-- Modal -->
         <div id="task-modal" class="modal">
             <div class="modal-content">
-                <span class="close-task">&times;</span>
+                <span class="close-task modal-close">&times;</span>
                 <label for="task-name">Task Name:</label>
                 <input type="text" id="task-name">
                 <label for="task-description">Task Description:</label>
@@ -238,28 +239,28 @@
                 <button id="save-task-button" class="button-style">Save Task</button>
             </div>
         </div>
-        <button id="remove-task-button" class="button-style">Verwijder puzzel</button>
+        <button id="remove-task-button" class="button-style">Remove Task</button>
 
         <!-- Modal for Task Removal -->
         <div id="remove-modal" class="modal">
             <div class="modal-content">
-                <span class="close-remove">&times;</span>
+                <span class="close-remove modal-close">&times;</span>
                 <h2>Select a Task to Remove</h2>
                 <ul id="task-removal-list"></ul>
                 <button id="confirm-remove-button" class="button-style">Confirm Removal</button>
             </div>
         </div>
-        <button id="edit-task-button" class="button-style">Edit Task</button>
+        
         <div id="edit-modal" class="modal">
             <div class="modal-content">
-                <span class="close-edit">&times;</span>
+                <span class="close-edit modal-close">&times;</span>
                 <h2>Select a Task to Edit</h2>
                 <ul id="task-edit-list"></ul>
             </div>
         </div>
         <div id="edit-task-modal" class="modal">
             <div class="modal-content">
-                <span class="close-edit-task">&times;</span>
+                <span class="close-edit-task modal-close">&times;</span>
                 <h2>Edit Task</h2>
                 <label for="edit-task-name">Task Name:</label>
                 <input type="text" id="edit-task-name">
@@ -272,7 +273,7 @@
     </section>
 
     <!-- locks section-->
-    <section class="locks">
+    <section class="locks control">
         <h2>Locks</h2>
 
         <article class="lock-control">
@@ -283,7 +284,38 @@
                     <button class="turn-off-button icon"><img src="static/img/unlock.svg" alt="Unlock"></button>
                 </div>
             </div>
-
+        <article class="lock-control">
+            <div class="lock">
+                <p>zwaailamp-groen-kids</p>
+                <div class="lock-buttons">
+                    <button class="turn-on-button icon"><img src="static/img/light-on.svg" alt="Lock"></button>
+                    <button class="turn-off-button icon"><img src="static/img/light-off.svg" alt="Unlock"></button>
+                </div>
+            </div>
+        <article class="lock-control">
+            <div class="lock">
+                <p>zwaailamp-rood-kids</p>
+                <div class="lock-buttons">
+                    <button class="turn-on-button icon"><img src="static/img/light-on.svg" alt="Lock"></button>
+                    <button class="turn-off-button icon"><img src="static/img/light-off.svg" alt="Unlock"></button>
+                </div>
+            </div>
+        <article class="lock-control">
+            <div class="lock">
+                <p>zwaailamp-groen-volwassen</p>
+                <div class="lock-buttons">
+                    <button class="turn-on-button icon"><img src="static/img/light-on.svg" alt="Lock"></button>
+                    <button class="turn-off-button icon"><img src="static/img/light-off.svg" alt="Unlock"></button>
+                </div>
+            </div>
+        <article class="lock-control">
+            <div class="lock">
+                <p>zwaailamp-rood-volwassen</p>
+                <div class="lock-buttons">
+                    <button class="turn-on-button icon"><img src="static/img/light-on.svg" alt="Lock"></button>
+                    <button class="turn-off-button icon"><img src="static/img/light-off.svg" alt="Unlock"></button>
+                </div>
+            </div>
         <div class="lock">
             <p>secret-door-lock</p>
             <div class="lock-buttons">
@@ -344,7 +376,7 @@
 
     </section>
     <!--TODO: rename to a more sensible name-->
-    <section class="lock-status">
+    <section class="lock-status control">
         <h2>Status</h2>
 
         <div class="status">
@@ -357,27 +389,10 @@
 
     <a href="{{ url_for('pin_info') }}" class="pin-info button-style">GPIO pin information</a>
 
-        <!-- <article class="media-play">
-            <h2>Play media</h2>
-
-            <div class="buttons">
-
-                <div class="button-container">
-                    <button id="select-file-button" class="button-style main-button">Select Song</button> -->
-                    <!-- <button id="pause-music-button" class="button-style main-button">Pause Music</button> -->
-                    <!-- <button id="resume-music-button" class="button-style main-button">Resume Music</button> -->
-                    <!-- <button id="stop-music-button" class="button-style main-button">Force stop music</button>
-                    <button id="add-music-button">Add media to the PI</button>
-            <button onclick="openMediaControlPage()">Control Media</button>
-                </div>
-            </div>
-        </article> -->
-
     </section>
 
     <footer>
-        <!-- TODO: New svg of pow -->
-        <!-- <img src="static/img/thebrinkescaperooms.svg" alt="The Brink Escaperooms"> -->
+        <a href="/">Kamers</a>
     </footer>
 
     

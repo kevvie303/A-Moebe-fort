@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
-    <link rel="icon" href="static/img/favicon.png" type="image/png">
+    <link rel="icon" href="static/img/logo.png" type="image/png">
 </head>
 <body>
     <h1>Add a New Item</h1>
@@ -18,6 +18,7 @@
             <option value="Sensor">Sensor</option>
             <option value="light">Light</option>
             <option value="maglock">Maglock</option>
+            <option value="button">Button</option>
         </select><br>
 
         <label for="pin">Item Pin:</label>
@@ -25,7 +26,7 @@
 
         <label for="pi">Connected to Raspberry Pi:</label>
         <select name="pi" required>
-            <option value="top-pi">Top-Pi</option>
+            <option value="guard_room_pi">guard_room_pi</option>
             <option value="middle-pi">Middle-Pi</option>
             <option value="tree-pi">Tree-Pi</option>
         </select><br>

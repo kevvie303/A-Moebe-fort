@@ -173,22 +173,20 @@ $(document).ready(function () {
     console.log(maglockName + action);
     if (maglockName === "exit-door-lock" && action === "unlocked") {
       updateAwakeStatus();
-    }
-    else if (maglockName === "should-balls-drop" && action === "locked") {
+    } else if (maglockName === "should-balls-drop" && action === "locked") {
       updateBallsStatus(false);
-    }
-    else if (maglockName === "should-balls-drop" && action === "unlocked") {
+    } else if (maglockName === "should-balls-drop" && action === "unlocked") {
       updateBallsStatus(true);
     }
   });
   function updateBallsStatus(status) {
-    const statusElement = document.getElementById('balls-status');
+    const statusElement = document.getElementById("balls-status");
     if (status) {
-        statusElement.textContent = 'Balls will drop';
+      statusElement.textContent = "Balls will drop";
     } else {
-        statusElement.textContent = "Balls won't drop";
+      statusElement.textContent = "Balls won't drop";
     }
-}
+  }
 
   function updateAwakeStatus() {
     $("#prepare-game-button").show();
@@ -412,7 +410,7 @@ $(document).ready(function () {
   updateAllIRSensorStatuses("http://192.168.0.114:5001");
 
   // Update normal sensor statuses periodically
- /* setInterval(function () {
+  /* setInterval(function () {
     updateAllSensorStatuses("http://192.168.0.104:5000");
     updateAllSensorStatuses("http://192.168.0.105:5001");
     updateLastKeypadCode("http://192.168.0.104:5000");
@@ -443,8 +441,10 @@ $(document).ready(function () {
       $(".time-display #time-left").text(formattedTimeLeft);
       $(".time-display #time-played").text(formattedTimePlayed);
 
-      $("#retriever-link .preview #time-played").text(formattedTimePlayed);
-      $("#retriever-link .preview #time-left").text(formattedTimeLeft);
+      $("#krijgsgevangenis-link .preview #time-played").text(
+        formattedTimePlayed
+      );
+      $("#krijgsgevangenis-link .preview #time-left").text(formattedTimeLeft);
     });
   }
 
@@ -591,7 +591,6 @@ $(document).ready(function () {
       // Show the "Wake" button
       $("#wake-button").show();
       $(".important-controls").hide();
-
     }
   });
 
@@ -834,7 +833,7 @@ async function fetchTasks() {
       // Create a p element for displaying tasks and states
       const taskStatus = document.createElement("p");
       taskStatus.id = task.task;
-      taskStatus.innerHTML = `${task.task}: <strong>${task.state}</strong>`;
+      taskStatus.innerHTML = `${task.task}: <strong class="pending">${task.state}</strong>`;
 
       // Attach a click event to the p element
       taskStatus.addEventListener("click", () => {
@@ -1174,76 +1173,76 @@ $(document).ready(function () {
 
   // Show the player type modal when the "Prepare game" button is clicked
   prepareButton.on("click", function () {
-      playerTypeModal.show();
+    playerTypeModal.show();
   });
 
   // Close the modal if the close button or outside the modal is clicked
   $(".close").on("click", function () {
-      playerTypeModal.hide();
+    playerTypeModal.hide();
   });
 
   // Handle the "Prepare game" button inside the modal
   prepareGameModalButton.on("click", function () {
-      var selectedPlayerType = $("#player-type").val();
-      playerTypeModal.hide(); // Close the modal
+    var selectedPlayerType = $("#player-type").val();
+    playerTypeModal.hide(); // Close the modal
 
-      // Only proceed with preparation if a player type is selected
-      if (selectedPlayerType) {
-          performPreparation(selectedPlayerType);
-      } else {
-          alert("Please select a player type.");
-      }
+    // Only proceed with preparation if a player type is selected
+    if (selectedPlayerType) {
+      performPreparation(selectedPlayerType);
+    } else {
+      alert("Please select a player type.");
+    }
   });
 
   // Function to perform the preparation steps
   function performPreparation(playerType) {
-      prepareButton.hide();
-      prepareResult.show();
-      $(".tasks, .lock-status, .pin-info, #reset-list-container").hide();
-      prepareStatus.html("Preparing...");
-      clearInterval(updateStatusInterval);
-      updatePlayStatus = setInterval(updatePlayingStatus, 1000);
+    prepareButton.hide();
+    prepareResult.show();
+    $(".tasks, .lock-status, .pin-info, #reset-list-container").hide();
+    prepareStatus.html("Preparing...");
+    clearInterval(updateStatusInterval);
+    updatePlayStatus = setInterval(updatePlayingStatus, 1000);
 
-      // Use the playerType variable in your preparation logic
-      $.ajax({
-          type: "POST",
-          url: "/prepare",
-          data: { playerType: playerType },
-          success: function (response) {
-              prepareStatus.html(
-                  "Prepared - Status: OK. Game will start when door is open or start game has been clicked"
-              );
+    // Use the playerType variable in your preparation logic
+    $.ajax({
+      type: "POST",
+      url: "/prepare",
+      data: { playerType: playerType },
+      success: function (response) {
+        prepareStatus.html(
+          "Prepared - Status: OK. Game will start when door is open or start game has been clicked"
+        );
 
-              // Debugging: Output the response.message to the console
-              console.log(response.message);
+        // Debugging: Output the response.message to the console
+        console.log(response.message);
 
-              resultsSection.empty();
+        resultsSection.empty();
 
-              // Loop through the JSON data and create a neat display
-              for (var device in response.message) {
-                  var deviceStatus = response.message[device];
-                  var deviceDiv = $("<div>").addClass("device-status");
-                  var header = $("<h3>").text(device);
-                  deviceDiv.append(header);
+        // Loop through the JSON data and create a neat display
+        for (var device in response.message) {
+          var deviceStatus = response.message[device];
+          var deviceDiv = $("<div>").addClass("device-status");
+          var header = $("<h3>").text(device);
+          deviceDiv.append(header);
 
-                  var statusContainer = $("<div>").addClass("prepare-status-container");
+          var statusContainer = $("<div>").addClass("prepare-status-container");
 
-                  for (var script in deviceStatus) {
-                      var status = deviceStatus[script];
-                      var statusText = status ? "Running" : "Not Running";
-                      var scriptDiv = $("<div>").addClass("script-status");
-                      scriptDiv.html(`<p>${script}: ${statusText}</p`);
-                      statusContainer.append(scriptDiv);
-                  }
+          for (var script in deviceStatus) {
+            var status = deviceStatus[script];
+            var statusText = status ? "Running" : "Not Running";
+            var scriptDiv = $("<div>").addClass("script-status");
+            scriptDiv.html(`<p>${script}: ${statusText}</p`);
+            statusContainer.append(scriptDiv);
+          }
 
-                  deviceDiv.append(statusContainer);
-                  resultsSection.append(deviceDiv);
-              }
-          },
-          error: function () {
-              prepareStatus.html("Error occurred during preparation.");
-          },
-      });
+          deviceDiv.append(statusContainer);
+          resultsSection.append(deviceDiv);
+        }
+      },
+      error: function () {
+        prepareStatus.html("Error occurred during preparation.");
+      },
+    });
   }
   function updateRetrieverStatus() {
     console.log("hi");
@@ -1260,7 +1259,9 @@ $(document).ready(function () {
         console.log("hii");
         clearInterval(updatePlayStatus);
         prepareButton.hide();
-        $(".tasks, .locks, .lock-status, .pin-info, #reset-list-container").show();
+        $(
+          ".tasks, .locks, .lock-status, .pin-info, #reset-list-container"
+        ).show();
         $("#prepare-result").hide();
       }
     });
@@ -1269,68 +1270,68 @@ $(document).ready(function () {
     if (data.status === "playing") {
       clearInterval(updatePlayStatus);
       prepareButton.hide();
-      $(".tasks, .locks, .lock-status, .pin-info, #reset-list-container").show();
+      $(
+        ".tasks, .locks, .lock-status, .pin-info, #reset-list-container"
+      ).show();
       $("#prepare-result, #snooze-game-button").hide();
     }
   });
-  $.get("/get_game_status", function(data) {
-    if (data.status === 'awake') {
-        console.log("hii")
-        clearInterval(updateWakeStatus);
-        prepareButton.show();
-        $("#prepare-game-button").show();
-        $("#prepare-result").hide();
+  $.get("/get_game_status", function (data) {
+    if (data.status === "awake") {
+      console.log("hii");
+      clearInterval(updateWakeStatus);
+      prepareButton.show();
+      $("#prepare-game-button").show();
+      $("#prepare-result").hide();
     }
   });
 });
 
-
 let programmaticChange = false;
 
-
 async function sendLockRequest(task, isChecked) {
-    try {
-        const response = await fetch('/lock', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ task, isChecked }),
-        });
+  try {
+    const response = await fetch("/lock", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ task, isChecked }),
+    });
 
-        const data = await response.json();
+    const data = await response.json();
 
-        if (data.success) {
-            console.log('Locking action executed successfully');
-        } else {
-            console.error('Error executing locking action:', data.error);
-        }
-    } catch (error) {
-        console.error('Error:', error);
+    if (data.success) {
+      console.log("Locking action executed successfully");
+    } else {
+      console.error("Error executing locking action:", data.error);
     }
+  } catch (error) {
+    console.error("Error:", error);
+  }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const socket = io({ transports: ['websocket'] });
+document.addEventListener("DOMContentLoaded", () => {
+  const socket = io({ transports: ["websocket"] });
 
   // Event listener for Socket.IO connection
-  socket.on('connect', () => {
-      console.log('Connected to Socket.IO');
-      socket.emit('join_room', { room: 'all_clients' });
+  socket.on("connect", () => {
+    console.log("Connected to Socket.IO");
+    socket.emit("join_room", { room: "all_clients" });
   });
 
   // Event listener for joining a room acknowledgment
-  socket.on('join_room_ack', (data) => {
-      console.log('Joined room:', data.room);
-      // Fetch and display the initial checklist when the client joins the room
-      updateChecklist();
+  socket.on("join_room_ack", (data) => {
+    console.log("Joined room:", data.room);
+    // Fetch and display the initial checklist when the client joins the room
+    updateChecklist();
   });
 
   // Event listener for checklist updates
-  socket.on('checklist_update', (data) => {
-      console.log('Received checklist_update event:', data);
-      // Update your checklist UI based on the received data
-      updateChecklist();
+  socket.on("checklist_update", (data) => {
+    console.log("Received checklist_update event:", data);
+    // Update your checklist UI based on the received data
+    updateChecklist();
   });
 
   // ... (other event listeners) ...
@@ -1338,78 +1339,78 @@ document.addEventListener('DOMContentLoaded', () => {
   // Function to update the checklist UI
   async function updateChecklist() {
     try {
-        // Fetch game status using $.get
-        $.get("/get_game_status", function (data) {
-            if (data.status === "awake") {
-                // If the game is "awake," proceed to fetch and display the checklist
-                fetchAndDisplayChecklist();
-            } else {
-                // If the game is not "awake," hide the reset list
-                hideResetList();
-            }
-        });
+      // Fetch game status using $.get
+      $.get("/get_game_status", function (data) {
+        if (data.status === "awake") {
+          // If the game is "awake," proceed to fetch and display the checklist
+          fetchAndDisplayChecklist();
+        } else {
+          // If the game is not "awake," hide the reset list
+          hideResetList();
+        }
+      });
     } catch (error) {
-        console.error('Error:', error);
+      console.error("Error:", error);
     }
-}
+  }
 
-function fetchAndDisplayChecklist() {
+  function fetchAndDisplayChecklist() {
     // Fetch checklist data
-    fetch('/get-checklist')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('Checklist data:', data.checklist);
-                displayChecklist(data.checklist);
-            } else {
-                console.error('Error getting checklist:', data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
+    fetch("/get-checklist")
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          console.log("Checklist data:", data.checklist);
+          displayChecklist(data.checklist);
+        } else {
+          console.error("Error getting checklist:", data.error);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 
-function hideResetList() {
-    const resetListContainer = document.getElementById('reset-list-container');
-    resetListContainer.style.display = 'none';
-}
+  function hideResetList() {
+    const resetListContainer = document.getElementById("reset-list-container");
+    resetListContainer.style.display = "none";
+  }
 
   // Function to display the checklist
   function displayChecklist(checklist) {
-    const resetList = document.getElementById('reset-list');
-    resetList.innerHTML = ''; // Clear existing checklist items
+    const resetList = document.getElementById("reset-list");
+    resetList.innerHTML = ""; // Clear existing checklist items
 
-    checklist.forEach(item => {
-        const listItem = document.createElement('li');
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = item.task.replace(/\s/g, '');
-        checkbox.checked = item.completed;
+    checklist.forEach((item) => {
+      const listItem = document.createElement("li");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = item.task.replace(/\s/g, "");
+      checkbox.checked = item.completed;
 
-        const label = document.createElement('label');
-        label.textContent = item.task;
-        label.setAttribute('for', checkbox.id);
+      const label = document.createElement("label");
+      label.textContent = item.task;
+      label.setAttribute("for", checkbox.id);
 
-        // Apply line-through style if the task is completed
-        if (item.completed) {
-            label.style.textDecoration = 'line-through';
+      // Apply line-through style if the task is completed
+      if (item.completed) {
+        label.style.textDecoration = "line-through";
+      }
+
+      listItem.appendChild(checkbox);
+      listItem.appendChild(label);
+
+      resetList.appendChild(listItem);
+
+      checkbox.addEventListener("change", async () => {
+        if (!programmaticChange) {
+          programmaticChange = true;
+          const isChecked = checkbox.checked;
+          const task = label.textContent.trim();
+          await sendLockRequest(task, isChecked);
+          programmaticChange = false;
         }
-
-        listItem.appendChild(checkbox);
-        listItem.appendChild(label);
-
-        resetList.appendChild(listItem);
-
-        checkbox.addEventListener('change', async () => {
-            if (!programmaticChange) {
-                programmaticChange = true;
-                const isChecked = checkbox.checked;
-                const task = label.textContent.trim();
-                await sendLockRequest(task, isChecked);
-                programmaticChange = false;
-            }
-        });
+      });
     });
-}
+  }
 });

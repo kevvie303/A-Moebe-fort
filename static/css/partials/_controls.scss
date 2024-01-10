@@ -1,0 +1,230 @@
+@import "../helpers/_variables";
+
+/*
+####
+main
+####
+*/
+
+#nav-snooze-status {
+  text-align: center; /* Center the text horizontally */
+  font-weight: bold; /* Make the text bold */
+}
+
+/*
+########
+sections
+########
+*/
+
+section.control-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  div#prepare-result {
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    text-align: center;
+    margin: 0 20px;
+    max-width: 500px;
+    /* width: 80%; */
+    border-radius: 15px;
+    padding: 20px 30px;
+    background: var(--secondary-background-color);
+  }
+  section.control {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    text-align: center;
+    margin: 0 20px;
+    max-width: 500px;
+    /* width: 80%; */
+    border-radius: 15px;
+    padding: 20px 30px;
+    background: var(--secondary-background-color);
+    ul#reset-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      list-style: none;
+      padding: 0;
+      text-align: left;
+      li {
+        display: flex;
+        align-items: center;
+        input[type="checkbox"] {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}
+
+/*
+#########
+specifics
+#########
+*/
+
+//   .important-controls {
+//     position: sticky;
+//     top: 0;
+//     background-color: white; /* Set the background color to match the container */
+//     /* Your existing CSS styles for .important-controls */
+//   }
+
+section.control-container {
+  section.locks,
+  section.lock-status {
+    article.lock-control,
+    div.status {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+  }
+  section.tasks {
+    div#task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      list-style-type: none;
+      text-align: left;
+      p {
+        display: flex;
+        justify-content: space-between;
+        cursor: pointer;
+      }
+    }
+    article.task-button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+  }
+  section.locks {
+    div.lock {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      div.lock-buttons {
+        button {
+          border: none;
+          background: none;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  section.lock-status {
+    div.status {
+      p {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        strong {
+          text-align: right;
+        }
+      }
+    }
+  }
+}
+
+/*
+#########
+preparing
+#########
+*/
+
+.control-container {
+  #prepare-result {
+    #results-section {
+      #device-status {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        #prepare-status-container {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+        }
+      }
+    }
+  }
+}
+
+/*
+###############
+pin info button
+###############
+*/
+
+.pin-info {
+  width: fit-content;
+  align-self: center;
+}
+
+/*
+#############
+media queries
+#############
+*/
+
+@media (min-width: 576px) {
+  section.control-container {
+    gap: 30px;
+    div#prepare-result,
+    section.control {
+      width: 400px;
+      align-self: center;
+      margin: 0;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .icon {
+    width: var(--icon-md);
+    height: var(--icon-md);
+  }
+  section.control-container {
+    gap: 40px;
+    div#prepare-result,
+    section.control {
+      width: 450px;
+      padding: 30px 40px;
+    }
+    section.locks,
+    section.lock-status {
+      article.lock-control,
+      div.status {
+        div.lock,
+        p {
+          // margin: 0 30px;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  section.control-container {
+    section.locks {
+      article.lock-control {
+        div.lock {
+          div.lock-buttons {
+            button.turn-on-button,
+            button.turn-off-button {
+              width: 30px;
+              height: 30px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
