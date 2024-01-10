@@ -16,6 +16,7 @@ import threading
 import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 import paho.mqtt.client as mqtt
+import paho.mqtt.publish as publish
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -25,7 +26,7 @@ ssh = None
 stdin = None
 pi2 = None
 pi3 = None
-romy = False
+romy = True
 last_keypad_code = None
 aborted = False
 player_type = None
@@ -99,8 +100,8 @@ def monitor_ssh_connections():
 # Start the monitoring thread
 monitor_thread = threading.Thread(target=monitor_ssh_connections)
 monitor_thread.daemon = True  # Make the thread a daemon to exit when the main program exits
-broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
-
+#broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
+broker_ip = "192.168.1.216"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -272,6 +273,11 @@ def update_json_file():
 
     except Exception as e:
         print(f"Error updating JSON file: {e}")
+@app.route('/get_sensor_data', methods=['GET'])
+def read_sensor_data():
+    with open("json/sensor_data.json", "r") as file:
+        sensor_data = json.load(file)
+    return sensor_data
 def check_rule(item_name):
     try:
         # Read sensor data from the JSON file
@@ -1200,16 +1206,20 @@ def control_maglock():
     global squeak_job, should_balls_drop, player_type
     maglock = request.form.get('maglock')
     action = request.form.get('action')
+    sensor_data = read_sensor_data()
+    for sensor in sensor_data:
+        if sensor['name'] == maglock and sensor['type'] == 'maglock':
+            pi_name = sensor['pi']
+            # Publish the MQTT message with the appropriate Pi's name
+            mqtt_message = f"{sensor['pin']} {action}"
+            publish.single(f"actuator/control/{pi_name}", mqtt_message, hostname=broker_ip)
+            return f'Maglock {maglock} on {pi_name} is now {action}'
     if maglock == "entrance-door-lock":
         if action == "locked":
-            if player_type == 'adults':
-                print("adults")
-            elif player_type == 'kids':
-                print('kids')
-            #pi3.exec_command("raspi-gpio set 25 op dl")
+            #publish.single("fan/control", "14 off", hostname=broker_ip)
             return 'Maglock entrance-door-lock is now locked'
         elif action == "unlocked":
-            pi3.exec_command("raspi-gpio set 25 op dh")
+            #publish.single("fan/control", "14 on", hostname=broker_ip)
             game_status = get_game_status()
             if game_status == {'status': 'prepared'}:
                 start_timer()

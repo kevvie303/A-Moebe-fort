@@ -154,43 +154,64 @@ function sendLightControlRequest(lightName) {
   });
 }
 $(document).ready(function () {
-  // Handle button click for both turning on and off
-  $(".lock-buttons button").click(function () {
-    var maglockName = $(this).closest(".lock").find("p").text();
-    var action = $(this).hasClass("turn-on-button") ? "locked" : "unlocked";
+  var lockControls = $("#lockControls");
 
-    $.ajax({
-      type: "POST",
-      url: "/control_maglock",
-      data: { maglock: maglockName, action: action },
-      success: function (response) {
-        console.log(response);
+  // Fetch the sensor data from the server
+  $.ajax({
+      type: "GET",
+      url: "/get_sensor_data",  // Replace with the actual endpoint to fetch sensor data
+      success: function (sensor_data) {
+          // Filter out items that are not maglocks or lights
+          var filteredData = sensor_data.filter(function (item) {
+              return item.type === "maglock" || item.type === "light";
+          });
+
+          var lockControlArticle = $("<article>").addClass("lock-control");
+
+          filteredData.forEach(function (actuator) {
+              var lockDiv = $("<div>").addClass("lock");
+              var actuatorName = $("<p>").text(actuator.name);
+              var lockButtons = $("<div>").addClass("lock-buttons");
+
+              if (actuator.type === "maglock") {
+                  var lockButton = $("<button>").addClass("turn-on-button icon")
+                                                .append($("<img>").attr("src", "static/img/lock.svg").attr("alt", "Lock"));
+                  var unlockButton = $("<button>").addClass("turn-off-button icon")
+                                                  .append($("<img>").attr("src", "static/img/unlock.svg").attr("alt", "Unlock"));
+                  lockButtons.append(lockButton, unlockButton);
+              } else if (actuator.type === "light") {
+                  var onButton = $("<button>").addClass("turn-on-button icon")
+                                              .append($("<img>").attr("src", "static/img/light-on.svg").attr("alt", "Light On"));
+                  var offButton = $("<button>").addClass("turn-off-button icon")
+                                               .append($("<img>").attr("src", "static/img/light-off.svg").attr("alt", "Light Off"));
+                  lockButtons.append(onButton, offButton);
+              }
+
+              lockButtons.find("button").click(function () {
+                  var action = $(this).hasClass("turn-on-button") ? "locked" : "unlocked";
+                  $.ajax({
+                      type: "POST",
+                      url: "/control_maglock",
+                      data: { maglock: actuator.name, action: action },
+                      success: function (response) {
+                          console.log(response);
+                      },
+                      error: function (error) {
+                          console.log(error);
+                      },
+                  });
+              });
+
+              lockDiv.append(actuatorName, lockButtons);
+              lockControlArticle.append(lockDiv);
+          });
+
+          lockControls.append(lockControlArticle);
       },
       error: function (error) {
-        console.log(error);
-      },
-    });
-    console.log(maglockName + action);
-    if (maglockName === "exit-door-lock" && action === "unlocked") {
-      updateAwakeStatus();
-    } else if (maglockName === "should-balls-drop" && action === "locked") {
-      updateBallsStatus(false);
-    } else if (maglockName === "should-balls-drop" && action === "unlocked") {
-      updateBallsStatus(true);
-    }
+          console.log("Error fetching sensor data:", error);
+      }
   });
-  function updateBallsStatus(status) {
-    const statusElement = document.getElementById("balls-status");
-    if (status) {
-      statusElement.textContent = "Balls will drop";
-    } else {
-      statusElement.textContent = "Balls won't drop";
-    }
-  }
-
-  function updateAwakeStatus() {
-    $("#prepare-game-button").show();
-  }
 });
 
 $(document).ready(function () {
