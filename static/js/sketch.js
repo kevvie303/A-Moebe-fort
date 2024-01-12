@@ -181,9 +181,9 @@ $(document).ready(function () {
                   lockButtons.append(lockButton, unlockButton);
               } else if (actuator.type === "light") {
                   var onButton = $("<button>").addClass("turn-on-button icon")
-                                              .append($("<img>").attr("src", "static/img/light-on.svg").attr("alt", "Light On"));
+                                              .append($("<img>").attr("src", "static/img/light-off.svg").attr("alt", "Light On"));
                   var offButton = $("<button>").addClass("turn-off-button icon")
-                                               .append($("<img>").attr("src", "static/img/light-off.svg").attr("alt", "Light Off"));
+                                               .append($("<img>").attr("src", "static/img/light-on.svg").attr("alt", "Light Off"));
                   lockButtons.append(onButton, offButton);
               }
 
