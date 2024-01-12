@@ -1448,7 +1448,7 @@ def add_sensor():
         # Save the updated sensor data to the JSON file
         with open('json/sensor_data.json', 'w') as json_file:
             json.dump(sensors, json_file, indent=4)
-        ssh_sessions = [ssh]
+        ssh_sessions = [ssh, pi2]
 
         success_message = "Script sent successfully to the following IP addresses:<br>"
 
