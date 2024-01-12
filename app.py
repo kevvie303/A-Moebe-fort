@@ -277,6 +277,10 @@ def update_json_file():
 def read_sensor_data():
     with open("json/sensor_data.json", "r") as file:
         sensor_data = json.load(file)
+    return jsonify(sensor_data)
+def read_sensor_data2():
+    with open("json/sensor_data.json", "r") as file:
+        sensor_data = json.load(file)
     return sensor_data
 def check_rule(item_name):
     try:
@@ -1206,14 +1210,16 @@ def control_maglock():
     global squeak_job, should_balls_drop, player_type
     maglock = request.form.get('maglock')
     action = request.form.get('action')
-    sensor_data = read_sensor_data()
+    print(maglock)
+    sensor_data = read_sensor_data2()
     for sensor in sensor_data:
-        if sensor['name'] == maglock and sensor['type'] == 'maglock':
+        print(sensor)
+        if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
             # Publish the MQTT message with the appropriate Pi's name
             mqtt_message = f"{sensor['pin']} {action}"
             publish.single(f"actuator/control/{pi_name}", mqtt_message, hostname=broker_ip)
-            return f'Maglock {maglock} on {pi_name} is now {action}'
+            return("done")
     if maglock == "entrance-door-lock":
         if action == "locked":
             #publish.single("fan/control", "14 off", hostname=broker_ip)
@@ -1224,13 +1230,13 @@ def control_maglock():
             if game_status == {'status': 'prepared'}:
                 start_timer()
             return 'Maglock entrance-door-lock is now unlocked'
-    elif maglock == "zwaailamp-groen-kids":
-        if action == "locked":
-            pi2.exec_command("raspi-gpio set 21 op dl")
-            return 'Zwaailamp aan'
-        elif action == "unlocked":
-            pi2.exec_command("raspi-gpio set 21 op dh")
-            return 'Zwaailamp uit'
+    #elif maglock == "zwaailamp-groen-kids":
+    #    if action == "locked":
+     #       pi2.exec_command("raspi-gpio set 21 op dl")
+      #      return 'Zwaailamp aan'
+      #  elif action == "unlocked":
+      #      pi2.exec_command("raspi-gpio set 21 op dh")
+      #      return 'Zwaailamp uit'
     elif maglock == "zwaailamp-rood-kids":
         if action == "locked":
             pi2.exec_command("raspi-gpio set 27 op dl")
@@ -1318,8 +1324,8 @@ def control_maglock():
             time.sleep(0.3)
             ssh.exec_command("raspi-gpio set 18 op dl")
             return 'shootinglock unlocked'
-    else:
-        return 'Invalid maglock or action'
+    #else:
+     #   return 'Invalid maglock or action'
 
 @app.route('/control_maglock', methods=['POST'])
 def control_maglock_route():
