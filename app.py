@@ -26,7 +26,7 @@ ssh = None
 stdin = None
 pi2 = None
 pi3 = None
-romy = True
+romy = False
 last_keypad_code = None
 aborted = False
 player_type = None
@@ -411,8 +411,10 @@ def start_scripts():
     time.sleep(0.5)
     #pi2.exec_command('nohup python status.py > /dev/null 2>&1 &')    
     time.sleep(0.5)
+    pi2.exec_command('python actuator.py')
     #pi3.exec_command('python mqtt.py')
     time.sleep(0.5)
+    pi2.exec_command('python mqtt.py')
     #pi3.exec_command('nohup python status.py > /dev/null 2>&1 &')
     time.sleep(0.5)
     ssh.exec_command('python mqtt.py')
