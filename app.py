@@ -17,16 +17,17 @@ import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
+from networkscanner import NetworkScanner
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
 #command = 'python relay_control.py'
-loadMqtt = True
+loadMqtt = False
 ssh = None
 stdin = None
 pi2 = None
 pi3 = None
-romy = False
+romy = True
 last_keypad_code = None
 aborted = False
 player_type = None
@@ -90,6 +91,27 @@ def establish_ssh_connection():
       #  pi3.set_missing_host_key_policy(paramiko.AutoAddPolicy())
        # pi3.connect(ip3brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
         #pi3.exec_command('pkill -f mqtt.py \n python status.py')
+@app.route('/list_raspberrypi')
+def list_raspberrypi():
+    scanner = NetworkScanner()
+    pi_devices = scanner.scan_for_raspberrypi('192.168.1.0/24')
+    return render_template('list_raspberrypi.html', devices=pi_devices)
+
+@app.route('/connect_device', methods=['POST'])
+def connect_device():
+    ip_address = request.form['ip_address']
+    new_hostname = request.form['new_hostname']
+
+    # Logic to connect to the Raspberry Pi and change its hostname
+    # Example using SSH
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(ip_address, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(f'sudo hostnamectl set-hostname {new_hostname}')
+    ssh.close()
+
+    return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
+
 
 def monitor_ssh_connections():
     while True:

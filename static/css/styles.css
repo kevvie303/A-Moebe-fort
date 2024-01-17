@@ -197,9 +197,11 @@ landing page
 }
 .landing-page .rooms .krijgsgevangenis-container .controls .info {
   display: flex;
+  width: -moz-fit-content;
   width: fit-content;
 }
 .landing-page .rooms .krijgsgevangenis-container .controls .info a {
+  width: -moz-fit-content;
   width: fit-content;
 }
 .landing-page .rooms .media {
@@ -635,6 +637,7 @@ section.time-hidden article.time div.time-controls div.speed-up-slow-down {
 }
 section.time-hidden article.time div.time-controls div.reset-speed {
   display: flex;
+  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -655,6 +658,7 @@ section.pi-hidden article.pi article.pi-buttons div.pi-controls div.backup {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: -moz-fit-content;
   width: fit-content;
 }
 section.pi-hidden article.pi article.pi-buttons div.pi-controls div.reboot div.pies,
@@ -682,6 +686,7 @@ section.game-hidden article.game-controls div.game-buttons {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: -moz-fit-content;
   width: fit-content;
   justify-content: center;
 }
@@ -689,6 +694,7 @@ section.game-hidden article.game-controls div.abort p {
   text-align: center;
 }
 section.game-hidden article.game-controls div.abort button {
+  width: -moz-fit-content;
   width: fit-content;
   align-self: center;
   background: var(--locked);
@@ -775,6 +781,7 @@ section.media-selection.container form select {
   width: 100%;
 }
 section.media-selection.container form input {
+  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -1003,6 +1010,7 @@ pin info button
 ###############
 */
 .pin-info {
+  width: -moz-fit-content;
   width: fit-content;
   align-self: center;
 }
@@ -1146,4 +1154,55 @@ footer {
 }
 footer a:hover {
   text-decoration: underline;
+}
+
+/* Main body styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+  padding: 20px;
+}
+
+/* List styling */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Form styling */
+form {
+  margin-top: 10px;
+}
+
+input[type=text], input[type=submit] {
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box; /* Ensures padding doesn't affect overall width */
+}
+
+input[type=submit] {
+  background-color: #5cb85c;
+  color: white;
+  cursor: pointer;
+  border: none;
+}
+input[type=submit]:hover {
+  background-color: #4cae4c;
+}
+
+/* Header styling */
+h1 {
+  color: #5cb85c;
 }/*# sourceMappingURL=styles.css.map */
