@@ -96,7 +96,6 @@ def is_online(ip):
     try:
         # CHANGE TO ["ping", "-c", "1", "-W", "1", ip] on UNIX
         response = subprocess.run(["ping", "-n", "1", "-w", "1000", ip], stdout=subprocess.DEVNULL)
-        print(response)
         return response.returncode == 0
     except Exception as e:
         print(f"Error pinging {ip}: {e}")
@@ -114,8 +113,6 @@ def check_devices_status():
         device['online'] = is_online(device['ip_address'])
 
     return jsonify(devices)
-
-    return jsonify(pi_data)
 @app.route('/list_raspberrypi')
 def list_raspberrypi():
     scanner = NetworkScanner()

@@ -1480,7 +1480,9 @@ document.addEventListener("DOMContentLoaded", function() {
     .then(data => console.log(data.message))
     .catch(error => console.error('Error sending reboot request:', error));
 }
-  fetchAndDisplayRaspberryPis();
+  setInterval(function () {
+    fetchAndDisplayRaspberryPis();
+  }, 1000);
 });
 document.addEventListener("DOMContentLoaded", function() {
   var listPiButton = document.querySelector('a[href="/list_raspberrypi"]');
