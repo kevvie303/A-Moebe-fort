@@ -1216,7 +1216,7 @@ $(document).ready(function () {
   });
 
   // Function to perform the preparation steps
-  function performPreparation(playerType) {
+  function performPreparation(playerType, prefix) {
     prepareButton.hide();
     prepareResult.show();
     $(".tasks, .lock-status, .pin-info, #reset-list-container").hide();
@@ -1228,7 +1228,9 @@ $(document).ready(function () {
     $.ajax({
       type: "POST",
       url: "/prepare",
-      data: { playerType: playerType },
+      data: { playerType: playerType,
+              prefix: "pow"
+            },
       success: function (response) {
         prepareStatus.html(
           "Prepared - Status: OK. Game will start when door is open or start game has been clicked"
@@ -1434,4 +1436,60 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+});
+document.addEventListener("DOMContentLoaded", function() {
+  function fetchAndDisplayRaspberryPis() {
+      fetch('/check_devices_status')
+          .then(response => response.json())
+          .then(data => {
+              let piListDiv = document.querySelector('.pi-list');
+              let rebootDiv = document.querySelector('.reboot');
+
+              // Clear existing entries
+              piListDiv.innerHTML = '<h3>Raspberry Pi Devices</h3>';
+              rebootDiv.innerHTML = '<h3>Reboot Controls</h3>';
+
+              data.forEach(pi => {
+                  // Add to the Raspberry Pi list
+                  let piInfo = document.createElement('div');
+                  piInfo.textContent = `Hostname: ${pi.hostname}, IP Address: ${pi.ip_address}, Status: ${pi.online ? 'Online' : 'Offline'}`;
+                  piListDiv.appendChild(piInfo);
+
+                  // Create reboot buttons
+                  let rebootButton = document.createElement('button');
+                  rebootButton.textContent = `Reboot ${pi.hostname}`;
+                  rebootButton.className = 'button-style';
+                  rebootButton.onclick = function() {
+                      sendRebootRequest(pi.ip_address);
+                      console.log(`Rebooting ${pi.hostname}`);
+                  };
+                  rebootDiv.appendChild(rebootButton);
+              });
+          })
+          .catch(error => console.error('Error fetching Raspberry Pi data:', error));
+  }
+  function sendRebootRequest(ipAddress) {
+    fetch('/reboot_pi', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `ip_address=${encodeURIComponent(ipAddress)}`
+    })
+    .then(response => response.json())
+    .then(data => console.log(data.message))
+    .catch(error => console.error('Error sending reboot request:', error));
+}
+  fetchAndDisplayRaspberryPis();
+});
+document.addEventListener("DOMContentLoaded", function() {
+  var listPiButton = document.querySelector('a[href="/list_raspberrypi"]');
+  var loader = document.getElementById('loader');
+
+  listPiButton.addEventListener('click', function() {
+      loader.hidden = false; // Show the loader
+  });
+  window.addEventListener('pagehide', function() {
+    loader.hidden = true; // Hide the loader
+});
 });

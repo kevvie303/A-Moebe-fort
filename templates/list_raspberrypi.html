@@ -5,9 +5,10 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Available Raspberry Pi Devices:</h1>
-    <ul>
-        {% for device in devices %}
+    <div class="raspberrypi_list">
+        <h1>Available Raspberry Pi Devices:</h1>
+        <ul>
+            {% for device in devices %}
             <li>
                 IP: {{ device[0] }}, MAC: {{ device[1] }}, Hostname: {{ device[2] }}
                 <form action="/connect_device" method="post">
@@ -18,5 +19,6 @@
             </li>
         {% endfor %}
     </ul>
+    </div>
 </body>
 </html>
