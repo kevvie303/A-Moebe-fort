@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>List of Raspberry Pi Devices</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="raspberrypi_list">
+        <h1>Available Raspberry Pi Devices:</h1>
+        <ul>
+            {% for device in devices %}
+            <li>
+                IP: {{ device[0] }}, MAC: {{ device[1] }}, Hostname: {{ device[2] }}
+                <form action="/connect_device" method="post">
+                    <input type="hidden" name="ip_address" value="{{ device[0] }}">
+                    <input type="text" name="new_hostname" placeholder="Enter new hostname">
+                    <button type="submit" class="button-style">Connect</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    </div>
+</body>
+</html>

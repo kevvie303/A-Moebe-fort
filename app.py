@@ -16,6 +16,8 @@ import threading
 import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 import paho.mqtt.client as mqtt
+import paho.mqtt.publish as publish
+from networkscanner import NetworkScanner
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -34,11 +36,8 @@ fade_interval = 0.1  # Interval between volume adjustments in seconds
 fade_steps = int(fade_duration / fade_interval)  # Number of fade steps
 sensor_1_triggered = False
 sensor_2_triggered = False
-ip1home = '192.168.1.19'
-ip1brink = '192.168.0.104'
-ip2home = '192.168.1.28'
-ip2brink = '192.168.0.105'
-ip3brink = '192.168.0.114'
+ip_guard_room = '192.168.50.218'
+ip_corridor = '192.168.50.197'
 sequence = 0
 should_sound_play = True
 should_balls_drop = True
@@ -68,7 +67,7 @@ log.setLevel(logging.ERROR)
 def turn_on_api():
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(ip1brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+    ssh.connect(ip_guard_room, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
     ssh.exec_command('nohup sudo -E python status.py > /dev/null 2>&1 &')
     establish_ssh_connection()
 
@@ -77,21 +76,98 @@ def establish_ssh_connection():
     if ssh is None or not ssh.get_transport().is_active():
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(ip1brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+        ssh.connect(ip_guard_room, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
         ssh.exec_command('pkill -f mqtt.py')
     global pi2
     if pi2 is None or not pi2.get_transport().is_active():
         pi2 = paramiko.SSHClient()
         pi2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        pi2.connect(ip2brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+        pi2.connect(ip_corridor, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
         pi2.exec_command('pkill -f mqtt.py')
 
-    global pi3
-    if pi3 is None or not pi3.get_transport().is_active():
-        pi3 = paramiko.SSHClient()
-        pi3.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        pi3.connect(ip3brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-        pi3.exec_command('pkill -f mqtt.py \n python status.py')
+    #global pi3
+    #if pi3 is None or not pi3.get_transport().is_active():
+     #   pi3 = paramiko.SSHClient()
+      #  pi3.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+       # pi3.connect(ip3brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+        #pi3.exec_command('pkill -f mqtt.py \n python status.py')
+
+def is_online(ip):
+    try:
+        # CHANGE TO ["ping", "-c", "1", "-W", "1", ip] on UNIX
+        response = subprocess.run(["ping", "-n", "1", "-w", "1000", ip], stdout=subprocess.DEVNULL)
+        return response.returncode == 0
+    except Exception as e:
+        print(f"Error pinging {ip}: {e}")
+        return False
+
+@app.route('/check_devices_status', methods=['GET'])
+def check_devices_status():
+    try:
+        with open('json/raspberry_pis.json', 'r') as file:
+            devices = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return jsonify({"error": "Failed to read Raspberry Pi data"}), 500
+
+    for device in devices:
+        device['online'] = is_online(device['ip_address'])
+
+    return jsonify(devices)
+@app.route('/list_raspberrypi')
+def list_raspberrypi():
+    scanner = NetworkScanner()
+    pi_devices = scanner.scan_for_raspberrypi()
+    return render_template('list_raspberrypi.html', devices=pi_devices)
+
+def add_pi_to_json(ip_address, mac_address, hostname, file_path='json/raspberry_pis.json'):
+    try:
+        # Load existing data
+        with open(file_path, 'r') as file:
+            pis = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        pis = []
+
+    # Check if the Raspberry Pi is already in the list
+    for pi in pis:
+        if pi['ip_address'] == ip_address:
+            # Update existing entry
+            pi['mac_address'] = mac_address
+            pi['hostname'] = hostname
+            break
+    else:
+        # Add new Raspberry Pi
+        pis.append({"ip_address": ip_address, "mac_address": mac_address, "hostname": hostname})
+
+    # Save the updated list
+    with open(file_path, 'w') as file:
+        json.dump(pis, file, indent=4)
+
+@app.route('/connect_device', methods=['POST'])
+def connect_device():
+    ip_address = request.form['ip_address']
+    new_hostname = request.form['new_hostname']
+    scanner = NetworkScanner()
+
+    # Connect to the Raspberry Pi and change its hostname
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(ip_address, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+    ssh.exec_command(f'sudo hostnamectl set-hostname {new_hostname} \n sudo python /path/to/update_hosts.py')
+    ssh.close()
+
+    # Get the updated list of Raspberry Pis to fetch the MAC address
+    pi_devices = scanner.scan_for_raspberrypi()
+    mac_address = next((mac for host, mac, hostname in pi_devices if host == ip_address), None)
+
+    # Update the JSON file with the Raspberry Pi's details
+    if mac_address:
+        add_pi_to_json(ip_address, mac_address, new_hostname)
+    else:
+        print("MAC address not found for the Raspberry Pi at", ip_address)
+
+    return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
+
+
 
 def monitor_ssh_connections():
     while True:
@@ -102,8 +178,8 @@ def monitor_ssh_connections():
 # Start the monitoring thread
 monitor_thread = threading.Thread(target=monitor_ssh_connections)
 monitor_thread.daemon = True  # Make the thread a daemon to exit when the main program exits
-broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
-
+broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
+#broker_ip = "192.168.1.216"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -275,6 +351,15 @@ def update_json_file():
 
     except Exception as e:
         print(f"Error updating JSON file: {e}")
+@app.route('/get_sensor_data', methods=['GET'])
+def read_sensor_data():
+    with open("json/sensor_data.json", "r") as file:
+        sensor_data = json.load(file)
+    return jsonify(sensor_data)
+def read_sensor_data2():
+    with open("json/sensor_data.json", "r") as file:
+        sensor_data = json.load(file)
+    return sensor_data
 def check_rule(item_name):
     try:
         # Read sensor data from the JSON file
@@ -292,6 +377,8 @@ def check_rule(item_name):
             elif item_type == "light" and item["state"] == "On":
                 return True
             elif item_type == "maglock" and item["state"] == "Locked":
+                return True
+            elif item_type == "button" and item["state"] == "Locked":
                 return True
             else:
                 return False
@@ -376,8 +463,6 @@ if loadMqtt == True:
     client.subscribe(prefix_to_subscribe + "#")  # Subscribe to all topics under the prefix
     # Function to execute the delete-locks.py script
     client.loop_start()
-def execute_delete_locks_script():
-    ssh.exec_command('python delete-locks.py')
 
 @app.route('/trigger', methods=['POST'])
 def trigger():
@@ -385,26 +470,20 @@ def trigger():
     return jsonify({'message': 'Data received successfully'})
 @app.route('/krijgsgevangenis')
 def pow():
-    balls_drop_status = 'drop' if should_balls_drop else 'not drop'
-    return render_template('pow.html', balls_drop_status=balls_drop_status)
+    return render_template('pow.html')
 def start_scripts():
-    global should_sound_play
-    #pi2.exec_command('python sensor_board.py')
-    #pi2.exec_command('sudo python sinus_game.py')
-    # pi2.exec_command('python distort.py')
-    #ssh.exec_command('python read.py')
-    # ssh.exec_command('python keypad.py')
-    #pi3.exec_command('python ir.py')
     sensor_thread.start()
     monitor_thread.start()
     update_game_status('awake')
+    #pi2.exec_command('python mqtt.py')
+    time.sleep(0.5)
+    #pi2.exec_command('nohup python status.py > /dev/null 2>&1 &')    
+    time.sleep(0.5)
+    pi2.exec_command('python actuator.py')
+    #pi3.exec_command('python mqtt.py')
+    time.sleep(0.5)
     pi2.exec_command('python mqtt.py')
-    time.sleep(0.5)
-    pi2.exec_command('nohup python status.py > /dev/null 2>&1 &')    
-    time.sleep(0.5)
-    pi3.exec_command('python mqtt.py')
-    time.sleep(0.5)
-    pi3.exec_command('nohup python status.py > /dev/null 2>&1 &')
+    #pi3.exec_command('nohup python status.py > /dev/null 2>&1 &')
     time.sleep(0.5)
     ssh.exec_command('python mqtt.py')
     #scheduler.add_job(monitor_sensor_statuses, 'interval', seconds=0.1)
@@ -1193,97 +1272,20 @@ def backup_middle_pi():
     ssh.exec_command('./commit_and_push.sh')
     return "Middle pi backed up"
 
-@app.route('/lock_entrance_door', methods=['POST'])
-def lock_entrance_door():
-    ssh.exec_command("raspi-gpio set 17 dl")
-    return "locked door"
 def control_maglock():
     global squeak_job, should_balls_drop, player_type
     maglock = request.form.get('maglock')
     action = request.form.get('action')
-    if maglock == "entrance-door-lock":
-        if action == "locked":
-            if player_type == 'adults':
-                print("adults")
-            elif player_type == 'kids':
-                print('kids')
-            #pi3.exec_command("raspi-gpio set 25 op dl")
-            return 'Maglock entrance-door-lock is now locked'
-        elif action == "unlocked":
-            pi3.exec_command("raspi-gpio set 25 op dh")
-            game_status = get_game_status()
-            if game_status == {'status': 'prepared'}:
-                start_timer()
-            return 'Maglock entrance-door-lock is now unlocked'
-    elif maglock == "doghouse-lock":
-        if action == "locked":
-            pi3.exec_command("raspi-gpio set 4 op dl")
-            return 'Maglock doghouse-lock is now locked'
-        elif action == "unlocked":
-            pi3.exec_command("raspi-gpio set 4 op dh")
-            return 'Maglock doghouse-lock is now unlocked'
-    elif maglock == "shed-door-lock":
-        if action == "locked":
-            pi3.exec_command("raspi-gpio set 16 op dl")
-            return 'shed locked'
-        elif action == "unlocked":
-            pi3.exec_command("raspi-gpio set 16 op dh")
-            return 'shed unlocked'
-    elif maglock == "blacklight":
-        if action == "locked":
-            ssh.exec_command("raspi-gpio set 17 op dl")
-            return 'blacklight locked'
-        elif action == "unlocked":
-            ssh.exec_command("raspi-gpio set 17 op dh")
-            return 'blacklight unlocked'
-    elif maglock == "exit-door-lock":
-        if action == "locked":
-            ssh.exec_command("raspi-gpio set 21 op dl")
-            return 'blacklight locked'
-        elif action == "unlocked":
-            ssh.exec_command("raspi-gpio set 21 op dh")
-            game_status = get_game_status()
-            if game_status == {'status': 'playing'}:
-                fade_music_out3()
-                stop_timer()
-            return 'exit unlocked'
-    elif maglock == "should-balls-drop":
-        if action == "locked":
-            should_balls_drop = False
-            return 'balls wont drop'
-        elif action == "unlocked":
-            should_balls_drop = True
-            return 'balls will drop'
-    elif maglock == "lab-hatch-lock":
-        if action == "locked":
-            ssh.exec_command("raspi-gpio set 20 op dl")
-            return 'labhatch locked'
-        elif action == "unlocked":
-            ssh.exec_command("raspi-gpio set 20 op dh")
-            return 'exit unlocked'
-    elif maglock == "sliding-door-lock":
-        if action == "locked":
-            ssh.exec_command("raspi-gpio set 16 op dl")
-            return 'blacklight locked'
-        elif action == "unlocked":
-            ssh.exec_command("raspi-gpio set 16 op dh")
-            return 'exit unlocked'
-    elif maglock == "ball-drop-lock":
-        if action == "locked":
-            ssh.exec_command("raspi-gpio set 6 op dl")
-            return 'blacklight locked'
-        elif action == "unlocked":
-            ssh.exec_command("raspi-gpio set 6 op dh")
-            return 'exit unlocked'
-    elif maglock == "sinus-shootinglock":
-        if action == "unlocked":
-            ssh.exec_command("raspi-gpio set 18 op dh")
-            time.sleep(0.3)
-            ssh.exec_command("raspi-gpio set 18 op dl")
-            return 'shootinglock unlocked'
-    else:
-        return 'Invalid maglock or action'
-
+    print(maglock)
+    sensor_data = read_sensor_data2()
+    for sensor in sensor_data:
+        print(sensor)
+        if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
+            pi_name = sensor['pi']
+            # Publish the MQTT message with the appropriate Pi's name
+            mqtt_message = f"{sensor['pin']} {action}"
+            publish.single(f"actuator/control/{pi_name}", mqtt_message, hostname=broker_ip)
+            return("done")
 @app.route('/control_maglock', methods=['POST'])
 def control_maglock_route():
     return control_maglock()
@@ -1411,7 +1413,7 @@ def add_sensor():
         # Save the updated sensor data to the JSON file
         with open('json/sensor_data.json', 'w') as json_file:
             json.dump(sensors, json_file, indent=4)
-        ssh_sessions = [ssh, pi2, pi3]
+        ssh_sessions = [ssh, pi2]
 
         success_message = "Script sent successfully to the following IP addresses:<br>"
 
@@ -1482,20 +1484,6 @@ def get_sinus_status():
     return turn_off_maglock(maglock)
 
 
-
-def cleanup():
-    pi2.exec_command('sudo pkill -f sinus_game.py')
-    execute_delete_locks_script()
-    ssh.exec_command('pkill -f status.py')
-    pi2.exec_command('pkill -f status.py')
-    pi3.exec_command('pkill -f status.py')
-    pi2.exec_command('pkill -f distort.py')
-    pi2.exec_command('pkill -f sensor_board.py')
-    pi3.exec_command('pkill -f ir.py')
-    pi2.exec_command('pkill -f ir.py')
-    ssh.exec_command('pkill -f keypad.py')
-    ssh.exec_command('pkill -f read.py')
-
 @app.route('/send_script')
 def send_script():
     script_path = 'test.py'
@@ -1529,38 +1517,29 @@ def execute_code():
     stdin.flush()
     print("Code executed on the server Pi.")
 
-@app.route('/reboot-maglock-pi', methods=['POST'])
-def reboot_mag_pi():
-    global ssh, stdin
-    ssh.exec_command('sudo reboot')
-    ssh.close()
-    time.sleep(40)
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(ip1brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-    time.sleep(2)
-    ssh.exec_command('python status.py')
-    #stdin = ssh.exec_command(command)[0]
-    time.sleep(3)
-    ssh.exec_command('python delete-locks.py')
-    ssh.exec_command('python read.py')
-    #ssh.exec_command('python keypad.py')
-    return "top pi reset succesfully!"
+@app.route('/reboot_pi', methods=['POST'])
+def reboot_pi():
+    ip_address = request.form.get('ip_address')
 
-@app.route('/reboot-music-pi', methods=['POST'])
-def reboot_music_pi():
-    global pi2
-    pi2.exec_command('sudo reboot')
-    pi2.close()
-    time.sleep(40)
-    pi2 = paramiko.SSHClient()
-    pi2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    pi2.connect(ip2brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-    time.sleep(3)
-    pi2.exec_command('python status.py')
-    #pi2.exec_command('python sensor_board.py')
-    pi2.exec_command('python ir.py')
-    return "middle pi reset succesfully!"
+    # Ensure IP address is provided
+    if not ip_address:
+        return jsonify({"error": "IP address is required"}), 400
+
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(ip_address, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+
+        # Sending the reboot command
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo reboot')
+
+        # Optional: Wait for the command to complete and fetch the output
+        # output = ssh_stdout.read().decode()
+
+        ssh.close()
+        return jsonify({"message": f"Reboot command sent to {ip_address}"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/trigger', methods=['POST'])
@@ -1757,83 +1736,36 @@ def check_scripts_running(ssh, script_name):
     except Exception as e:
         return False
 
-def check_all_scripts():
-    print("Performing checks...")
-    results = {}
+def check_service_status(ip_address, service_name):
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(ip_address, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+    stdin, stdout, stderr = ssh.exec_command(f'systemctl is-active {service_name}')
+    status = stdout.read().decode().strip() == 'active'
+    ssh.close()
+    return status
 
-    # Check "mqtt.py" and "status.py" on all devices
-    devices = {
-        "top": ssh,
-        "middle": pi2,
-        "tree": pi3
-    }
+# Define a function to get Raspberry Pis by prefix
+def get_raspberry_pis_with_prefix(prefix, scanner):
+    pi_devices = scanner.scan_for_raspberrypi()  # Adjust the range as necessary
+    return [(ip, hostname) for ip, _, hostname in pi_devices if hostname and hostname.startswith(prefix)]
 
-    script_names = ["mqtt.py", "status.py"]
-
-    for device_name, device_ssh in devices.items():
-        results[device_name] = {}
-        for script_name in script_names:
-            results[device_name][script_name] = check_scripts_running(device_ssh, script_name)
-    print("Checks completed.")  # Add this line for debugging
-    return results
-def start_mqtt():
-    pi2.exec_command('pkill -f mqtt.py')
-    pi3.exec_command('pkill -f mqtt.py')
-    ssh.exec_command('pkill -f mqtt.py')
-    time.sleep(2)
-    pi2.exec_command('python mqtt.py') 
-    pi3.exec_command('python mqtt.py')
-    ssh.exec_command('python mqtt.py')
 @app.route('/prepare', methods=['POST'])
 def prepare_game():
-    global codesCorrect, kraken1, kraken2, kraken3, kraken4, should_hint_shed_play, player_type
-    global code1
-    global code2
-    global code3
-    global code4
-    global code5
-    codesCorrect == 0
-    code1 = False
-    code2 = False
-    code3 = False
-    code4 = False
-    code5 = False
-    kraken1 = False
-    kraken2 = False
-    kraken3 = False
-    kraken4 = False
-    should_hint_shed_play = True
-    player_type = request.form.get('playerType')
-    print(player_type)
-    #pi2.exec_command("raspi-gpio set 4 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 8 op dl \n raspi-gpio set 1 op dl")
-    print("Preparing game...")  # Add this line for debugging
-    # Perform the checks and generate the result message
-    game_status = get_game_status()
-    print(game_status)
-    if game_status != {'status': 'prepared'}:
-        start_mqtt()
-        codesCorrect = 0
-        pi3.exec_command('echo "volume 65" | sudo tee /tmp/mpg123_fifo')
-        pi2.exec_command('sudo pkill -f sinus_game.py')
-        ssh.exec_command('sudo pkill -f status.py')
-        pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
-        time.sleep(2)
-        turn_on_api()
-        pi2.exec_command('echo "volume 25" | sudo tee /tmp/mpg123_fifo \n sudo pkill -f sinus_override.py')
-    time.sleep(1)
-    print("Preparation complete.")
-    if game_status != {'status': 'prepared'}:
-        pi2.exec_command("nohup python status.py > /dev/null 2>&1 &")
-        load_command = f'echo "load /home/pi/Music/Lounge.mp3" | sudo tee /tmp/mpg123_fifo \n echo "volume 65" | sudo tee /tmp/mpg123_fifo'
-        pi3.exec_command(load_command)
-    results = check_all_scripts()
-    
-    print(results)
-    response = {
-        "message": results
-    }
-    update_game_status('prepared')
-    return jsonify(response), 200
+    prefix = request.form.get('prefix')
+    scanner = NetworkScanner()
+    raspberry_pis = get_raspberry_pis_with_prefix(prefix, scanner)
+
+    results = {}
+    for ip, hostname in raspberry_pis:
+        mqtt_status = check_service_status(ip, 'mqtt.service')
+        sound_status = check_service_status(ip, 'sound.service')
+        print(sound_status)
+        print(mqtt_status)
+        results[hostname] = {"mqtt.service": mqtt_status, "sound.service": sound_status}
+        #should be tested thoroughly
+
+    return jsonify({"message": results}), 200
 
 if romy == False:
     turn_on_api()
@@ -1845,5 +1777,3 @@ def index():
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, handle_interrupt)
     socketio.run(app, host='0.0.0.0', port=80)
-    if romy == False:
-        atexit.register(cleanup)

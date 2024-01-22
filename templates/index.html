@@ -32,7 +32,11 @@
             </a>
         </article>
     </section>
-
+    <ul>
+        {% for device in devices %}
+            <li>IP: {{ device[0] }}, MAC: {{ device[1] }}</li>
+        {% endfor %}
+    </ul>
     <footer>
         <a href="/">Kamers</a>
     </footer>
