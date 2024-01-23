@@ -203,7 +203,7 @@
         
 
         <!-- Modal -->
-        <section id="task-modal" class="task-modal hidden-popup hidden">
+        <!-- <section id="task-modal" class="task-modal hidden-popup hidden">
             <article class="modal popup">
                 <button class="close-add-task close"><img src="static/img/abort.svg" alt="Close button"></button>
             
@@ -218,7 +218,17 @@
                     <button id="save-task-button" class="button-style">Save Task</button>
                 </div>
             </article>
-        </section>
+        </section> -->
+        <div id="task-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-task modal-close">&times;</span>
+                <label for="task-name">Task Name:</label>
+                <input type="text" id="task-name">
+                <label for="task-description">Task Description:</label>
+                <input type="text" id="task-description">
+                <button id="save-task-button" class="button-style">Save Task</button>
+            </div>
+        </div> 
 
         <!-- Modal for Task Removal -->
         <div id="remove-modal" class="modal">
