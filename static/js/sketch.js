@@ -886,6 +886,57 @@ function openTaskPopup(task) {
   solvedButton.onclick = null;
   pendingButton.onclick = null;
   skipButton.onclick = null;
+  const taskControlContainer = taskPopup.querySelector(".task-control-container");
+
+  // Remove any previously added dynamic buttons and "Play hint" message
+  const existingDynamicButtonContainer = taskControlContainer.querySelector(".dynamic-button-container");
+  if (existingDynamicButtonContainer) {
+    existingDynamicButtonContainer.remove();
+  }
+
+  // Create a container div for the dynamic buttons
+  const dynamicButtonContainer = document.createElement("div");
+  dynamicButtonContainer.className = "dynamic-button-container";
+
+  // Create a "Play hint" message
+  const playHintMessage = document.createElement("p");
+  playHintMessage.textContent = "Play hint:";
+
+  // Append the "Play hint" message to the dynamicButtonContainer
+  dynamicButtonContainer.appendChild(playHintMessage);
+
+  // Create and append 4 new buttons to the dynamicButtonContainer
+  for (let i = 1; i <= 4; i++) {
+    const dynamicButton = document.createElement("button");
+    dynamicButton.textContent = `${task.task}-${i}`;
+    dynamicButton.className = "button-style dynamic-button";
+    dynamicButton.id = `button-${task.task}-${i}`;
+
+    // Add an event listener to each button
+    dynamicButton.addEventListener("click", () => {
+        // AJAX request using jQuery
+        $.ajax({
+            type: "POST",
+            url: "/play_music",
+            contentType: "application/json",
+            data: JSON.stringify({
+                message: `/home/pi/Music/${task.task}-${i}.ogg`
+            }),
+            success: function(response) {
+                console.log("Response from Flask:", response);
+            },
+            error: function(error) {
+                console.error("Error:", error);
+            }
+        });
+    });
+
+    // Append the button to the dynamicButtonContainer
+    dynamicButtonContainer.appendChild(dynamicButton);
+  }
+
+  // Insert the dynamicButtonContainer before the ".current-state" element
+  taskControlContainer.insertBefore(dynamicButtonContainer, taskControlContainer.querySelector(".current-state"));
 
   // Show the appropriate button based on the task state
   if (task.state === "solved" || task.state === "skipped") {

@@ -787,95 +787,7 @@ def resume_music():
 
 current_dir = os.path.abspath(os.path.dirname(__file__))
 
-@app.route('/play_music_garage_alley', methods=['POST'])
-def play_music_garage_alley():
-    global current_file
-    selected_file = request.form['file']
-    current_file = selected_file
-    pi = 'pi2'
-    # Define the soundcard channel information
-    soundcard_channel = 'hw:4,0'  # Adjust this based on your specific configuration
-    # Construct the command to play the music using the specified soundcard channel
-    command = f'mpg123 -a {soundcard_channel} Music/{selected_file} &'
-    pi2.exec_command(command)
 
-    # Save the data to a JSON file on the server
-    status = 'playing'
-    data = {'filename': selected_file, 'status': status, 'soundcard_channel': soundcard_channel, 'pi': pi}
-    file_path = os.path.join(current_dir, 'json', 'file_status.json')
-
-    # Ensure the directory exists or create it if not
-    directory = os.path.dirname(file_path)
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    try:
-        # Load existing data from the JSON file (if it exists)
-        with open(file_path, 'r') as file:
-            file_data = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        file_data = []
-
-    # Append the new data to the existing data
-    file_data.append(data)
-
-    # Write the data to the JSON file
-    with open(file_path, 'w') as file:
-        json.dump(file_data, file)
-
-    print("Data written successfully.")
-    return 'Music started on pi2'
-
-@app.route('/play_music_garden', methods=['POST'])
-def play_music_garden():
-    global current_file
-    selected_file = request.form['file']
-    current_file = selected_file
-    pi = 'pi3'
-    print(selected_file)
-    # Define the soundcard channel information
-    soundcard_channel = 'hw:0,0'  # Adjust this based on your specific configuration
-    # Create a new FIFO file
-    if "Ambience" in selected_file:
-        load_command = f'echo "load /home/pi/Music/{current_file}" | sudo tee /tmp/mpg123_fifo'
-        print(current_file)
-        pi3.exec_command(load_command)
-        print(load_command)
-    else:
-        command = f'mpg123 -a {soundcard_channel} Music/{current_file} &'
-        pi3.exec_command(command)
-        print("hiii")
-    # Command to play the music using the specified soundcard channel
-
-
-    # Send the load command to the FIFO file
-
-
-    # Save the data to a JSON file on the server
-    status = 'playing'
-    data = {'filename': selected_file, 'status': status, 'soundcard_channel': soundcard_channel, 'pi': pi}
-    file_path = os.path.join(current_dir, 'json', 'file_status.json')
-
-    # Ensure the directory exists or create it if not
-    directory = os.path.dirname(file_path)
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    try:
-        # Load existing data from the JSON file (if it exists)
-        with open(file_path, 'r') as file:
-            file_data = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        file_data = []
-
-    # Append the new data to the existing data
-    file_data.append(data)
-
-    # Write the data to the JSON file
-    with open(file_path, 'w') as file:
-        json.dump(file_data, file)
-
-    return 'Music started on pi2'
 
 
 @app.route('/get_file_status', methods=['GET'])
@@ -1199,53 +1111,13 @@ def get_tasks():
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify([])
     
-@app.route('/play_music_lab', methods=['POST'])
-def play_music_lab():
-    global current_file
-    selected_file = request.form['file']
-    current_file = selected_file
-    pi = "pi2"
-
-    # Define the soundcard channel information
-    soundcard_channel = 'hw:1,0'  # Adjust this based on your specific configuration
-
-    # Construct the command to play the music using the specified soundcard channel
-    if "Background" in selected_file:
-        load_command = f'echo "load /home/pi/Music/{current_file}" | sudo tee /tmp/mpg123_fifo'
-        print(current_file)
-        pi2.exec_command(load_command)
-        print(load_command)
-    else:
-        command = f'mpg123 -a {soundcard_channel} Music/{current_file} &'
-        pi2.exec_command(command)
-        print("hiii")
-
-    # Save the data to a JSON file on the server
-    status = 'playing'
-    data = {'filename': selected_file, 'status': status, 'soundcard_channel': soundcard_channel, 'pi': pi}
-    file_path = os.path.join(current_dir, 'json', 'file_status.json')
-
-    # Ensure the directory exists or create it if not
-    directory = os.path.dirname(file_path)
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    try:
-        # Load existing data from the JSON file (if it exists)
-        with open(file_path, 'r') as file:
-            file_data = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        file_data = []
-
-    # Append the new data to the existing data
-    file_data.append(data)
-
-    # Write the data to the JSON file
-    with open(file_path, 'w') as file:
-        json.dump(file_data, file)
-
-    print("Data written successfully.")
-    return 'Music started on pi2'
+@app.route('/play_music', methods=['POST'])
+def play_music():
+    data = request.json
+    message = data.get('message')
+    print(message)
+    publish.single("audio_control/play", message, hostname=broker_ip)
+    return jsonify({"status": "success"})
 def set_starting_volume(soundcard_channel):
     command = f'amixer -c {soundcard_channel} set PCM Playback Volume 25%'
     pi2.exec_command(command)
