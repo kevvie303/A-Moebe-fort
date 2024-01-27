@@ -21,6 +21,10 @@ states
   font-style: italic;
 }
 
+.skipped {
+  color: var(--button-color);
+}
+
 #time-played {
   color: var(--locked);
 }
@@ -75,12 +79,7 @@ body {
   background: var(--background-color);
   display: flex;
   flex-direction: column;
-  height: 100vh;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
+  // height: 100vh;
   gap: 20px;
 }
 
