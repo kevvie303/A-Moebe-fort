@@ -1,0 +1,10 @@
+[
+    {
+        "sensor": "entrance_door",
+        "condition": "Triggered",
+        "actuator": "zwaailamp-groen-kids",
+        "action": "Turn On",
+        "maxExecutions": "1",
+        "delay": "2"
+    }
+]

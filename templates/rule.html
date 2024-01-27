@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Escape Room Rule Creator</title>
+</head>
+<body>
+    <h1>Create a Rule</h1>
+    <form id="ruleForm">
+        <select id="sensorSelect"></select>
+        <select id="sensorStateSelect">
+            <option value="Triggered">Triggered</option>
+            <option value="Untriggered">Untriggered</option>
+        </select>
+        <select id="actuatorSelect" onchange="updateActionSelect()"></select>
+        <select id="actionSelect">
+            <!-- Options will be populated based on actuator type -->
+        </select>
+        <input type="number" id="executionCount" min="1" placeholder="Execution Count">
+        <input type="number" id="delay" min="0" placeholder="Delay in Seconds">
+        <button type="submit">Create Rule</button>
+    </form>
+
+    <script>
+    var actuatorTypes = {};
+
+document.addEventListener("DOMContentLoaded", function() {
+    fetch('/get_sensor_data')
+        .then(response => response.json())
+        .then(data => {
+            const sensorSelect = document.getElementById('sensorSelect');
+            const actuatorSelect = document.getElementById('actuatorSelect');
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.name;
+                option.textContent = item.name;
+                if (item.type === 'Sensor') {
+                    sensorSelect.appendChild(option);
+                } else if (item.type === 'maglock' || item.type === 'light') {
+                    actuatorSelect.appendChild(option.cloneNode(true));
+                    actuatorTypes[item.name] = item.type;
+                }
+            });
+        });
+});
+
+function updateActionSelect() {
+    const selectedActuator = document.getElementById('actuatorSelect').value;
+    const actionSelect = document.getElementById('actionSelect');
+    actionSelect.innerHTML = ''; // Clear existing options
+
+    if(actuatorTypes[selectedActuator] === 'maglock') {
+        actionSelect.options.add(new Option('Unlock', 'Unlock'));
+        actionSelect.options.add(new Option('Lock', 'Lock'));
+    } else if(actuatorTypes[selectedActuator] === 'light') {
+        actionSelect.options.add(new Option('Turn On', 'Turn On'));
+        actionSelect.options.add(new Option('Turn Off', 'Turn Off'));
+    }
+}
+
+
+document.getElementById('ruleForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const selectedSensor = document.getElementById('sensorSelect').value;
+    const sensorState = document.getElementById('sensorStateSelect').value;
+    const selectedActuator = document.getElementById('actuatorSelect').value;
+    const selectedAction = document.getElementById('actionSelect').value;
+    const executionCount = document.getElementById('executionCount').value || 1; // Default to 1 if empty
+    const delay = document.getElementById('delay').value || 0; // Default to 0 if empty
+
+    const rule = {
+        sensor: selectedSensor,
+        condition: sensorState,
+        actuator: selectedActuator,
+        action: selectedAction,
+        maxExecutions: executionCount,
+        delay: delay
+    };
+
+    fetch('/submit_rule', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(rule)
+    }).then(response => response.json())
+      .then(data => {
+          alert('Rule submitted successfully');
+          // You can also implement more sophisticated feedback
+      });
+});
+    </script>
+</body>
+</html>

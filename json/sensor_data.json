@@ -18,7 +18,7 @@
         "type": "light",
         "pin": 20,
         "pi": "guard_room_pi",
-        "state": "Not Triggered"
+        "state": "On"
     },
     {
         "name": "entrance-door-lock",

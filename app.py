@@ -26,7 +26,7 @@ ssh = None
 stdin = None
 pi2 = None
 pi3 = None
-romy = False
+romy = True
 last_keypad_code = None
 aborted = False
 player_type = None
@@ -282,6 +282,36 @@ def read_sensor_data2():
     with open("json/sensor_data.json", "r") as file:
         sensor_data = json.load(file)
     return sensor_data
+@app.route('/submit_rule', methods=['POST'])
+def submit_rule():
+    rule = request.json
+
+    # Path to the rules JSON file
+    rules_file_path = "json/rules.json"
+
+    # Load existing rules and add the new rule
+    if os.path.exists(rules_file_path):
+        with open(rules_file_path, 'r') as file:
+            rules = json.load(file)
+    else:
+        rules = []
+    rules.append(rule)
+    with open(rules_file_path, 'w') as file:
+        json.dump(rules, file, indent=4)
+    return jsonify({"status": "success", "message": "Rule added successfully"})
+def process_dynamic_rules(sensor_name, sensor_state):
+    with open("json/rules.json", "r") as file:
+        dynamic_rules = json.load(file)
+
+    for rule in dynamic_rules:
+        # Check if the rule has remaining executions and matches the current sensor state
+        if rule['sensor'] == sensor_name and sensor_state == rule['condition'] and rule.get('executedCount', 0) < int(rule['maxExecutions']):
+            # Implement delay
+            if 'delay' in rule and int(rule['delay']) > 0:
+                time.sleep(int(rule['delay']))
+
+            execute_action(rule['action'])
+            rule['executedCount'] = rule.get('executedCount', 0) + 1
 def check_rule(item_name):
     try:
         # Read sensor data from the JSON file
@@ -1482,6 +1512,9 @@ def add_sensor():
 @app.route('/list_sensors')
 def list_sensors():
     return render_template('list_sensors.html', sensors=sensors)
+@app.route('/rule')
+def rule():
+    return render_template('rule.html', sensors=sensors)
 def start_bird_sounds():
     pi3.exec_command("mpg123 -a hw:1,0 Music/Gull.mp3")
     time.sleep(8)
