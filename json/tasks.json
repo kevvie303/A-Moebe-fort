@@ -32,7 +32,7 @@
     {
         "task": "Stroomstoring",
         "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
-        "state": "pending"
+        "state": "solved"
     },
     {
         "task": "Cijfers-voelen",
