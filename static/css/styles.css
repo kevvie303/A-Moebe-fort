@@ -2,10 +2,12 @@
   --background-color: #464c53;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
-  --button-color-hover: rgb(70, 132, 190);
+  --button-color-hover: #4684be;
+  --second-button-color-hover: #31982f;
   --locked: #de4646;
   --unlocked: #37a835;
   --pending: #545454;
+  --skipped: #c8a929;
   --text-color: #050505;
   --secondary-text-color: #efefef;
   --sm: 576px;
@@ -23,10 +25,12 @@
   --background-color: #464c53;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
-  --button-color-hover: rgb(70, 132, 190);
+  --button-color-hover: #4684be;
+  --second-button-color-hover: #31982f;
   --locked: #de4646;
   --unlocked: #37a835;
   --pending: #545454;
+  --skipped: #c8a929;
   --text-color: #050505;
   --secondary-text-color: #efefef;
   --sm: 576px;
@@ -197,11 +201,9 @@ landing page
 }
 .landing-page .rooms .krijgsgevangenis-container .controls .info {
   display: flex;
-  width: -moz-fit-content;
   width: fit-content;
 }
 .landing-page .rooms .krijgsgevangenis-container .controls .info a {
-  width: -moz-fit-content;
   width: fit-content;
 }
 .landing-page .rooms .media {
@@ -271,10 +273,12 @@ media queries
   --background-color: #464c53;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
-  --button-color-hover: rgb(70, 132, 190);
+  --button-color-hover: #4684be;
+  --second-button-color-hover: #31982f;
   --locked: #de4646;
   --unlocked: #37a835;
   --pending: #545454;
+  --skipped: #c8a929;
   --text-color: #050505;
   --secondary-text-color: #efefef;
   --sm: 576px;
@@ -306,6 +310,10 @@ states
 .pending {
   color: var(--pending);
   font-style: italic;
+}
+
+.skipped {
+  color: var(--button-color);
 }
 
 #time-played {
@@ -361,12 +369,6 @@ body {
   background: var(--background-color);
   display: flex;
   flex-direction: column;
-  height: 100vh;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
   gap: 20px;
 }
 
@@ -393,10 +395,12 @@ main {
   --background-color: #464c53;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
-  --button-color-hover: rgb(70, 132, 190);
+  --button-color-hover: #4684be;
+  --second-button-color-hover: #31982f;
   --locked: #de4646;
   --unlocked: #37a835;
   --pending: #545454;
+  --skipped: #c8a929;
   --text-color: #050505;
   --secondary-text-color: #efefef;
   --sm: 576px;
@@ -419,6 +423,11 @@ button,
 a {
   background: none;
   border: none;
+  cursor: pointer;
+}
+button:hover,
+a:hover {
+  filter: drop-shadow(0 0 2px #c0c0c0);
 }
 button:active,
 a:active {
@@ -426,7 +435,7 @@ a:active {
 }
 button:focus,
 a:focus {
-  border: 3px solid #161616;
+  border: 2px dotted #161616;
   outline: none;
 }
 
@@ -457,10 +466,12 @@ a:focus {
   --background-color: #464c53;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
-  --button-color-hover: rgb(70, 132, 190);
+  --button-color-hover: #4684be;
+  --second-button-color-hover: #31982f;
   --locked: #de4646;
   --unlocked: #37a835;
   --pending: #545454;
+  --skipped: #c8a929;
   --text-color: #050505;
   --secondary-text-color: #efefef;
   --sm: 576px;
@@ -541,10 +552,12 @@ header.retriever-logo {
   --background-color: #464c53;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
-  --button-color-hover: rgb(70, 132, 190);
+  --button-color-hover: #4684be;
+  --second-button-color-hover: #31982f;
   --locked: #de4646;
   --unlocked: #37a835;
   --pending: #545454;
+  --skipped: #c8a929;
   --text-color: #050505;
   --secondary-text-color: #efefef;
   --sm: 576px;
@@ -637,7 +650,6 @@ section.time-hidden article.time div.time-controls div.speed-up-slow-down {
 }
 section.time-hidden article.time div.time-controls div.reset-speed {
   display: flex;
-  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -658,7 +670,6 @@ section.pi-hidden article.pi article.pi-buttons div.pi-controls div.backup {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: -moz-fit-content;
   width: fit-content;
 }
 section.pi-hidden article.pi article.pi-buttons div.pi-controls div.reboot div.pies,
@@ -686,7 +697,6 @@ section.game-hidden article.game-controls div.game-buttons {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: -moz-fit-content;
   width: fit-content;
   justify-content: center;
 }
@@ -694,7 +704,6 @@ section.game-hidden article.game-controls div.abort p {
   text-align: center;
 }
 section.game-hidden article.game-controls div.abort button {
-  width: -moz-fit-content;
   width: fit-content;
   align-self: center;
   background: var(--locked);
@@ -781,7 +790,6 @@ section.media-selection.container form select {
   width: 100%;
 }
 section.media-selection.container form input {
-  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -805,6 +813,7 @@ section.tasks-hidden article.task-control div.task-control-container div.button-
   display: flex;
   flex-direction: row;
   gap: 10px;
+  justify-content: center;
 }
 section.tasks-hidden article.task-control div.task-control-container div.button-container button {
   width: 100%;
@@ -812,8 +821,17 @@ section.tasks-hidden article.task-control div.task-control-container div.button-
 section.tasks-hidden article.task-control div.task-control-container div.button-container button.solved-button {
   background: var(--unlocked);
 }
+section.tasks-hidden article.task-control div.task-control-container div.button-container button.solved-button:hover {
+  background: var(--second-button-color-hover);
+}
 section.tasks-hidden article.task-control div.task-control-container div.button-container button.overdue-button {
   background: var(--locked);
+}
+section.tasks-hidden article.task-control div.task-control-container div.button-container button.pending-button {
+  width: 50%;
+}
+section.tasks-hidden article.task-control div.task-control-container div.button-container button.skip-button {
+  background: var(--skipped);
 }
 
 /*
@@ -860,10 +878,12 @@ section.control-container section.tasks div.modal div.modal-content input[type=t
   --background-color: #464c53;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
-  --button-color-hover: rgb(70, 132, 190);
+  --button-color-hover: #4684be;
+  --second-button-color-hover: #31982f;
   --locked: #de4646;
   --unlocked: #37a835;
   --pending: #545454;
+  --skipped: #c8a929;
   --text-color: #050505;
   --secondary-text-color: #efefef;
   --sm: 576px;
@@ -1010,7 +1030,6 @@ pin info button
 ###############
 */
 .pin-info {
-  width: -moz-fit-content;
   width: fit-content;
   align-self: center;
 }
@@ -1077,10 +1096,12 @@ media queries
   --background-color: #464c53;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
-  --button-color-hover: rgb(70, 132, 190);
+  --button-color-hover: #4684be;
+  --second-button-color-hover: #31982f;
   --locked: #de4646;
   --unlocked: #37a835;
   --pending: #545454;
+  --skipped: #c8a929;
   --text-color: #050505;
   --secondary-text-color: #efefef;
   --sm: 576px;
@@ -1147,10 +1168,12 @@ media queries
   --background-color: #464c53;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
-  --button-color-hover: rgb(70, 132, 190);
+  --button-color-hover: #4684be;
+  --second-button-color-hover: #31982f;
   --locked: #de4646;
   --unlocked: #37a835;
   --pending: #545454;
+  --skipped: #c8a929;
   --text-color: #050505;
   --secondary-text-color: #efefef;
   --sm: 576px;
@@ -1216,4 +1239,32 @@ footer a:hover {
 }
 .raspberrypi_list h1 {
   color: #5cb85c;
+}
+
+:root {
+  --background-color: #464c53;
+  --secondary-background-color: #efefef;
+  --button-color: #6197d4;
+  --button-color-hover: #4684be;
+  --second-button-color-hover: #31982f;
+  --locked: #de4646;
+  --unlocked: #37a835;
+  --pending: #545454;
+  --skipped: #c8a929;
+  --text-color: #050505;
+  --secondary-text-color: #efefef;
+  --sm: 576px;
+  --md: 768px;
+  --lg: 992px;
+  --xl: 1200px;
+  --xxl: 1400px;
+  --icon-sm: 20px;
+  --icon-md: 24px;
+  --icon-lg: 40px;
+  --icon-xl: 48px;
+}
+
+section#task-modal {
+  top: 0;
+  left: 0;
 }/*# sourceMappingURL=styles.css.map */

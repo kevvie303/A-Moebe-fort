@@ -17,7 +17,7 @@
     {
         "task": "Streepjes-tellen",
         "description": "In de kamer verstopt staan allemaal streepjes, deze kunnen de mensen tellen. Hieruit komt de code 153 voor de kist. Hierin zit een pakje kaarten en de mal voor de posters.",
-        "state": "pending"
+        "state": "solved"
     },
     {
         "task": "Poster",
@@ -27,7 +27,7 @@
     {
         "task": "Geheime-deur",
         "description": "Als alle bovenstaande puzzels zijn opgelost, gaat de geheime deur naar de guards-room open.",
-        "state": "pending"
+        "state": "solved"
     },
     {
         "task": "Stroomstoring",
@@ -52,7 +52,7 @@
     {
         "task": "Namen-combineren",
         "description": "Bij de wastafels moeten de juiste namen bij de juiste wastafels komen, hierdoor vallen de schoenen onder de wastafels vandaan.",
-        "state": "pending"
+        "state": "skipped"
     },
     {
         "task": "Schoentje-zetten",
