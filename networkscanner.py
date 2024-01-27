@@ -38,7 +38,7 @@ class NetworkScanner:
         pi_devices = []
         for host in self.nm.all_hosts():
             mac_address = self.nm[host]['addresses'].get('mac', None)
-            if mac_address and (mac_address.startswith("B8:27:EB") or mac_address.startswith("DC:A6:32")):
+            if mac_address and (mac_address.startswith("B8:27:EB") or mac_address.startswith("DC:A6:32") or mac_address.startswith("D8:3A:DD")):
                 hostname = self.get_hostname_via_ssh(host)
                 pi_devices.append((host, mac_address, hostname))
         return pi_devices
