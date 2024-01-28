@@ -178,7 +178,7 @@ def monitor_ssh_connections():
 # Start the monitoring thread
 monitor_thread = threading.Thread(target=monitor_ssh_connections)
 monitor_thread.daemon = True  # Make the thread a daemon to exit when the main program exits
-broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
+broker_ip = "192.168.1.175"  # IP address of the broker Raspberry Pi
 #broker_ip = "192.168.1.216"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
