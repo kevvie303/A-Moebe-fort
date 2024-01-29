@@ -54,5 +54,33 @@
         "pin": 4,
         "pi": "corridor_pi",
         "state": "initial"
+    },    
+    {
+        "name": "gang-blacklight-1",
+        "type": "light",
+        "pin": 19,
+        "pi": "corridor_pi",
+        "state": "initial"
+    },
+    {
+        "name": "gang-licht-1",
+        "type": "light",
+        "pin": 26,
+        "pi": "corridor_pi",
+        "state": "initial"
+    },
+    {
+        "name": "bovenste-la-guard",
+        "type": "maglock",
+        "pin": 26,
+        "pi": "guard_room_pi",
+        "state": "initial"
+    },
+    {
+        "name": "bovenste-la-guard",
+        "type": "maglock",
+        "pin": 26,
+        "pi": "guard_room_pi",
+        "state": "initial"
     }
 ]
