@@ -38,6 +38,7 @@ sensor_1_triggered = False
 sensor_2_triggered = False
 ip_guard_room = '192.168.50.218'
 ip_corridor = '192.168.50.197'
+ip_cell = '192.168.50.242'
 sequence = 0
 should_sound_play = True
 should_balls_drop = True
@@ -85,12 +86,12 @@ def establish_ssh_connection():
         pi2.connect(ip_corridor, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
         pi2.exec_command('pkill -f mqtt.py')
 
-    #global pi3
-    #if pi3 is None or not pi3.get_transport().is_active():
-     #   pi3 = paramiko.SSHClient()
-      #  pi3.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-       # pi3.connect(ip3brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-        #pi3.exec_command('pkill -f mqtt.py \n python status.py')
+    global pi3
+    if pi3 is None or not pi3.get_transport().is_active():
+        pi3 = paramiko.SSHClient()
+        pi3.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        pi3.connect(ip_cell, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+        pi3.exec_command('pkill -f mqtt.py \n python status.py')
 
 def is_online(ip):
     try:
@@ -1285,7 +1286,7 @@ def add_sensor():
         # Save the updated sensor data to the JSON file
         with open('json/sensor_data.json', 'w') as json_file:
             json.dump(sensors, json_file, indent=4)
-        ssh_sessions = [ssh, pi2]
+        ssh_sessions = [ssh, pi2, pi3]
 
         success_message = "Script sent successfully to the following IP addresses:<br>"
 
