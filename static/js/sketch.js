@@ -177,9 +177,7 @@ $(document).ready(function () {
           var lockButton = $("<button>")
             .addClass("turn-on-button icon")
             .append(
-              $("<img>")
-                .attr("src", "static/img/lock.svg")
-                .attr("alt", "Lock")
+              $("<img>").attr("src", "static/img/lock.svg").attr("alt", "Lock")
             );
           var unlockButton = $("<button>")
             .addClass("turn-off-button icon")
@@ -908,10 +906,14 @@ function openTaskPopup(task) {
   solvedButton.onclick = null;
   pendingButton.onclick = null;
   skipButton.onclick = null;
-  const taskControlContainer = taskPopup.querySelector(".task-control-container");
+  const taskControlContainer = taskPopup.querySelector(
+    ".task-control-container"
+  );
 
   // Remove any previously added dynamic buttons and "Play hint" message
-  const existingDynamicButtonContainer = taskControlContainer.querySelector(".dynamic-button-container");
+  const existingDynamicButtonContainer = taskControlContainer.querySelector(
+    ".dynamic-button-container"
+  );
   if (existingDynamicButtonContainer) {
     existingDynamicButtonContainer.remove();
   }
@@ -936,21 +938,21 @@ function openTaskPopup(task) {
 
     // Add an event listener to each button
     dynamicButton.addEventListener("click", () => {
-        // AJAX request using jQuery
-        $.ajax({
-            type: "POST",
-            url: "/play_music",
-            contentType: "application/json",
-            data: JSON.stringify({
-                message: `/home/pi/Music/${task.task}-${i}.ogg`
-            }),
-            success: function(response) {
-                console.log("Response from Flask:", response);
-            },
-            error: function(error) {
-                console.error("Error:", error);
-            }
-        });
+      // AJAX request using jQuery
+      $.ajax({
+        type: "POST",
+        url: "/play_music",
+        contentType: "application/json",
+        data: JSON.stringify({
+          message: `/home/pi/Music/${task.task}-${i}.ogg`,
+        }),
+        success: function (response) {
+          console.log("Response from Flask:", response);
+        },
+        error: function (error) {
+          console.error("Error:", error);
+        },
+      });
     });
 
     // Append the button to the dynamicButtonContainer
@@ -958,7 +960,10 @@ function openTaskPopup(task) {
   }
 
   // Insert the dynamicButtonContainer before the ".current-state" element
-  taskControlContainer.insertBefore(dynamicButtonContainer, taskControlContainer.querySelector(".current-state"));
+  taskControlContainer.insertBefore(
+    dynamicButtonContainer,
+    taskControlContainer.querySelector(".current-state")
+  );
 
   // Show the appropriate button based on the task state
   if (task.state === "solved" || task.state === "skipped") {
@@ -1097,7 +1102,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
   document
-    .querySelector(".close-remove")
+    .querySelector(".close-remove-modal")
     .addEventListener("click", function () {
       document.getElementById("remove-modal").style.display = "none";
     });

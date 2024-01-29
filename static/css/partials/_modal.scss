@@ -1,6 +1,12 @@
 @import "../helpers/_variables";
 
-section#task-modal {
+section#task-modal,
+section#remove-modal,
+section#edit-modal {
   top: 0;
   left: 0;
+  article#edit-task-modal {
+    top: 0;
+    left: 0;
+  }
 }

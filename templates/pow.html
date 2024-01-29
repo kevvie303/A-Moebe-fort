@@ -231,16 +231,54 @@
         </div>  -->
 
         <!-- Modal for Task Removal -->
-        <div id="remove-modal" class="modal">
+        <section id="remove-modal" class="remove-modal hidden-popup hidden">
+            <article class="modal popup">
+                <button class="close-remove-modal close"><img src="static/img/abort.svg" alt="Close button"></button>
+
+                <h2>Select a Task to Remove</h2>
+
+                <div class="modal-content">
+                <ul id="task-removal-list"></ul>
+                <button id="confirm-remove-button" class="button-style">Confirm Removal</button>
+                </div>
+            </article>
+        </section>
+        <!-- <div id="remove-modal" class="modal">
             <div class="modal-content">
                 <span class="close-remove modal-close">&times;</span>
                 <h2>Select a Task to Remove</h2>
                 <ul id="task-removal-list"></ul>
                 <button id="confirm-remove-button" class="button-style">Confirm Removal</button>
             </div>
-        </div>
+        </div> -->
         
-        <div id="edit-modal" class="modal">
+        <section id="edit-modal" class="edit-modal hidden-popup hidden">
+            <article class="modal popup">
+                <button class="close-edit-modal close"><img src="static/img/abort.svg" alt="Close button"></button>
+
+                <h2>Select a Task to Edit</h2>
+
+                <div class="modal-content">
+                    <ul id="task-edit-list"></ul>
+                </div>
+            </article>
+
+            <article id="edit-task-modal" class="edit-task-modal modal hidden-popup hidden">
+                <button class="close-task-edit-modal close"><img src="static/img/abort.svg" alt="Close button"></button>
+               
+                <h2>Edit Task</h2>
+                
+                <div class="modal-content">
+                    <label for="edit-task-name">Task Name:</label>
+                    <input type="text" id="edit-task-name">
+                    <label for="edit-task-description">Task Description:</label>
+                    <input type="text" id="edit-task-description">
+                    <button id="save-edit-task-button" class="button-style">Save Changes</button>
+                </div>
+            </article>
+        </section>
+<!-- 
+       <div id="edit-modal" class="modal">
             <div class="modal-content">
                 <span class="close-edit modal-close">&times;</span>
                 <h2>Select a Task to Edit</h2>
@@ -257,7 +295,7 @@
                 <input type="text" id="edit-task-description">
                 <button id="save-edit-task-button" class="button-style">Save Changes</button>
             </div>
-        </div>
+        </div> -->
 
     </section>
 

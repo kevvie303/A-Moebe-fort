@@ -1264,7 +1264,15 @@ footer a:hover {
   --icon-xl: 48px;
 }
 
-section#task-modal {
+section#task-modal,
+section#remove-modal,
+section#edit-modal {
+  top: 0;
+  left: 0;
+}
+section#task-modal article#edit-task-modal,
+section#remove-modal article#edit-task-modal,
+section#edit-modal article#edit-task-modal {
   top: 0;
   left: 0;
 }/*# sourceMappingURL=styles.css.map */
