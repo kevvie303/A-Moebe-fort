@@ -189,13 +189,6 @@ $(document).ready(function () {
                 .attr("alt", "Unlock")
             );
           lockButtons.append(lockButton, unlockButton);
-
-          // Check if the lock is already locked, if so, hide the "lock" button
-          if (actuator.state === "Locked") {
-            lockButton.hide();
-          } else {
-            unlockButton.hide();
-          }
         } else if (actuator.type === "light") {
           var onButton = $("<button>")
             .addClass("turn-on-button icon")
@@ -212,13 +205,6 @@ $(document).ready(function () {
                 .attr("alt", "Light Off")
             );
           lockButtons.append(onButton, offButton);
-
-          // Check if the light is already on, if so, hide the "light on" button
-          if (actuator.state === "On") {
-            onButton.hide();
-          } else {
-            offButton.hide();
-          }
         }
 
         lockButtons.find("button").click(function () {
@@ -249,7 +235,6 @@ $(document).ready(function () {
     },
   });
 });
-
 
 $(document).ready(function () {
   var maglockStatuses = {}; // Object to store maglock statuses
