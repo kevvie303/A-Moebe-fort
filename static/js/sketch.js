@@ -1156,23 +1156,34 @@ document.addEventListener("DOMContentLoaded", function () {
         radio.type = "radio";
         radio.name = "task";
         radio.value = task.task;
-        li.textContent = `${task.task} - ${task.state}`;
-        li.prepend(radio);
+
+        const taskP = document.createElement("p");
+        taskP.textContent = task.task;
+
+        const taskStrong = document.createElement("strong");
+        taskStrong.textContent = task.state;
+
+        taskP.appendChild(taskStrong);
+        li.appendChild(radio);
+        li.appendChild(taskP);
+        // li.appendChild(taskStrong);
+        // li.textContent = `${task.task} - ${task.state}`;
+        // li.prepend(radio);
         taskRemovalList.appendChild(li);
       });
     } catch (error) {
       console.error("Error fetching tasks for removal:", error);
     }
   }
-  const editButton = document.getElementById("edit-task-button");
-  const editModal = document.getElementById("edit-modal");
-  const taskEditList = document.getElementById("task-edit-list");
-  const editTaskModal = document.getElementById("edit-task-modal");
-  const editTaskNameInput = document.getElementById("edit-task-name");
+  const editButton = document.getElementById("edit-task-button"); // Button that says 'Edit task'
+  const editModal = document.getElementById("edit-modal"); // Popup when 'Edit task' is clicked
+  const taskEditList = document.getElementById("task-edit-list"); // List of tasks in the 'Edit task' popup
+  const editTaskModal = document.getElementById("edit-task-modal"); // Popup when a task is clicked
+  const editTaskNameInput = document.getElementById("edit-task-name"); // Edit the name of the task
   const editTaskDescriptionInput = document.getElementById(
     "edit-task-description"
-  );
-  const saveEditTaskButton = document.getElementById("save-edit-task-button");
+  ); // Edit the description of the task
+  const saveEditTaskButton = document.getElementById("save-edit-task-button"); // Save the changes made tot the task
   let previousSaveEditTaskListener;
   // Event listener for opening the edit modal
   editButton.addEventListener("click", function () {
@@ -1252,12 +1263,12 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error fetching tasks:", error);
       });
     document
-      .querySelector(".close-edit")
+      .querySelector(".close-edit-modal")
       .addEventListener("click", function () {
         document.getElementById("edit-modal").style.display = "none";
       });
     document
-      .querySelector(".close-edit-task")
+      .querySelector(".close-edit-task-modal")
       .addEventListener("click", function () {
         document.getElementById("edit-task-modal").style.display = "none";
       });

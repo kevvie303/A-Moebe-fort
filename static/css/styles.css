@@ -1266,13 +1266,70 @@ footer a:hover {
 
 section#task-modal,
 section#remove-modal,
-section#edit-modal {
+section#edit-modal,
+section#edit-task-modal {
   top: 0;
   left: 0;
+  z-index: 2;
 }
-section#task-modal article#edit-task-modal,
-section#remove-modal article#edit-task-modal,
-section#edit-modal article#edit-task-modal {
-  top: 0;
-  left: 0;
+
+section#task-modal article.modal div.modal-content,
+section#edit-task-modal article.modal div.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+section#task-modal article.modal div.modal-content button,
+section#edit-task-modal article.modal div.modal-content button {
+  margin-top: 20px;
+}
+section#task-modal article.modal div.modal-content input,
+section#edit-task-modal article.modal div.modal-content input {
+  border-radius: 5px;
+  padding: 5px 10px;
+  border: 1px solid var(--background-color);
+}
+section#task-modal article.modal div.modal-content input:hover, section#task-modal article.modal div.modal-content input:active, section#task-modal article.modal div.modal-content input:focus,
+section#edit-task-modal article.modal div.modal-content input:hover,
+section#edit-task-modal article.modal div.modal-content input:active,
+section#edit-task-modal article.modal div.modal-content input:focus {
+  border: 1px solid var(--button-color);
+  outline: none;
+}
+
+section#remove-modal article.modal div.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+}
+section#remove-modal article.modal div.modal-content ul#task-removal-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+section#remove-modal article.modal div.modal-content ul#task-removal-list li {
+  display: flex;
+  width: 100%;
+}
+section#remove-modal article.modal div.modal-content ul#task-removal-list li input[type=radio] {
+  margin-right: 10px;
+}
+section#remove-modal article.modal div.modal-content ul#task-removal-list li p {
+  width: 100%;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+section#remove-modal article.modal div.modal-content ul#task-removal-list li p strong {
+  font-style: italic;
+}
+
+section#edit-modal article.modal div.modal-content ul#task-edit-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }/*# sourceMappingURL=styles.css.map */
