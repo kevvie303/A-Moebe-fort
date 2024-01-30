@@ -1,2 +1,23 @@
 [
+    {
+        "name": "right-chest-boat",
+        "type": "maglock",
+        "pin": 22,
+        "pi": "vol-boat",
+        "state": "Locked"
+    },
+    {
+        "name": "barrel-boat",
+        "type": "maglock",
+        "pin": 23,
+        "pi": "vol-boat",
+        "state": "Unlocked"
+    },
+    {
+        "name": "center-chest-boat",
+        "type": "maglock",
+        "pin": 4,
+        "pi": "vol-boat",
+        "state": "Locked"
+    }
 ]

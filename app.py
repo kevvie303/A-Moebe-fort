@@ -22,12 +22,12 @@ load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
 #command = 'python relay_control.py'
-loadMqtt = False
+loadMqtt = True
 ssh = None
 stdin = None
 pi2 = None
 pi3 = None
-romy = True
+romy = False
 last_keypad_code = None
 aborted = False
 player_type = None
@@ -1417,7 +1417,7 @@ def add_sensor():
         ssh_sessions = [ssh, pi2, pi3]
 
         success_message = "Script sent successfully to the following IP addresses:<br>"
-
+        print("did this")
         for session in ssh_sessions:
             if session:
                 try:
