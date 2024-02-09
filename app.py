@@ -1125,9 +1125,7 @@ def set_starting_volume(soundcard_channel):
     return "Volume set to 25%"
 @app.route('/stop_music', methods=['POST'])
 def stop_music():
-    # Stop the music on pi2
-    stdin, stdout, stderr = pi2.exec_command('pkill -9 mpg123 \n echo "stop" | sudo tee /tmp/mpg123_fifo')
-    stdin, stdout, stderr = pi3.exec_command('pkill -9 mpg123 \n echo "stop" | sudo tee /tmp/mpg123_fifo')
+    publish.single("audio_control/stop", "/home/pi/Music/Lutine-1.ogg", hostname=broker_ip)
     # Wipe the entire JSON file by overwriting it with an empty list
     file_path = os.path.join(current_dir, 'json', 'file_status.json')
     with open(file_path, 'w') as file:
