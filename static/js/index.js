@@ -1,5 +1,7 @@
 // front-end js by romy
 
+// variables for the navigation bar popups
+
 const mediaButton = document.getElementById("media-popup");
 const timeButton = document.getElementById("time-popup");
 const piButton = document.getElementById("pi-popup");

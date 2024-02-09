@@ -158,59 +158,81 @@ $(document).ready(function () {
 
   // Fetch the sensor data from the server
   $.ajax({
-      type: "GET",
-      url: "/get_sensor_data",  // Replace with the actual endpoint to fetch sensor data
-      success: function (sensor_data) {
-          // Filter out items that are not maglocks or lights
-          var filteredData = sensor_data.filter(function (item) {
-              return item.type === "maglock" || item.type === "light";
+    type: "GET",
+    url: "/get_sensor_data", // Replace with the actual endpoint to fetch sensor data
+    success: function (sensor_data) {
+      // Filter out items that are not maglocks or lights
+      var filteredData = sensor_data.filter(function (item) {
+        return item.type === "maglock" || item.type === "light";
+      });
+
+      var lockControlArticle = $("<article>").addClass("lock-control");
+
+      filteredData.forEach(function (actuator) {
+        var lockDiv = $("<div>").addClass("lock");
+        var actuatorName = $("<p>").text(actuator.name);
+        var lockButtons = $("<div>").addClass("lock-buttons");
+
+        if (actuator.type === "maglock") {
+          var lockButton = $("<button>")
+            .addClass("turn-on-button icon")
+            .append(
+              $("<img>")
+                .attr("src", "static/img/lock.svg")
+                .attr("alt", "Lock")
+            );
+          var unlockButton = $("<button>")
+            .addClass("turn-off-button icon")
+            .append(
+              $("<img>")
+                .attr("src", "static/img/unlock.svg")
+                .attr("alt", "Unlock")
+            );
+          lockButtons.append(lockButton, unlockButton);
+        } else if (actuator.type === "light") {
+          var onButton = $("<button>")
+            .addClass("turn-on-button icon")
+            .append(
+              $("<img>")
+                .attr("src", "static/img/light-off.svg")
+                .attr("alt", "Light On")
+            );
+          var offButton = $("<button>")
+            .addClass("turn-off-button icon")
+            .append(
+              $("<img>")
+                .attr("src", "static/img/light-on.svg")
+                .attr("alt", "Light Off")
+            );
+          lockButtons.append(onButton, offButton);
+        }
+
+        lockButtons.find("button").click(function () {
+          var action = $(this).hasClass("turn-on-button")
+            ? "locked"
+            : "unlocked";
+          $.ajax({
+            type: "POST",
+            url: "/control_maglock",
+            data: { maglock: actuator.name, action: action },
+            success: function (response) {
+              console.log(response);
+            },
+            error: function (error) {
+              console.log(error);
+            },
           });
+        });
 
-          var lockControlArticle = $("<article>").addClass("lock-control");
+        lockDiv.append(actuatorName, lockButtons);
+        lockControlArticle.append(lockDiv);
+      });
 
-          filteredData.forEach(function (actuator) {
-              var lockDiv = $("<div>").addClass("lock");
-              var actuatorName = $("<p>").text(actuator.name);
-              var lockButtons = $("<div>").addClass("lock-buttons");
-
-              if (actuator.type === "maglock") {
-                  var lockButton = $("<button>").addClass("turn-on-button icon")
-                                                .append($("<img>").attr("src", "static/img/lock.svg").attr("alt", "Lock"));
-                  var unlockButton = $("<button>").addClass("turn-off-button icon")
-                                                  .append($("<img>").attr("src", "static/img/unlock.svg").attr("alt", "Unlock"));
-                  lockButtons.append(lockButton, unlockButton);
-              } else if (actuator.type === "light") {
-                  var onButton = $("<button>").addClass("turn-on-button icon")
-                                              .append($("<img>").attr("src", "static/img/light-off.svg").attr("alt", "Light On"));
-                  var offButton = $("<button>").addClass("turn-off-button icon")
-                                               .append($("<img>").attr("src", "static/img/light-on.svg").attr("alt", "Light Off"));
-                  lockButtons.append(onButton, offButton);
-              }
-
-              lockButtons.find("button").click(function () {
-                  var action = $(this).hasClass("turn-on-button") ? "locked" : "unlocked";
-                  $.ajax({
-                      type: "POST",
-                      url: "/control_maglock",
-                      data: { maglock: actuator.name, action: action },
-                      success: function (response) {
-                          console.log(response);
-                      },
-                      error: function (error) {
-                          console.log(error);
-                      },
-                  });
-              });
-
-              lockDiv.append(actuatorName, lockButtons);
-              lockControlArticle.append(lockDiv);
-          });
-
-          lockControls.append(lockControlArticle);
-      },
-      error: function (error) {
-          console.log("Error fetching sensor data:", error);
-      }
+      lockControls.append(lockControlArticle);
+    },
+    error: function (error) {
+      console.log("Error fetching sensor data:", error);
+    },
   });
 });
 
@@ -886,6 +908,57 @@ function openTaskPopup(task) {
   solvedButton.onclick = null;
   pendingButton.onclick = null;
   skipButton.onclick = null;
+  const taskControlContainer = taskPopup.querySelector(".task-control-container");
+
+  // Remove any previously added dynamic buttons and "Play hint" message
+  const existingDynamicButtonContainer = taskControlContainer.querySelector(".dynamic-button-container");
+  if (existingDynamicButtonContainer) {
+    existingDynamicButtonContainer.remove();
+  }
+
+  // Create a container div for the dynamic buttons
+  const dynamicButtonContainer = document.createElement("div");
+  dynamicButtonContainer.className = "dynamic-button-container";
+
+  // Create a "Play hint" message
+  const playHintMessage = document.createElement("p");
+  playHintMessage.textContent = "Play hint:";
+
+  // Append the "Play hint" message to the dynamicButtonContainer
+  dynamicButtonContainer.appendChild(playHintMessage);
+
+  // Create and append 4 new buttons to the dynamicButtonContainer
+  for (let i = 1; i <= 4; i++) {
+    const dynamicButton = document.createElement("button");
+    dynamicButton.textContent = `${task.task}-${i}`;
+    dynamicButton.className = "button-style dynamic-button";
+    dynamicButton.id = `button-${task.task}-${i}`;
+
+    // Add an event listener to each button
+    dynamicButton.addEventListener("click", () => {
+        // AJAX request using jQuery
+        $.ajax({
+            type: "POST",
+            url: "/play_music",
+            contentType: "application/json",
+            data: JSON.stringify({
+                message: `/home/pi/Music/${task.task}-${i}.ogg`
+            }),
+            success: function(response) {
+                console.log("Response from Flask:", response);
+            },
+            error: function(error) {
+                console.error("Error:", error);
+            }
+        });
+    });
+
+    // Append the button to the dynamicButtonContainer
+    dynamicButtonContainer.appendChild(dynamicButton);
+  }
+
+  // Insert the dynamicButtonContainer before the ".current-state" element
+  taskControlContainer.insertBefore(dynamicButtonContainer, taskControlContainer.querySelector(".current-state"));
 
   // Show the appropriate button based on the task state
   if (task.state === "solved" || task.state === "skipped") {
@@ -924,6 +997,8 @@ async function markAsSolved(taskName) {
 
     closeTaskPopup(); // Close the popup
     fetchTasks(); // Refresh the list
+    response.classList.remove("pending");
+    response.classList.add("unlocked");
     console.log();
   } catch (error) {
     console.error("Error marking as solved:", error);
@@ -977,10 +1052,12 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("task-modal").style.display = "block";
     });
 
-  document.querySelector(".close-task").addEventListener("click", function () {
-    console.log("Close button clicked");
-    document.getElementById("task-modal").style.display = "none";
-  });
+  document
+    .querySelector(".close-add-task")
+    .addEventListener("click", function () {
+      console.log("Close button clicked");
+      document.getElementById("task-modal").style.display = "none";
+    });
 
   document
     .getElementById("save-task-button")
@@ -1228,9 +1305,7 @@ $(document).ready(function () {
     $.ajax({
       type: "POST",
       url: "/prepare",
-      data: { playerType: playerType,
-              prefix: "pow"
-            },
+      data: { playerType: playerType, prefix: "pow" },
       success: function (response) {
         prepareStatus.html(
           "Prepared - Status: OK. Game will start when door is open or start game has been clicked"
@@ -1437,61 +1512,65 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   function fetchAndDisplayRaspberryPis() {
-      fetch('/check_devices_status')
-          .then(response => response.json())
-          .then(data => {
-              let piListDiv = document.querySelector('.pi-list');
-              let rebootDiv = document.querySelector('.reboot');
+    fetch("/check_devices_status")
+      .then((response) => response.json())
+      .then((data) => {
+        let piListDiv = document.querySelector(".pi-list");
+        let rebootDiv = document.querySelector(".reboot");
 
-              // Clear existing entries
-              piListDiv.innerHTML = '<h3>Raspberry Pi Devices</h3>';
-              rebootDiv.innerHTML = '<h3>Reboot Controls</h3>';
+        // Clear existing entries
+        piListDiv.innerHTML = "<h3>Raspberry Pi Devices</h3>";
+        rebootDiv.innerHTML = "<h3>Reboot Controls</h3>";
 
-              data.forEach(pi => {
-                  // Add to the Raspberry Pi list
-                  let piInfo = document.createElement('div');
-                  piInfo.textContent = `Hostname: ${pi.hostname}, IP Address: ${pi.ip_address}, Status: ${pi.online ? 'Online' : 'Offline'}`;
-                  piListDiv.appendChild(piInfo);
+        data.forEach((pi) => {
+          // Add to the Raspberry Pi list
+          let piInfo = document.createElement("div");
+          piInfo.textContent = `Hostname: ${pi.hostname}, IP Address: ${
+            pi.ip_address
+          }, Status: ${pi.online ? "Online" : "Offline"}`;
+          piListDiv.appendChild(piInfo);
 
-                  // Create reboot buttons
-                  let rebootButton = document.createElement('button');
-                  rebootButton.textContent = `Reboot ${pi.hostname}`;
-                  rebootButton.className = 'button-style';
-                  rebootButton.onclick = function() {
-                      sendRebootRequest(pi.ip_address);
-                      console.log(`Rebooting ${pi.hostname}`);
-                  };
-                  rebootDiv.appendChild(rebootButton);
-              });
-          })
-          .catch(error => console.error('Error fetching Raspberry Pi data:', error));
+          // Create reboot buttons
+          let rebootButton = document.createElement("button");
+          rebootButton.textContent = `Reboot ${pi.hostname}`;
+          rebootButton.className = "button-style";
+          rebootButton.onclick = function () {
+            sendRebootRequest(pi.ip_address);
+            console.log(`Rebooting ${pi.hostname}`);
+          };
+          rebootDiv.appendChild(rebootButton);
+        });
+      })
+      .catch((error) =>
+        console.error("Error fetching Raspberry Pi data:", error)
+      );
   }
   function sendRebootRequest(ipAddress) {
-    fetch('/reboot_pi', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `ip_address=${encodeURIComponent(ipAddress)}`
+    fetch("/reboot_pi", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `ip_address=${encodeURIComponent(ipAddress)}`,
     })
-    .then(response => response.json())
-    .then(data => console.log(data.message))
-    .catch(error => console.error('Error sending reboot request:', error));
-}
+      .then((response) => response.json())
+      .then((data) => console.log(data.message))
+      .catch((error) => console.error("Error sending reboot request:", error));
+  }
   setInterval(function () {
     fetchAndDisplayRaspberryPis();
   }, 1000);
 });
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   var listPiButton = document.querySelector('a[href="/list_raspberrypi"]');
-  var loader = document.getElementById('loader');
+  var loader = document.getElementById("loader");
 
-  listPiButton.addEventListener('click', function() {
-      loader.hidden = false; // Show the loader
+  listPiButton.addEventListener("click", function () {
+    loader.hidden = false; // Show the loader
   });
-  window.addEventListener('pagehide', function() {
+  window.addEventListener("pagehide", function () {
     loader.hidden = true; // Hide the loader
-});
+  });
 });

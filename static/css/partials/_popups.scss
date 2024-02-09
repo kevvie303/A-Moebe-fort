@@ -287,14 +287,24 @@ section.tasks-hidden {
         display: flex;
         flex-direction: row;
         gap: 10px;
+        justify-content: center;
         button {
           width: 100%;
         }
         button.solved-button {
           background: var(--unlocked);
+          &:hover {
+            background: var(--second-button-color-hover);
+          }
         }
         button.overdue-button {
           background: var(--locked);
+        }
+        button.pending-button {
+          width: 50%;
+        }
+        button.skip-button {
+          background: var(--skipped);
         }
       }
     }
