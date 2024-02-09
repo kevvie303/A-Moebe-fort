@@ -1,1 +1,17 @@
-[]
+[
+    {
+        "ip_address": "192.168.1.129",
+        "mac_address": "B8:27:EB:26:4F:CE",
+        "hostname": "vol-kapitein"
+    },
+    {
+        "ip_address": "192.168.1.146",
+        "mac_address": "B8:27:EB:B6:DB:A9",
+        "hostname": "vol-boat"
+    },
+    {
+        "ip_address": "192.168.1.148",
+        "mac_address": "B8:27:EB:21:31:1F",
+        "hostname": "vol-afslag"
+    }
+]
