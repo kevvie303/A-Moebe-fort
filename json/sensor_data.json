@@ -11,12 +11,19 @@
         "type": "maglock",
         "pin": 23,
         "pi": "vol-boat",
-        "state": "Unlocked"
+        "state": "Locked"
     },
     {
         "name": "center-chest-boat",
         "type": "maglock",
         "pin": 4,
+        "pi": "vol-boat",
+        "state": "Locked"
+    },
+    {
+        "name": "Captain door lock",
+        "type": "maglock",
+        "pin": 17,
         "pi": "vol-boat",
         "state": "Locked"
     }

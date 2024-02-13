@@ -2,66 +2,76 @@
     {
         "task": "Lutine",
         "description": "Spelers hebben lutine ingedrukt op de knoppen",
+        "state": "solved"
+    },
+    {
+        "task": "Kaarten",
+        "description": "Spelers halen een code uit de kaarten",
         "state": "pending"
     },
     {
-        "task": "Medicijnkastje-open",
-        "description": "Spelers hebben het kastje boven de wastafel opengemaakt met de sleutel, hierin zit een ketting.",
+        "task": "Drankfles",
+        "description": "Spelers lezen de code van de drankfles af (MCDDLV = 1755)",
         "state": "pending"
     },
     {
-        "task": "Pov-cijfers",
-        "description": "De mensen moeten op een specifieke plek(ken) in de kamer staan om de juiste cijfers te zien, de code hieruit opent een kastje.",
+        "task": "Fotos",
+        "description": "Spelers tellen de objecten in de foto's",
         "state": "pending"
     },
     {
-        "task": "Streepjes-tellen",
-        "description": "In de kamer verstopt staan allemaal streepjes, deze kunnen de mensen tellen. Hieruit komt de code 153 voor de kist. Hierin zit een pakje kaarten en de mal voor de posters.",
+        "task": "Flessen",
+        "description": "Spelers tellen de flessen in de kist en strepen dubbele weg, hierdoor houden ze de code (9861) over",
         "state": "pending"
     },
     {
-        "task": "Poster",
-        "description": "Door de mal goed over de poster te leggen kunnen de spelers een bepaalde code aflezen, deze code opent de la.",
+        "task": "Cryptex",
+        "description": "De spelers hebben het jaartal door de cryptex heen gehaald en krijgen de code (1807)",
         "state": "pending"
     },
     {
-        "task": "Geheime-deur",
-        "description": "Als alle bovenstaande puzzels zijn opgelost, gaat de geheime deur naar de guards-room open.",
+        "task": "Inventaris",
+        "description": "De spelers hebben de inventaris gecheckt en zijn er achter gekomen dat ze een aantal objecten nog missen ",
         "state": "pending"
     },
     {
-        "task": "Stroomstoring",
-        "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
+        "task": "Kapiteinsgeheim",
+        "description": "De spelers hebben met de 4 ringen de code gevonden voor het kapiteinsgeheim. ( * * * * )",
         "state": "pending"
     },
     {
-        "task": "Cijfers-voelen",
-        "description": "Mensen voelen onderaan de stoel en vinden een code, door deze in te vullen op de keypad gaat de onderste la met een personeelspas open.",
+        "task": "YO-HO",
+        "description": "OPLOSSEN NADAT SPELERS (******) HEBBEN GEZEGD",
+        "state": "pending" 
+    },
+    {
+        "task": "Navigatie",
+        "description": "De spelers hebben het compas gebruikt om de 4 verstopte cijfers te vinden",
         "state": "pending"
     },
     {
-        "task": "Radio",
-        "description": "De spelers hebben goed geluisterd naar de radio en een code onderschept, dit zorgt voor toegang tot de 3e ruimte.",
+        "task": "roeispanen",
+        "description": "De spelers hebben de roeispanen op de juiste manier opgehangen.",
         "state": "pending"
     },
     {
-        "task": "Personeelspas-scannen",
-        "description": "Het linkerhek gaat open zodra de pas gescand is.",
+        "task": "Zeil",
+        "description": "De spelers hebben het zeil in de juiste richting gezet.",
         "state": "pending"
     },
     {
-        "task": "Namen-combineren",
-        "description": "Bij de wastafels moeten de juiste namen bij de juiste wastafels komen, hierdoor vallen de schoenen onder de wastafels vandaan.",
+        "task": "Aanmeren",
+        "description": "De spelers hebben de touwen op de klossen aan wal geworpen.",
         "state": "pending"
     },
     {
-        "task": "Schoentje-zetten",
-        "description": "De schoenen staan op de juiste plek, dit is 1 vd 2 benodigdheden voor de kast.",
+        "task": "Biedingen",
+        "description": "De spelers hebben de juiste codes gevonden voor de biedingen.",
         "state": "pending"
     },
     {
-        "task": "Jassen-hangen",
-        "description": "Onderaan de wasbak staan tekens, hang de jassen aan de juiste symbolen. Dit is 1 vd 2 benodigdheden voor de kast.",
+        "task": "stamboom",
+        "description": "De speler hebben de stamboom correct gemaakt.",
         "state": "pending"
     }
 ]
