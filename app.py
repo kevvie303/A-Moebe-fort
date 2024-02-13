@@ -476,18 +476,6 @@ def start_scripts():
     sensor_thread.start()
     monitor_thread.start()
     update_game_status('awake')
-    #pi2.exec_command('python mqtt.py')
-    time.sleep(0.5)
-    #pi2.exec_command('nohup python status.py > /dev/null 2>&1 &')    
-    time.sleep(0.5)
-    pi2.exec_command('python actuator.py')
-    #pi3.exec_command('python mqtt.py')
-    time.sleep(0.5)
-    pi2.exec_command('python mqtt.py')
-    #pi3.exec_command('nohup python status.py > /dev/null 2>&1 &')
-    time.sleep(0.5)
-    ssh.exec_command('python mqtt.py')
-    #scheduler.add_job(monitor_sensor_statuses, 'interval', seconds=0.1)
 
 @app.route('/add_music1', methods=['POST'])
 def add_music1():
@@ -678,20 +666,19 @@ def pause_music():
         return 'No file selected to pause'
 @app.route('/fade_music_out', methods=['POST'])
 def fade_music_out():
-        # Gradually reduce the volume from 80 to 40
-    for volume in range(25, 10, -1):
-        # Send the volume command to the Raspberry Pi
-        command = f'echo "volume {volume}" | sudo tee /tmp/mpg123_fifo'
-        
-        if check_task_state("squeekuence") == "solved":
-            stdin, stdout, stderr = pi2.exec_command(command)
-        else:
-            stdin, stdout, stderr = pi3.exec_command(command)
-        
-        # Wait for a short duration between volume changes
-        time.sleep(0.05)  # Adjust the sleep duration as needed
-    time.sleep(1)
-    pi3.exec_command('mpg123 -a hw:0,0 Music/prehint.mp3')
+    global broker_ip
+    initial_volume = 70  # Starting volume
+    final_volume = 30  # Ending volume
+    volume_step = (final_volume - initial_volume) / FADE_DURATION  # Calculate volume increment per second
+
+    # Gradually increase the volume
+    current_volume = initial_volume
+    while current_volume > final_volume:
+        current_volume -= 1  # Increase volume by 1 each second
+        payload = f"{int(current_volume)} /home/pi/Music/intro.ogg"
+        publish.single("audio_control/raspberrypi/volume", payload, hostname=broker_ip)
+        print(current_volume)
+        time.sleep(0.25)  # Wait for 1 second for each step
     return "Volume faded successfully"
 def fade_music_out2():
 
@@ -711,19 +698,25 @@ def fade_music_out3():
         stdin, stdout, stderr = pi2.exec_command(command)
         # Wait for a short duration between volume changes
         time.sleep(0.2)  # Adjust the sleep duration as needed
+FADE_DURATION = 10  # Adjust as needed
 @app.route('/fade_music_in', methods=['POST'])
 def fade_music_in():
-        # Gradually reduce the volume from 80 to 40
-    for volume in range(10, 25, 1):
-        # Send the volume command to the Raspberry Pi
-        command = f'echo "volume {volume}" | sudo tee /tmp/mpg123_fifo'
-        if check_task_state("squeekuence") == "solved":
-            stdin, stdout, stderr = pi2.exec_command(command)
-        else:
-            stdin, stdout, stderr = pi3.exec_command(command)
-        # Wait for a short duration between volume changes
-        time.sleep(0.05)  # Adjust the sleep duration as needed
-    return "Volume faded successfully"
+    global broker_ip
+    initial_volume = 0  # Starting volume
+    final_volume = 70  # Ending volume
+    volume_step = (final_volume - initial_volume) / FADE_DURATION  # Calculate volume increment per second
+
+    # Gradually increase the volume
+    current_volume = initial_volume
+    while current_volume < final_volume:
+        current_volume += 1  # Increase volume by 1 each second
+        payload = f"{int(current_volume)} /home/pi/Music/intro.ogg"
+        publish.single("audio_control/raspberrypi/volume", payload, hostname=broker_ip)
+        print(current_volume)
+        time.sleep(0.25)  # Wait for 1 second for each step
+
+    # Ensure the final volume is set
+    publish.single("audio_control/raspberrypi/volume", f"{final_volume} /home/pi/Music/intro.ogg", hostname=broker_ip)
 @app.route('/resume_music', methods=['POST'])
 def resume_music():
     selected_file = request.form['file']
@@ -829,9 +822,10 @@ def solve_task(task_name):
                 task['state'] = 'solved'
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
-        if task_name == "Stroomstoring":
+        if task_name == "Lutine":
             if game_status == {'status': 'playing'}:
-                cause_shortcircuit()
+                publish.single("audio_control/vol-kapitein/play", "/home/pi/Music/Bg-captain.ogg", hostname=broker_ip)
+                fade_music_out()
         elif task_name == "woef-woef":
             if game_status == {'status': 'playing'}:
                 if bird_job == True:
@@ -1117,7 +1111,7 @@ def play_music():
     data = request.json
     message = data.get('message')
     print(message)
-    publish.single("audio_control/play", message, hostname=broker_ip)
+    publish.single("audio_control/all/play", message, hostname=broker_ip)
     return jsonify({"status": "success"})
 def set_starting_volume(soundcard_channel):
     command = f'amixer -c {soundcard_channel} set PCM Playback Volume 25%'
@@ -1125,7 +1119,7 @@ def set_starting_volume(soundcard_channel):
     return "Volume set to 25%"
 @app.route('/stop_music', methods=['POST'])
 def stop_music():
-    publish.single("audio_control/stop", "/home/pi/Music/Lutine-1.ogg", hostname=broker_ip)
+    publish.single("audio_control/all/stop", "/home/pi/Music/Lutine-1.ogg", hostname=broker_ip)
     # Wipe the entire JSON file by overwriting it with an empty list
     file_path = os.path.join(current_dir, 'json', 'file_status.json')
     with open(file_path, 'w') as file:
@@ -1461,22 +1455,15 @@ def update_timer():
 @app.route('/timer/start', methods=['POST'])
 def start_timer():
     global timer_thread, timer_value, speed, timer_running, bird_job
-    if bird_job == False:
-        scheduler.add_job(start_bird_sounds, 'interval', minutes=1, id='birdjob')
-        bird_job = True
     update_game_status('playing')
     if timer_thread is None or not timer_thread.is_alive():
-        timer_value = 3600  # Reset timer value to 60 minutes
+        timer_value = 3600 
         write_timer_value(timer_value)
         timer_running = True
         timer_thread = threading.Thread(target=update_timer)
         timer_thread.daemon = True
         timer_thread.start()
-        fade_music_out2()
-    time.sleep(0.5)
-    load_command = f'echo "load /home/pi/Music/Ambience.mp3" | sudo tee /tmp/mpg123_fifo'
-    pi3.exec_command(load_command)
-    time.sleep(0.5)
+        publish.single("audio_control/raspberrypi/play", "/home/pi/Music/intro.ogg", hostname=broker_ip)
     fade_music_in()
     return 'Timer started'
 
