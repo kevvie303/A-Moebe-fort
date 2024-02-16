@@ -77,10 +77,25 @@
         "state": "initial"
     },
     {
-        "name": "bovenste-la-guard",
-        "type": "maglock",
-        "pin": 26,
-        "pi": "guard_room_pi",
+        "name": "ehbo-kist",
+        "type": "Sensor",
+        "pin": 17,
+        "pi": "cell_pi",
+        "state": "initial"
+    },
+    {
+        "name": "3-objects",
+        "type": "Sensor",
+        "pin": 5,
+        "pi": "cell_pi",
+        "state": "initial"
+    },
+    {
+        "name": "nightstand",
+        "type": "Sensor",
+        "pin": 6,
+        "pi": "cell_pi",
         "state": "initial"
     }
+
 ]

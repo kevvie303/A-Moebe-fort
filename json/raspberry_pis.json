@@ -1,7 +1,7 @@
 [
     {
-        "ip_address": "192.168.1.216",
-        "mac_address": "DC:A6:32:AD:F5:96",
-        "hostname": "pow-test"
+        "ip_address": "192.168.50.197",
+        "mac_address": "B8:27:EB:A4:4E:20",
+        "hostname": "for-corridor"
     }
 ]
