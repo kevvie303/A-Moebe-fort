@@ -178,14 +178,14 @@ $(document).ready(function () {
             .addClass("turn-on-button icon")
             .append(
               $("<img>")
-                .attr("src", "static/img/lock.svg")
+                .attr("src", "static/img/unlock.svg")
                 .attr("alt", "Lock")
             );
           var unlockButton = $("<button>")
             .addClass("turn-off-button icon")
             .append(
               $("<img>")
-                .attr("src", "static/img/unlock.svg")
+                .attr("src", "static/img/lock.svg")
                 .attr("alt", "Unlock")
             );
           lockButtons.append(lockButton, unlockButton);
@@ -194,14 +194,14 @@ $(document).ready(function () {
             .addClass("turn-on-button icon")
             .append(
               $("<img>")
-                .attr("src", "static/img/light-off.svg")
+                .attr("src", "static/img/light-on.svg")
                 .attr("alt", "Light On")
             );
           var offButton = $("<button>")
             .addClass("turn-off-button icon")
             .append(
               $("<img>")
-                .attr("src", "static/img/light-on.svg")
+                .attr("src", "static/img/light-off.svg")
                 .attr("alt", "Light Off")
             );
           lockButtons.append(onButton, offButton);
@@ -1430,7 +1430,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Received checklist_update event:", data);
     // Update your checklist UI based on the received data
     updateChecklist();
-  });
+  }); 
 
   // ... (other event listeners) ...
 

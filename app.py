@@ -1152,9 +1152,12 @@ def control_maglock():
     print(maglock)
     sensor_data = read_sensor_data2()
     for sensor in sensor_data:
-        print(sensor)
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
+            if "gang-licht-1" in maglock:
+                print(maglock)
+                # Reverse the action for this specific case
+                action = 'locked' if action == 'unlocked' else 'unlocked'
             # Publish the MQTT message with the appropriate Pi's name
             mqtt_message = f"{sensor['pin']} {action}"
             publish.single(f"actuator/control/{pi_name}", mqtt_message, hostname=broker_ip)
