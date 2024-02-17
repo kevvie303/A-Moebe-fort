@@ -667,8 +667,8 @@ def pause_music():
 @app.route('/fade_music_out', methods=['POST'])
 def fade_music_out():
     global broker_ip
-    initial_volume = 70  # Starting volume
-    final_volume = 30  # Ending volume
+    initial_volume = 35  # Starting volume
+    final_volume = 17  # Ending volume
     volume_step = (final_volume - initial_volume) / FADE_DURATION  # Calculate volume increment per second
 
     # Gradually increase the volume
@@ -703,7 +703,7 @@ FADE_DURATION = 10  # Adjust as needed
 def fade_music_in():
     global broker_ip
     initial_volume = 0  # Starting volume
-    final_volume = 70  # Ending volume
+    final_volume = 35  # Ending volume
     volume_step = (final_volume - initial_volume) / FADE_DURATION  # Calculate volume increment per second
 
     # Gradually increase the volume
@@ -1457,14 +1457,25 @@ def start_timer():
     global timer_thread, timer_value, speed, timer_running, bird_job
     update_game_status('playing')
     if timer_thread is None or not timer_thread.is_alive():
-        timer_value = 3600 
+        timer_value = 3653 
         write_timer_value(timer_value)
         timer_running = True
         timer_thread = threading.Thread(target=update_timer)
         timer_thread.daemon = True
         timer_thread.start()
+        vlc_command = [
+            "vlc",
+            "--fullscreen",
+            "--aout", "pulse",
+            "--no-xlib",
+            "lutine.mov",
+            "--gain", "8"
+        ]
+        process = subprocess.Popen(vlc_command)
+        time.sleep(55)
+        process.kill()
         publish.single("audio_control/raspberrypi/play", "/home/pi/Music/intro.ogg", hostname=broker_ip)
-    fade_music_in()
+        fade_music_in()
     return 'Timer started'
 
 @app.route('/timer/stop', methods=['POST'])
