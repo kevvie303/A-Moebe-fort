@@ -826,6 +826,12 @@ def solve_task(task_name):
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/vol-kapitein/play", "/home/pi/Music/Bg-captain.ogg", hostname=broker_ip)
                 fade_music_out()
+        elif task_name == "YO-HO":
+            if game_status == {'status': 'playing'}:
+                publish.single("audio_control/vol-boat/play", "/home/pi/Music/BgShip.ogg", hostname=broker_ip)  
+        elif task_name == "Aanmeren":
+            if game_status == {'status': 'playing'}:
+                publish.single("audio_control/vol-afslag/play", "/home/pi/Music/BgAfslag.ogg", hostname=broker_ip) 
         elif task_name == "woef-woef":
             if game_status == {'status': 'playing'}:
                 if bird_job == True:

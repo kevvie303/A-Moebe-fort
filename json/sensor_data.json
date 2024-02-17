@@ -26,5 +26,12 @@
         "pin": 17,
         "pi": "vol-boat",
         "state": "Locked"
+    },
+    {
+        "name": "painting-afslag",
+        "type": "maglock",
+        "pin": 12,
+        "pi": "vol-boat",
+        "state": "Unlocked"
     }
 ]
