@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
     <link rel="icon" href="static/img/logo.png" type="image/png">
 </head>
-<body>
+<body class="sensor-list-page">
     <h1>List of Sensors</h1>
     <table>
         <tr>
@@ -19,10 +19,10 @@
         </tr>
         {% for sensor in sensors %}
         <tr>
-            <td style="text-align: center;">{{ sensor.name }}</td>
-            <td style="text-align: center;">{{ sensor.type }}</td>
-            <td style="text-align: center;">{{ sensor.pin }}</td>
-            <td style="text-align: center;">{{ sensor.pi }}</td>
+            <td>{{ sensor.name }}</td>
+            <td>{{ sensor.type }}</td>
+            <td>{{ sensor.pin }}</td>
+            <td>{{ sensor.pi }}</td>
         </tr>
         {% endfor %}
     </table>

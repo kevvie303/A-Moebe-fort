@@ -1,0 +1,62 @@
+@import "../helpers/_variables";
+
+.add-sensor-page body {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+.add-sensor-page h1 {
+    color: #333;
+}
+
+.add-sensor-page form {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.add-sensor-page label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.add-sensor-page input, .add-sensor-page select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+}
+
+.add-sensor-page input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+.add-sensor-page input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.add-sensor-page .button-style {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    background-color: #007BFF;
+    color: #fff;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+    .add-sensor-page form {
+        max-width: 100%;
+    }
+}

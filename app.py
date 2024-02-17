@@ -469,7 +469,7 @@ if loadMqtt == True:
 def trigger():
     # Process the data and respond as needed
     return jsonify({'message': 'Data received successfully'})
-@app.route('/krijgsgevangenis')
+@app.route('/lutine')
 def pow():
     return render_template('pow.html')
 def start_scripts():
