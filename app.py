@@ -1119,7 +1119,7 @@ def set_starting_volume(soundcard_channel):
     return "Volume set to 25%"
 @app.route('/stop_music', methods=['POST'])
 def stop_music():
-    publish.single("audio_control/all/stop", "/home/pi/Music/Lutine-1.ogg", hostname=broker_ip)
+    publish.single("audio_control/all/full_stop", "stop", hostname=broker_ip)
     # Wipe the entire JSON file by overwriting it with an empty list
     file_path = os.path.join(current_dir, 'json', 'file_status.json')
     with open(file_path, 'w') as file:
