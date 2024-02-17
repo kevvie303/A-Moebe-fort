@@ -1457,23 +1457,16 @@ def start_timer():
     global timer_thread, timer_value, speed, timer_running, bird_job
     update_game_status('playing')
     if timer_thread is None or not timer_thread.is_alive():
-        timer_value = 3653 
+        timer_value = 3660
         write_timer_value(timer_value)
         timer_running = True
         timer_thread = threading.Thread(target=update_timer)
         timer_thread.daemon = True
         timer_thread.start()
-        vlc_command = [
-            "vlc",
-            "--fullscreen",
-            "--aout", "pulse",
-            "--no-xlib",
-            "lutine.mov",
-            "--gain", "8"
-        ]
-        process = subprocess.Popen(vlc_command)
-        time.sleep(55)
-        process.kill()
+        publish.single("video_control/raspberrypi/play", "start", hostname=broker_ip)
+        publish.single("video_control/raspberrypi/volume", "35", hostname=broker_ip)
+        time.sleep(60)
+        publish.single("video_control/raspberrypi/stop", "stop", hostname=broker_ip)
         publish.single("audio_control/raspberrypi/play", "/home/pi/Music/intro.ogg", hostname=broker_ip)
         fade_music_in()
     return 'Timer started'
