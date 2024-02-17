@@ -1628,9 +1628,11 @@ def prepare_game():
     for ip, hostname in raspberry_pis:
         mqtt_status = check_service_status(ip, 'mqtt.service')
         sound_status = check_service_status(ip, 'sound.service')
+        actuator_status = check_service_status(ip, "actuator.service")
         print(sound_status)
         print(mqtt_status)
-        results[hostname] = {"mqtt.service": mqtt_status, "sound.service": sound_status}
+        print(actuator_status)
+        results[hostname] = {"mqtt.service": mqtt_status, "sound.service": sound_status, "actuator.service": actuator_status}
         #should be tested thoroughly
 
     return jsonify({"message": results}), 200

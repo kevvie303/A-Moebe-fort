@@ -1305,7 +1305,7 @@ $(document).ready(function () {
     $.ajax({
       type: "POST",
       url: "/prepare",
-      data: { playerType: playerType, prefix: "pow" },
+      data: { playerType: playerType, prefix: "vol" },
       success: function (response) {
         prepareStatus.html(
           "Prepared - Status: OK. Game will start when door is open or start game has been clicked"
