@@ -1332,8 +1332,11 @@ def update_sensor_data_on_pis():
 
     return success_message
 
-@app.route('/remove_sensor', methods=['POST'])
+@app.route('/remove_sensor', methods=['GET', 'POST'])
 def remove_sensor():
+    # Access the global sensors variable
+    global sensors
+
     if request.method == 'POST':
         # Retrieve the selected sensor name to remove
         sensor_name_to_remove = request.form['sensor_name']
