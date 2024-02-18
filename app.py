@@ -1331,8 +1331,11 @@ def update_sensor_data_on_pis():
 
     return success_message
 
-@app.route('/remove_sensor', methods=['POST'])
+@app.route('/remove_sensor', methods=['GET', 'POST'])
 def remove_sensor():
+    # Access the global sensors variable
+    global sensors
+
     if request.method == 'POST':
         # Retrieve the selected sensor name to remove
         sensor_name_to_remove = request.form['sensor_name']
@@ -1354,7 +1357,6 @@ def remove_sensor():
         return f"{update_result}<br>Redirecting to sensor list...<meta http-equiv='refresh' content='2;url={url_for('list_sensors')}'>"
 
     return render_template('remove_sensor.html', sensors=sensors)
-
 
 @app.route('/list_sensors')
 def list_sensors():
