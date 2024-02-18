@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, jsonify, url_for
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, join_room
 import json
+import platform
 import paramiko
 import atexit
 import os
@@ -94,8 +95,13 @@ def establish_ssh_connection():
 
 def is_online(ip):
     try:
-        # CHANGE TO ["ping", "-c", "1", "-W", "1", ip] on UNIX
-        response = subprocess.run(["ping", "-n", "1", "-w", "1000", ip], stdout=subprocess.DEVNULL)
+        if platform.system().lower() == "linux":
+            # Use the following for Linux
+            response = subprocess.run(["ping", "-c", "1", "-W", "1", ip], stdout=subprocess.DEVNULL)
+        else:
+            # Use the following for non-Linux (assuming it's Windows in this case)
+            response = subprocess.run(["ping", "-n", "1", "-w", "1000", ip], stdout=subprocess.DEVNULL)
+
         return response.returncode == 0
     except Exception as e:
         print(f"Error pinging {ip}: {e}")
