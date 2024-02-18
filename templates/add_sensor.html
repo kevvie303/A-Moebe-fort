@@ -30,7 +30,11 @@
             <option value="vol-boat">boat pi</option>
             <option value="vol-afslag">afslag pi</option>
         </select><br>
-
+        <label for="connection_type">Connection Type:</label>
+        <select name="connection_type" required>
+            <option value="NC">Normally Closed (NC)</option>
+            <option value="NO">Normally Open (NO)</option>
+        </select><br>
         <input type="submit" value="Submit">
     </form>
     <a href="/list_sensors" class="button-style">Back to List</a>

@@ -1269,19 +1269,21 @@ def monitor_sensor_statuses():
 @app.route('/add_sensor', methods=['GET', 'POST'])
 def add_sensor():
     if request.method == 'POST':
-        # Retrieve form data
+        # Retrieve form data including the new 'connection_type' field
         name = request.form['name']
         item_type = request.form['type']
         pin = int(request.form['pin'])
         pi = request.form['pi']
+        connection_type = request.form['connection_type']
 
-        # Create a new sensor dictionary with an initial state of "Not triggered"
+        # Create a new sensor dictionary with the additional field
         new_sensor = {
             "name": name,
             "type": item_type,
             "pin": pin,
             "pi": pi,
-            "state": "initial"
+            "state": "initial",
+            "connection_type": connection_type
         }
 
         # Add the new sensor to the list
