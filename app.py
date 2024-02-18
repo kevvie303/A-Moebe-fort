@@ -1368,6 +1368,11 @@ def remove_sensor():
 
 @app.route('/list_sensors')
 def list_sensors():
+    # Read the sensor data from the JSON file
+    with open('json/sensor_data.json', 'r') as json_file:
+        sensors = json.load(json_file)
+
+    # Render the template with the updated sensor data
     return render_template('list_sensors.html', sensors=sensors)
 def start_bird_sounds():
     pi3.exec_command("mpg123 -a hw:1,0 Music/Gull.mp3")

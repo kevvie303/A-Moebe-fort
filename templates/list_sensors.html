@@ -16,6 +16,7 @@
             <th>Type</th>
             <th>Pin</th>
             <th>Raspberry Pi</th>
+            <th>Connection Type</th>
         </tr>
         {% for sensor in sensors %}
         <tr>
@@ -23,11 +24,13 @@
             <td>{{ sensor.type }}</td>
             <td>{{ sensor.pin }}</td>
             <td>{{ sensor.pi }}</td>
+            <td>{{ sensor.connection_type }}</td>
         </tr>
         {% endfor %}
     </table>
     <a href="/add_sensor" class="button-style">Add Sensor</a>
     <a href="/remove_sensor" class="button-style">Remove Sensor</a>
+    <button onclick="location.reload();" class="button-style">Refresh</button>
     <a href="/" class="button-style">Back to main page</a>
 </body>
 </html>

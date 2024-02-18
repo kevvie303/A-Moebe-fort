@@ -21,7 +21,7 @@
         "state": "Locked"
     },
     {
-        "name": "Captain door lock",
+        "name": "captain-door-lock",
         "type": "maglock",
         "pin": 17,
         "pi": "vol-boat",
@@ -32,6 +32,6 @@
         "type": "maglock",
         "pin": 12,
         "pi": "vol-boat",
-        "state": "Unlocked"
+        "state": "Locked"
     }
 ]
