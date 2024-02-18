@@ -1270,19 +1270,21 @@ def monitor_sensor_statuses():
 @app.route('/add_sensor', methods=['GET', 'POST'])
 def add_sensor():
     if request.method == 'POST':
-        # Retrieve form data
+        # Retrieve form data including the new 'connection_type' field
         name = request.form['name']
         item_type = request.form['type']
         pin = int(request.form['pin'])
         pi = request.form['pi']
+        connection_type = request.form['connection_type']
 
-        # Create a new sensor dictionary with an initial state of "Not triggered"
+        # Create a new sensor dictionary with the additional field
         new_sensor = {
             "name": name,
             "type": item_type,
             "pin": pin,
             "pi": pi,
-            "state": "initial"
+            "state": "initial",
+            "connection_type": connection_type
         }
 
         # Add the new sensor to the list
@@ -1291,27 +1293,11 @@ def add_sensor():
         # Save the updated sensor data to the JSON file
         with open('json/sensor_data.json', 'w') as json_file:
             json.dump(sensors, json_file, indent=4)
-        ssh_sessions = [ssh, pi2]
 
-        success_message = "Script sent successfully to the following IP addresses:<br>"
+        # Update sensor data on the Raspberry Pi devices
+        update_result = update_sensor_data_on_pis()
 
-        for session in ssh_sessions:
-            if session:
-                try:
-                    # Create an SFTP session over the existing SSH connection
-                    sftp = session.open_sftp()
-                    print(sftp)
-                    # Transfer the file to the Raspberry Pi
-                    sftp.put('json/sensor_data.json', '/home/pi/sensor_data.json')
-
-                    success_message += f"- {session.get_transport().getpeername()[0]}<br>"
-
-                    # Close the SFTP session
-                    sftp.close()
-                except Exception as e:
-                    return f'Error occurred while sending script: {e}'
-
-        return redirect(url_for('list_sensors'))
+        return f"{update_result}<br>Redirecting to sensor list...<meta http-equiv='refresh' content='2;url={url_for('list_sensors')}'>"
 
     return render_template('add_sensor.html')
 
