@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
+    <link rel="icon" href="static/img/logo.png" type="image/png">
+</head>
+<body class="remove-sensor-page">
+    <h1>Remove Sensor</h1>
+    <form method="POST" action="/remove_sensor">
+        <label for="sensor_name">Select Sensor to Remove:</label>
+        <select name="sensor_name" required>
+            {% for sensor in sensors %}
+                <option value="{{ sensor.name }}">{{ sensor.name }}</option>
+            {% endfor %}
+        </select><br>
+
+        <input type="submit" value="Remove">
+    </form>
+    <a href="/list_sensors" class="button-style">Back to List</a>
+</body>
+</html>
