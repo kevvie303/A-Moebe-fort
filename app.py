@@ -1308,6 +1308,55 @@ def add_sensor():
         return redirect(url_for('list_sensors'))
 
     return render_template('add_sensor.html')
+
+def update_sensor_data_on_pis():
+    ssh_sessions = [ssh, pi2, pi3]  # Assuming ssh, pi2, and pi3 are your SSH session objects
+
+    success_message = "Sensor removed successfully. Updated script sent to the following IP addresses:<br>"
+
+    for session in ssh_sessions:
+        if session:
+            try:
+                # Create an SFTP session over the existing SSH connection
+                sftp = session.open_sftp()
+
+                # Transfer the updated file to the Raspberry Pi
+                sftp.put('json/sensor_data.json', '/home/pi/sensor_data.json')
+
+                success_message += f"- {session.get_transport().getpeername()[0]}<br>"
+
+                # Close the SFTP session
+                sftp.close()
+            except Exception as e:
+                return f'Error occurred while sending updated script: {e}'
+
+    return success_message
+
+@app.route('/remove_sensor', methods=['POST'])
+def remove_sensor():
+    if request.method == 'POST':
+        # Retrieve the selected sensor name to remove
+        sensor_name_to_remove = request.form['sensor_name']
+
+        # Read the existing sensor data from the JSON file
+        with open('json/sensor_data.json', 'r') as json_file:
+            sensors = json.load(json_file)
+
+        # Remove the sensor from the list
+        updated_sensors = [sensor for sensor in sensors if sensor['name'] != sensor_name_to_remove]
+
+        # Save the updated sensor data back to the JSON file
+        with open('json/sensor_data.json', 'w') as json_file:
+            json.dump(updated_sensors, json_file, indent=4)
+
+        # Update sensor data on the Raspberry Pi devices
+        update_result = update_sensor_data_on_pis()
+
+        return f"{update_result}<br>Redirecting to sensor list...<meta http-equiv='refresh' content='2;url={url_for('list_sensors')}'>"
+
+    return render_template('remove_sensor.html', sensors=sensors)
+
+
 @app.route('/list_sensors')
 def list_sensors():
     return render_template('list_sensors.html', sensors=sensors)
