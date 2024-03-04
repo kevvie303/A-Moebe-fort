@@ -39,7 +39,7 @@ sensor_1_triggered = False
 sensor_2_triggered = False
 ip_afslag = '192.168.1.148'
 ip_boat = '192.168.1.146'
-ip_captain = '192.168.1.129'
+ip_captain = '192.168.1.128'
 sequence = 0
 should_sound_play = True
 should_balls_drop = True
@@ -208,6 +208,11 @@ def on_message(client, userdata, message):
         update_json_file()
         print("State changed. Updated JSON.")
     print(sensor_states)
+    if sensor_name == "rfid-afslag":
+        if sensor_state == "6137363236613735":
+            print("Specific UID detected! Performing action...")
+            publish.single(f"actuator/control/vol-afslag", "23 unlocked", hostname=broker_ip)
+            
     if check_rule("maze-sensor"):
         if check_task_state("paw-maze") == "pending":
             print("solved")
@@ -838,6 +843,10 @@ def solve_task(task_name):
         elif task_name == "Aanmeren":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/vol-afslag/play", "/home/pi/Music/BgAfslag.ogg", hostname=broker_ip) 
+        elif task_name == "eindsequence":
+            if game_status == {'status': 'playing'}:
+                publish.single("audio_control/vol-afslag/stop", "/home/pi/Music/BgAfslag.ogg", hostname=broker_ip) 
+                publish.single("audio_control/vol-afslag/play", "/home/pi/Music/finalsequence.ogg", hostname=broker_ip)
         elif task_name == "woef-woef":
             if game_status == {'status': 'playing'}:
                 if bird_job == True:

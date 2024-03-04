@@ -73,5 +73,10 @@
         "task": "stamboom",
         "description": "De speler hebben de stamboom correct gemaakt.",
         "state": "pending"
+    },
+    {
+        "task": "eindsequence",
+        "description": "start de eindsequence",
+        "state": "pending"
     }
 ]

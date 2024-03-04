@@ -4,28 +4,28 @@
         "type": "maglock",
         "pin": 22,
         "pi": "vol-boat",
-        "state": "Locked"
+        "state": "Unlocked"
     },
     {
         "name": "barrel-boat",
         "type": "maglock",
         "pin": 23,
         "pi": "vol-boat",
-        "state": "Locked"
+        "state": "Unlocked"
     },
     {
         "name": "center-chest-boat",
         "type": "maglock",
         "pin": 4,
         "pi": "vol-boat",
-        "state": "Locked"
+        "state": "Unlocked"
     },
     {
         "name": "captain-door-lock",
         "type": "maglock",
         "pin": 17,
         "pi": "vol-boat",
-        "state": "Locked"
+        "state": "Unlocked"
     },
     {
         "name": "painting-afslag",
@@ -33,5 +33,53 @@
         "pin": 12,
         "pi": "vol-boat",
         "state": "Locked"
+    },
+    {
+        "name": "exit-door-lock",
+        "type": "maglock",
+        "pin": 23,
+        "pi": "vol-afslag",
+        "state": "Locked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "handlebar-lock-boat",
+        "type": "maglock",
+        "pin": 27,
+        "pi": "vol-boat",
+        "state": "Locked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "falling-door-lock",
+        "type": "maglock",
+        "pin": 22,
+        "pi": "vol-afslag",
+        "state": "Locked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "basket-lock",
+        "type": "maglock",
+        "pin": 4,
+        "pi": "vol-afslag",
+        "state": "Locked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "wooden-box-front-lock",
+        "type": "maglock",
+        "pin": 5,
+        "pi": "vol-afslag",
+        "state": "Locked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "wooden-box-top-lock",
+        "type": "maglock",
+        "pin": 6,
+        "pi": "vol-afslag",
+        "state": "Locked",
+        "connection_type": "NO"
     }
 ]
