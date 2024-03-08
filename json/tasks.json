@@ -36,7 +36,7 @@
     },
     {
         "task": "Kapiteinsgeheim",
-        "description": "De spelers hebben met de 4 ringen de code gevonden voor het kapiteinsgeheim. ( * * * * )",
+        "description": "De spelers hebben met de 4 ringen de code gevonden voor het kapiteinsgeheim. ( 0821 )",
         "state": "pending"
     },
     {
@@ -45,8 +45,13 @@
         "state": "pending"
     },
     {
-        "task": "Navigatie",
-        "description": "De spelers hebben het compas gebruikt om de 4 verstopte cijfers te vinden",
+        "task": "hendels",
+        "description": "1-1-1",
+        "state": "pending"
+    },
+    {
+        "task": "Dance-mecabre",
+        "description": "De spelers hebben gedjensd",
         "state": "pending"
     },
     {
@@ -65,18 +70,38 @@
         "state": "pending"
     },
     {
+        "task": "timmertafel-open",
+        "description": "Spelers hebben de voorkant van de timmertafel geopend met de code 605",
+        "state": "pending"
+    },
+    {
+        "task": "meeuw-open",
+        "description": "Skidoosh",
+        "state": "pending"
+    },
+    {
+        "task": "bootje-leggen",
+        "description": "Emma ligt",
+        "state": "pending"
+    },
+    {
+        "task": "schilderijen-drukken",
+        "description": "Skidoosh2",
+        "state": "pending"
+    },
+    {
         "task": "Biedingen",
         "description": "De spelers hebben de juiste codes gevonden voor de biedingen.",
         "state": "pending"
     },
     {
-        "task": "stamboom",
-        "description": "De speler hebben de stamboom correct gemaakt.",
+        "task": "eindsequence",
+        "description": "start de eindsequence",
         "state": "pending"
     },
     {
-        "task": "eindsequence",
-        "description": "start de eindsequence",
+        "task": "stamboom",
+        "description": "De speler hebben de stamboom correct gemaakt.",
         "state": "pending"
     }
 ]

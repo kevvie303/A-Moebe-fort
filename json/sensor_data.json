@@ -32,7 +32,7 @@
         "type": "maglock",
         "pin": 12,
         "pi": "vol-boat",
-        "state": "Locked"
+        "state": "Unlocked"
     },
     {
         "name": "exit-door-lock",
@@ -47,7 +47,7 @@
         "type": "maglock",
         "pin": 27,
         "pi": "vol-boat",
-        "state": "Locked",
+        "state": "Unlocked",
         "connection_type": "NO"
     },
     {
@@ -78,6 +78,22 @@
         "name": "wooden-box-top-lock",
         "type": "maglock",
         "pin": 6,
+        "pi": "vol-afslag",
+        "state": "Locked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "stamboom-lock",
+        "type": "maglock",
+        "pin": 17,
+        "pi": "vol-afslag",
+        "state": "Locked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "gold-lock",
+        "type": "maglock",
+        "pin": 18,
         "pi": "vol-afslag",
         "state": "Locked",
         "connection_type": "NO"

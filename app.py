@@ -70,7 +70,7 @@ def turn_on_api():
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(ip_boat, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-    ssh.exec_command('nohup sudo -E python status.py > /dev/null 2>&1 &')
+    #ssh.exec_command('nohup sudo -E python status.py > /dev/null 2>&1 &')
     establish_ssh_connection()
 
 def establish_ssh_connection():
@@ -79,20 +79,20 @@ def establish_ssh_connection():
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(ip_boat, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-        ssh.exec_command('pkill -f mqtt.py')
+        #ssh.exec_command('pkill -f mqtt.py')
     global pi2
     if pi2 is None or not pi2.get_transport().is_active():
         pi2 = paramiko.SSHClient()
         pi2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         pi2.connect(ip_afslag, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-        pi2.exec_command('pkill -f mqtt.py')
+        #pi2.exec_command('pkill -f mqtt.py')
 
     global pi3
     if pi3 is None or not pi3.get_transport().is_active():
         pi3 = paramiko.SSHClient()
         pi3.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         pi3.connect(ip_captain, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-        pi3.exec_command('pkill -f mqtt.py \n python status.py')
+        #pi3.exec_command('pkill -f mqtt.py \n python status.py')
 
 def is_online(ip):
     try:
@@ -174,17 +174,6 @@ def connect_device():
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 
-
-
-def monitor_ssh_connections():
-    while True:
-        establish_ssh_connection()
-        # Check the connections every 60 seconds
-        time.sleep(60)
-
-# Start the monitoring thread
-monitor_thread = threading.Thread(target=monitor_ssh_connections)
-monitor_thread.daemon = True  # Make the thread a daemon to exit when the main program exits
 broker_ip = "192.168.1.175"  # IP address of the broker Raspberry Pi
 #broker_ip = "192.168.1.216"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
@@ -220,40 +209,7 @@ def on_message(client, userdata, message):
         current_game_state = get_game_status()
         if current_game_state == {'status': 'prepared'}:
             start_timer()
-    global sequence
-    if check_rule("green_house_ir") and sequence == 0:
-        task_state = check_task_state("tree-lights")
-        if task_state == "pending":
-            pi3.exec_command("raspi-gpio set 15 op dh")
-            print("1")
-            sequence = 1
-    if check_rule("red_house_ir") and sequence == 1:
-        task_state = check_task_state("tree-lights")
-        if task_state == "pending":
-            pi3.exec_command("raspi-gpio set 21 op dh")
-            print("2")
-            sequence = 2
-    elif check_rule("red_house_ir") and sequence <= 0:
-        task_state = check_task_state("tree-lights")
-        if task_state == "pending":
-            pi3.exec_command("raspi-gpio set 21 op dh")
-            time.sleep(0.5)
-            pi3.exec_command("raspi-gpio set 21 op dl")
-            pi3.exec_command("raspi-gpio set 15 op dl")
-            sequence = 0
-    if check_rule("blue_house_ir") and sequence == 2:
-        task_state = check_task_state("tree-lights")
-        if task_state == "pending":
-            solve_task("tree-lights")
-    elif check_rule("blue_house_ir") and sequence != 2:
-        task_state = check_task_state("tree-lights")
-        if task_state == "pending":
-            pi3.exec_command("raspi-gpio set 23 op dh")
-            time.sleep(0.5)
-            pi3.exec_command("raspi-gpio set 23 op dl")
-            pi3.exec_command("raspi-gpio set 21 op dl")
-            pi3.exec_command("raspi-gpio set 15 op dl")
-            sequence = 0
+    
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
@@ -484,8 +440,6 @@ def trigger():
 def pow():
     return render_template('pow.html')
 def start_scripts():
-    sensor_thread.start()
-    monitor_thread.start()
     update_game_status('awake')
 
 @app.route('/add_music1', methods=['POST'])
@@ -676,20 +630,33 @@ def pause_music():
     else:
         return 'No file selected to pause'
 @app.route('/fade_music_out', methods=['POST'])
-def fade_music_out():
+def fade_music_out(file):
     global broker_ip
-    initial_volume = 35  # Starting volume
-    final_volume = 17  # Ending volume
+    print(file)
+    if file == "finalsequence" or file == "Bg-captain":
+        initial_volume = 70
+        final_volume = 30
+    else:
+        initial_volume = 35
+        final_volume = 17
     volume_step = (final_volume - initial_volume) / FADE_DURATION  # Calculate volume increment per second
 
     # Gradually increase the volume
     current_volume = initial_volume
     while current_volume > final_volume:
         current_volume -= 1  # Increase volume by 1 each second
-        payload = f"{int(current_volume)} /home/pi/Music/intro.ogg"
-        publish.single("audio_control/raspberrypi/volume", payload, hostname=broker_ip)
+        payload = f"{int(current_volume)} /home/pi/Music/{file}.ogg"
+        if file == "finalsequence":
+            publish.single("audio_control/vol-afslag/volume", payload, hostname=broker_ip)
+        elif file == "Bg-captain":
+            publish.single("audio_control/vol-kapitein/volume", payload, hostname=broker_ip)
+        else:
+            publish.single("audio_control/raspberrypi/volume", payload, hostname=broker_ip)
         print(current_volume)
-        time.sleep(0.25)  # Wait for 1 second for each step
+        if file == "finalsequence":
+            time.sleep(0.05)
+        else:
+            time.sleep(0.25)
     return "Volume faded successfully"
 def fade_music_out2():
 
@@ -711,20 +678,32 @@ def fade_music_out3():
         time.sleep(0.2)  # Adjust the sleep duration as needed
 FADE_DURATION = 10  # Adjust as needed
 @app.route('/fade_music_in', methods=['POST'])
-def fade_music_in():
+def fade_music_in(file):
     global broker_ip
-    initial_volume = 0  # Starting volume
-    final_volume = 35  # Ending volume
+    if file == "finalsequence":
+        initial_volume = 30
+        final_volume = 70
+    else:
+        initial_volume = 0
+        final_volume = 35
     volume_step = (final_volume - initial_volume) / FADE_DURATION  # Calculate volume increment per second
 
     # Gradually increase the volume
     current_volume = initial_volume
     while current_volume < final_volume:
         current_volume += 1  # Increase volume by 1 each second
-        payload = f"{int(current_volume)} /home/pi/Music/intro.ogg"
-        publish.single("audio_control/raspberrypi/volume", payload, hostname=broker_ip)
+        payload = f"{int(current_volume)} /home/pi/Music/{file}.ogg"
+        if file == "finalsequence":
+            print("right")
+            publish.single("audio_control/vol-afslag/volume", payload, hostname=broker_ip)
+        else:
+            print("wrong")
+            publish.single("audio_control/raspberrypi/volume", payload, hostname=broker_ip)
         print(current_volume)
-        time.sleep(0.25)  # Wait for 1 second for each step
+        if file == "finalsequence":
+            time.sleep(0.05)
+        else:
+            time.sleep(0.25)
 
     # Ensure the final volume is set
     publish.single("audio_control/raspberrypi/volume", f"{final_volume} /home/pi/Music/intro.ogg", hostname=broker_ip)
@@ -836,23 +815,58 @@ def solve_task(task_name):
         if task_name == "Lutine":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/vol-kapitein/play", "/home/pi/Music/Bg-captain.ogg", hostname=broker_ip)
-                fade_music_out()
+                publish.single("audio_control/vol-kapitein/play", "/home/pi/Music/lutine-solve.ogg", hostname=broker_ip)
+                fade_music_out("intro")
         elif task_name == "YO-HO":
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/vol-boat/play", "/home/pi/Music/BgShip.ogg", hostname=broker_ip)  
+                publish.single("audio_control/vol-boat/play", "/home/pi/Music/BgShip.ogg", hostname=broker_ip)
+                publish.single("audio_control/vol-kapitein/play", "/home/pi/Music/yoho-solve.ogg", hostname=broker_ip)
+                fade_music_out("Bg-captain")
+                time.sleep(16)
+                publish.single("audio_control/vol-boat/play", "/home/pi/Music/yoho2.ogg", hostname=broker_ip)
+                time.sleep(23)
+                publish.single("audio_control/vol-boat/play", "/home/pi/Music/kaptein.ogg", hostname=broker_ip)
+                publish.single(f"actuator/control/vol-boat", "17 unlocked", hostname=broker_ip)
         elif task_name == "Aanmeren":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/vol-afslag/play", "/home/pi/Music/BgAfslag.ogg", hostname=broker_ip) 
+                publish.single(f"actuator/control/vol-afslag", "22 unlocked", hostname=broker_ip)
+        elif task_name == "hendels":
+            if game_status == {'status': 'playing'}:
+                publish.single(f"actuator/control/vol-boat", "27 unlocked", hostname=broker_ip)
+        elif task_name == "Dance-mecabre":
+            if game_status == {'status': 'playing'}:
+                publish.single(f"actuator/control/vol-boat", "4 unlocked", hostname=broker_ip)
+        elif task_name == "roeispanen":
+            if game_status == {'status': 'playing'}:
+                publish.single(f"actuator/control/vol-boat", "22 unlocked", hostname=broker_ip)
+        elif task_name == "Zeil":
+            if game_status == {'status': 'playing'}:
+                publish.single(f"actuator/control/vol-boat", "23 unlocked", hostname=broker_ip)
+        elif task_name == "bootje-leggen":
+            if game_status == {'status': 'playing'}:
+                publish.single(f"actuator/control/vol-afslag", "6 locked", hostname=broker_ip)
+        elif task_name == "schilderijen-drukken":
+            if game_status == {'status': 'playing'}:
+                publish.single(f"actuator/control/vol-boat", "12 unlocked", hostname=broker_ip)
+        elif task_name == "Biedingen":
+            if game_status == {'status': 'playing'}:
+                publish.single(f"actuator/control/vol-afslag", "5 locked", hostname=broker_ip)
         elif task_name == "eindsequence":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/vol-afslag/stop", "/home/pi/Music/BgAfslag.ogg", hostname=broker_ip) 
                 publish.single("audio_control/vol-afslag/play", "/home/pi/Music/finalsequence.ogg", hostname=broker_ip)
-        elif task_name == "woef-woef":
+                time.sleep(22)
+                fade_music_out("finalsequence")
+                time.sleep(2)
+                publish.single("audio_control/vol-afslag/play", "/home/pi/Music/eindsequence.ogg", hostname=broker_ip)
+                time.sleep(36)
+                publish.single(f"actuator/control/vol-afslag", "18 unlocked", hostname=broker_ip)
+                fade_music_in("finalsequence")
+        if task_name == "bootje-leggen" or task_name == "schilderijen-drukken" or task_name == "Biedingen":
             if game_status == {'status': 'playing'}:
-                if bird_job == True:
-                    scheduler.remove_job('birdjob')
-                    bird_job = False
-                pi3.exec_command("mpg123 -a hw:0,0 Music/hok.mp3 \n raspi-gpio set 4 op dh")
+                publish.single(f"actuator/control/vol-afslag", "17 unlocked", hostname=broker_ip)
+                publish.single(f"actuator/control/vol-afslag", "4 unlocked", hostname=broker_ip)
         with app.app_context():
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
@@ -940,29 +954,15 @@ def reset_task_statuses():
         return jsonify({'message': 'Error resetting task statuses'})
 @app.route('/reset_puzzles', methods=['POST'])
 def reset_puzzles():
-    global aborted
-    global code1
-    global code2
-    global code3
-    global code4
-    global code5
-    global codesCorrect
-    codesCorrect == 0
-    aborted = True
-    code1 = False
-    code2 = False
-    code3 = False
-    code4 = False
-    code5 = False
     update_game_status('awake')
-    pi3.exec_command('raspi-gpio set 16 op dl')
-    pi2.exec_command('sudo pkill -f sinus_game.py')
-    pi2.exec_command('pkill -f sensor_board.py')
-    pi2.exec_command('pkill -9 mpg123')
-    pi2.exec_command('raspi-gpio set 12 op dl')
-    pi2.exec_command('raspi-gpio set 1 op dl')
-    pi2.exec_command('raspi-gpio set 7 op dl')
-    pi2.exec_command('raspi-gpio set 8 op dl')
+    #pi3.exec_command('raspi-gpio set 16 op dl')
+    #pi2.exec_command('sudo pkill -f sinus_game.py')
+    #pi2.exec_command('pkill -f sensor_board.py')
+    #pi2.exec_command('pkill -9 mpg123')
+    #pi2.exec_command('raspi-gpio set 12 op dl')
+    #pi2.exec_command('raspi-gpio set 1 op dl')
+    #pi2.exec_command('raspi-gpio set 7 op dl')
+    #pi2.exec_command('raspi-gpio set 8 op dl')
     time.sleep(3)
     #pi2.exec_command('sudo python sinus_game.py')
     #pi2.exec_command('python sensor_board.py')
@@ -990,12 +990,12 @@ def get_game_status():
 @app.route('/wake_room', methods=['POST'])
 def wake_room():
     # Update the retriever status to 'awake'
-    pi3.exec_command('raspi-gpio set 12 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 1 op dl \n raspi-gpio set 8 op dl')
-    ssh.exec_command('raspi-gpio set 15 op dl \n raspi-gpio set 25 op dl')
+    #pi3.exec_command('raspi-gpio set 12 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 1 op dl \n raspi-gpio set 8 op dl')
+    #ssh.exec_command('raspi-gpio set 15 op dl \n raspi-gpio set 25 op dl')
     update_game_status('awake')
     return "room awakened"
-@app.route('/control_light', methods=['POST'])
-def control_light():
+#@app.route('/control_light', methods=['POST'])
+#def control_light():
     print("hi")
     light_name = request.json.get('light_name')
     print(light_name)
@@ -1049,13 +1049,13 @@ def snooze_game():
     light2off = 'raspi-gpio set 7 op dh'
     light3off = 'raspi-gpio set 1 op dh'
     light4off = 'raspi-gpio set 8 op dh'
-    lightsoff = f"{light1off}; {light2off}; {light3off}; {light4off}"
-    pi3.exec_command(lightsoff)
-    ssh.exec_command('raspi-gpio set 17 op dh \n raspi-gpio set 10 op dh')
-    ssh.exec_command('raspi-gpio set 27 op dh')
-    ssh.exec_command('raspi-gpio set 15 op dh \n raspi-gpio set 25 op dh \n raspi-gpio set 6 op dh \n raspi-gpio set 16 op dh \n raspi-gpio set 20 op dh \n raspi-gpio set 21 op dh')
-    pi3.exec_command('raspi-gpio set 16 op dh')
-    pi3.exec_command('raspi-gpio set 25 op dh')
+    #lightsoff = f"{light1off}; {light2off}; {light3off}; {light4off}"
+    #pi3.exec_command(lightsoff)
+    #ssh.exec_command('raspi-gpio set 17 op dh \n raspi-gpio set 10 op dh')
+    #ssh.exec_command('raspi-gpio set 27 op dh')
+    #ssh.exec_command('raspi-gpio set 15 op dh \n raspi-gpio set 25 op dh \n raspi-gpio set 6 op dh \n raspi-gpio set 16 op dh \n raspi-gpio set 20 op dh \n raspi-gpio set 21 op dh')
+    #pi3.exec_command('raspi-gpio set 16 op dh')
+    #pi3.exec_command('raspi-gpio set 25 op dh')
     update_game_status('snoozed')
     return "room snoozed"
 @app.route('/add_task', methods=['POST'])
@@ -1132,7 +1132,15 @@ def play_music():
     data = request.json
     message = data.get('message')
     print(message)
-    publish.single("audio_control/all/play", message, hostname=broker_ip)
+    if message == "/home/pi/Music/Dance-mecabre-4.ogg":
+        publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
+        publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)
+        publish.single("audio_control/vol-boat/volume", "40 /home/pi/Music/Dance-mecabre-4.ogg", hostname=broker_ip)
+    elif message == "/home/pi/Music/Aanmeren-4.ogg":
+        publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
+        publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)
+    else:
+        publish.single("audio_control/all/play", message, hostname=broker_ip)
     return jsonify({"status": "success"})
 def set_starting_volume(soundcard_channel):
     command = f'amixer -c {soundcard_channel} set PCM Playback Volume 25%'
@@ -1150,12 +1158,12 @@ def stop_music():
 
 @app.route('/backup-top-pi', methods=['POST'])
 def backup_top_pi():
-    ssh.exec_command('./commit_and_push.sh')
+    #ssh.exec_command('./commit_and_push.sh')
     return "Top pi backed up"
 
 @app.route('/backup-middle-pi', methods=['POST'])
 def backup_middle_pi():
-    ssh.exec_command('./commit_and_push.sh')
+    #ssh.exec_command('./commit_and_push.sh')
     return "Middle pi backed up"
 
 def control_maglock():
@@ -1193,88 +1201,8 @@ def get_state():
         state = 'unknown'
     return jsonify({'state': state})
 
-API_URL_SENSORS = 'http://192.168.0.104:5000/sensor/status/'
-def get_sensor_status(sensor_number):
-    try:
-        response = requests.get(API_URL_SENSORS + str(sensor_number))
-        if response.status_code == 200:
-            return response.json().get('status')
-        else:
-            return 'unknown'
-    except requests.exceptions.RequestException:
-        return 'unknown'
-    
-API_URL_SHED_KEYPAD = 'http://192.168.0.104:5000/keypad/pressed_keys'
-
-def get_shed_keypad_code():
-    try:
-        response = requests.get(API_URL_SHED_KEYPAD)
-        if response.status_code == 200:
-            pressed_keys_arrays = response.json().get('pressed_keys_arrays')
-            if pressed_keys_arrays:
-                # Get the last-used code from the array
-                last_used_code_array = pressed_keys_arrays[-1]
-                last_used_code = ''.join(last_used_code_array)
-                return last_used_code
-            else:
-                return 'No code entered yet'
-        else:
-            return 'unknown'
-    except requests.exceptions.RequestException:
-        return 'unknown'
-
-API_URL_SENSORS_PI2 = 'http://192.168.0.105:5001/sensor/status/'
-
-def get_sensor_status_pi2(sensor_number):
-    try:
-        response = requests.get(API_URL_SENSORS_PI2 + str(sensor_number))
-        if response.status_code == 200:
-            return response.json().get('status')
-        else:
-            return 'unknown'
-    except requests.exceptions.RequestException:
-        return 'unknown'
 with open('json/sensor_data.json', 'r') as json_file:
     sensors = json.load(json_file)
-def monitor_sensor_statuses():
-    global sequence, should_hint_shed_play
-    global code1, code2, code3, code4, code5
-    global codesCorrect
-    global last_keypad_code
-    while True:
-        #green_house_ir_status = get_ir_sensor_status(14)
-        #red_house_ir_status = get_ir_sensor_status(20)
-        #blue_house_ir_status = get_ir_sensor_status(18)
-        #entrance_door_status = get_sensor_status(14)
-        sinus_status = get_sinus_status()
-        #top_left_kraken = get_sensor_status_pi2(15)
-        #bottom_left_kraken = get_sensor_status_pi2(16)
-        #top_right_kraken = get_sensor_status_pi2(20)
-        #bottom_right_kraken = get_sensor_status_pi2(23)
-        last_used_keypad_code = get_shed_keypad_code()
-        if last_used_keypad_code != last_keypad_code:
-            last_keypad_code = last_used_keypad_code  # Update the last keypad code
-            if last_used_keypad_code == "1528" and code1 == False:
-                code1 = True
-                solve_task("flowers")
-            elif (last_used_keypad_code == "7867" or last_used_keypad_code == "8978") and code2 == False:
-                code2 = True
-                solve_task("kite-count")
-            elif last_used_keypad_code == "0128" and code3 == False:
-                code3 = True
-                solve_task("number-feel")
-            elif last_used_keypad_code == "5038" and code4 == False:
-                code4 = True
-                solve_task("fence-decrypt")
-            else:
-                ssh.exec_command("raspi-gpio set 12 op dh")
-                time.sleep(1)
-                ssh.exec_command("raspi-gpio set 12 op dl")
-        if sinus_status == "solved" and aborted == False:
-            solve_task("sinus-game")
-            #pi2.exec_command("mpg123 -a hw:1,0 Music/pentakill.mp3")
-        time.sleep(0.1)
-# Start a new thread for monitoring sensor statuses
 @app.route('/add_sensor', methods=['GET', 'POST'])
 def add_sensor():
     if request.method == 'POST':
@@ -1383,14 +1311,6 @@ def list_sensors():
 
     # Render the template with the updated sensor data
     return render_template('list_sensors.html', sensors=sensors)
-def start_bird_sounds():
-    pi3.exec_command("mpg123 -a hw:1,0 Music/Gull.mp3")
-    time.sleep(8)
-    pi3.exec_command("mpg123 -a hw:1,0 Music/Duck.mp3")
-    time.sleep(8)
-    pi3.exec_command("mpg123 -a hw:1,0 Music/Eagle.mp3")
-def start_squeak():
-    pi3.exec_command("mpg123 -a hw:0,0 Music/squeek.mp3")
 
 API_URL_IR_SENSORS = 'http://192.168.0.114:5001/ir-sensor/status/'
 
@@ -1403,29 +1323,6 @@ def get_ir_sensor_status(sensor_number):
             return 'unknown'
     except requests.exceptions.RequestException:
         return 'unknown'
-sensor_thread = threading.Thread(target=monitor_sensor_statuses)
-sensor_thread.daemon = True
-
-API_URL_SINUS = 'http://192.168.0.105:5001/sinus-game/state'
-
-def get_sinus_status():
-    try:
-        response = requests.get(API_URL_SINUS)
-        if response.status_code == 200:
-            return response.json().get('state')
-        else:
-            return 'unknown'
-    except requests.exceptions.RequestException:
-        return 'unknown'
-#@app.route('/turn_on', methods=['POST'])
-#def turn_on():
-    maglock = request.form['maglock']
-    return turn_on_maglock(maglock)
-
-#@app.route('/turn_off', methods=['POST'])
-#def turn_off():
-    maglock = request.form['maglock']
-    return turn_off_maglock(maglock)
 
 
 @app.route('/send_script')
@@ -1547,21 +1444,13 @@ def start_timer():
         time.sleep(60)
         publish.single("video_control/raspberrypi/stop", "stop", hostname=broker_ip)
         publish.single("audio_control/raspberrypi/play", "/home/pi/Music/intro.ogg", hostname=broker_ip)
-        fade_music_in()
+        fade_music_in("intro")
     return 'Timer started'
 
 @app.route('/timer/stop', methods=['POST'])
 def stop_timer():
-    global timer_thread, timer_running, timer_value, kraken1, kraken2, kraken3, kraken4, bird_job
+    global timer_thread, timer_running, timer_value
     update_game_status('awake')
-    pi2.exec_command("raspi-gpio set 4 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 8 op dl \n raspi-gpio set 1 op dl")
-    kraken1 = False
-    kraken2 = False
-    kraken3 = False
-    kraken4 = False
-    if bird_job == True:
-        scheduler.remove_job('birdjob')
-        bird_job = False
     reset_task_statuses()
     stop_music()
     if timer_thread is not None and timer_thread.is_alive():
@@ -1710,7 +1599,7 @@ def prepare_game():
 
     return jsonify({"message": results}), 200
 
-if romy == False:
+#if romy == False:
     turn_on_api()
     start_scripts()
 
