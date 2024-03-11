@@ -965,12 +965,13 @@ def solve_task(task_name):
                 publish.single("audio_control/vol-afslag/stop", "/home/pi/Music/BgAfslag.ogg", hostname=broker_ip) 
                 publish.single("audio_control/vol-afslag/play", "/home/pi/Music/finalsequence.ogg", hostname=broker_ip)
                 time.sleep(22)
-                fade_music_out("finalsequence")
-                time.sleep(2)
                 publish.single("audio_control/vol-afslag/play", "/home/pi/Music/eindsequence.ogg", hostname=broker_ip)
-                time.sleep(36)
-                publish.single(f"actuator/control/vol-afslag", "18 unlocked", hostname=broker_ip)
+                time.sleep(1)
+                fade_music_out("finalsequence")
+                time.sleep(38)
                 fade_music_in("finalsequence")
+                time.sleep(6)
+                publish.single(f"actuator/control/vol-afslag", "18 unlocked", hostname=broker_ip)
         elif task_name == "stamboom":
             if game_status == {'status': 'playing'}:
                 publish.single(f"actuator/control/vol-afslag", "23 unlocked", hostname=broker_ip)
@@ -1246,7 +1247,7 @@ def play_music():
     if message == "/home/pi/Music/Dance-mecabre-4.ogg":
         publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)
-        publish.single("audio_control/vol-boat/volume", "40 /home/pi/Music/Dance-mecabre-4.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-boat/volume", "50 /home/pi/Music/Dance-mecabre-4.ogg", hostname=broker_ip)
     elif message == "/home/pi/Music/Aanmeren-4.ogg":
         publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)
