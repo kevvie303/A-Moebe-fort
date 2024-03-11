@@ -26,34 +26,6 @@ $(document).ready(function () {
     fileInput.click(); // Trigger the file selection dialog
   });
 });
-$(document).ready(function () {
-  $("#add-music-button2").click(function () {
-    // Open a file selection dialog when the button is clicked
-    var fileInput = $('<input type="file" accept=".mp3,.ogg,.wav">');
-    fileInput.on("change", function () {
-      var file = fileInput[0].files[0];
-      // Send the selected file to the server
-      var formData = new FormData();
-      formData.append("file", file);
-      $.ajax({
-        type: "POST",
-        url: "/add_music2",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (response) {
-          console.log(response);
-          //alert('Music added successfully!');
-        },
-        error: function (error) {
-          console.log(error);
-          alert("Failed to add music.");
-        },
-      });
-    });
-    fileInput.click(); // Trigger the file selection dialog
-  });
-});
 
 $(document).ready(function () {
   // ...
@@ -111,7 +83,7 @@ $(document).ready(function () {
     // Send a request to the server to stop the music
     $.ajax({
       type: "POST",
-      url: "/fade_music_out",
+      url: "/fade_music_out_hint",
       success: function (response) {
         console.log(response);
       },
@@ -124,7 +96,7 @@ $(document).ready(function () {
     // Send a request to the server to stop the music
     $.ajax({
       type: "POST",
-      url: "/fade_music_in",
+      url: "/fade_music_in_hint",
       success: function (response) {
         console.log(response);
       },
@@ -236,234 +208,234 @@ $(document).ready(function () {
   });
 });
 
-$(document).ready(function () {
-  var maglockStatuses = {}; // Object to store maglock statuses
+// $(document).ready(function () {
+//   var maglockStatuses = {}; // Object to store maglock statuses
 
-  function generateMaglockElementId(maglockNumber, maglockURL) {
-    // Replace non-alphanumeric characters in the URL with underscores
-    var sanitizedURL = maglockURL.replace(/[^a-zA-Z0-9]/g, "_");
-    return `maglock${maglockNumber}_${sanitizedURL}_status`;
-  }
+//   function generateMaglockElementId(maglockNumber, maglockURL) {
+//     // Replace non-alphanumeric characters in the URL with underscores
+//     var sanitizedURL = maglockURL.replace(/[^a-zA-Z0-9]/g, "_");
+//     return `maglock${maglockNumber}_${sanitizedURL}_status`;
+//   }
 
-  function updateMaglockStatus(maglockNumber, maglockName, maglockURL) {
-    $.ajax({
-      type: "GET",
-      url: `${maglockURL}/maglock/status/${maglockNumber}`,
-      success: function (response) {
-        var maglockStatus = response.status;
-        var maglockStatusText =
-          maglockStatus === "locked" ? "Locked" : "Unlocked";
+//   function updateMaglockStatus(maglockNumber, maglockName, maglockURL) {
+//     $.ajax({
+//       type: "GET",
+//       url: `${maglockURL}/maglock/status/${maglockNumber}`,
+//       success: function (response) {
+//         var maglockStatus = response.status;
+//         var maglockStatusText =
+//           maglockStatus === "locked" ? "Locked" : "Unlocked";
 
-        // Create a unique identifier for this maglock
-        var maglockElementId = generateMaglockElementId(
-          maglockNumber,
-          maglockURL
-        );
+//         // Create a unique identifier for this maglock
+//         var maglockElementId = generateMaglockElementId(
+//           maglockNumber,
+//           maglockURL
+//         );
 
-        // Check if the maglockStatus for this maglock is already stored
-        if (maglockStatuses[maglockElementId] === undefined) {
-          // If not, create a new element
-          var newMaglockStatusElement = $("<p>").html(
-            `${maglockName}: <strong>${maglockStatusText}</strong>`
-          );
-          newMaglockStatusElement.attr("id", maglockElementId);
-          $("#maglock-status-container").append(newMaglockStatusElement);
-        } else {
-          // If yes, update the existing element
-          var maglockStatusElement = $(`#${maglockElementId}`);
-          maglockStatusElement.html(
-            `${maglockName}: <strong>${maglockStatusText}</strong>`
-          );
-        }
+//         // Check if the maglockStatus for this maglock is already stored
+//         if (maglockStatuses[maglockElementId] === undefined) {
+//           // If not, create a new element
+//           var newMaglockStatusElement = $("<p>").html(
+//             `${maglockName}: <strong>${maglockStatusText}</strong>`
+//           );
+//           newMaglockStatusElement.attr("id", maglockElementId);
+//           $("#maglock-status-container").append(newMaglockStatusElement);
+//         } else {
+//           // If yes, update the existing element
+//           var maglockStatusElement = $(`#${maglockElementId}`);
+//           maglockStatusElement.html(
+//             `${maglockName}: <strong>${maglockStatusText}</strong>`
+//           );
+//         }
 
-        // Store the updated maglock status in the object
-        maglockStatuses[maglockElementId] = maglockStatusText;
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
+//         // Store the updated maglock status in the object
+//         maglockStatuses[maglockElementId] = maglockStatusText;
+//       },
+//       error: function (error) {
+//         console.log(error);
+//       },
+//     });
+//   }
 
-  function updateAllMaglockStatuses(maglockURL) {
-    $.ajax({
-      type: "GET",
-      url: `${maglockURL}/maglock/list`,
-      success: function (response) {
-        var maglocks = response.maglocks;
+//   function updateAllMaglockStatuses(maglockURL) {
+//     $.ajax({
+//       type: "GET",
+//       url: `${maglockURL}/maglock/list`,
+//       success: function (response) {
+//         var maglocks = response.maglocks;
 
-        for (var i = 0; i < maglocks.length; i++) {
-          var maglock = maglocks[i];
-          updateMaglockStatus(maglock.number, maglock.name, maglockURL);
-        }
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
+//         for (var i = 0; i < maglocks.length; i++) {
+//           var maglock = maglocks[i];
+//           updateMaglockStatus(maglock.number, maglock.name, maglockURL);
+//         }
+//       },
+//       error: function (error) {
+//         console.log(error);
+//       },
+//     });
+//   }
 
-  // Initial update for maglocks from the URL where you list them
-  updateAllMaglockStatuses("http://192.168.0.104:5000");
-  updateAllMaglockStatuses("http://192.168.0.114:5001");
+//   // Initial update for maglocks from the URL where you list them
+//   updateAllMaglockStatuses("http://192.168.0.104:5000");
+//   updateAllMaglockStatuses("http://192.168.0.114:5001");
 
-  // Update maglock statuses periodically
-  /*setInterval(function () {
-    updateAllMaglockStatuses("http://192.168.0.104:5000");
-    updateAllMaglockStatuses("http://192.168.0.114:5001");
-  }, 500); // Update every 2 seconds*/
-});
+//   // Update maglock statuses periodically
+//   /*setInterval(function () {
+//     updateAllMaglockStatuses("http://192.168.0.104:5000");
+//     updateAllMaglockStatuses("http://192.168.0.114:5001");
+//   }, 500); // Update every 2 seconds*/
+// });
 
-$(document).ready(function () {
-  // Create an object to store the latest sensor statuses
-  var latestSensorStatuses = {};
+// $(document).ready(function () {
+//   // Create an object to store the latest sensor statuses
+//   var latestSensorStatuses = {};
 
-  // Function to update sensor status
-  function updateSensorStatus(sensorNumber, sensorName, sensorURL) {
-    $.ajax({
-      type: "GET",
-      url: `${sensorURL}/sensor/status/${sensorNumber}`,
-      success: function (response) {
-        var sensorStatus = response.status;
+//   // Function to update sensor status
+//   function updateSensorStatus(sensorNumber, sensorName, sensorURL) {
+//     $.ajax({
+//       type: "GET",
+//       url: `${sensorURL}/sensor/status/${sensorNumber}`,
+//       success: function (response) {
+//         var sensorStatus = response.status;
 
-        // Check if the status has changed
-        if (latestSensorStatuses[sensorNumber] !== sensorStatus) {
-          // Store the latest sensor status in the object
-          latestSensorStatuses[sensorNumber] = sensorStatus;
+//         // Check if the status has changed
+//         if (latestSensorStatuses[sensorNumber] !== sensorStatus) {
+//           // Store the latest sensor status in the object
+//           latestSensorStatuses[sensorNumber] = sensorStatus;
 
-          // Create or update the sensor status element
-          var sensorStatusElement = $(`#sensor${sensorNumber}-status`);
-          if (sensorStatusElement.length) {
-            sensorStatusElement.html(
-              sensorName + ": <strong>" + sensorStatus + "</strong>"
-            );
-          } else {
-            var newSensorStatusElement = $("<p>").html(
-              sensorName + ": <strong>" + sensorStatus + "</strong>"
-            );
-            newSensorStatusElement.attr("id", `sensor${sensorNumber}-status`);
-            $("#sensor-status-container").append(newSensorStatusElement);
-          }
-        }
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
+//           // Create or update the sensor status element
+//           var sensorStatusElement = $(`#sensor${sensorNumber}-status`);
+//           if (sensorStatusElement.length) {
+//             sensorStatusElement.html(
+//               sensorName + ": <strong>" + sensorStatus + "</strong>"
+//             );
+//           } else {
+//             var newSensorStatusElement = $("<p>").html(
+//               sensorName + ": <strong>" + sensorStatus + "</strong>"
+//             );
+//             newSensorStatusElement.attr("id", `sensor${sensorNumber}-status`);
+//             $("#sensor-status-container").append(newSensorStatusElement);
+//           }
+//         }
+//       },
+//       error: function (error) {
+//         console.log(error);
+//       },
+//     });
+//   }
 
-  // Function to update all sensor statuses
-  function updateAllSensorStatuses(sensorURL) {
-    $.ajax({
-      type: "GET",
-      url: `${sensorURL}/sensor/list`,
-      success: function (response) {
-        var sensors = response.sensors;
+//   // Function to update all sensor statuses
+//   function updateAllSensorStatuses(sensorURL) {
+//     $.ajax({
+//       type: "GET",
+//       url: `${sensorURL}/sensor/list`,
+//       success: function (response) {
+//         var sensors = response.sensors;
 
-        for (var sensorNumber in sensors) {
-          var sensorName = sensors[sensorNumber];
-          updateSensorStatus(sensorNumber, sensorName, sensorURL);
-        }
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
-  function updateLastKeypadCode(sensorURL) {
-    $.ajax({
-      type: "GET",
-      url: `${sensorURL}/keypad/pressed_keys`,
-      success: function (response) {
-        var pressedKeysArrays = response.pressed_keys_arrays;
-        if (pressedKeysArrays.length > 0) {
-          // Get the last-used code from the array
-          var lastUsedCodeArray =
-            pressedKeysArrays[pressedKeysArrays.length - 1];
-          var lastUsedCode = lastUsedCodeArray.join(""); // Combine keys into a single code
-          $("#keypad-shed-code strong").text(lastUsedCode);
-        }
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
+//         for (var sensorNumber in sensors) {
+//           var sensorName = sensors[sensorNumber];
+//           updateSensorStatus(sensorNumber, sensorName, sensorURL);
+//         }
+//       },
+//       error: function (error) {
+//         console.log(error);
+//       },
+//     });
+//   }
+//   function updateLastKeypadCode(sensorURL) {
+//     $.ajax({
+//       type: "GET",
+//       url: `${sensorURL}/keypad/pressed_keys`,
+//       success: function (response) {
+//         var pressedKeysArrays = response.pressed_keys_arrays;
+//         if (pressedKeysArrays.length > 0) {
+//           // Get the last-used code from the array
+//           var lastUsedCodeArray =
+//             pressedKeysArrays[pressedKeysArrays.length - 1];
+//           var lastUsedCode = lastUsedCodeArray.join(""); // Combine keys into a single code
+//           $("#keypad-shed-code strong").text(lastUsedCode);
+//         }
+//       },
+//       error: function (error) {
+//         console.log(error);
+//       },
+//     });
+//   }
 
-  // Initial update for normal sensors from the first URL
-  updateAllSensorStatuses("http://192.168.0.104:5000");
-  updateLastKeypadCode("http://192.168.0.104:5000");
-  // Initial update for IR sensors from the second URL
-  updateAllSensorStatuses("http://192.168.0.105:5001");
+//   // Initial update for normal sensors from the first URL
+//   updateAllSensorStatuses("http://192.168.0.104:5000");
+//   updateLastKeypadCode("http://192.168.0.104:5000");
+//   // Initial update for IR sensors from the second URL
+//   updateAllSensorStatuses("http://192.168.0.105:5001");
 
-  // Function to update IR sensor status
-  function updateIRSensorStatus(sensorNumber, sensorName, sensorURL) {
-    $.ajax({
-      type: "GET",
-      url: `${sensorURL}/ir-sensor/status/${sensorNumber}`,
-      success: function (response) {
-        var irSensorStatus = response.status;
+//   // Function to update IR sensor status
+//   function updateIRSensorStatus(sensorNumber, sensorName, sensorURL) {
+//     $.ajax({
+//       type: "GET",
+//       url: `${sensorURL}/ir-sensor/status/${sensorNumber}`,
+//       success: function (response) {
+//         var irSensorStatus = response.status;
 
-        // Check if the status has changed
-        if (latestSensorStatuses[sensorNumber] !== irSensorStatus) {
-          // Create or update the IR sensor status element
-          var irSensorStatusElement = $(`#ir-sensor${sensorNumber}-status`);
-          if (irSensorStatusElement.length) {
-            irSensorStatusElement.html(
-              sensorName + ": <strong>" + irSensorStatus + "</strong>"
-            );
-          } else {
-            var newIrSensorStatusElement = $("<p>").html(
-              sensorName + ": <strong>" + irSensorStatus + "</strong>"
-            );
-            newIrSensorStatusElement.attr(
-              "id",
-              `ir-sensor${sensorNumber}-status`
-            );
-            $("#ir-sensor-status-container").append(newIrSensorStatusElement);
-          }
-        }
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
+//         // Check if the status has changed
+//         if (latestSensorStatuses[sensorNumber] !== irSensorStatus) {
+//           // Create or update the IR sensor status element
+//           var irSensorStatusElement = $(`#ir-sensor${sensorNumber}-status`);
+//           if (irSensorStatusElement.length) {
+//             irSensorStatusElement.html(
+//               sensorName + ": <strong>" + irSensorStatus + "</strong>"
+//             );
+//           } else {
+//             var newIrSensorStatusElement = $("<p>").html(
+//               sensorName + ": <strong>" + irSensorStatus + "</strong>"
+//             );
+//             newIrSensorStatusElement.attr(
+//               "id",
+//               `ir-sensor${sensorNumber}-status`
+//             );
+//             $("#ir-sensor-status-container").append(newIrSensorStatusElement);
+//           }
+//         }
+//       },
+//       error: function (error) {
+//         console.log(error);
+//       },
+//     });
+//   }
 
-  // Function to update all IR sensor statuses
-  function updateAllIRSensorStatuses(sensorURL) {
-    $.ajax({
-      type: "GET",
-      url: `${sensorURL}/ir-sensor/list`,
-      success: function (response) {
-        var irSensors = response.sensors;
+//   // Function to update all IR sensor statuses
+//   function updateAllIRSensorStatuses(sensorURL) {
+//     $.ajax({
+//       type: "GET",
+//       url: `${sensorURL}/ir-sensor/list`,
+//       success: function (response) {
+//         var irSensors = response.sensors;
 
-        for (var i = 0; i < irSensors.length; i++) {
-          var sensor = irSensors[i];
-          updateIRSensorStatus(sensor.number, sensor.name, sensorURL);
-        }
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
+//         for (var i = 0; i < irSensors.length; i++) {
+//           var sensor = irSensors[i];
+//           updateIRSensorStatus(sensor.number, sensor.name, sensorURL);
+//         }
+//       },
+//       error: function (error) {
+//         console.log(error);
+//       },
+//     });
+//   }
 
-  // Initial update for IR sensors from the second URL
-  updateAllIRSensorStatuses("http://192.168.0.114:5001");
+//   // Initial update for IR sensors from the second URL
+//   updateAllIRSensorStatuses("http://192.168.0.114:5001");
 
-  // Update normal sensor statuses periodically
-  /* setInterval(function () {
-    updateAllSensorStatuses("http://192.168.0.104:5000");
-    updateAllSensorStatuses("http://192.168.0.105:5001");
-    updateLastKeypadCode("http://192.168.0.104:5000");
-  }, 500);
+//   // Update normal sensor statuses periodically
+//   /* setInterval(function () {
+//     updateAllSensorStatuses("http://192.168.0.104:5000");
+//     updateAllSensorStatuses("http://192.168.0.105:5001");
+//     updateLastKeypadCode("http://192.168.0.104:5000");
+//   }, 500);
 
-  // Update IR sensor statuses periodically
-  setInterval(function () {
-    updateAllIRSensorStatuses("http://192.168.0.114:5001");
-  }, 500);*/
-});
+//   // Update IR sensor statuses periodically
+//   setInterval(function () {
+//     updateAllIRSensorStatuses("http://192.168.0.114:5001");
+//   }, 500);*/
+// });
 
 $(document).ready(function () {
   var intervalId;
@@ -521,8 +493,8 @@ $(document).ready(function () {
     intervalId = setInterval(function () {
       updateTimers();
     }, 1000);
-    $(".tasks, .locks, .lock-status, .pin-info, #reset-list-container").show();
-    $("#continue-button, #prepare-result").hide();
+    $(".tasks, .locks, .lock-status, .pin-info").show();
+    $("#continue-button, #prepare-result, #reset-list-container").hide();
     $("#pause-button").show();
   });
 
@@ -1300,7 +1272,7 @@ $(document).ready(function () {
     prepareStatus.html("Preparing...");
     clearInterval(updateStatusInterval);
     updatePlayStatus = setInterval(updatePlayingStatus, 1000);
-
+  
     // Use the playerType variable in your preparation logic
     $.ajax({
       type: "POST",
@@ -1308,31 +1280,35 @@ $(document).ready(function () {
       data: { playerType: playerType, prefix: "vol" },
       success: function (response) {
         prepareStatus.html(
-          "Prepared - Status: OK. Game will start when door is open or start game has been clicked"
+          "Prepared - Status: OK. Game will start when the door is open or the start game button has been clicked."
         );
-
+  
         // Debugging: Output the response.message to the console
         console.log(response.message);
-
+  
         resultsSection.empty();
-
+  
         // Loop through the JSON data and create a neat display
         for (var device in response.message) {
           var deviceStatus = response.message[device];
           var deviceDiv = $("<div>").addClass("device-status");
           var header = $("<h3>").text(device);
           deviceDiv.append(header);
-
+        
           var statusContainer = $("<div>").addClass("prepare-status-container");
-
+        
           for (var script in deviceStatus) {
             var status = deviceStatus[script];
             var statusText = status ? "Running" : "Not Running";
             var scriptDiv = $("<div>").addClass("script-status");
-            scriptDiv.html(`<p>${script}: ${statusText}</p`);
+        
+            // Dynamically set the color based on the service status
+            var colorClass = status ? "text-green" : "text-red";
+            scriptDiv.html(`<p class="${colorClass}">${script}: ${statusText}</p>`);
+        
             statusContainer.append(scriptDiv);
           }
-
+        
           deviceDiv.append(statusContainer);
           resultsSection.append(deviceDiv);
         }
@@ -1358,9 +1334,9 @@ $(document).ready(function () {
         clearInterval(updatePlayStatus);
         prepareButton.hide();
         $(
-          ".tasks, .locks, .lock-status, .pin-info, #reset-list-container"
+          ".tasks, .locks, .lock-status, .pin-info"
         ).show();
-        $("#prepare-result").hide();
+        $("#prepare-result, #reset-list-container").hide();
       }
     });
   }
@@ -1369,9 +1345,9 @@ $(document).ready(function () {
       clearInterval(updatePlayStatus);
       prepareButton.hide();
       $(
-        ".tasks, .locks, .lock-status, .pin-info, #reset-list-container"
+        ".tasks, .locks, .lock-status, .pin-info"
       ).show();
-      $("#prepare-result, #snooze-game-button").hide();
+      $("#prepare-result, #snooze-game-button, #reset-list-container").hide();
     }
   });
   $.get("/get_game_status", function (data) {
@@ -1435,6 +1411,26 @@ document.addEventListener("DOMContentLoaded", () => {
   // ... (other event listeners) ...
 
   // Function to update the checklist UI
+  $("#reset-checklist").click(function () {
+    // Send a request to the server to stop the music
+    $.ajax({
+      type: "POST",
+      url: "/reset-checklist",
+      success: function (response) {
+        updateChecklist()
+        console.log(response);
+        const resetListContainer = document.getElementById("reset-list-container");
+        const readyToPrepareMessage = resetListContainer.querySelector("p");
+
+        if (readyToPrepareMessage) {
+          resetListContainer.removeChild(readyToPrepareMessage);
+        }
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  });
   async function updateChecklist() {
     try {
       // Fetch game status using $.get
@@ -1451,7 +1447,65 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error:", error);
     }
   }
+  function displayChecklist(checklist) {
+    const resetListContainer = document.getElementById("reset-list-container");
+    const resetList = document.getElementById("reset-list");
 
+    // Check if all tasks are completed
+    const allCompleted = checklist.every(item => item.completed);
+
+    if (allCompleted) {
+      // If all tasks are completed, hide the checklist and show "ready to prepare"
+      resetList.style.display = "none";
+      const readyToPrepareMessage = document.createElement("p");
+      readyToPrepareMessage.textContent = "Ready to prepare";
+
+      // Check if the message is already present to avoid duplication
+      if (!resetListContainer.contains(readyToPrepareMessage)) {
+        resetListContainer.appendChild(readyToPrepareMessage);
+      }
+    } else {
+      // If not all tasks are completed, display the checklist
+      resetList.style.display = "block";
+      resetList.innerHTML = ""; // Clear existing checklist items
+      checklist.forEach((item, index) => {
+        const listItem = document.createElement("li");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = item.task.replace(/\s/g, "");
+        checkbox.checked = item.completed;
+
+        const label = document.createElement("label");
+        label.textContent = item.task;
+        label.setAttribute("for", checkbox.id);
+
+        // Apply line-through style if the task is completed
+        if (item.completed) {
+          label.style.textDecoration = "line-through";
+        }
+
+        listItem.appendChild(checkbox);
+        listItem.appendChild(label);
+        if (index < checklist.length - 1) {
+          listItem.style.borderBottom = "1px solid #ccc";
+        }  
+        resetList.appendChild(listItem);
+
+        checkbox.addEventListener("change", async () => {
+          if (!programmaticChange) {
+            programmaticChange = true;
+            const isChecked = checkbox.checked;
+            const task = label.textContent.trim();
+            await sendLockRequest(task, isChecked);
+            programmaticChange = false;
+          }
+        });
+      });
+
+      // Show the checklist
+      resetListContainer.style.display = "block";
+    }
+  }
   function fetchAndDisplayChecklist() {
     // Fetch checklist data
     fetch("/get-checklist")
@@ -1472,44 +1526,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function hideResetList() {
     const resetListContainer = document.getElementById("reset-list-container");
     resetListContainer.style.display = "none";
-  }
-
-  // Function to display the checklist
-  function displayChecklist(checklist) {
-    const resetList = document.getElementById("reset-list");
-    resetList.innerHTML = ""; // Clear existing checklist items
-
-    checklist.forEach((item) => {
-      const listItem = document.createElement("li");
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.id = item.task.replace(/\s/g, "");
-      checkbox.checked = item.completed;
-
-      const label = document.createElement("label");
-      label.textContent = item.task;
-      label.setAttribute("for", checkbox.id);
-
-      // Apply line-through style if the task is completed
-      if (item.completed) {
-        label.style.textDecoration = "line-through";
-      }
-
-      listItem.appendChild(checkbox);
-      listItem.appendChild(label);
-
-      resetList.appendChild(listItem);
-
-      checkbox.addEventListener("change", async () => {
-        if (!programmaticChange) {
-          programmaticChange = true;
-          const isChecked = checkbox.checked;
-          const task = label.textContent.trim();
-          await sendLockRequest(task, isChecked);
-          programmaticChange = false;
-        }
-      });
-    });
   }
 });
 document.addEventListener("DOMContentLoaded", function () {

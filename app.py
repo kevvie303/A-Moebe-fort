@@ -159,7 +159,7 @@ def connect_device():
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(ip_address, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-    ssh.exec_command(f'sudo hostnamectl set-hostname {new_hostname} \n sudo python /path/to/update_hosts.py')
+    ssh.exec_command(f'sudo hostnamectl set-hostname {new_hostname}')
     ssh.close()
 
     # Get the updated list of Raspberry Pis to fetch the MAC address
@@ -202,9 +202,9 @@ def on_message(client, userdata, message):
             print("Specific UID detected! Performing action...")
             publish.single(f"actuator/control/vol-afslag", "23 unlocked", hostname=broker_ip)
             
-    if check_rule("maze-sensor"):
-        if check_task_state("paw-maze") == "pending":
-            print("solved")
+    if check_rule("left_handle") and check_rule("right_handle") and check_rule("middle_handle"):
+        if check_task_state("hendels") == "pending" and get_game_status() == {'status': 'playing'}:
+            solve_task("hendels")
     if check_rule("entrance_door"):
         current_game_state = get_game_status()
         if current_game_state == {'status': 'prepared'}:
@@ -222,9 +222,15 @@ def lock_route():
         is_checked = request.json.get('isChecked', False)
 
         if is_checked:
-            execute_lock_command(task)
+            if task != "Leg een willekeurig schild in de bovenkant van de houten kist, sluit bovenkant." and task != "Leg een willekeurig schild in de voorkant van de houten kist, sluit voorkant.":
+                execute_lock_command(task)
+            else:
+                execute_unlock_command(task)
         else:
-            execute_unlock_command(task)
+            if task != "Leg een willekeurig schild in de bovenkant van de houten kist, sluit bovenkant." and task != "Leg een willekeurig schild in de voorkant van de houten kist, sluit voorkant.":
+                execute_unlock_command(task)
+            else:
+                execute_lock_command(task)
 
         # Update the checklist status
         update_checklist(task, is_checked)
@@ -237,11 +243,32 @@ def lock_route():
 def execute_lock_command(task):
     try:
         # Add logic to map tasks to corresponding SSH commands for locking
-        if task == "Doe de entree deur dicht":
-            print("locked")
-            #command = "raspi-gpio set 25 op dl"
-            #stdin, stdout, stderr = pi3.exec_command(command)
-            # You can handle the command execution results if needed
+        if task == "Haal alle schilden uit de stamboom, sluit de stamboom.":
+            publish.single(f"actuator/control/vol-afslag", "17 locked", hostname=broker_ip)
+        elif task == "Leg de goudstaven + het juiste schild (Hendrik Visser) in de kast onder de stamboom. Kast dicht.":
+            publish.single(f"actuator/control/vol-afslag", "18 locked", hostname=broker_ip)
+        elif task == "Leg een willekeurig schild in de wasmand, sluit wasmand.":
+            publish.single(f"actuator/control/vol-afslag", "4 locked", hostname=broker_ip)
+        elif task == "Leg een willekeurig schild in het rechter schilderij, sluit schilderij.":
+            publish.single(f"actuator/control/vol-boat", "12 locked", hostname=broker_ip)
+        elif task == "Leg een willekeurig schild in de bovenkant van de houten kist, sluit bovenkant.":
+            publish.single(f"actuator/control/vol-afslag", "6 locked", hostname=broker_ip)
+        elif task == "Leg een willekeurig schild in de voorkant van de houten kist, sluit voorkant.":
+            publish.single(f"actuator/control/vol-afslag", "5 locked", hostname=broker_ip)
+        elif task == "Leg een willekeurig schild in de kast naast de hendelpuzzel, kast dicht.":
+            publish.single(f"actuator/control/vol-boat", "27 locked", hostname=broker_ip)
+        elif task == "Sluit einddeur.":
+            publish.single(f"actuator/control/vol-afslag", "23 locked", hostname=broker_ip)
+        elif task == "Sluit de valdeur van de kant van het schip, goed dichtdrukken.":
+            publish.single(f"actuator/control/vol-afslag", "22 locked", hostname=broker_ip)
+        elif task == "Langste touw in middelste kist, sluit kist.":
+            publish.single(f"actuator/control/vol-boat", "4 locked", hostname=broker_ip)
+        elif task == "Kortste touw in de ton, sluit de ton.":
+            publish.single(f"actuator/control/vol-boat", "23 locked", hostname=broker_ip)
+        elif task == "Resterend touwtje in resterende kist, sluit kist.":
+            publish.single(f"actuator/control/vol-boat", "22 locked", hostname=broker_ip)
+        elif task == "Loop naar kapiteinskamer, sluit deur richting boot.":
+            publish.single(f"actuator/control/vol-boat", "17 locked", hostname=broker_ip)
         # Add more mappings as needed
     except Exception as e:
         print(f"Error executing lock command: {str(e)}")
@@ -249,11 +276,32 @@ def execute_lock_command(task):
 def execute_unlock_command(task):
     try:
         # Add logic to map tasks to corresponding SSH commands for unlocking
-        if task == "Doe de entree deur dicht":
-            print("unlocked")
-            #command = "raspi-gpio set 25 op u"
-            #stdin, stdout, stderr = pi3.exec_command(command)
-            # You can handle the command execution results if needed
+        if task == "Haal alle schilden uit de stamboom, sluit de stamboom.":
+            publish.single(f"actuator/control/vol-afslag", "17 unlocked", hostname=broker_ip)
+        elif task == "Leg de goudstaven + het juiste schild (Hendrik Visser) in de kast onder de stamboom. Kast dicht.":
+            publish.single(f"actuator/control/vol-afslag", "18 unlocked", hostname=broker_ip)
+        elif task == "Leg een willekeurig schild in de wasmand, sluit wasmand.":
+            publish.single(f"actuator/control/vol-afslag", "4 unlocked", hostname=broker_ip)
+        elif task == "Leg een willekeurig schild in het rechter schilderij, sluit schilderij.":
+            publish.single(f"actuator/control/vol-boat", "12 unlocked", hostname=broker_ip)
+        elif task == "Leg een willekeurig schild in de bovenkant van de houten kist, sluit bovenkant.":
+            publish.single(f"actuator/control/vol-afslag", "6 unlocked", hostname=broker_ip)
+        elif task == "Leg een willekeurig schild in de voorkant van de houten kist, sluit voorkant.":
+            publish.single(f"actuator/control/vol-afslag", "5 unlocked", hostname=broker_ip)
+        elif task == "Leg een willekeurig schild in de kast naast de hendelpuzzel, kast dicht.":
+            publish.single(f"actuator/control/vol-boat", "27 unlocked", hostname=broker_ip)
+        elif task == "Sluit einddeur.":
+            publish.single(f"actuator/control/vol-afslag", "23 unlocked", hostname=broker_ip)
+        elif task == "Sluit de valdeur van de kant van het schip, goed dichtdrukken.":
+            publish.single(f"actuator/control/vol-afslag", "22 unlocked", hostname=broker_ip)
+        elif task == "Langste touw in middelste kist, sluit kist.":
+            publish.single(f"actuator/control/vol-boat", "4 unlocked", hostname=broker_ip)
+        elif task == "Kortste touw in de ton, sluit de ton.":    
+            publish.single(f"actuator/control/vol-boat", "23 unlocked", hostname=broker_ip)
+        elif task == "Resterend touwtje in resterende kist, sluit kist.":    
+            publish.single(f"actuator/control/vol-boat", "22 unlocked", hostname=broker_ip)
+        elif task == "Loop naar kapiteinskamer, sluit deur richting boot.":
+            publish.single(f"actuator/control/vol-boat", "17 unlocked", hostname=broker_ip)
         # Add more mappings as needed
     except Exception as e:
         print(f"Error executing unlock command: {str(e)}")
@@ -274,6 +322,24 @@ def update_checklist(task, is_checked):
             json.dump(checklist_data, file, indent=2)
     except Exception as e:
         print(f"Error updating checklist: {str(e)}")
+@app.route('/reset-checklist', methods=['POST'])
+def reset_checklist():
+    try:
+        # Read the current checklist data
+        with open(CHECKLIST_FILE, 'r') as file:
+            checklist_data = json.load(file)
+
+        # Reset the completed status of all tasks
+        for item in checklist_data:
+            item['completed'] = False
+
+        # Write the updated data back to the file
+        with open(CHECKLIST_FILE, 'w') as file:
+            json.dump(checklist_data, file, indent=2)
+        socketio.emit('checklist_update', "message", room="all_clients")
+    except Exception as e:
+        print(f"Error resetting checklist: {str(e)}")
+    return jsonify({'success': True, 'message': 'Checklist reset successfully'})
 @app.route('/get-checklist', methods=['GET'])
 def get_checklist_route():
     try:
@@ -449,96 +515,123 @@ def add_music1():
         try:
             # Get the file extension
             filename, file_extension = os.path.splitext(file.filename)
-            
+
             # Check if the file extension is allowed
             allowed_extensions = ['.mp3', '.wav', '.ogg']
             if file_extension.lower() in allowed_extensions:
-                # Create an SFTP client to transfer the file
-                sftp = pi2.open_sftp()
-                
-                # Modify the file path to be relative to the Flask application
-                local_path = os.path.join(app.root_path, 'uploads', file.filename)
-                
-                # Save the file to the modified local path
-                file.save(local_path)
-                
-                # Save the file to the Music folder on the Pi
-                remote_path = '/home/pi/Music/' + filename + file_extension
-                sftp.put(local_path, remote_path)
-                
-                # Close the SFTP client
-                sftp.close()
-                
-                # Delete the local file after transferring
-                os.remove(local_path)
+                # Get Raspberry Pis with the "vol" prefix
+                scanner = NetworkScanner()
+                vol_raspberry_pis = get_raspberry_pis_with_prefix('vol', scanner)
 
-                sftp = pi3.open_sftp()
-                
-                # Modify the file path to be relative to the Flask application
-                local_path = os.path.join(app.root_path, 'uploads', file.filename)
-                
-                # Save the file to the modified local path
-                file.save(local_path)
-                
-                # Save the file to the Music folder on the Pi
-                remote_path = '/home/pi/Music/' + filename + file_extension
-                sftp.put(local_path, remote_path)
-                
-                # Close the SFTP client
-                sftp.close()
-                
-                # Delete the local file after transferring
-                os.remove(local_path)
-                
-                return 'Music added successfully!'
+                success_message = "Music added successfully to the following IP addresses:<br>"
+
+                for ip, _ in vol_raspberry_pis:
+                    try:
+                        # Create an SSH session for each Raspberry Pi
+                        ssh = paramiko.SSHClient()
+                        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                        ssh.connect(ip, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+
+                        # Create an SFTP session over the existing SSH connection
+                        sftp = ssh.open_sftp()
+
+                        # Modify the file path to be relative to the Flask application
+                        local_path = os.path.join(app.root_path, 'uploads', file.filename)
+
+                        # Save the file to the modified local path
+                        file.save(local_path)
+
+                        # Save the file to the Music folder on the Pi
+                        remote_path = '/home/pi/Music/' + filename + file_extension
+                        sftp.put(local_path, remote_path)
+
+                        success_message += f"- {ip}<br>"
+
+                        # Close the SFTP session and SSH connection
+                        sftp.close()
+                        ssh.close()
+
+                        # Delete the local file after transferring
+                        os.remove(local_path)
+                    except Exception as e:
+                        return f'Error occurred while adding music to {ip}: {e}'
+
+                return success_message
             else:
                 return 'Invalid file type. Only .mp3, .wav, and .ogg files are allowed.'
         except IOError as e:
             return f'Error: {str(e)}'
-        finally:
-            # Close the SSH connection
-            print("h")
     else:
         return 'No file selected.'
+
 
 
 @app.route('/media_control')
 def media_control():
     try:
-        # Create an SFTP client to list files in the Music folder
-        sftp = pi2.open_sftp()
-        
-        # List all MP3 files in the Music folder
-        remote_path = '/home/pi/Music'
-        mp3_files = [file for file in sftp.listdir(remote_path) if file.endswith('.mp3')]
-        
-        return render_template('media_control.html', mp3_files=mp3_files)
-    except IOError as e:
+        # Get Raspberry Pis with the "vol" prefix
+        scanner = NetworkScanner()
+        vol_raspberry_pis = get_raspberry_pis_with_prefix('vol', scanner)
+
+        media_files = []
+        for ip, _ in vol_raspberry_pis:
+            try:
+                # Create an SSH session for each Raspberry Pi
+                ssh = paramiko.SSHClient()
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                ssh.connect(ip, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+
+                # Create an SFTP client to list files in the Music folder
+                sftp = ssh.open_sftp()
+
+                # List all media files in the Music folder
+                remote_path = '/home/pi/Music'
+                media_files += [file for file in sftp.listdir(remote_path) if file.lower().endswith(('.mp3', '.ogg', '.wav'))]
+
+                # Close the SFTP session and SSH connection
+                sftp.close()
+                ssh.close()
+            except Exception as e:
+                return f'Error occurred while listing files on {ip}: {e}'
+
+        return render_template('media_control.html', media_files=media_files)
+    except Exception as e:
         return f'Error: {str(e)}'
-    finally:
-        # Close the SFTP client and SSH connection
-        sftp.close()
 @app.route('/delete_music', methods=['POST'])
 def delete_music():
     file = request.form.get('file')
     if file:
-
         try:
-            # Create an SFTP client to delete the selected file
-            sftp = pi2.open_sftp()
-            
-            # Delete the selected file from the Music folder
-            remote_path = '/home/pi/Music/' + file
-            sftp.remove(remote_path)
-            
+            # Get Raspberry Pis with the "vol" prefix
+            scanner = NetworkScanner()
+            vol_raspberry_pis = get_raspberry_pis_with_prefix('vol', scanner)
+
+            for ip, _ in vol_raspberry_pis:
+                try:
+                    # Create an SSH session for each Raspberry Pi
+                    ssh = paramiko.SSHClient()
+                    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                    ssh.connect(ip, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+
+                    # Create an SFTP client to delete the selected file
+                    sftp = ssh.open_sftp()
+
+                    # Delete the selected file from the Music folder
+                    remote_path = '/home/pi/Music/' + file
+                    sftp.remove(remote_path)
+
+                    # Close the SFTP session and SSH connection
+                    sftp.close()
+                    ssh.close()
+                except Exception as e:
+                    return f'Error occurred while deleting file on {ip}: {e}'
+
             return redirect('/media_control')
-        except IOError as e:
+        except Exception as e:
             return f'Error: {str(e)}'
-        finally:
-            # Close the SFTP client and SSH connection
-            sftp.close()
     else:
         return 'No file selected.'
+
 
 
 @app.route('/file_selection')
@@ -658,24 +751,24 @@ def fade_music_out(file):
         else:
             time.sleep(0.25)
     return "Volume faded successfully"
-def fade_music_out2():
-
-        # Gradually reduce the volume from 80 to 40
-    for volume in range(65, 1, -1):
-        # Send the volume command to the Raspberry Pi
-        command = f'echo "volume {volume}" | sudo tee /tmp/mpg123_fifo'
-        stdin, stdout, stderr = pi3.exec_command(command)
-        stdin, stdout, stderr = pi2.exec_command(command)
-        # Wait for a short duration between volume changes
-        time.sleep(0.05)  # Adjust the sleep duration as needed
-def fade_music_out3():
-        # Gradually reduce the volume from 80 to 40
-    for volume in range(25, 0, -1):
-        # Send the volume command to the Raspberry Pi
-        command = f'echo "volume {volume}" | sudo tee /tmp/mpg123_fifo'
-        stdin, stdout, stderr = pi2.exec_command(command)
-        # Wait for a short duration between volume changes
-        time.sleep(0.2)  # Adjust the sleep duration as needed
+@app.route('/fade_music_out_hint', methods=['POST'])
+def fade_music_out_hint():
+    global broker_ip
+    initial_volume = 70
+    final_volume = 30
+    volume_step = (final_volume - initial_volume) / FADE_DURATION  # Calculate volume increment per second
+    # Gradually increase the volume
+    current_volume = initial_volume
+    while current_volume > final_volume:
+        current_volume -= 1  # Increase volume by 1 each second
+        publish.single("audio_control/vol-afslag/volume", f"{int(current_volume)} /home/pi/Music/BgAfslag.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-kapitein/volume", f"{int(current_volume)} /home/pi/Music/Bg-captain.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-boat/volume", f"{int(current_volume)} /home/pi/Music/BgShip.ogg", hostname=broker_ip)
+        print(current_volume)
+        time.sleep(0.05)
+    publish.single("audio_control/all/stop", "/home/pi/Music/prehint.ogg", hostname=broker_ip)
+    publish.single("audio_control/all/play", "/home/pi/Music/prehint.ogg", hostname=broker_ip)
+    return "Volume faded successfully"
 FADE_DURATION = 10  # Adjust as needed
 @app.route('/fade_music_in', methods=['POST'])
 def fade_music_in(file):
@@ -706,7 +799,22 @@ def fade_music_in(file):
             time.sleep(0.25)
 
     # Ensure the final volume is set
-    publish.single("audio_control/raspberrypi/volume", f"{final_volume} /home/pi/Music/intro.ogg", hostname=broker_ip)
+@app.route('/fade_music_in_hint', methods=['POST'])
+def fade_music_in_hint():
+    global broker_ip
+    initial_volume = 30
+    final_volume = 70
+    volume_step = (final_volume - initial_volume) / FADE_DURATION  # Calculate volume increment per second
+    # Gradually increase the volume
+    current_volume = initial_volume
+    while current_volume < final_volume:
+        current_volume += 1  # Increase volume by 1 each second
+        publish.single("audio_control/vol-afslag/volume", f"{int(current_volume)} /home/pi/Music/BgAfslag.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-kapitein/volume", f"{int(current_volume)} /home/pi/Music/Bg-captain.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-boat/volume", f"{int(current_volume)} /home/pi/Music/BgShip.ogg", hostname=broker_ip)
+        print(current_volume)
+        time.sleep(0.05)
+    # Ensure the final volume is se
 @app.route('/resume_music', methods=['POST'])
 def resume_music():
     selected_file = request.form['file']
@@ -1229,50 +1337,38 @@ def add_sensor():
         # Save the updated sensor data to the JSON file
         with open('json/sensor_data.json', 'w') as json_file:
             json.dump(sensors, json_file, indent=4)
-        ssh_sessions = [ssh, pi2, pi3]
-
-        success_message = "Script sent successfully to the following IP addresses:<br>"
-        print("did this")
-        for session in ssh_sessions:
-            if session:
-                try:
-                    # Create an SFTP session over the existing SSH connection
-                    sftp = session.open_sftp()
-                    print(sftp)
-                    # Transfer the file to the Raspberry Pi
-                    sftp.put('json/sensor_data.json', '/home/pi/sensor_data.json')
-
-                    success_message += f"- {session.get_transport().getpeername()[0]}<br>"
-
-                    # Close the SFTP session
-                    sftp.close()
-                except Exception as e:
-                    return f'Error occurred while sending script: {e}'
+        update_sensor_data_on_pis("vol")
 
         return redirect(url_for('list_sensors'))
 
     return render_template('add_sensor.html')
 
-def update_sensor_data_on_pis():
-    ssh_sessions = [ssh, pi2, pi3]  # Assuming ssh, pi2, and pi3 are your SSH session objects
+def update_sensor_data_on_pis(prefix):
+    scanner = NetworkScanner()
+    raspberry_pis = get_raspberry_pis_with_prefix(prefix, scanner)
 
     success_message = "Sensor removed successfully. Updated script sent to the following IP addresses:<br>"
 
-    for session in ssh_sessions:
-        if session:
-            try:
-                # Create an SFTP session over the existing SSH connection
-                sftp = session.open_sftp()
+    for ip, hostname in raspberry_pis:
+        try:
+            # Create an SSH session for each Raspberry Pi
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(ip, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
 
-                # Transfer the updated file to the Raspberry Pi
-                sftp.put('json/sensor_data.json', '/home/pi/sensor_data.json')
+            # Create an SFTP session over the existing SSH connection
+            sftp = ssh.open_sftp()
 
-                success_message += f"- {session.get_transport().getpeername()[0]}<br>"
+            # Transfer the updated file to the Raspberry Pi
+            sftp.put('json/sensor_data.json', '/home/pi/sensor_data.json')
 
-                # Close the SFTP session
-                sftp.close()
-            except Exception as e:
-                return f'Error occurred while sending updated script: {e}'
+            success_message += f"- {ip}<br>"
+
+            # Close the SFTP session and SSH connection
+            sftp.close()
+            ssh.close()
+        except Exception as e:
+            return f'Error occurred while sending updated script to {ip}: {e}'
 
     return success_message
 
@@ -1297,7 +1393,7 @@ def remove_sensor():
             json.dump(updated_sensors, json_file, indent=4)
 
         # Update sensor data on the Raspberry Pi devices
-        update_result = update_sensor_data_on_pis()
+        update_result = update_sensor_data_on_pis("vol")
 
         return f"{update_result}<br>Redirecting to sensor list...<meta http-equiv='refresh' content='2;url={url_for('list_sensors')}'>"
 
@@ -1452,6 +1548,7 @@ def stop_timer():
     global timer_thread, timer_running, timer_value
     update_game_status('awake')
     reset_task_statuses()
+    reset_checklist()
     stop_music()
     if timer_thread is not None and timer_thread.is_alive():
         write_timer_value(timer_value)
@@ -1596,7 +1693,7 @@ def prepare_game():
         print(actuator_status)
         results[hostname] = {"mqtt.service": mqtt_status, "sound.service": sound_status, "actuator.service": actuator_status}
         #should be tested thoroughly
-
+    update_game_status("prepared")
     return jsonify({"message": results}), 200
 
 #if romy == False:

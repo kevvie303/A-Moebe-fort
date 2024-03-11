@@ -1,42 +1,118 @@
 [
   {
-    "task": "Doe de entree deur dicht",
+    "task": "Haal alle schilden uit de stamboom, sluit de stamboom.",
     "completed": false
   },
   {
-    "task": "Reset de cijfercode op het slot",
+    "task": "Leg de goudstaven + het juiste schild (Hendrik Visser) in de kast onder de stamboom. Kast dicht.",
     "completed": false
   },
   {
-    "task": "Plaats de ontbrekende sleutel terug in de kluis",
+    "task": "Leg een willekeurig schild in de wasmand, sluit wasmand.",
     "completed": false
   },
   {
-    "task": "Sluit het geheime luik",
+    "task": "Leg een willekeurig schild in het rechter schilderij, sluit schilderij.",
     "completed": false
   },
   {
-    "task": "Herstel de oorspronkelijke staat van de boekenkast",
+    "task": "Leg een willekeurig schild in de bovenkant van de houten kist, sluit bovenkant.",
     "completed": false
   },
   {
-    "task": "Zet alle puzzelstukken terug op hun oorspronkelijke plek",
+    "task": "Leg een willekeurig schild in de voorkant van de houten kist, sluit voorkant.",
     "completed": false
   },
   {
-    "task": "Reset de piano naar de standaardtoonladder",
+    "task": "Leg een willekeurig schild onder een kussen van de bank en in de rieten mand (geen slot)",
     "completed": false
   },
   {
-    "task": "Vouw de kaart met aanwijzingen terug op de juiste manier",
+    "task": "Leg een willekeurig schild in de kast naast de hendelpuzzel, kast dicht.",
     "completed": false
   },
   {
-    "task": "Schakel het alarmsysteem opnieuw in",
+    "task": "Leg een willekeurig schild in het hokje van de meeuw (geen slot)",
     "completed": false
   },
   {
-    "task": "Berg alle hints en aanwijzingen op",
+    "task": "Leg hamer terug in voorkant timmerkast, sluit met slot 605.",
+    "completed": false
+  },
+  {
+    "task": "Controleer of kamer nog netjes is.",
+    "completed": false
+  },
+  {
+    "task": "Sluit einddeur.",
+    "completed": false
+  },
+  {
+    "task": "Alle hendels naar beneden.",
+    "completed": false
+  },
+  {
+    "task": "Sluit de valdeur van de kant van het schip, goed dichtdrukken.",
+    "completed": false
+  },
+  {
+    "task": "Touwen van aanmeren losmaken.",
+    "completed": false
+  },
+  {
+    "task": "Langste touw in middelste kist, sluit kist.",
+    "completed": false
+  },
+  {
+    "task": "Kortste touw in de ton, sluit de ton.",
+    "completed": false
+  },
+  {
+    "task": "Resterend touwtje in resterende kist, sluit kist.",
+    "completed": false
+  },
+  {
+    "task": "Roeispanen loshalen en verspreiden over schip.",
+    "completed": false
+  },
+  {
+    "task": "Zeil naar een kant, links of rechts.",
+    "completed": false
+  },
+  {
+    "task": "Loop naar kapiteinskamer, sluit deur richting boot.",
+    "completed": false
+  },
+  {
+    "task": "Ring west, zuid en oost op slot met codes: 1689, 1622, 293.",
+    "completed": false
+  },
+  {
+    "task": "Cryptex in lade kapitein, lade op slot, code 1755",
+    "completed": false
+  },
+  {
+    "task": "Wodka vles achterop de tafel.",
+    "completed": false
+  },
+  {
+    "task": "Reddingskast op slot, code 854",
+    "completed": false
+  },
+  {
+    "task": "Doorstreeppuzzel kist leeg, dan op slot, code 356",
+    "completed": false
+  },
+  {
+    "task": "Kaartenpuzzel om map heen wikkelen, touwtje los eromheen. Terugleggen achterop tafel.",
+    "completed": false
+  },
+  {
+    "task": "Yoho brief in de kist onder de tafel, kistje op slot, code 0821",
+    "completed": false
+  },
+  {
+    "task": "Druk op puzzels aan (fysieke knop bij CR), sluit deur Lutine vanuit gang.",
     "completed": false
   }
 ]

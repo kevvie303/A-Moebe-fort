@@ -71,7 +71,7 @@
         "type": "maglock",
         "pin": 5,
         "pi": "vol-afslag",
-        "state": "Locked",
+        "state": "Unlocked",
         "connection_type": "NO"
     },
     {
@@ -79,7 +79,7 @@
         "type": "maglock",
         "pin": 6,
         "pi": "vol-afslag",
-        "state": "Locked",
+        "state": "Unlocked",
         "connection_type": "NO"
     },
     {
@@ -96,6 +96,30 @@
         "pin": 18,
         "pi": "vol-afslag",
         "state": "Locked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "left_handle",
+        "type": "Sensor",
+        "pin": 13,
+        "pi": "vol-boat",
+        "state": "Not Triggered",
+        "connection_type": "NO"
+    },
+    {
+        "name": "middle_handle",
+        "type": "Sensor",
+        "pin": 21,
+        "pi": "vol-boat",
+        "state": "Not Triggered",
+        "connection_type": "NO"
+    },
+    {
+        "name": "right_handle",
+        "type": "Sensor",
+        "pin": 5,
+        "pi": "vol-boat",
+        "state": "Not Triggered",
         "connection_type": "NO"
     }
 ]

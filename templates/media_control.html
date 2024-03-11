@@ -15,12 +15,12 @@
 
         <h2>Add music to middle-pi</h2>
             <button id="add-music-button1">Add</button>
-        <h2>Available MP3 Files:</h2>
-        <ul class="file-selection-list">
-            {% for file in mp3_files %}
-                <li class="file-select">{{ file }}</li>
-            {% endfor %}
-        </ul>
+            <h2>Available Media Files:</h2>
+            <ul class="file-selection-list">
+                {% for file in media_files %}
+                    <li class="file-select">{{ file }}</li>
+                {% endfor %}
+            </ul>
         <h2>Delete MP3 Files:</h2>
         <form action="/delete_music" method="post">
             <select name="file">
