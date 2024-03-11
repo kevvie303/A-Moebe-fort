@@ -971,6 +971,9 @@ def solve_task(task_name):
                 time.sleep(36)
                 publish.single(f"actuator/control/vol-afslag", "18 unlocked", hostname=broker_ip)
                 fade_music_in("finalsequence")
+        elif task_name == "stamboom":
+            if game_status == {'status': 'playing'}:
+                publish.single(f"actuator/control/vol-afslag", "23 unlocked", hostname=broker_ip)
         if task_name == "bootje-leggen" or task_name == "schilderijen-drukken" or task_name == "Biedingen":
             if game_status == {'status': 'playing'}:
                 publish.single(f"actuator/control/vol-afslag", "17 unlocked", hostname=broker_ip)
