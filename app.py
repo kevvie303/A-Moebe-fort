@@ -24,7 +24,7 @@ load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
 #command = 'python relay_control.py'
-loadMqtt = False
+loadMqtt = True
 ssh = None
 stdin = None
 pi2 = None
@@ -1525,6 +1525,9 @@ def write_timer_value(value):
 def update_timer():
     global timer_value, speed, timer_running
     while timer_value > 0 and timer_running:
+        current_game_state = get_game_status()
+        if current_game_state == {'status': 'prepared'}:
+            update_game_status('playing')
         timer_value = max(timer_value - speed, 0)
         write_timer_value(timer_value)
         threading.Event().wait(1)
@@ -1575,12 +1578,12 @@ def start_timer():
         timer_thread = threading.Thread(target=update_timer)
         timer_thread.daemon = True
         timer_thread.start()
-        #publish.single("video_control/raspberrypi/play", "start", hostname=broker_ip)
-        #publish.single("video_control/raspberrypi/volume", "35", hostname=broker_ip)
-        #time.sleep(60)
-        #publish.single("video_control/raspberrypi/stop", "stop", hostname=broker_ip)
-        #publish.single("audio_control/raspberrypi/play", "/home/pi/Music/intro.ogg", hostname=broker_ip)
-        #fade_music_in("intro")
+        publish.single("video_control/raspberrypi/play", "start", hostname=broker_ip)
+        publish.single("video_control/raspberrypi/volume", "35", hostname=broker_ip)
+        time.sleep(60)
+        publish.single("video_control/raspberrypi/stop", "stop", hostname=broker_ip)
+        publish.single("audio_control/raspberrypi/play", "/home/pi/Music/intro.ogg", hostname=broker_ip)
+        fade_music_in("intro")
     return 'Timer started'
 
 @app.route('/timer/stop', methods=['POST'])
@@ -1588,9 +1591,9 @@ def stop_timer():
     global timer_thread, timer_running, timer_value
     update_game_status('awake')
     end_time = datetime.now()
-    #reset_task_statuses()
-    #reset_checklist()
-    #stop_music()
+    reset_task_statuses()
+    reset_checklist()
+    stop_music()
     write_game_data(start_time, end_time)
     if timer_thread is not None and timer_thread.is_alive():
         write_timer_value(timer_value)
