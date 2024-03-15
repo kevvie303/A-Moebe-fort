@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
     <link rel="icon" href="static/img/logo.png" type="image/png">
 </head>
-<body>
+<body class="add-sensor-page">
     <h1>Add a New Item</h1>
     <form method="POST" action="/add_sensor">
         <label for="name">Item Name:</label>
@@ -29,8 +29,13 @@
             <option value="guard_room_pi">guard_room_pi</option>
             <option value="cell_pi">cell_pi</option>
             <option value="corridor_pi">corridor_pi</option>
+            <option value="for-garderobe">for-garderobe</option>
         </select><br>
-
+        <label for="connection_type">Connection Type:</label>
+        <select name="connection_type" required>
+            <option value="NC">Normally Closed (NC)</option>
+            <option value="NO">Normally Open (NO)</option>
+        </select><br>
         <input type="submit" value="Submit">
     </form>
     <a href="/list_sensors" class="button-style">Back to List</a>

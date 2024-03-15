@@ -201,9 +201,11 @@ landing page
 }
 .landing-page .rooms .krijgsgevangenis-container .controls .info {
   display: flex;
+  width: -moz-fit-content;
   width: fit-content;
 }
 .landing-page .rooms .krijgsgevangenis-container .controls .info a {
+  width: -moz-fit-content;
   width: fit-content;
 }
 .landing-page .rooms .media {
@@ -650,6 +652,7 @@ section.time-hidden article.time div.time-controls div.speed-up-slow-down {
 }
 section.time-hidden article.time div.time-controls div.reset-speed {
   display: flex;
+  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -670,6 +673,7 @@ section.pi-hidden article.pi article.pi-buttons div.pi-controls div.backup {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: -moz-fit-content;
   width: fit-content;
 }
 section.pi-hidden article.pi article.pi-buttons div.pi-controls div.reboot div.pies,
@@ -697,6 +701,7 @@ section.game-hidden article.game-controls div.game-buttons {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: -moz-fit-content;
   width: fit-content;
   justify-content: center;
 }
@@ -704,6 +709,7 @@ section.game-hidden article.game-controls div.abort p {
   text-align: center;
 }
 section.game-hidden article.game-controls div.abort button {
+  width: -moz-fit-content;
   width: fit-content;
   align-self: center;
   background: var(--locked);
@@ -790,6 +796,7 @@ section.media-selection.container form select {
   width: 100%;
 }
 section.media-selection.container form input {
+  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -1030,6 +1037,7 @@ pin info button
 ###############
 */
 .pin-info {
+  width: -moz-fit-content;
   width: fit-content;
   align-self: center;
 }
@@ -1267,4 +1275,158 @@ footer a:hover {
 section#task-modal {
   top: 0;
   left: 0;
+}
+
+:root {
+  --background-color: #464c53;
+  --secondary-background-color: #efefef;
+  --button-color: #6197d4;
+  --button-color-hover: #4684be;
+  --second-button-color-hover: #31982f;
+  --locked: #de4646;
+  --unlocked: #37a835;
+  --pending: #545454;
+  --skipped: #c8a929;
+  --text-color: #050505;
+  --secondary-text-color: #efefef;
+  --sm: 576px;
+  --md: 768px;
+  --lg: 992px;
+  --xl: 1200px;
+  --xxl: 1400px;
+  --icon-sm: 20px;
+  --icon-md: 24px;
+  --icon-lg: 40px;
+  --icon-xl: 48px;
+}
+
+.add-sensor-page body {
+  font-family: "Arial", sans-serif;
+  margin: 20px;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.add-sensor-page h1 {
+  color: #333;
+}
+
+.add-sensor-page form {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.add-sensor-page label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.add-sensor-page input, .add-sensor-page select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+
+.add-sensor-page input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+}
+
+.add-sensor-page input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.add-sensor-page .button-style {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  background-color: #007BFF;
+  color: #fff;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+  .add-sensor-page form {
+    max-width: 100%;
+  }
+}
+:root {
+  --background-color: #464c53;
+  --secondary-background-color: #efefef;
+  --button-color: #6197d4;
+  --button-color-hover: #4684be;
+  --second-button-color-hover: #31982f;
+  --locked: #de4646;
+  --unlocked: #37a835;
+  --pending: #545454;
+  --skipped: #c8a929;
+  --text-color: #050505;
+  --secondary-text-color: #efefef;
+  --sm: 576px;
+  --md: 768px;
+  --lg: 992px;
+  --xl: 1200px;
+  --xxl: 1400px;
+  --icon-sm: 20px;
+  --icon-md: 24px;
+  --icon-lg: 40px;
+  --icon-xl: 48px;
+}
+
+.sensor-list-page body {
+  font-family: "Arial", sans-serif;
+  margin: 20px;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.sensor-list-page h1 {
+  color: #333;
+}
+
+.sensor-list-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sensor-list-page th, .sensor-list-page td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.sensor-list-page th {
+  background-color: #007BFF;
+  color: #fff;
+}
+
+.sensor-list-page .button-style {
+  display: inline-block;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  background-color: #4CAF50;
+  color: #fff;
+  border-radius: 4px;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+@media (max-width: 600px) {
+  .sensor-list-page table {
+    overflow-x: auto;
+  }
 }/*# sourceMappingURL=styles.css.map */

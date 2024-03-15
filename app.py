@@ -194,9 +194,9 @@ def on_message(client, userdata, message):
     sensor_name = parts[-1]  # Extract the last part of the topic (sensor name)
     sensor_state = message.payload.decode("utf-8")
     sensor_states[sensor_name] = sensor_state
-
+    
     print(f"Received MQTT message - Sensor: {sensor_name}, State: {sensor_state}")
-
+    
     if sensor_name in sensor_states:
         sensor_states[sensor_name] = sensor_state
         update_json_file()
@@ -1265,22 +1265,42 @@ def monitor_sensor_statuses():
             #pi2.exec_command("mpg123 -a hw:1,0 Music/pentakill.mp3")
         time.sleep(0.1)
 # Start a new thread for monitoring sensor statuses
+@app.route('/reset-checklist', methods=['POST'])
+def reset_checklist():
+    try:
+        # Read the current checklist data
+        with open(CHECKLIST_FILE, 'r') as file:
+            checklist_data = json.load(file)
+
+        # Reset the completed status of all tasks
+        for item in checklist_data:
+            item['completed'] = False
+
+        # Write the updated data back to the file
+        with open(CHECKLIST_FILE, 'w') as file:
+            json.dump(checklist_data, file, indent=2)
+        socketio.emit('checklist_update', "message", room="all_clients")
+    except Exception as e:
+        print(f"Error resetting checklist: {str(e)}")
+    return jsonify({'success': True, 'message': 'Checklist reset successfully'})
 @app.route('/add_sensor', methods=['GET', 'POST'])
 def add_sensor():
     if request.method == 'POST':
-        # Retrieve form data
+        # Retrieve form data including the new 'connection_type' field
         name = request.form['name']
         item_type = request.form['type']
         pin = int(request.form['pin'])
         pi = request.form['pi']
+        connection_type = request.form['connection_type']
 
-        # Create a new sensor dictionary with an initial state of "Not triggered"
+        # Create a new sensor dictionary with the additional field
         new_sensor = {
             "name": name,
             "type": item_type,
             "pin": pin,
             "pi": pi,
-            "state": "initial"
+            "state": "initial",
+            "connection_type": connection_type
         }
 
         # Add the new sensor to the list
@@ -1289,31 +1309,75 @@ def add_sensor():
         # Save the updated sensor data to the JSON file
         with open('json/sensor_data.json', 'w') as json_file:
             json.dump(sensors, json_file, indent=4)
-        ssh_sessions = [ssh, pi2, pi3]
-
-        success_message = "Script sent successfully to the following IP addresses:<br>"
-
-        for session in ssh_sessions:
-            if session:
-                try:
-                    # Create an SFTP session over the existing SSH connection
-                    sftp = session.open_sftp()
-                    print(sftp)
-                    # Transfer the file to the Raspberry Pi
-                    sftp.put('json/sensor_data.json', '/home/pi/sensor_data.json')
-
-                    success_message += f"- {session.get_transport().getpeername()[0]}<br>"
-
-                    # Close the SFTP session
-                    sftp.close()
-                except Exception as e:
-                    return f'Error occurred while sending script: {e}'
+        update_sensor_data_on_pis("for")
 
         return redirect(url_for('list_sensors'))
 
     return render_template('add_sensor.html')
+
+def update_sensor_data_on_pis(prefix):
+    scanner = NetworkScanner()
+    raspberry_pis = get_raspberry_pis_with_prefix(prefix, scanner)
+
+    success_message = "Sensor removed successfully. Updated script sent to the following IP addresses:<br>"
+
+    for ip, hostname in raspberry_pis:
+        try:
+            # Create an SSH session for each Raspberry Pi
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(ip, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+
+            # Create an SFTP session over the existing SSH connection
+            sftp = ssh.open_sftp()
+
+            # Transfer the updated file to the Raspberry Pi
+            sftp.put('json/sensor_data.json', '/home/pi/sensor_data.json')
+
+            success_message += f"- {ip}<br>"
+
+            # Close the SFTP session and SSH connection
+            sftp.close()
+            ssh.close()
+        except Exception as e:
+            return f'Error occurred while sending updated script to {ip}: {e}'
+
+    return success_message
+
+@app.route('/remove_sensor', methods=['GET', 'POST'])
+def remove_sensor():
+    # Access the global sensors variable
+    global sensors
+
+    if request.method == 'POST':
+        # Retrieve the selected sensor name to remove
+        sensor_name_to_remove = request.form['sensor_name']
+
+        # Read the existing sensor data from the JSON file
+        with open('json/sensor_data.json', 'r') as json_file:
+            sensors = json.load(json_file)
+
+        # Remove the sensor from the list
+        updated_sensors = [sensor for sensor in sensors if sensor['name'] != sensor_name_to_remove]
+
+        # Save the updated sensor data back to the JSON file
+        with open('json/sensor_data.json', 'w') as json_file:
+            json.dump(updated_sensors, json_file, indent=4)
+
+        # Update sensor data on the Raspberry Pi devices
+        update_result = update_sensor_data_on_pis("for")
+
+        return f"{update_result}<br>Redirecting to sensor list...<meta http-equiv='refresh' content='2;url={url_for('list_sensors')}'>"
+
+    return render_template('remove_sensor.html', sensors=sensors)
+
 @app.route('/list_sensors')
 def list_sensors():
+    # Read the sensor data from the JSON file
+    with open('json/sensor_data.json', 'r') as json_file:
+        sensors = json.load(json_file)
+
+    # Render the template with the updated sensor data
     return render_template('list_sensors.html', sensors=sensors)
 def start_bird_sounds():
     pi3.exec_command("mpg123 -a hw:1,0 Music/Gull.mp3")

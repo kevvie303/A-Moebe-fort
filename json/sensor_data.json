@@ -23,7 +23,7 @@
     {
         "name": "entrance-door-lock",
         "type": "maglock",
-        "pin": 14,
+        "pin": 23,
         "pi": "cell_pi",
         "state": "Unlocked"
     },
@@ -54,7 +54,7 @@
         "pin": 4,
         "pi": "corridor_pi",
         "state": "initial"
-    },    
+    },
     {
         "name": "gang-blacklight-1",
         "type": "light",
@@ -96,6 +96,73 @@
         "pin": 6,
         "pi": "cell_pi",
         "state": "initial"
+    },
+    {
+        "name": "iron-door-child",
+        "type": "maglock",
+        "pin": 12,
+        "pi": "corridor_pi",
+        "state": "initial"
+    },
+    {
+        "name": "iron-door-adult",
+        "type": "maglock",
+        "pin": 20,
+        "pi": "corridor_pi",
+        "state": "initial"
+    },
+    {
+        "name": "secret-door-lock",
+        "type": "maglock",
+        "pin": 21,
+        "pi": "guard_room_pi",
+        "state": "initial"
+    },
+    {
+        "name": "radio-guard",
+        "type": "maglock",
+        "pin": 20,
+        "pi": "guard_room_pi",
+        "state": "initial"
+    },
+    {
+        "name": "jas-2",
+        "type": "button",
+        "pin": 21,
+        "pi": "for-garderobe",
+        "state": "initial",
+        "connection_type": "NO"
+    },
+    {
+        "name": "jas-3",
+        "type": "button",
+        "pin": 27,
+        "pi": "for-garderobe",
+        "state": "initial",
+        "connection_type": "NO"
+    },
+    {
+        "name": "jas-1",
+        "type": "button",
+        "pin": 4,
+        "pi": "for-garderobe",
+        "state": "initial",
+        "connection_type": "NO"
+    },
+    {
+        "name": "test",
+        "type": "Sensor",
+        "pin": 1,
+        "pi": "guard_room_pi",
+        "state": "initial",
+        "connection_type": "NC"
+    },
+    {
+        "name": "key-drop-lock",
+        "type": "maglock",
+        "pin": 23,
+        "pi": "for-garderobe",
+        "state": "initial",
+        "connection_type": "NO"
     }
-
 ]
