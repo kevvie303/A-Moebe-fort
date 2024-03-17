@@ -249,3 +249,11 @@ media queries
     transform: rotate(360deg);
   }
 }
+
+#reset-list {
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}

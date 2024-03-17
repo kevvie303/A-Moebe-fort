@@ -149,9 +149,7 @@ $(document).ready(function () {
           var lockButton = $("<button>")
             .addClass("turn-on-button icon")
             .append(
-              $("<img>")
-                .attr("src", "static/img/lock.svg")
-                .attr("alt", "Lock")
+              $("<img>").attr("src", "static/img/lock.svg").attr("alt", "Lock")
             );
           var unlockButton = $("<button>")
             .addClass("turn-off-button icon")
@@ -880,10 +878,14 @@ function openTaskPopup(task) {
   solvedButton.onclick = null;
   pendingButton.onclick = null;
   skipButton.onclick = null;
-  const taskControlContainer = taskPopup.querySelector(".task-control-container");
+  const taskControlContainer = taskPopup.querySelector(
+    ".task-control-container"
+  );
 
   // Remove any previously added dynamic buttons and "Play hint" message
-  const existingDynamicButtonContainer = taskControlContainer.querySelector(".dynamic-button-container");
+  const existingDynamicButtonContainer = taskControlContainer.querySelector(
+    ".dynamic-button-container"
+  );
   if (existingDynamicButtonContainer) {
     existingDynamicButtonContainer.remove();
   }
@@ -908,21 +910,21 @@ function openTaskPopup(task) {
 
     // Add an event listener to each button
     dynamicButton.addEventListener("click", () => {
-        // AJAX request using jQuery
-        $.ajax({
-            type: "POST",
-            url: "/play_music",
-            contentType: "application/json",
-            data: JSON.stringify({
-                message: `/home/pi/Music/${task.task}-${i}.ogg`
-            }),
-            success: function(response) {
-                console.log("Response from Flask:", response);
-            },
-            error: function(error) {
-                console.error("Error:", error);
-            }
-        });
+      // AJAX request using jQuery
+      $.ajax({
+        type: "POST",
+        url: "/play_music",
+        contentType: "application/json",
+        data: JSON.stringify({
+          message: `/home/pi/Music/${task.task}-${i}.ogg`,
+        }),
+        success: function (response) {
+          console.log("Response from Flask:", response);
+        },
+        error: function (error) {
+          console.error("Error:", error);
+        },
+      });
     });
 
     // Append the button to the dynamicButtonContainer
@@ -930,7 +932,10 @@ function openTaskPopup(task) {
   }
 
   // Insert the dynamicButtonContainer before the ".current-state" element
-  taskControlContainer.insertBefore(dynamicButtonContainer, taskControlContainer.querySelector(".current-state"));
+  taskControlContainer.insertBefore(
+    dynamicButtonContainer,
+    taskControlContainer.querySelector(".current-state")
+  );
 
   // Show the appropriate button based on the task state
   if (task.state === "solved" || task.state === "skipped") {
@@ -1272,7 +1277,7 @@ $(document).ready(function () {
     prepareStatus.html("Preparing...");
     clearInterval(updateStatusInterval);
     updatePlayStatus = setInterval(updatePlayingStatus, 1000);
-  
+
     // Use the playerType variable in your preparation logic
     $.ajax({
       type: "POST",
@@ -1282,33 +1287,35 @@ $(document).ready(function () {
         prepareStatus.html(
           "Prepared - Status: OK. Game will start when the door is open or the start game button has been clicked."
         );
-  
+
         // Debugging: Output the response.message to the console
         console.log(response.message);
-  
+
         resultsSection.empty();
-  
+
         // Loop through the JSON data and create a neat display
         for (var device in response.message) {
           var deviceStatus = response.message[device];
           var deviceDiv = $("<div>").addClass("device-status");
           var header = $("<h3>").text(device);
           deviceDiv.append(header);
-        
+
           var statusContainer = $("<div>").addClass("prepare-status-container");
-        
+
           for (var script in deviceStatus) {
             var status = deviceStatus[script];
             var statusText = status ? "Running" : "Not Running";
             var scriptDiv = $("<div>").addClass("script-status");
-        
+
             // Dynamically set the color based on the service status
             var colorClass = status ? "text-green" : "text-red";
-            scriptDiv.html(`<p class="${colorClass}">${script}: ${statusText}</p>`);
-        
+            scriptDiv.html(
+              `<p class="${colorClass}">${script}: ${statusText}</p>`
+            );
+
             statusContainer.append(scriptDiv);
           }
-        
+
           deviceDiv.append(statusContainer);
           resultsSection.append(deviceDiv);
         }
@@ -1333,9 +1340,7 @@ $(document).ready(function () {
         console.log("hii");
         clearInterval(updatePlayStatus);
         prepareButton.hide();
-        $(
-          ".tasks, .locks, .lock-status, .pin-info"
-        ).show();
+        $(".tasks, .locks, .lock-status, .pin-info").show();
         $("#prepare-result, #reset-list-container").hide();
       }
     });
@@ -1344,9 +1349,7 @@ $(document).ready(function () {
     if (data.status === "playing") {
       clearInterval(updatePlayStatus);
       prepareButton.hide();
-      $(
-        ".tasks, .locks, .lock-status, .pin-info"
-      ).show();
+      $(".tasks, .locks, .lock-status, .pin-info").show();
       $("#prepare-result, #snooze-game-button, #reset-list-container").hide();
     }
   });
@@ -1417,9 +1420,11 @@ document.addEventListener("DOMContentLoaded", () => {
       type: "POST",
       url: "/reset-checklist",
       success: function (response) {
-        updateChecklist()
+        updateChecklist();
         console.log(response);
-        const resetListContainer = document.getElementById("reset-list-container");
+        const resetListContainer = document.getElementById(
+          "reset-list-container"
+        );
         const readyToPrepareMessage = resetListContainer.querySelector("p");
 
         if (readyToPrepareMessage) {
@@ -1452,7 +1457,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const resetList = document.getElementById("reset-list");
 
     // Check if all tasks are completed
-    const allCompleted = checklist.every(item => item.completed);
+    const allCompleted = checklist.every((item) => item.completed);
 
     if (allCompleted) {
       // If all tasks are completed, hide the checklist and show "ready to prepare"
@@ -1466,7 +1471,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } else {
       // If not all tasks are completed, display the checklist
-      resetList.style.display = "block";
+      resetList.style.display = "flex";
       resetList.innerHTML = ""; // Clear existing checklist items
       checklist.forEach((item, index) => {
         const listItem = document.createElement("li");
@@ -1486,9 +1491,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         listItem.appendChild(checkbox);
         listItem.appendChild(label);
-        if (index < checklist.length - 1) {
-          listItem.style.borderBottom = "1px solid #ccc";
-        }  
+        // if (index < checklist.length - 1) {
+        //   listItem.style.borderBottom = "1px solid #ccc";
+        // }
         resetList.appendChild(listItem);
 
         checkbox.addEventListener("change", async () => {
@@ -1503,7 +1508,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       // Show the checklist
-      resetListContainer.style.display = "block";
+      resetListContainer.style.display = "flex";
     }
   }
   function fetchAndDisplayChecklist() {

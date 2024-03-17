@@ -106,14 +106,17 @@ section.pi-hidden {
     article.pi-buttons {
       div.pi-controls {
         display: flex;
-        flex-direction: row;
-        gap: 10px;
+        flex-direction: column;
+        gap: 20px;
         width: 100%;
         justify-content: center;
+        align-items: center;
         div.reboot,
         div.backup {
           display: flex;
           flex-direction: column;
+          justify-content: center;
+          align-items: center;
           gap: 10px;
           width: fit-content;
           div.pies {

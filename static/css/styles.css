@@ -1,5 +1,5 @@
 :root {
-  --background-color: #873c03;
+  --background-color: #4d67a5;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
@@ -22,7 +22,7 @@
 }
 
 :root {
-  --background-color: #873c03;
+  --background-color: #4d67a5;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
@@ -201,11 +201,9 @@ landing page
 }
 .landing-page .rooms .krijgsgevangenis-container .controls .info {
   display: flex;
-  width: -moz-fit-content;
   width: fit-content;
 }
 .landing-page .rooms .krijgsgevangenis-container .controls .info a {
-  width: -moz-fit-content;
   width: fit-content;
 }
 .landing-page .rooms .media {
@@ -213,6 +211,17 @@ landing page
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+.landing-page > a {
+  align-self: center;
+  background-color: var(--unlocked);
+}
+.landing-page > a:hover {
+  background: var(--second-button-color-hover);
+  filter: drop-shadow(none);
+}
+.landing-page > a button {
+  color: var(--secondary-text-color);
 }
 
 /*
@@ -280,7 +289,7 @@ media queries
 }
 
 :root {
-  --background-color: #873c03;
+  --background-color: #4d67a5;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
@@ -402,7 +411,7 @@ main {
   }
 }
 :root {
-  --background-color: #873c03;
+  --background-color: #4d67a5;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
@@ -472,8 +481,12 @@ a:focus {
   cursor: pointer;
 }
 
+#reset-checklist {
+  align-self: center;
+}
+
 :root {
-  --background-color: #873c03;
+  --background-color: #4d67a5;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
@@ -559,7 +572,7 @@ header.retriever-logo {
   }
 }
 :root {
-  --background-color: #873c03;
+  --background-color: #4d67a5;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
@@ -660,7 +673,6 @@ section.time-hidden article.time div.time-controls div.speed-up-slow-down {
 }
 section.time-hidden article.time div.time-controls div.reset-speed {
   display: flex;
-  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -671,17 +683,19 @@ pi
 */
 section.pi-hidden article.pi article.pi-buttons div.pi-controls {
   display: flex;
-  flex-direction: row;
-  gap: 10px;
+  flex-direction: column;
+  gap: 20px;
   width: 100%;
   justify-content: center;
+  align-items: center;
 }
 section.pi-hidden article.pi article.pi-buttons div.pi-controls div.reboot,
 section.pi-hidden article.pi article.pi-buttons div.pi-controls div.backup {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 10px;
-  width: -moz-fit-content;
   width: fit-content;
 }
 section.pi-hidden article.pi article.pi-buttons div.pi-controls div.reboot div.pies,
@@ -709,7 +723,6 @@ section.game-hidden article.game-controls div.game-buttons {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: -moz-fit-content;
   width: fit-content;
   justify-content: center;
 }
@@ -717,7 +730,6 @@ section.game-hidden article.game-controls div.abort p {
   text-align: center;
 }
 section.game-hidden article.game-controls div.abort button {
-  width: -moz-fit-content;
   width: fit-content;
   align-self: center;
   background: var(--locked);
@@ -804,7 +816,6 @@ section.media-selection.container form select {
   width: 100%;
 }
 section.media-selection.container form input {
-  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -890,7 +901,7 @@ section.control-container section.tasks div.modal div.modal-content input[type=t
 }
 
 :root {
-  --background-color: #873c03;
+  --background-color: #4d67a5;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
@@ -1045,7 +1056,6 @@ pin info button
 ###############
 */
 .pin-info {
-  width: -moz-fit-content;
   width: fit-content;
   align-self: center;
 }
@@ -1108,8 +1118,14 @@ media queries
     transform: rotate(360deg);
   }
 }
+#reset-list ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 :root {
-  --background-color: #873c03;
+  --background-color: #4d67a5;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
@@ -1181,7 +1197,7 @@ media queries
   }
 }
 :root {
-  --background-color: #873c03;
+  --background-color: #4d67a5;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
@@ -1258,7 +1274,7 @@ footer a:hover {
 }
 
 :root {
-  --background-color: #873c03;
+  --background-color: #4d67a5;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
@@ -1286,7 +1302,7 @@ section#task-modal {
 }
 
 :root {
-  --background-color: #873c03;
+  --background-color: #4d67a5;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
@@ -1369,7 +1385,7 @@ section#task-modal {
   }
 }
 :root {
-  --background-color: #873c03;
+  --background-color: #4d67a5;
   --secondary-background-color: #efefef;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
