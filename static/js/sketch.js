@@ -1305,10 +1305,10 @@ $(document).ready(function () {
     $.ajax({
       type: "POST",
       url: "/prepare",
-      data: { playerType: playerType, prefix: "pow" },
+      data: { playerType: playerType, prefix: "for" },
       success: function (response) {
         prepareStatus.html(
-          "Prepared - Status: OK. Game will start when door is open or start game has been clicked"
+          "Prepared - Status: OK. Game will start when the door is open or the start game button has been clicked."
         );
 
         // Debugging: Output the response.message to the console
@@ -1329,7 +1329,13 @@ $(document).ready(function () {
             var status = deviceStatus[script];
             var statusText = status ? "Running" : "Not Running";
             var scriptDiv = $("<div>").addClass("script-status");
-            scriptDiv.html(`<p>${script}: ${statusText}</p`);
+
+            // Dynamically set the color based on the service status
+            var colorClass = status ? "text-green" : "text-red";
+            scriptDiv.html(
+              `<p class="${colorClass}">${script}: ${statusText}</p>`
+            );
+
             statusContainer.append(scriptDiv);
           }
 
@@ -1357,10 +1363,8 @@ $(document).ready(function () {
         console.log("hii");
         clearInterval(updatePlayStatus);
         prepareButton.hide();
-        $(
-          ".tasks, .locks, .lock-status, .pin-info, #reset-list-container"
-        ).show();
-        $("#prepare-result").hide();
+        $(".tasks, .locks, .lock-status, .pin-info").show();
+        $("#prepare-result, #reset-list-container").hide();
       }
     });
   }
@@ -1368,10 +1372,8 @@ $(document).ready(function () {
     if (data.status === "playing") {
       clearInterval(updatePlayStatus);
       prepareButton.hide();
-      $(
-        ".tasks, .locks, .lock-status, .pin-info, #reset-list-container"
-      ).show();
-      $("#prepare-result, #snooze-game-button").hide();
+      $(".tasks, .locks, .lock-status, .pin-info").show();
+      $("#prepare-result, #snooze-game-button, #reset-list-container").hide();
     }
   });
   $.get("/get_game_status", function (data) {

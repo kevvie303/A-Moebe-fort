@@ -23,7 +23,7 @@ load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
 #command = 'python relay_control.py'
-loadMqtt = False
+loadMqtt = True
 ssh = None
 stdin = None
 pi2 = None
@@ -207,7 +207,33 @@ def on_message(client, userdata, message):
         sensor_states[sensor_name] = sensor_state
         update_json_file()
         print("State changed. Updated JSON.")
-    print(sensor_states)
+    #print(sensor_states)
+    if sensor_name == "rfid_corridor":
+        print(sensor_state)
+        mendez1 = 584185540695
+        mendez2 = 584199238531
+        roosenthaal1 = 584198160159
+        roosenthaal2 = 584183068095
+        sensor_state_int = int(sensor_state)
+        print(roosenthaal2)
+        if sensor_state_int == mendez1 or sensor_state_int == mendez2:
+            publish.single(f"actuator/control/corridor_pi", "21 unlocked", hostname=broker_ip)
+            publish.single(f"actuator/control/corridor_pi", "12 locked", hostname=broker_ip)
+            publish.single("audio_control/for-corridor/play", "/home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
+            publish.single("audio_control/for-corridor/volume", "100 /home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
+            time.sleep(3)
+            publish.single(f"actuator/control/corridor_pi", "21 locked", hostname=broker_ip)
+            publish.single(f"actuator/control/corridor_pi", "12 unlocked", hostname=broker_ip)
+            print("Correct code")
+        elif sensor_state_int == roosenthaal1 or sensor_state_int == roosenthaal2:
+            publish.single(f"actuator/control/corridor_pi", "13 unlocked", hostname=broker_ip)
+            publish.single(f"actuator/control/corridor_pi", "20 locked", hostname=broker_ip)
+            publish.single("audio_control/for-corridor/play", "/home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
+            publish.single("audio_control/for-corridor/volume", "100 /home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
+            time.sleep(3)
+            publish.single(f"actuator/control/corridor_pi", "13 locked", hostname=broker_ip)
+            publish.single(f"actuator/control/corridor_pi", "20 unlocked", hostname=broker_ip)
+            print("Correct code")
     if check_rule("maze-sensor"):
         if check_task_state("paw-maze") == "pending":
             print("solved")
@@ -862,27 +888,6 @@ def skip_task(task_name):
                 task['state'] = 'skipped'
         if task_name == "Wastafel-sleutel":
             print("skipped!")
-        elif task_name == "flowers":
-            code1 = True
-            codesCorrect += 1
-        elif task_name == "kite-count":
-            code2 = True
-            codesCorrect += 1
-        elif task_name == "number-feel":
-            code3 = True
-            codesCorrect += 1
-        elif task_name == "fence-decrypt":
-            code4 = True
-            codesCorrect += 1
-        if code1 and code2 and code3 and code4 and code5:
-            print("executed")
-            pi3.exec_command('mpg123 -a hw:0,0 Music/schuur_open.mp3')
-            pi3.exec_command('raspi-gpio set 16 op dh')
-            code1 = False
-            code2 = False
-            code3 = False
-            code4 = False
-            code5 = False
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
 
@@ -932,32 +937,7 @@ def reset_task_statuses():
 @app.route('/reset_puzzles', methods=['POST'])
 def reset_puzzles():
     global aborted
-    global code1
-    global code2
-    global code3
-    global code4
-    global code5
-    global codesCorrect
-    codesCorrect == 0
-    aborted = True
-    code1 = False
-    code2 = False
-    code3 = False
-    code4 = False
-    code5 = False
     update_game_status('awake')
-    pi3.exec_command('raspi-gpio set 16 op dl')
-    pi2.exec_command('sudo pkill -f sinus_game.py')
-    pi2.exec_command('pkill -f sensor_board.py')
-    pi2.exec_command('pkill -9 mpg123')
-    pi2.exec_command('raspi-gpio set 12 op dl')
-    pi2.exec_command('raspi-gpio set 1 op dl')
-    pi2.exec_command('raspi-gpio set 7 op dl')
-    pi2.exec_command('raspi-gpio set 8 op dl')
-    time.sleep(3)
-    #pi2.exec_command('sudo python sinus_game.py')
-    #pi2.exec_command('python sensor_board.py')
-    time.sleep(15)
     aborted = False
     return "puzzles reset"
 
@@ -981,8 +961,6 @@ def get_game_status():
 @app.route('/wake_room', methods=['POST'])
 def wake_room():
     # Update the retriever status to 'awake'
-    pi3.exec_command('raspi-gpio set 12 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 1 op dl \n raspi-gpio set 8 op dl')
-    ssh.exec_command('raspi-gpio set 15 op dl \n raspi-gpio set 25 op dl')
     update_game_status('awake')
     return "room awakened"
 @app.route('/control_light', methods=['POST'])
@@ -1036,17 +1014,7 @@ def control_light():
     return jsonify({'message': f'Light {light_name} control command executed successfully'})
 @app.route('/snooze_game', methods=['POST'])
 def snooze_game():
-    light1off = 'raspi-gpio set 12 op dh'
-    light2off = 'raspi-gpio set 7 op dh'
-    light3off = 'raspi-gpio set 1 op dh'
-    light4off = 'raspi-gpio set 8 op dh'
-    lightsoff = f"{light1off}; {light2off}; {light3off}; {light4off}"
-    pi3.exec_command(lightsoff)
-    ssh.exec_command('raspi-gpio set 17 op dh \n raspi-gpio set 10 op dh')
-    ssh.exec_command('raspi-gpio set 27 op dh')
-    ssh.exec_command('raspi-gpio set 15 op dh \n raspi-gpio set 25 op dh \n raspi-gpio set 6 op dh \n raspi-gpio set 16 op dh \n raspi-gpio set 20 op dh \n raspi-gpio set 21 op dh')
-    pi3.exec_command('raspi-gpio set 16 op dh')
-    pi3.exec_command('raspi-gpio set 25 op dh')
+    
     update_game_status('snoozed')
     return "room snoozed"
 @app.route('/add_task', methods=['POST'])
@@ -1132,8 +1100,7 @@ def set_starting_volume(soundcard_channel):
 @app.route('/stop_music', methods=['POST'])
 def stop_music():
     # Stop the music on pi2
-    stdin, stdout, stderr = pi2.exec_command('pkill -9 mpg123 \n echo "stop" | sudo tee /tmp/mpg123_fifo')
-    stdin, stdout, stderr = pi3.exec_command('pkill -9 mpg123 \n echo "stop" | sudo tee /tmp/mpg123_fifo')
+
     # Wipe the entire JSON file by overwriting it with an empty list
     file_path = os.path.join(current_dir, 'json', 'file_status.json')
     with open(file_path, 'w') as file:
@@ -1559,14 +1526,7 @@ def start_timer():
 def stop_timer():
     global timer_thread, timer_running, timer_value, kraken1, kraken2, kraken3, kraken4, bird_job
     update_game_status('awake')
-    pi2.exec_command("raspi-gpio set 4 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 8 op dl \n raspi-gpio set 1 op dl")
-    kraken1 = False
-    kraken2 = False
-    kraken3 = False
-    kraken4 = False
-    if bird_job == True:
-        scheduler.remove_job('birdjob')
-        bird_job = False
+    #pi2.exec_command("raspi-gpio set 4 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 8 op dl \n raspi-gpio set 1 op dl")
     reset_task_statuses()
     stop_music()
     if timer_thread is not None and timer_thread.is_alive():
@@ -1612,7 +1572,9 @@ def pause_timer():
 @app.route('/timer/continue', methods=['POST'])
 def continue_timer():
     global timer_thread, timer_running
-
+    current_game_state = get_game_status()
+    if current_game_state == {'status': 'prepared'}:
+        update_game_status('playing')
     if timer_thread is not None and not timer_thread.is_alive() and not timer_running:
         timer_running = True
         timer_thread = threading.Thread(target=update_timer)
@@ -1674,14 +1636,6 @@ def get_pi_status():
 
     # Render the template fragment and return as JSON
     return jsonify(render_template('status_table_fragment.html', pi_statuses=pi_statuses))
-def check_scripts_running(ssh, script_name):
-    try:
-        stdin, stdout, stderr = ssh.exec_command(f'pgrep -af "python {script_name}"')
-        process_count = len(stdout.read().decode().split('\n')) - 1
-        return process_count > 0
-    except Exception as e:
-        return False
-
 def check_service_status(ip_address, service_name):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -1691,26 +1645,47 @@ def check_service_status(ip_address, service_name):
     ssh.close()
     return status
 
-# Define a function to get Raspberry Pis by prefix
+def restart_service(ip_address, service_name):
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(ip_address, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+    ssh.exec_command(f'sudo systemctl restart {service_name}')
+    ssh.close()
+
 def get_raspberry_pis_with_prefix(prefix, scanner):
-    pi_devices = scanner.scan_for_raspberrypi()  # Adjust the range as necessary
-    return [(ip, hostname) for ip, _, hostname in pi_devices if hostname and hostname.startswith(prefix)]
+    pi_devices = scanner.scan_for_raspberrypi()
+    pi_info = {hostname: {"ip_address": ip, "services": []} for ip, _, hostname in pi_devices if hostname and hostname.startswith(prefix)}
+    return pi_info
+
+def get_required_services():
+    with open('json/raspberry_pis.json', 'r') as file:
+        data = json.load(file)
+    return {entry["hostname"]: entry.get("services", []) for entry in data}
 
 @app.route('/prepare', methods=['POST'])
 def prepare_game():
     prefix = request.form.get('prefix')
     scanner = NetworkScanner()
     raspberry_pis = get_raspberry_pis_with_prefix(prefix, scanner)
+    required_services = get_required_services()
 
     results = {}
-    for ip, hostname in raspberry_pis:
-        mqtt_status = check_service_status(ip, 'mqtt.service')
-        sound_status = check_service_status(ip, 'sound.service')
-        print(sound_status)
-        print(mqtt_status)
-        results[hostname] = {"mqtt.service": mqtt_status, "sound.service": sound_status}
-        #should be tested thoroughly
+    for hostname, info in raspberry_pis.items():
+        ip = info["ip_address"]
+        services_to_check = required_services.get(hostname, [])
 
+        service_statuses = {}
+        for service_name in services_to_check:
+            status = check_service_status(ip, f'{service_name}.service')
+            service_statuses[service_name] = status
+            if not status:
+                restart_service(ip, f'{service_name}.service')
+                status_after_restart = check_service_status(ip, f'{service_name}.service')
+                service_statuses[f'{service_name}_after_restart'] = status_after_restart
+
+        results[hostname] = service_statuses
+
+    update_game_status("prepared")
     return jsonify({"message": results}), 200
 
 if romy == False:

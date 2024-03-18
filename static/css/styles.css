@@ -271,6 +271,14 @@ media queries
     font-size: 20px;
   }
 }
+.text-green {
+  color: green;
+}
+
+.text-red {
+  color: red;
+}
+
 :root {
   --background-color: #464c53;
   --secondary-background-color: #efefef;

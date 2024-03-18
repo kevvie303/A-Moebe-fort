@@ -18,7 +18,7 @@
         "type": "light",
         "pin": 20,
         "pi": "guard_room_pi",
-        "state": "Not Triggered"
+        "state": "Off"
     },
     {
         "name": "entrance-door-lock",
@@ -123,7 +123,7 @@
         "type": "maglock",
         "pin": 20,
         "pi": "guard_room_pi",
-        "state": "initial"
+        "state": "Unlocked"
     },
     {
         "name": "jas-2",
@@ -138,7 +138,7 @@
         "type": "button",
         "pin": 27,
         "pi": "for-garderobe",
-        "state": "initial",
+        "state": "Triggered",
         "connection_type": "NO"
     },
     {
