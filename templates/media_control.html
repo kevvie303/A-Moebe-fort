@@ -1,36 +1,152 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Media Control</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
-    <link rel="icon" href="static/img/logo.png" type="image/png">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>    
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #playlist {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #playlist li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #playlist li:last-child {
+            border-bottom: none;
+        }
+
+        #playlist li button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #playlist li button:hover {
+            background-color: #0056b3;
+        }
+
+        #playlist li span {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        #playlist li:hover {
+            background-color: #f0f0f0;
+        }
+
+        #player-container {
+            margin-top: 30px;
+        }
+
+        #player {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .add-music-form {
+            margin-bottom: 20px;
+        }
+
+        .add-music-form label {
+            font-weight: bold;
+        }
+
+        .add-music-form input[type="file"] {
+            margin-top: 5px;
+        }
+
+        .remove-music-link {
+            color: #dc3545;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        .remove-music-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <section class="selection-container media-selection-container">
-        <h1>Media Control</h1>
+    <div class="container">
+        <h1>Music Player</h1>
 
-        <h2>Add music to middle-pi</h2>
-            <button id="add-music-button1">Add</button>
-        <h2>Available MP3 Files:</h2>
-        <ul class="file-selection-list">
-            {% for file in mp3_files %}
-                <li class="file-select">{{ file }}</li>
+        <form class="add-music-form" action="/add_music" method="post" enctype="multipart/form-data">
+            <label for="music_file">Add Music:</label>
+            <input type="file" id="music_file" name="file">
+            <button type="submit">Add</button>
+        </form>
+
+        <ul id="playlist">
+            {% for music_file in music_files %}
+                <li>
+                    <span>{{ music_file }}</span>
+                    <button onclick="playMusic('{{ music_file }}')">Play</button>
+                    <a class="remove-music-link" href="/remove_music/{{ music_file }}">Remove</a>
+                </li>
             {% endfor %}
         </ul>
-        <h2>Delete MP3 Files:</h2>
-        <form action="/delete_music" method="post">
-            <select name="file">
-                {% for file in mp3_files %}
-                    <option value="{{ file }}">{{ file }}</option>
-                {% endfor %}
-            </select>
-            <input type="submit" class="button" value="Delete">
-        </form>
-    </section>
-    <script src="{{ url_for('static', filename='js/sketch.js') }}"></script>
+
+        <div id="player-container">
+            <audio id="player" controls>
+                <source src="" type="audio/ogg">
+            </audio>
+        </div>
+    </div>
+
+    <script src="https://cdn.plyr.io/3.6.2/plyr.js"></script>
+    <script>
+        const player = new Plyr('#player');
+        const playlistItems = document.querySelectorAll('#playlist li');
+
+        function playMusic(filename) {
+            const audioElement = document.getElementById('player');
+            audioElement.src = '/music/' + encodeURIComponent(filename);
+            player.play();
+            player.once('playing', () => {
+                // Once the player starts playing, enable the seek bar
+                enableSeekBar();
+            });
+        }
+
+        function enableSeekBar() {
+            const seekbar = document.querySelector('.plyr__progress__input');
+            //seekbar.disabled = false;
+        }
+    </script>
 </body>
 </html>

@@ -664,9 +664,7 @@ $(document).ready(function () {
   }
 });
 
-function openMediaControlPage() {
-  window.open("/media_control", "_blank", "height=400,width=400");
-}
+
 $(document).ready(function () {
   $("#resume-music-button").click(function () {
     $.ajax({

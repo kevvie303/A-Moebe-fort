@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for
+from flask import Flask, render_template, request, redirect, jsonify, url_for, send_from_directory
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, join_room
 import json
@@ -23,7 +23,7 @@ load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
 #command = 'python relay_control.py'
-loadMqtt = True
+loadMqtt = False
 ssh = None
 stdin = None
 pi2 = None
@@ -521,82 +521,57 @@ def start_scripts():
     ssh.exec_command('python mqtt.py')
     #scheduler.add_job(monitor_sensor_statuses, 'interval', seconds=0.1)
 
-@app.route('/add_music1', methods=['POST'])
-def add_music1():
-    file = request.files['file']
-    if file:
-        try:
-            # Get the file extension
-            filename, file_extension = os.path.splitext(file.filename)
+
+def get_music_files():
+    music_files = []
+    music_folder = 'static/Music'  # Update this with your music folder path
+    for file in os.listdir(music_folder):
+        if file.endswith('.ogg'):
+            music_files.append(file)
+    return music_files
+def synchronize_music_files(new_music_file):
+    with open('json/raspberry_pis.json') as f:
+        raspberry_pis = json.load(f)
+    for pi in raspberry_pis:
+        if 'services' in pi and 'sound' in pi['services']:
+            ip_address = pi['ip_address']
+            username = os.getenv("SSH_USERNAME")
+            password = os.getenv("SSH_PASSWORD")
             
-            # Check if the file extension is allowed
-            allowed_extensions = ['.mp3', '.wav', '.ogg']
-            if file_extension.lower() in allowed_extensions:
-                # Create an SFTP client to transfer the file
-                sftp = pi2.open_sftp()
-                
-                # Modify the file path to be relative to the Flask application
-                local_path = os.path.join(app.root_path, 'uploads', file.filename)
-                
-                # Save the file to the modified local path
-                file.save(local_path)
-                
-                # Save the file to the Music folder on the Pi
-                remote_path = '/home/pi/Music/' + filename + file_extension
-                sftp.put(local_path, remote_path)
-                
-                # Close the SFTP client
-                sftp.close()
-                
-                # Delete the local file after transferring
-                os.remove(local_path)
-
-                sftp = pi3.open_sftp()
-                
-                # Modify the file path to be relative to the Flask application
-                local_path = os.path.join(app.root_path, 'uploads', file.filename)
-                
-                # Save the file to the modified local path
-                file.save(local_path)
-                
-                # Save the file to the Music folder on the Pi
-                remote_path = '/home/pi/Music/' + filename + file_extension
-                sftp.put(local_path, remote_path)
-                
-                # Close the SFTP client
-                sftp.close()
-                
-                # Delete the local file after transferring
-                os.remove(local_path)
-                
-                return 'Music added successfully!'
-            else:
-                return 'Invalid file type. Only .mp3, .wav, and .ogg files are allowed.'
-        except IOError as e:
-            return f'Error: {str(e)}'
-        finally:
-            # Close the SSH connection
-            print("h")
-    else:
-        return 'No file selected.'
-
-
+            # SSH connection
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(ip_address, username=username, password=password)
+            
+            # SFTP transfer
+            sftp = ssh.open_sftp()
+            sftp.put('static/Music/' + new_music_file, '/home/pi/Music/' + new_music_file)
+            sftp.close()
+            ssh.close()
 @app.route('/media_control')
 def media_control():
-    try:
-        # Create an SFTP client to list files in the Music folder
-        sftp = pi2.open_sftp()
-        
-        # List all MP3 files in the Music folder
-        remote_path = '/home/pi/Music'
-        mp3_files = [file for file in sftp.listdir(remote_path) if file.endswith('.mp3')]
-        
-        return render_template('media_control.html', mp3_files=mp3_files)
-    except IOError as e:
-        return f'Error: {str(e)}'
-    finally:
-        # Close the SFTP client and SSH connection
-        sftp.close()
+    music_files = get_music_files()
+    return render_template('media_control.html', music_files=music_files)
+
+@app.route('/music/<path:filename>')
+def download_file(filename):
+    return send_from_directory('static/Music', filename)
+
+@app.route('/add_music', methods=['POST'])
+def add_music():
+    if 'file' in request.files:
+        file = request.files['file']
+        if file.filename != '':
+            new_music_file = file.filename
+            file.save(os.path.join('static/Music', new_music_file))
+            time.sleep(1)
+            synchronize_music_files(new_music_file)
+    return redirect(url_for('media_control'))
+
+@app.route('/remove_music/<filename>')
+def remove_music(filename):
+    os.remove(os.path.join('static/Music', filename))
+    return redirect(url_for('media_control'))
 @app.route('/delete_music', methods=['POST'])
 def delete_music():
     file = request.form.get('file')
@@ -817,6 +792,12 @@ def resume_music():
     else:
         return 'No music is currently playing'
 
+# Route to display the SD Renewal page
+@app.route('/sd-renewal')
+def sd_renewal():
+    with open('json/raspberry_pis.json') as f:
+        pi_data = json.load(f)
+    return render_template('sd_renewal.html', pi_data=pi_data)
 
 current_dir = os.path.abspath(os.path.dirname(__file__))
 
@@ -1413,7 +1394,70 @@ def send_script():
         return 'Script sent successfully!'
     except subprocess.CalledProcessError as e:
         return f'Error occurred while sending script: {e}'
+def synchronize_music_to_pi(pi_info, music_files):
+    if 'services' in pi_info and 'sound' in pi_info['services']:
+        ip_address = pi_info['ip_address']
+        username = os.getenv("SSH_USERNAME")
+        password = os.getenv("SSH_PASSWORD")
+
+        # SSH connection
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(ip_address, username=username, password=password)
+
+        try:
+            # SFTP transfer for each music file
+            sftp = ssh.open_sftp()
+            for music_file in music_files:
+                local_path = os.path.join('static/Music/', music_file)
+                remote_path = os.path.join('/home/pi/Music/', music_file)
+                sftp.put(local_path, remote_path)
+            sftp.close()
+        finally:
+            # Close SSH connection
+            ssh.close()
+@app.route('/renew-sd', methods=['POST'])
+def handle_renew_sd():
+    selected_pi = request.form.get('pi')
+    result = renew_sd(selected_pi)
+    return result
+def renew_sd(selected_pi):
+    # Find the selected Pi's data
+    with open('json/raspberry_pis.json') as f:
+        pi_data = json.load(f)
+    pi_info = next((pi for pi in pi_data if pi['hostname'] == selected_pi), None)
     
+    if pi_info:
+        # SSH into the Pi
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(pi_info['ip_address'], username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+
+        try:
+            # Change hostname
+            stdin, stdout, stderr = ssh.exec_command(f'sudo hostnamectl set-hostname {pi_info["hostname"]}')
+            print(stdout.read().decode('utf-8'))
+
+            # Update /etc/hosts
+            stdin, stdout, stderr = ssh.exec_command(f'sudo sed -i "s/.*raspberrypi/{pi_info["ip_address"]} {pi_info["hostname"]}/" /etc/hosts')
+            print(stdout.read().decode('utf-8'))
+
+            # Enable services if any are specified
+            if 'services' in pi_info:
+                for service in pi_info['services']:
+                    stdin, stdout, stderr = ssh.exec_command(f'sudo systemctl enable {service}.service')
+                    print(stdout.read().decode('utf-8'))
+            music_files = os.listdir('static/Music')
+            synchronize_music_to_pi(pi_info, music_files)
+            # Reboot the Pi for changes to take effect
+            #ssh.exec_command('sudo reboot')
+
+            return "SD Renewal Successful"
+        finally:
+            # Close SSH connection
+            ssh.close()
+    else:
+        return "Pi Not Found"
 def reset_sensors():
     global sensor_1_triggered, sensor_2_triggered
     if sensor_2_triggered or sensor_1_triggered:
