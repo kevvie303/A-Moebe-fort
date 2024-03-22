@@ -2,77 +2,77 @@
     {
         "task": "Medicijnkastje-open",
         "description": "Spelers hebben het kastje boven de wastafel opengemaakt met de sleutel, hierin zit een ketting.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "Streepjes-tellen",
         "description": "In de kamer verstopt staan allemaal streepjes, deze kunnen de mensen tellen. Hieruit komt de code 153 voor de kist. Hierin zit een pakje kaarten en de mal voor de posters.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "Poster",
         "description": "Door de mal goed over de poster te leggen kunnen de spelers een bepaalde code aflezen, deze code opent de la.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "3-objecten",
         "description": "Als de 3 gevonden objecten op de juiste plek liggen, gaat de geheime deur open.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "Sleutel-vissen",
         "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "Medisch-dossier",
         "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "Stroomstoring",
         "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "Radio",
         "description": "De spelers hebben goed geluisterd naar de radio en een code onderschept, dit zorgt voor toegang tot de 3e ruimte.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "scan-mendez",
         "description": "Het linkerhek gaat open zodra de pas gescand is.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "Schoenkast",
         "description": "De schoenen staan op de juiste plek, dit is 1 vd 2 benodigdheden voor de kast.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "kapstok-italie",
         "description": "-",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "kapstok-ijsland",
         "description": "-",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "kapstok-zuidafrika",
         "description": "-",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "kapstok-allemaal",
         "description": "-",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "scan-rosenthal",
         "description": "-",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "stoelvoel",

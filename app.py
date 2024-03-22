@@ -260,6 +260,9 @@ def on_message(client, userdata, message):
     if check_rule("3-objects"):
         if check_task_state("3-objecten") == "pending":
             solve_task("3-objecten")
+    if check_rule("alarm-button"):
+        if check_task_state("alarm-knop") == "pending":
+            solve_task("alarm-knop")
     if check_rule("entrance_door"):
         current_game_state = get_game_status()
         if current_game_state == {'status': 'prepared'}:
@@ -903,6 +906,8 @@ def solve_task(task_name):
                 publish.single(f"actuator/control/corridor_pi", "26 unlocked", hostname=broker_ip)
                 publish.single(f"actuator/control/corridor_pi", "4 unlocked", hostname=broker_ip)
                 publish.single(f"actuator/control/corridor_pi", "27 unlocked", hostname=broker_ip)
+                publish.single("audio_control/all/play", "alarm.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/all/volume", "100 alarm.ogg", hostname="192.168.50.253")
         with app.app_context():
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):

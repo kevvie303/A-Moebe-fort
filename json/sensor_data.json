@@ -179,7 +179,15 @@
         "type": "Sensor",
         "pin": 12,
         "pi": "for-poepdoos",
-        "state": "initial",
+        "state": "Not Triggered",
+        "connection_type": "NO"
+    },
+    {
+        "name": "alarm-button",
+        "type": "Sensor",
+        "pin": 14,
+        "pi": "for-poepdoos",
+        "state": "Not Triggered",
         "connection_type": "NO"
     }
 ]
