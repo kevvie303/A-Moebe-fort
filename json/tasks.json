@@ -1,67 +1,107 @@
 [
     {
-        "task": "Wastafel-sleutel",
-        "description": "Spelers hebben met de magneet de sleutel uit de wastafel gevist",
-        "state": "pending"
-    },
-    {
         "task": "Medicijnkastje-open",
         "description": "Spelers hebben het kastje boven de wastafel opengemaakt met de sleutel, hierin zit een ketting.",
-        "state": "pending"
-    },
-    {
-        "task": "Pov-cijfers",
-        "description": "De mensen moeten op een specifieke plek(ken) in de kamer staan om de juiste cijfers te zien, de code hieruit opent een kastje.",
-        "state": "pending"
+        "state": "solved"
     },
     {
         "task": "Streepjes-tellen",
         "description": "In de kamer verstopt staan allemaal streepjes, deze kunnen de mensen tellen. Hieruit komt de code 153 voor de kist. Hierin zit een pakje kaarten en de mal voor de posters.",
-        "state": "pending"
+        "state": "solved"
     },
     {
         "task": "Poster",
         "description": "Door de mal goed over de poster te leggen kunnen de spelers een bepaalde code aflezen, deze code opent de la.",
-        "state": "pending"
+        "state": "solved"
     },
     {
-        "task": "Geheime-deur",
-        "description": "Als alle bovenstaande puzzels zijn opgelost, gaat de geheime deur naar de guards-room open.",
-        "state": "pending"
+        "task": "3-objecten",
+        "description": "Als de 3 gevonden objecten op de juiste plek liggen, gaat de geheime deur open.",
+        "state": "solved"
+    },
+    {
+        "task": "Sleutel-vissen",
+        "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
+        "state": "solved"
+    },
+    {
+        "task": "Medisch-dossier",
+        "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
+        "state": "solved"
     },
     {
         "task": "Stroomstoring",
         "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
-        "state": "pending"
-    },
-    {
-        "task": "Cijfers-voelen",
-        "description": "Mensen voelen onderaan de stoel en vinden een code, door deze in te vullen op de keypad gaat de onderste la met een personeelspas open.",
-        "state": "pending"
+        "state": "solved"
     },
     {
         "task": "Radio",
         "description": "De spelers hebben goed geluisterd naar de radio en een code onderschept, dit zorgt voor toegang tot de 3e ruimte.",
-        "state": "pending"
+        "state": "solved"
     },
     {
-        "task": "Personeelspas-scannen",
+        "task": "scan-mendez",
         "description": "Het linkerhek gaat open zodra de pas gescand is.",
-        "state": "pending"
+        "state": "solved"
     },
     {
-        "task": "Namen-combineren",
-        "description": "Bij de wastafels moeten de juiste namen bij de juiste wastafels komen, hierdoor vallen de schoenen onder de wastafels vandaan.",
-        "state": "pending"
-    },
-    {
-        "task": "Schoentje-zetten",
+        "task": "Schoenkast",
         "description": "De schoenen staan op de juiste plek, dit is 1 vd 2 benodigdheden voor de kast.",
+        "state": "solved"
+    },
+    {
+        "task": "kapstok-italie",
+        "description": "-",
+        "state": "solved"
+    },
+    {
+        "task": "kapstok-ijsland",
+        "description": "-",
+        "state": "solved"
+    },
+    {
+        "task": "kapstok-zuidafrika",
+        "description": "-",
+        "state": "solved"
+    },
+    {
+        "task": "kapstok-allemaal",
+        "description": "-",
+        "state": "solved"
+    },
+    {
+        "task": "scan-rosenthal",
+        "description": "-",
+        "state": "solved"
+    },
+    {
+        "task": "stoelvoel",
+        "description": "-",
         "state": "pending"
     },
     {
-        "task": "Jassen-hangen",
-        "description": "Onderaan de wasbak staan tekens, hang de jassen aan de juiste symbolen. Dit is 1 vd 2 benodigdheden voor de kast.",
+        "task": "alarm-knop",
+        "description": "-",
+        "state": "pending"
+    },
+    {
+        "task": "granaat-soratov",
+        "description": "-",
+        "state": "pending"
+    },
+    {
+        "task": "granaat-khabarovsk",
+        "description": "-",
+        "state": "pending"
+    },
+    {
+        "task": "granaat-tomsk",
+        "description": "-",
+        "state": "pending"
+    },
+    {
+        "task": "granaat-allemaal",
+        "description": "-",
         "state": "pending"
     }
 ]

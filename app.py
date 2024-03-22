@@ -217,26 +217,49 @@ def on_message(client, userdata, message):
         sensor_state_int = int(sensor_state)
         print(roosenthaal2)
         if sensor_state_int == mendez1 or sensor_state_int == mendez2:
-            publish.single(f"actuator/control/corridor_pi", "21 unlocked", hostname=broker_ip)
-            publish.single(f"actuator/control/corridor_pi", "12 locked", hostname=broker_ip)
-            publish.single("audio_control/for-corridor/play", "/home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
-            publish.single("audio_control/for-corridor/volume", "100 /home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
-            time.sleep(3)
-            publish.single(f"actuator/control/corridor_pi", "21 locked", hostname=broker_ip)
-            publish.single(f"actuator/control/corridor_pi", "12 unlocked", hostname=broker_ip)
+            if check_task_state("scan-mendez") == "pending":
+                solve_task("scan-mendez")
             print("Correct code")
         elif sensor_state_int == roosenthaal1 or sensor_state_int == roosenthaal2:
-            publish.single(f"actuator/control/corridor_pi", "13 unlocked", hostname=broker_ip)
-            publish.single(f"actuator/control/corridor_pi", "20 locked", hostname=broker_ip)
-            publish.single("audio_control/for-corridor/play", "/home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
-            publish.single("audio_control/for-corridor/volume", "100 /home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
-            time.sleep(3)
-            publish.single(f"actuator/control/corridor_pi", "13 locked", hostname=broker_ip)
-            publish.single(f"actuator/control/corridor_pi", "20 unlocked", hostname=broker_ip)
+            if check_task_state("scan-rosenthal") == "pending":
+                solve_task("scan-rosenthal")
             print("Correct code")
-    if check_rule("maze-sensor"):
-        if check_task_state("paw-maze") == "pending":
-            print("solved")
+    if check_rule("jas-1"):
+        if check_task_state("kapstok-zuidafrika") == "pending":
+            solve_task("kapstok-zuidafrika")
+    if check_rule("jas-2"):
+        if check_task_state("kapstok-italie") == "pending":
+            solve_task("kapstok-italie")
+    if check_rule("jas-3"):
+        if check_task_state("kapstok-ijsland") == "pending":
+            solve_task("kapstok-ijsland")
+    if check_rule("jas-1") and check_rule("jas-2") and check_rule("jas-3"):
+        if check_task_state("kapstok-allemaal") == "pending":
+            solve_task("kapstok-allemaal")
+    if check_rule("grenade-1"):
+        if check_task_state("granaat-tomsk") == "pending":
+            solve_task("granaat-tomsk")
+    if check_rule("grenade-2"):
+        if check_task_state("granaat-khabarovsk") == "pending":
+            solve_task("granaat-khabarovsk")
+    if check_rule("grenade-3"):
+        if check_task_state("granaat-soratov") == "pending":
+            solve_task("granaat-soratov")
+    if check_rule("grenade-1") and check_rule("grenade-2") and check_rule("grenade-3"):
+        if check_task_state("granaat-allemaal") == "pending":
+            solve_task("granaat-allemaal")
+    if check_rule("camera_button"):
+        if check_task_state("Stroomstoring") == "pending":
+            solve_task("Stroomstoring")
+    if check_rule("ehbo-kist") == False:
+        if check_task_state("Medicijnkastje-open") == "pending":
+            solve_task("Medicijnkastje-open")
+    if check_rule("nightstand") == False:
+        if check_task_state("Poster") == "pending":
+            solve_task("Poster")
+    if check_rule("3-objects"):
+        if check_task_state("3-objecten") == "pending":
+            solve_task("3-objecten")
     if check_rule("entrance_door"):
         current_game_state = get_game_status()
         if current_game_state == {'status': 'prepared'}:
@@ -411,7 +434,7 @@ def check_rule(item_name):
                 return True
             elif item_type == "maglock" and item["state"] == "Locked":
                 return True
-            elif item_type == "button" and item["state"] == "Locked":
+            elif item_type == "button" and item["state"] == "Triggered":
                 return True
             else:
                 return False
@@ -844,13 +867,42 @@ def solve_task(task_name):
             json.dump(tasks, file, indent=4)
         if task_name == "Stroomstoring":
             if game_status == {'status': 'playing'}:
-                cause_shortcircuit()
-        elif task_name == "woef-woef":
+                publish.single("audio_control/for-guard/play", "/home/pi/Music/shock.mp3", hostname="192.168.50.253")
+                publish.single("audio_control/for-guard/volume", "100 /home/pi/Music/shock.mp3", hostname="192.168.50.253")
+                time.sleep(4)
+                publish.single("audio_control/for-guard/play", "/home/pi/Music/static.mp3", hostname="192.168.50.253")
+                publish.single("audio_control/for-guard/volume", "100 /home/pi/Music/static.mp3", hostname="192.168.50.253")
+                publish.single(f"actuator/control/guard_room_pi", "26 locked", hostname=broker_ip)
+                publish.single(f"actuator/control/guard_room_pi", "20 unlocked", hostname=broker_ip)
+        elif task_name == "3-objecten":
             if game_status == {'status': 'playing'}:
-                if bird_job == True:
-                    scheduler.remove_job('birdjob')
-                    bird_job = False
-                pi3.exec_command("mpg123 -a hw:0,0 Music/hok.mp3 \n raspi-gpio set 4 op dh")
+                publish.single(f"actuator/control/guard_room_pi", "21 locked", hostname=broker_ip)
+        elif task_name == "scan-mendez":
+            if game_status == {'status': 'playing'}:
+                publish.single(f"actuator/control/corridor_pi", "21 unlocked", hostname=broker_ip)
+                publish.single(f"actuator/control/corridor_pi", "12 locked", hostname=broker_ip)
+                publish.single("audio_control/for-corridor/play", "/home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-corridor/volume", "100 /home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
+                publish.single(f"actuator/control/guard_room_pi", "20 locked", hostname=broker_ip)
+                time.sleep(3)
+                publish.single(f"actuator/control/corridor_pi", "21 locked", hostname=broker_ip)
+        elif task_name == "scan-rosenthal":
+            if game_status == {'status': 'playing'}:
+                publish.single(f"actuator/control/corridor_pi", "13 unlocked", hostname=broker_ip)
+                publish.single(f"actuator/control/corridor_pi", "20 locked", hostname=broker_ip)
+                publish.single("audio_control/for-corridor/play", "/home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-corridor/volume", "100 /home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
+                time.sleep(3)
+                publish.single(f"actuator/control/corridor_pi", "13 locked", hostname=broker_ip)
+        elif task_name == "kapstok-allemaal":
+            if game_status == {'status': 'playing'}:
+                publish.single(f"actuator/control/for-garderobe", "23 unlocked", hostname=broker_ip)
+        elif task_name == "alarm-knop":
+            if game_status == {'status': 'playing'}:
+                publish.single(f"actuator/control/corridor_pi", "19 unlocked", hostname=broker_ip)
+                publish.single(f"actuator/control/corridor_pi", "26 unlocked", hostname=broker_ip)
+                publish.single(f"actuator/control/corridor_pi", "4 unlocked", hostname=broker_ip)
+                publish.single(f"actuator/control/corridor_pi", "27 unlocked", hostname=broker_ip)
         with app.app_context():
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
@@ -1275,7 +1327,7 @@ def update_sensor_data_on_pis(prefix):
 
     success_message = "Sensor removed successfully. Updated script sent to the following IP addresses:<br>"
 
-    for ip, hostname in raspberry_pis:
+    for ip in raspberry_pis:
         try:
             # Create an SSH session for each Raspberry Pi
             ssh = paramiko.SSHClient()
@@ -1547,9 +1599,6 @@ def update_timer():
 @app.route('/timer/start', methods=['POST'])
 def start_timer():
     global timer_thread, timer_value, speed, timer_running, bird_job
-    if bird_job == False:
-        scheduler.add_job(start_bird_sounds, 'interval', minutes=1, id='birdjob')
-        bird_job = True
     update_game_status('playing')
     if timer_thread is None or not timer_thread.is_alive():
         timer_value = 3600  # Reset timer value to 60 minutes
@@ -1558,7 +1607,7 @@ def start_timer():
         timer_thread = threading.Thread(target=update_timer)
         timer_thread.daemon = True
         timer_thread.start()
-        fade_music_out2()
+        #fade_music_out2()
     time.sleep(0.5)
     load_command = f'echo "load /home/pi/Music/Ambience.mp3" | sudo tee /tmp/mpg123_fifo'
     pi3.exec_command(load_command)

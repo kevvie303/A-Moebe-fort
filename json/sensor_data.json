@@ -9,114 +9,107 @@
     {
         "name": "camera_button",
         "type": "button",
-        "pin": 16,
+        "pin": 19,
         "pi": "guard_room_pi",
         "state": "Not Triggered"
-    },
-    {
-        "name": "camera_light",
-        "type": "light",
-        "pin": 20,
-        "pi": "guard_room_pi",
-        "state": "Off"
     },
     {
         "name": "entrance-door-lock",
         "type": "maglock",
         "pin": 23,
         "pi": "cell_pi",
-        "state": "Unlocked"
+        "state": "Locked"
     },
     {
         "name": "zwaailamp-groen-kids",
         "type": "light",
         "pin": 21,
         "pi": "corridor_pi",
-        "state": "initial"
+        "state": "Off"
     },
     {
         "name": "zwaailamp-rood-kids",
         "type": "light",
         "pin": 27,
         "pi": "corridor_pi",
-        "state": "initial"
+        "state": "Off"
     },
     {
         "name": "zwaailamp-groen-volwassen",
         "type": "light",
         "pin": 13,
         "pi": "corridor_pi",
-        "state": "initial"
+        "state": "Off"
     },
     {
         "name": "zwaailamp-rood-volwassen",
         "type": "light",
         "pin": 4,
         "pi": "corridor_pi",
-        "state": "initial"
+        "state": "Off"
     },
     {
         "name": "gang-blacklight-1",
         "type": "light",
         "pin": 19,
         "pi": "corridor_pi",
-        "state": "initial"
+        "state": "Off"
     },
     {
         "name": "gang-licht-1",
         "type": "light",
         "pin": 26,
         "pi": "corridor_pi",
-        "state": "initial"
+        "state": "Off"
     },
     {
         "name": "bovenste-la-guard",
         "type": "maglock",
         "pin": 26,
         "pi": "guard_room_pi",
-        "state": "initial"
+        "state": "Unlocked"
     },
     {
         "name": "ehbo-kist",
         "type": "Sensor",
         "pin": 17,
         "pi": "cell_pi",
-        "state": "initial"
+        "state": "Not Triggered"
     },
     {
         "name": "3-objects",
         "type": "Sensor",
         "pin": 5,
         "pi": "cell_pi",
-        "state": "initial"
+        "state": "Triggered"
     },
     {
         "name": "nightstand",
         "type": "Sensor",
         "pin": 6,
         "pi": "cell_pi",
-        "state": "initial"
+        "state": "Not Triggered"
     },
     {
         "name": "iron-door-child",
         "type": "maglock",
         "pin": 12,
         "pi": "corridor_pi",
-        "state": "initial"
+        "state": "Unlocked"
     },
     {
         "name": "iron-door-adult",
         "type": "maglock",
         "pin": 20,
         "pi": "corridor_pi",
-        "state": "initial"
+        "state": "Unlocked"
     },
     {
         "name": "secret-door-lock",
         "type": "maglock",
         "pin": 21,
         "pi": "guard_room_pi",
-        "state": "initial"
+        "state": "Unlocked"
     },
     {
         "name": "radio-guard",
@@ -130,7 +123,7 @@
         "type": "button",
         "pin": 21,
         "pi": "for-garderobe",
-        "state": "initial",
+        "state": "Not Triggered",
         "connection_type": "NO"
     },
     {
@@ -146,7 +139,7 @@
         "type": "button",
         "pin": 4,
         "pi": "for-garderobe",
-        "state": "initial",
+        "state": "Not Triggered",
         "connection_type": "NO"
     },
     {
@@ -162,6 +155,30 @@
         "type": "maglock",
         "pin": 23,
         "pi": "for-garderobe",
+        "state": "Locked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "grenade-1",
+        "type": "Sensor",
+        "pin": 17,
+        "pi": "corridor_pi",
+        "state": "Not Triggered",
+        "connection_type": "NO"
+    },
+    {
+        "name": "grenade-2",
+        "type": "Sensor",
+        "pin": 18,
+        "pi": "corridor_pi",
+        "state": "Not Triggered",
+        "connection_type": "NO"
+    },
+    {
+        "name": "grenade-3",
+        "type": "Sensor",
+        "pin": 12,
+        "pi": "for-poepdoos",
         "state": "initial",
         "connection_type": "NO"
     }
