@@ -45,5 +45,16 @@
         "ip_address": "192.168.50.253",
         "mac_address": "D8:3A:DD:9A:97:98",
         "hostname": "server"
+    },
+    {
+        "ip_address": "192.168.50.227",
+        "mac_address": "B8:27:EB:CA:8A:B4",
+        "hostname": "for-poepdoos",
+        "services": [
+            "mqtt",
+            "sound",
+            "actuator"
+        ]
+
     }
 ]

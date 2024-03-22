@@ -23,7 +23,7 @@ load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
 #command = 'python relay_control.py'
-loadMqtt = False
+loadMqtt = True
 ssh = None
 stdin = None
 pi2 = None
@@ -1450,7 +1450,7 @@ def renew_sd(selected_pi):
             music_files = os.listdir('static/Music')
             synchronize_music_to_pi(pi_info, music_files)
             # Reboot the Pi for changes to take effect
-            #ssh.exec_command('sudo reboot')
+            ssh.exec_command('sudo reboot')
 
             return "SD Renewal Successful"
         finally:
