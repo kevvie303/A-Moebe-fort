@@ -693,6 +693,18 @@ $(document).ready(function () {
       },
     });
   });
+  $("#scare-sound").click(function () {
+    $.ajax({
+      type: "POST",
+      url: "/scare_button",
+      success: function (response) {
+        console.log(response);
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  });
   $("#reboot-pi-mag").click(function () {
     $.ajax({
       type: "POST",

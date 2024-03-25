@@ -1436,7 +1436,11 @@ def remove_sensor():
         return f"{update_result}<br>Redirecting to sensor list...<meta http-equiv='refresh' content='2;url={url_for('list_sensors')}'>"
 
     return render_template('remove_sensor.html', sensors=sensors)
-
+@app.route('/scare_button', methods=['POST'])
+def scare_button():
+    publish.single("audio_control/for-corridor/play", "Buzzer.ogg", hostname="192.168.50.253")
+    publish.single("audio_control/for-corridor/volume", "100 Buzzer.ogg", hostname="192.168.50.253")
+    return "Scared the players :)"
 @app.route('/list_sensors')
 def list_sensors():
     # Read the sensor data from the JSON file
