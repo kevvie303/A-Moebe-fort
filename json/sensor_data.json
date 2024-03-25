@@ -95,14 +95,14 @@
         "type": "maglock",
         "pin": 12,
         "pi": "corridor_pi",
-        "state": "Unlocked"
+        "state": "Locked"
     },
     {
         "name": "iron-door-adult",
         "type": "maglock",
         "pin": 20,
         "pi": "corridor_pi",
-        "state": "Unlocked"
+        "state": "Locked"
     },
     {
         "name": "secret-door-lock",

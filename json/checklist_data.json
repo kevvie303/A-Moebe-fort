@@ -1,42 +1,102 @@
 [
   {
-    "task": "Doe de entree deur dicht",
+    "task": "Einddeur dicht, code?",
     "completed": false
   },
   {
-    "task": "Reset de cijfercode op het slot",
+    "task": "Alle granaten terug in poepdozen, 1 onder slot code 2412",
     "completed": false
   },
   {
-    "task": "Plaats de ontbrekende sleutel terug in de kluis",
+    "task": "Knop uitdrukken en op slot, code letterslot vrij",
     "completed": false
   },
   {
-    "task": "Sluit het geheime luik",
+    "task": "Jassen van haakjes af, terug in kist ruimte 1, nog niet op slot.",
     "completed": false
   },
   {
-    "task": "Herstel de oorspronkelijke staat van de boekenkast",
+    "task": "Einddeur (voor kinderen) sluiten met sleutel, sleutel uit kamer.",
     "completed": false
   },
   {
-    "task": "Zet alle puzzelstukken terug op hun oorspronkelijke plek",
+    "task": "Personeelspas van Rosenthal terug in kluis, 2 sloten. 1e slot code 485, 2e slot met sleutel.",
     "completed": false
   },
   {
-    "task": "Reset de piano naar de standaardtoonladder",
+    "task": "Sleutel terughangen achter speaker.",
     "completed": false
   },
   {
-    "task": "Vouw de kaart met aanwijzingen terug op de juiste manier",
+    "task": "Check of haakjes niet zijn ingedrukt, anders trek ze naar buiten.",
     "completed": false
   },
   {
-    "task": "Schakel het alarmsysteem opnieuw in",
+    "task": "Loop naar midden gang, sluit beide hekken.",
     "completed": false
   },
   {
-    "task": "Berg alle hints en aanwijzingen op",
+    "task": "Balk terug voor deur naar gang, slot code 3479",
+    "completed": false
+  },
+  {
+    "task": "Haak van hengel af, haak in onderste la rechts bureau, sluit la.",
+    "completed": false
+  },
+  {
+    "task": "Knop uitdrukken bovenste la rechts bureau, la dicht, 2 sloten. 1e slot code 6102, 2e slot sleutelbos. Sleutelbos meenemen.",
+    "completed": false
+  },
+  {
+    "task": "Leg personeelspas Mendez in onderste la links van bureau, sluit la.",
+    "completed": false
+  },
+  {
+    "task": "Check of monitor aanstaat, anders aanzetten.",
+    "completed": false
+  },
+  {
+    "task": "Check of juiste versie dossier ligt in ladekast.",
+    "completed": false
+  },
+  {
+    "task": "Neem hengel en handboeien mee naar kamer 1.",
+    "completed": false
+  },
+  {
+    "task": "Hengel terug op haakjes achter bed.",
+    "completed": false
+  },
+  {
+    "task": "Pakje kaarten terug in kist met jassen, op slot met code 173",
+    "completed": false
+  },
+  {
+    "task": "Pyramide terug in bovenste lade, op slot met code 513.",
+    "completed": false
+  },
+  {
+    "task": "Filmticket terug onder kussen",
+    "completed": false
+  },
+  {
+    "task": "Munt terug in medicijnkast, plek de munt over de 'III'.",
+    "completed": false
+  },
+  {
+    "task": "Kast op slot met sleutel, breng de sleutel terug in de rioleringsbuis (helemaal naar onder).",
+    "completed": false
+  },
+  {
+    "task": "Geheime deur dicht door aan ijzeren kabel te trekken.",
+    "completed": false
+  },
+  {
+    "task": "Neem handboeien mee uit kamer.",
+    "completed": false
+  },
+  {
+    "task": "Sluit entree-deur",
     "completed": false
   }
 ]

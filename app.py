@@ -227,24 +227,42 @@ def on_message(client, userdata, message):
     if check_rule("jas-1"):
         if check_task_state("kapstok-zuidafrika") == "pending":
             solve_task("kapstok-zuidafrika")
+    if check_rule("jas-1") == False:
+        if check_task_state("kapstok-zuidafrika") == "solved":
+            pend_task("kapstok-zuidafrika")
     if check_rule("jas-2"):
         if check_task_state("kapstok-italie") == "pending":
             solve_task("kapstok-italie")
+    if check_rule("jas-2") == False:
+        if check_task_state("kapstok-italie") == "solved":
+            pend_task("kapstok-italie")
     if check_rule("jas-3"):
         if check_task_state("kapstok-ijsland") == "pending":
             solve_task("kapstok-ijsland")
+    if check_rule("jas-3") == False:
+        if check_task_state("kapstok-ijsland") == "solved":
+            pend_task("kapstok-ijsland")
     if check_rule("jas-1") and check_rule("jas-2") and check_rule("jas-3"):
         if check_task_state("kapstok-allemaal") == "pending":
             solve_task("kapstok-allemaal")
     if check_rule("grenade-1"):
         if check_task_state("granaat-tomsk") == "pending":
             solve_task("granaat-tomsk")
+    if check_rule("grenade-1") == False:
+        if check_task_state("granaat-tomsk") == "solved":
+            pend_task("granaat-tomsk")
     if check_rule("grenade-2"):
         if check_task_state("granaat-khabarovsk") == "pending":
             solve_task("granaat-khabarovsk")
+    if check_rule("grenade-2") == False:
+        if check_task_state("granaat-khabarovsk") == "solved":
+            pend_task("granaat-khabarovsk")
     if check_rule("grenade-3"):
         if check_task_state("granaat-soratov") == "pending":
             solve_task("granaat-soratov")
+    if check_rule("grenade-3") == False:
+        if check_task_state("granaat-soratov") == "solved":
+            pend_task("granaat-soratov")
     if check_rule("grenade-1") and check_rule("grenade-2") and check_rule("grenade-3"):
         if check_task_state("granaat-allemaal") == "pending":
             solve_task("granaat-allemaal")
@@ -267,40 +285,6 @@ def on_message(client, userdata, message):
         current_game_state = get_game_status()
         if current_game_state == {'status': 'prepared'}:
             start_timer()
-    global sequence
-    if check_rule("green_house_ir") and sequence == 0:
-        task_state = check_task_state("tree-lights")
-        if task_state == "pending":
-            pi3.exec_command("raspi-gpio set 15 op dh")
-            print("1")
-            sequence = 1
-    if check_rule("red_house_ir") and sequence == 1:
-        task_state = check_task_state("tree-lights")
-        if task_state == "pending":
-            pi3.exec_command("raspi-gpio set 21 op dh")
-            print("2")
-            sequence = 2
-    elif check_rule("red_house_ir") and sequence <= 0:
-        task_state = check_task_state("tree-lights")
-        if task_state == "pending":
-            pi3.exec_command("raspi-gpio set 21 op dh")
-            time.sleep(0.5)
-            pi3.exec_command("raspi-gpio set 21 op dl")
-            pi3.exec_command("raspi-gpio set 15 op dl")
-            sequence = 0
-    if check_rule("blue_house_ir") and sequence == 2:
-        task_state = check_task_state("tree-lights")
-        if task_state == "pending":
-            solve_task("tree-lights")
-    elif check_rule("blue_house_ir") and sequence != 2:
-        task_state = check_task_state("tree-lights")
-        if task_state == "pending":
-            pi3.exec_command("raspi-gpio set 23 op dh")
-            time.sleep(0.5)
-            pi3.exec_command("raspi-gpio set 23 op dl")
-            pi3.exec_command("raspi-gpio set 21 op dl")
-            pi3.exec_command("raspi-gpio set 15 op dl")
-            sequence = 0
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
@@ -312,10 +296,9 @@ def lock_route():
         task = request.json.get('task', '')
         is_checked = request.json.get('isChecked', False)
 
-        if is_checked:
-            execute_lock_command(task)
-        else:
-            execute_unlock_command(task)
+        # Determine the action based on the isChecked flag
+        action = "locked" if is_checked else "unlocked"
+        execute_lock_command(task, action)
 
         # Update the checklist status
         update_checklist(task, is_checked)
@@ -325,29 +308,23 @@ def lock_route():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
-def execute_lock_command(task):
+def execute_lock_command(task, action):
     try:
-        # Add logic to map tasks to corresponding SSH commands for locking
         if task == "Doe de entree deur dicht":
-            print("locked")
-            #command = "raspi-gpio set 25 op dl"
-            #stdin, stdout, stderr = pi3.exec_command(command)
-            # You can handle the command execution results if needed
-        # Add more mappings as needed
+            call_control_maglock("entrance-door-lock", action)
+        if task == "Loop naar midden gang, sluit beide hekken.":
+            call_control_maglock("iron-door-child", action)
+            call_control_maglock("iron-door-adult", action)
+        if task == "Leg personeelspas Mendez in onderste la links van bureau, sluit la.":
+            call_control_maglock("bovenste-la-guard", action)
+        if task == "Geheime deur dicht door aan ijzeren kabel te trekken.":
+            call_control_maglock("secret-door-lock", action)
+        if task == "Sleutel terughangen achter speaker.":
+            call_control_maglock("key-drop-lock", action)
+        
     except Exception as e:
-        print(f"Error executing lock command: {str(e)}")
+        print(f"Error executing {action} command: {str(e)}")
 
-def execute_unlock_command(task):
-    try:
-        # Add logic to map tasks to corresponding SSH commands for unlocking
-        if task == "Doe de entree deur dicht":
-            print("unlocked")
-            #command = "raspi-gpio set 25 op u"
-            #stdin, stdout, stderr = pi3.exec_command(command)
-            # You can handle the command execution results if needed
-        # Add more mappings as needed
-    except Exception as e:
-        print(f"Error executing unlock command: {str(e)}")
 
 def update_checklist(task, is_checked):
     try:
@@ -877,13 +854,15 @@ def solve_task(task_name):
                 publish.single("audio_control/for-guard/volume", "100 static.mp3", hostname="192.168.50.253")
                 publish.single(f"actuator/control/guard_room_pi", "26 locked", hostname=broker_ip)
                 publish.single(f"actuator/control/guard_room_pi", "20 unlocked", hostname=broker_ip)
-                publish.single("audio_control/for-corridor/play", "bgCorridor.mp3", hostname="192.168.50.253")
-                publish.single("audio_control/for-poepdoos/play", "bgCorridor.mp3", hostname="192.168.50.253")
+                publish.single("audio_control/for-corridor/play", "bgCorridor.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-poepdoos/play", "bgCorridor.ogg", hostname="192.168.50.253")
         elif task_name == "3-objecten":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/for-cell/volume", "40 newBg.ogg", hostname=broker_ip)
                 publish.single("audio_control/for-guard/play", "bgGuard.ogg", hostname=broker_ip)
                 publish.single("audio_control/for-garderobe/play", "bgGuard.ogg", hostname=broker_ip)
+                publish.single("audio_control/for-guard/volume", "100 bgGuard.ogg", hostname=broker_ip)
+                publish.single("audio_control/for-garderobe/volume", "100 bgGuard.ogg", hostname=broker_ip)
                 publish.single(f"actuator/control/guard_room_pi", "21 locked", hostname=broker_ip)
         elif task_name == "scan-mendez":
             if game_status == {'status': 'playing'}:
@@ -955,7 +934,8 @@ def pend_task(task_name):
 
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
-        return jsonify({'message': 'Task updated successfully'})
+        with app.app_context():
+            return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error updating task'})
 @app.route('/reset_task_statuses', methods=['POST'])
@@ -1142,14 +1122,11 @@ def set_starting_volume(soundcard_channel):
     return "Volume set to 25%"
 @app.route('/stop_music', methods=['POST'])
 def stop_music():
-    # Stop the music on pi2
-
+    publish.single("audio_control/all/full_stop", "stop", hostname=broker_ip)
     # Wipe the entire JSON file by overwriting it with an empty list
     file_path = os.path.join(current_dir, 'json', 'file_status.json')
     with open(file_path, 'w') as file:
         json.dump([], file)
-
-    return 'Music stopped on pi2/pi3 and JSON wiped.'
 
 @app.route('/backup-top-pi', methods=['POST'])
 def backup_top_pi():
@@ -1166,11 +1143,12 @@ def control_maglock():
     maglock = request.form.get('maglock')
     action = request.form.get('action')
     print(maglock)
+    print(action)
     sensor_data = read_sensor_data2()
     for sensor in sensor_data:
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
-            if "gang-licht-1" in maglock:
+            if "gang-licht-1" in maglock or "key-drop-lock" in maglock or "entrance-door-lock" in maglock:
                 print(maglock)
                 # Reverse the action for this specific case
                 action = 'locked' if action == 'unlocked' else 'unlocked'
@@ -1183,7 +1161,22 @@ def control_maglock_route():
     return control_maglock()
 
 
-
+def call_control_maglock(maglock, action):
+    global squeak_job, should_balls_drop, player_type
+    print(maglock)
+    print(action)
+    sensor_data = read_sensor_data2()
+    for sensor in sensor_data:
+        if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
+            pi_name = sensor['pi']
+            if "gang-licht-1" in maglock or "bovenste-la-guard" in maglock or "secret-door-lock" in maglock or "iron-door-adult" in maglock or "iron-door-child" in maglock or "iron-door-adult" in maglock:
+                print(maglock)
+                # Reverse the action for this specific case
+                action = 'locked' if action == 'unlocked' else 'unlocked'
+            # Publish the MQTT message with the appropriate Pi's name
+            mqtt_message = f"{sensor['pin']} {action}"
+            publish.single(f"actuator/control/{pi_name}", mqtt_message, hostname=broker_ip)
+            return("done")
 API_URL = 'http://192.168.0.105:5001/current_state'
 
 @app.route('/get_state', methods=['GET'])
@@ -1759,15 +1752,19 @@ def get_required_services():
     with open('json/raspberry_pis.json', 'r') as file:
         data = json.load(file)
     return {entry["hostname"]: entry.get("services", []) for entry in data}
-
+results = {}
 @app.route('/prepare', methods=['POST'])
 def prepare_game():
+    global player_type
+    if get_game_status() == {'status': 'prepared'}:
+        return jsonify({"message": results}), 200
+    update_game_status("preparing")
     prefix = request.form.get('prefix')
     scanner = NetworkScanner()
     raspberry_pis = get_raspberry_pis_with_prefix(prefix, scanner)
     required_services = get_required_services()
-
-    results = {}
+    player_type = request.form.get('playerType')
+    print(player_type)
     for hostname, info in raspberry_pis.items():
         ip = info["ip_address"]
         services_to_check = required_services.get(hostname, [])

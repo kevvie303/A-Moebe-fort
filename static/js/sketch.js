@@ -1364,6 +1364,11 @@ $(document).ready(function () {
         $(".tasks, .locks, .lock-status, .pin-info").show();
         $("#prepare-result, #reset-list-container").hide();
       }
+      if (data.status === "preparing") {
+        $("#prepare-result, #reset-list-container").show();
+        $(".tasks, .locks, .lock-status, .pin-info").hide();
+        console.log("preparing!!")
+      }
     });
   }
   $.get("/get_game_status", function (data) {
@@ -1372,6 +1377,11 @@ $(document).ready(function () {
       prepareButton.hide();
       $(".tasks, .locks, .lock-status, .pin-info").show();
       $("#prepare-result, #snooze-game-button, #reset-list-container").hide();
+    }
+    if (data.status === "preparing") {
+      $("#prepare-result, #reset-list-container").show();
+      $(".tasks, .locks, .lock-status, .pin-info").hide();
+      console.log("preparing!!")
     }
   });
   $.get("/get_game_status", function (data) {
