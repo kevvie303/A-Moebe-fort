@@ -521,8 +521,8 @@ $(document).ready(function () {
     intervalId = setInterval(function () {
       updateTimers();
     }, 1000);
-    $(".tasks, .locks, .lock-status, .pin-info, #reset-list-container").show();
-    $("#continue-button, #prepare-result").hide();
+    $(".tasks, .locks, .lock-status, .pin-info").show();
+    $("#continue-button, #prepare-result, #reset-list-container").hide();
     $("#pause-button").show();
   });
 

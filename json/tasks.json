@@ -2,7 +2,7 @@
     {
         "task": "Medicijnkastje-open",
         "description": "Spelers hebben het kastje boven de wastafel opengemaakt met de sleutel, hierin zit een ketting.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "Streepjes-tellen",
@@ -12,12 +12,12 @@
     {
         "task": "Poster",
         "description": "Door de mal goed over de poster te leggen kunnen de spelers een bepaalde code aflezen, deze code opent de la.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "3-objecten",
         "description": "Als de 3 gevonden objecten op de juiste plek liggen, gaat de geheime deur open.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "Sleutel-vissen",
@@ -57,7 +57,7 @@
     {
         "task": "kapstok-ijsland",
         "description": "-",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "kapstok-zuidafrika",

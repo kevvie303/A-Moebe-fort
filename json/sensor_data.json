@@ -18,7 +18,7 @@
         "type": "maglock",
         "pin": 23,
         "pi": "cell_pi",
-        "state": "Locked"
+        "state": "Unlocked"
     },
     {
         "name": "zwaailamp-groen-kids",
@@ -67,14 +67,14 @@
         "type": "maglock",
         "pin": 26,
         "pi": "guard_room_pi",
-        "state": "Unlocked"
+        "state": "Locked"
     },
     {
         "name": "ehbo-kist",
         "type": "Sensor",
         "pin": 17,
         "pi": "cell_pi",
-        "state": "Not Triggered"
+        "state": "Triggered"
     },
     {
         "name": "3-objects",
@@ -88,7 +88,7 @@
         "type": "Sensor",
         "pin": 6,
         "pi": "cell_pi",
-        "state": "Not Triggered"
+        "state": "Triggered"
     },
     {
         "name": "iron-door-child",
@@ -109,7 +109,7 @@
         "type": "maglock",
         "pin": 21,
         "pi": "guard_room_pi",
-        "state": "Unlocked"
+        "state": "Locked"
     },
     {
         "name": "radio-guard",
@@ -131,7 +131,7 @@
         "type": "button",
         "pin": 27,
         "pi": "for-garderobe",
-        "state": "Triggered",
+        "state": "Not Triggered",
         "connection_type": "NO"
     },
     {
@@ -155,7 +155,7 @@
         "type": "maglock",
         "pin": 23,
         "pi": "for-garderobe",
-        "state": "Locked",
+        "state": "Unlocked",
         "connection_type": "NO"
     },
     {

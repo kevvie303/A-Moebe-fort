@@ -12,15 +12,23 @@
     "completed": false
   },
   {
+    "task": "Poepdozen nog netjes?",
+    "completed": false
+  },
+  {
     "task": "Jassen van haakjes af, terug in kist ruimte 1, nog niet op slot.",
     "completed": false
   },
   {
-    "task": "Einddeur (voor kinderen) sluiten met sleutel, sleutel uit kamer.",
+    "task": "Einddeur (voor kinderen) sluiten met sleutel, sleutel uit kamer voor volwassenen, sleutel in de kluis voor kinderen.",
     "completed": false
   },
   {
-    "task": "Personeelspas van Rosenthal terug in kluis, 2 sloten. 1e slot code 485, 2e slot met sleutel.",
+    "task": "Voor volwassenen: Personeelspas van Rosenthal terug in kluis, 2 sloten. 1e slot code 485, 2e slot met sleutel.",
+    "completed": false
+  },
+  {
+    "task": "Voor kinderen: Personeelspas van Rosenthal uit de kamer, 2 sloten. 1e slot code 485, 2e slot met sleutel.",
     "completed": false
   },
   {
@@ -29,6 +37,10 @@
   },
   {
     "task": "Check of haakjes niet zijn ingedrukt, anders trek ze naar buiten.",
+    "completed": false
+  },
+  {
+    "task": "Garderobe nog netjes?",
     "completed": false
   },
   {
@@ -57,6 +69,10 @@
   },
   {
     "task": "Check of juiste versie dossier ligt in ladekast.",
+    "completed": false
+  },
+  {
+    "task": "Bewaking kamer nog netjes?",
     "completed": false
   },
   {
@@ -96,7 +112,15 @@
     "completed": false
   },
   {
+    "task": "Cel nog netjes?",
+    "completed": false
+  },
+  {
     "task": "Sluit entree-deur",
+    "completed": false
+  },
+  {
+    "task": "Hang sleutelbos terug aan haakje buiten kamer.",
     "completed": false
   }
 ]

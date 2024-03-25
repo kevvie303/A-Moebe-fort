@@ -961,6 +961,17 @@ def reset_task_statuses():
 def reset_puzzles():
     global aborted
     update_game_status('awake')
+    with open('json/sensor_data.json', 'r') as file:
+        devices = json.load(file)
+
+    # Iterate over devices
+    for device in devices:
+        if device["type"] in ["maglock", "light"]:
+            if device["name"] == "gang-licht-1":
+                call_control_maglock(device["name"], "unlocked")
+            else:
+                call_control_maglock(device["name"], "locked")
+                
     aborted = False
     return "puzzles reset"
 
@@ -984,6 +995,7 @@ def get_game_status():
 @app.route('/wake_room', methods=['POST'])
 def wake_room():
     # Update the retriever status to 'awake'
+    call_control_maglock("gang-licht-1", "unlocked")
     update_game_status('awake')
     return "room awakened"
 @app.route('/control_light', methods=['POST'])
@@ -1037,9 +1049,23 @@ def control_light():
     return jsonify({'message': f'Light {light_name} control command executed successfully'})
 @app.route('/snooze_game', methods=['POST'])
 def snooze_game():
-    
-    update_game_status('snoozed')
-    return "room snoozed"
+    try:
+        update_game_status('snoozed')
+
+        # Load device information from sensor_data.json
+        with open('json/sensor_data.json', 'r') as file:
+            devices = json.load(file)
+
+        # Iterate over devices
+        for device in devices:
+            # Check if the device type is maglock or light
+            if device["type"] in ["maglock", "light"]:
+                # Call control maglock with device name and action as "unlocked"
+                call_control_maglock(device["name"], "locked")
+
+        return "Room snoozed"
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 @app.route('/add_task', methods=['POST'])
 def add_task():
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
