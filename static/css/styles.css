@@ -214,6 +214,17 @@ landing page
   flex-direction: column;
   gap: 20px;
 }
+.landing-page > a {
+  align-self: center;
+  background-color: var(--unlocked);
+}
+.landing-page > a:hover {
+  background: var(--second-button-color-hover);
+  filter: drop-shadow(none);
+}
+.landing-page > a button {
+  color: var(--secondary-text-color);
+}
 
 /*
 #############
@@ -669,17 +680,26 @@ section.time-hidden article.time div.time-controls div.reset-speed {
 pi
 ##
 */
+section.pi-hidden article.pi {
+  max-height: 80vh; /* Set the maximum height to 80% of the viewport height */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
 section.pi-hidden article.pi article.pi-buttons div.pi-controls {
   display: flex;
   flex-direction: row;
   gap: 10px;
+  flex-direction: column;
+  gap: 20px;
   width: 100%;
   justify-content: center;
+  align-items: center;
 }
 section.pi-hidden article.pi article.pi-buttons div.pi-controls div.reboot,
 section.pi-hidden article.pi article.pi-buttons div.pi-controls div.backup {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 10px;
   width: -moz-fit-content;
   width: fit-content;
@@ -865,8 +885,10 @@ section.control-container section.tasks div.modal {
   background-color: rgba(0, 0, 0, 0.5);
 }
 section.control-container section.tasks div.modal div.modal-content {
+  max-height: 80vh; /* Set the maximum height to 80% of the viewport height */
+  overflow-y: auto; /* Enable vertical scrolling */
   background-color: #fefefe;
-  margin: 15% auto;
+  margin: 2% auto;
   padding: 20px;
   border: 1px solid #888;
   width: 60%;

@@ -103,17 +103,24 @@ pi
 
 section.pi-hidden {
   article.pi {
+    max-height: 80vh; /* Set the maximum height to 80% of the viewport height */
+    overflow-y: auto; /* Enable vertical scrolling */
     article.pi-buttons {
       div.pi-controls {
         display: flex;
         flex-direction: row;
         gap: 10px;
+        flex-direction: column;
+        gap: 20px;
         width: 100%;
         justify-content: center;
+        align-items: center;
         div.reboot,
         div.backup {
           display: flex;
           flex-direction: column;
+          justify-content: center;
+          align-items: center;
           gap: 10px;
           width: fit-content;
           div.pies {
@@ -273,6 +280,7 @@ tasks
 
 section.tasks-hidden {
   article.task-control {
+    
     div.task-control-container {
       display: flex;
       flex-direction: column;
@@ -320,6 +328,7 @@ modal
 section.control-container {
   section.tasks {
     div.modal {
+      
       display: none;
       position: fixed;
       z-index: 1;
@@ -329,8 +338,10 @@ section.control-container {
       height: 100%;
       background-color: rgba(0, 0, 0, 0.5);
       div.modal-content {
+        max-height: 80vh; /* Set the maximum height to 80% of the viewport height */
+        overflow-y: auto; /* Enable vertical scrolling */
         background-color: #fefefe;
-        margin: 15% auto;
+        margin: 2% auto;
         padding: 20px;
         border: 1px solid #888;
         width: 60%;

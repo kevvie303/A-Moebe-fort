@@ -870,22 +870,27 @@ def solve_task(task_name):
             json.dump(tasks, file, indent=4)
         if task_name == "Stroomstoring":
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/for-guard/play", "/home/pi/Music/shock.mp3", hostname="192.168.50.253")
-                publish.single("audio_control/for-guard/volume", "100 /home/pi/Music/shock.mp3", hostname="192.168.50.253")
+                publish.single("audio_control/for-guard/play", "shock.mp3", hostname="192.168.50.253")
+                publish.single("audio_control/for-guard/volume", "100 shock.mp3", hostname="192.168.50.253")
                 time.sleep(4)
-                publish.single("audio_control/for-guard/play", "/home/pi/Music/static.mp3", hostname="192.168.50.253")
-                publish.single("audio_control/for-guard/volume", "100 /home/pi/Music/static.mp3", hostname="192.168.50.253")
+                publish.single("audio_control/for-guard/play", "static.mp3", hostname="192.168.50.253")
+                publish.single("audio_control/for-guard/volume", "100 static.mp3", hostname="192.168.50.253")
                 publish.single(f"actuator/control/guard_room_pi", "26 locked", hostname=broker_ip)
                 publish.single(f"actuator/control/guard_room_pi", "20 unlocked", hostname=broker_ip)
+                publish.single("audio_control/for-corridor/play", "bgCorridor.mp3", hostname="192.168.50.253")
+                publish.single("audio_control/for-poepdoos/play", "bgCorridor.mp3", hostname="192.168.50.253")
         elif task_name == "3-objecten":
             if game_status == {'status': 'playing'}:
+                publish.single("audio_control/for-cell/volume", "40 newBg.ogg", hostname=broker_ip)
+                publish.single("audio_control/for-guard/play", "bgGuard.ogg", hostname=broker_ip)
+                publish.single("audio_control/for-garderobe/play", "bgGuard.ogg", hostname=broker_ip)
                 publish.single(f"actuator/control/guard_room_pi", "21 locked", hostname=broker_ip)
         elif task_name == "scan-mendez":
             if game_status == {'status': 'playing'}:
                 publish.single(f"actuator/control/corridor_pi", "21 unlocked", hostname=broker_ip)
                 publish.single(f"actuator/control/corridor_pi", "12 locked", hostname=broker_ip)
-                publish.single("audio_control/for-corridor/play", "/home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/for-corridor/volume", "100 /home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-corridor/play", "Buzzer.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-corridor/volume", "100 Buzzer.ogg", hostname="192.168.50.253")
                 publish.single(f"actuator/control/guard_room_pi", "20 locked", hostname=broker_ip)
                 time.sleep(3)
                 publish.single(f"actuator/control/corridor_pi", "21 locked", hostname=broker_ip)
@@ -893,8 +898,8 @@ def solve_task(task_name):
             if game_status == {'status': 'playing'}:
                 publish.single(f"actuator/control/corridor_pi", "13 unlocked", hostname=broker_ip)
                 publish.single(f"actuator/control/corridor_pi", "20 locked", hostname=broker_ip)
-                publish.single("audio_control/for-corridor/play", "/home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/for-corridor/volume", "100 /home/pi/Music/Buzzer.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-corridor/play", "Buzzer.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-corridor/volume", "100 Buzzer.ogg", hostname="192.168.50.253")
                 time.sleep(3)
                 publish.single(f"actuator/control/corridor_pi", "13 locked", hostname=broker_ip)
         elif task_name == "kapstok-allemaal":
@@ -1612,12 +1617,7 @@ def start_timer():
         timer_thread = threading.Thread(target=update_timer)
         timer_thread.daemon = True
         timer_thread.start()
-        #fade_music_out2()
-    time.sleep(0.5)
-    load_command = f'echo "load /home/pi/Music/Ambience.mp3" | sudo tee /tmp/mpg123_fifo'
-    pi3.exec_command(load_command)
-    time.sleep(0.5)
-    fade_music_in()
+        publish.single("audio_control/for-cell/play", "newBg.ogg", hostname=broker_ip)
     return 'Timer started'
 
 @app.route('/timer/stop', methods=['POST'])

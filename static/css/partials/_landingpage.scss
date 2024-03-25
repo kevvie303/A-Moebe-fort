@@ -77,6 +77,17 @@ landing page
       gap: 20px;
     }
   }
+  > a {
+    align-self: center;
+    background-color: var(--unlocked);
+    &:hover {
+      background: var(--second-button-color-hover);
+      filter: drop-shadow(none);
+    }
+    button {
+      color: var(--secondary-text-color);
+    }
+  }
 }
 
 /*

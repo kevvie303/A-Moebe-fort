@@ -304,8 +304,8 @@ $(document).ready(function () {
   }
 
   // Initial update for maglocks from the URL where you list them
-  updateAllMaglockStatuses("http://192.168.0.104:5000");
-  updateAllMaglockStatuses("http://192.168.0.114:5001");
+  //updateAllMaglockStatuses("http://192.168.0.104:5000");
+  //updateAllMaglockStatuses("http://192.168.0.114:5001");
 
   // Update maglock statuses periodically
   /*setInterval(function () {
@@ -391,10 +391,10 @@ $(document).ready(function () {
   }
 
   // Initial update for normal sensors from the first URL
-  updateAllSensorStatuses("http://192.168.0.104:5000");
-  updateLastKeypadCode("http://192.168.0.104:5000");
+  //updateAllSensorStatuses("http://192.168.0.104:5000");
+  //updateLastKeypadCode("http://192.168.0.104:5000");
   // Initial update for IR sensors from the second URL
-  updateAllSensorStatuses("http://192.168.0.105:5001");
+  //updateAllSensorStatuses("http://192.168.0.105:5001");
 
   // Function to update IR sensor status
   function updateIRSensorStatus(sensorNumber, sensorName, sensorURL) {
@@ -450,7 +450,7 @@ $(document).ready(function () {
   }
 
   // Initial update for IR sensors from the second URL
-  updateAllIRSensorStatuses("http://192.168.0.114:5001");
+  //updateAllIRSensorStatuses("http://192.168.0.114:5001");
 
   // Update normal sensor statuses periodically
   /* setInterval(function () {
@@ -1435,6 +1435,28 @@ document.addEventListener("DOMContentLoaded", () => {
   // ... (other event listeners) ...
 
   // Function to update the checklist UI
+  $("#reset-checklist").click(function () {
+    // Send a request to the server to stop the music
+    $.ajax({
+      type: "POST",
+      url: "/reset-checklist",
+      success: function (response) {
+        updateChecklist();
+        console.log(response);
+        const resetListContainer = document.getElementById(
+          "reset-list-container"
+        );
+        const readyToPrepareMessage = resetListContainer.querySelector("p");
+
+        if (readyToPrepareMessage) {
+          resetListContainer.removeChild(readyToPrepareMessage);
+        }
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  });
   async function updateChecklist() {
     try {
       // Fetch game status using $.get
@@ -1451,7 +1473,65 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error:", error);
     }
   }
+  function displayChecklist(checklist) {
+    const resetListContainer = document.getElementById("reset-list-container");
+    const resetList = document.getElementById("reset-list");
 
+    // Check if all tasks are completed
+    const allCompleted = checklist.every((item) => item.completed);
+
+    if (allCompleted) {
+      // If all tasks are completed, hide the checklist and show "ready to prepare"
+      resetList.style.display = "none";
+      const readyToPrepareMessage = document.createElement("p");
+      readyToPrepareMessage.textContent = "Ready to prepare";
+
+      // Check if the message is already present to avoid duplication
+      if (!resetListContainer.contains(readyToPrepareMessage)) {
+        resetListContainer.appendChild(readyToPrepareMessage);
+      }
+    } else {
+      // If not all tasks are completed, display the checklist
+      resetList.style.display = "flex";
+      resetList.innerHTML = ""; // Clear existing checklist items
+      checklist.forEach((item, index) => {
+        const listItem = document.createElement("li");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = item.task.replace(/\s/g, "");
+        checkbox.checked = item.completed;
+
+        const label = document.createElement("label");
+        label.textContent = item.task;
+        label.setAttribute("for", checkbox.id);
+
+        // Apply line-through style if the task is completed
+        if (item.completed) {
+          label.style.textDecoration = "line-through";
+        }
+
+        listItem.appendChild(checkbox);
+        listItem.appendChild(label);
+        // if (index < checklist.length - 1) {
+        //   listItem.style.borderBottom = "1px solid #ccc";
+        // }
+        resetList.appendChild(listItem);
+
+        checkbox.addEventListener("change", async () => {
+          if (!programmaticChange) {
+            programmaticChange = true;
+            const isChecked = checkbox.checked;
+            const task = label.textContent.trim();
+            await sendLockRequest(task, isChecked);
+            programmaticChange = false;
+          }
+        });
+      });
+
+      // Show the checklist
+      resetListContainer.style.display = "flex";
+    }
+  }
   function fetchAndDisplayChecklist() {
     // Fetch checklist data
     fetch("/get-checklist")
@@ -1472,44 +1552,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function hideResetList() {
     const resetListContainer = document.getElementById("reset-list-container");
     resetListContainer.style.display = "none";
-  }
-
-  // Function to display the checklist
-  function displayChecklist(checklist) {
-    const resetList = document.getElementById("reset-list");
-    resetList.innerHTML = ""; // Clear existing checklist items
-
-    checklist.forEach((item) => {
-      const listItem = document.createElement("li");
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.id = item.task.replace(/\s/g, "");
-      checkbox.checked = item.completed;
-
-      const label = document.createElement("label");
-      label.textContent = item.task;
-      label.setAttribute("for", checkbox.id);
-
-      // Apply line-through style if the task is completed
-      if (item.completed) {
-        label.style.textDecoration = "line-through";
-      }
-
-      listItem.appendChild(checkbox);
-      listItem.appendChild(label);
-
-      resetList.appendChild(listItem);
-
-      checkbox.addEventListener("change", async () => {
-        if (!programmaticChange) {
-          programmaticChange = true;
-          const isChecked = checkbox.checked;
-          const task = label.textContent.trim();
-          await sendLockRequest(task, isChecked);
-          programmaticChange = false;
-        }
-      });
-    });
   }
 });
 document.addEventListener("DOMContentLoaded", function () {
