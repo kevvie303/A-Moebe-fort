@@ -103,5 +103,10 @@
         "task": "granaat-allemaal",
         "description": "-",
         "state": "pending"
+    },
+    {
+        "task": "einddeur-open",
+        "description": "Code Sona",
+        "state": "pending"
     }
 ]
