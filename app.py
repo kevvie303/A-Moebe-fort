@@ -854,6 +854,10 @@ def solve_task(task_name):
                 publish.single("audio_control/for-corridor/play", "bgCorridor.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/for-poepdoos/play", "bgCorridor.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/for-poepdoos/volume", "40 bgCorridor.ogg", hostname="192.168.50.253")
+        elif task_name == "granaat-allemaal":
+            if game_status == {'status': 'playing'}:
+                publish.single("audio_control/all/play", "Nova.ogg", hostname=broker_ip)
+                publish.single("audio_control/all/volume", "100 Nova.ogg", hostname=broker_ip)
         elif task_name == "3-objecten":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/for-cell/volume", "40 newBg.ogg", hostname=broker_ip)
