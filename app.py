@@ -19,6 +19,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 from networkscanner import NetworkScanner
+from datetime import datetime, date
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -844,6 +845,7 @@ def get_task_status():
     
 @app.route('/solve_task/<task_name>', methods=['POST'])
 def solve_task(task_name):
+    global start_time
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
     game_status = get_game_status()
     try:
@@ -911,6 +913,9 @@ def solve_task(task_name):
                 publish.single("audio_control/all/volume", "100 alarm.ogg", hostname="192.168.50.253")
                 time.sleep(30)
                 fade_music_out("alarm")
+        elif task_name == "einddeur-open":
+            if game_status == {'status': 'playing'}:
+                stop_timer()
         with app.app_context():
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
@@ -1662,11 +1667,46 @@ def update_timer():
         timer_value = max(timer_value - speed, 0)
         write_timer_value(timer_value)
         threading.Event().wait(1)
+@app.route('/game_data', methods=['GET'])
+def get_game_data():
+    file_path = 'json/game_data.json'
+    game_data = []
 
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as json_file:
+            game_data = json.load(json_file)
+
+    return jsonify(game_data)
+@app.route('/game_data.html')
+def game_data():
+    return render_template('game_data.html')
+def write_game_data(start_time, end_time):
+    data = {
+        'start_time': start_time.strftime('%Y-%m-%d %H:%M:%S'),
+        'end_time': end_time.strftime('%Y-%m-%d %H:%M:%S')
+    }
+    file_path = 'json/game_data.json'
+
+    # Check if the directory exists, create if not
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+    # Load existing data if the file exists
+    existing_data = []
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as json_file:
+            existing_data = json.load(json_file)
+
+    # Append new data to the list
+    existing_data.append(data)
+
+    # Write the updated list back to the file
+    with open(file_path, 'w') as json_file:
+        json.dump(existing_data, json_file, indent=2)
 @app.route('/timer/start', methods=['POST'])
 def start_timer():
-    global timer_thread, timer_value, speed, timer_running, bird_job
+    global timer_thread, timer_value, speed, timer_running, bird_job, start_time
     update_game_status('playing')
+    start_time = datetime.now()
     if timer_thread is None or not timer_thread.is_alive():
         timer_value = 3600  # Reset timer value to 60 minutes
         write_timer_value(timer_value)
@@ -1684,6 +1724,8 @@ def stop_timer():
     #pi2.exec_command("raspi-gpio set 4 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 8 op dl \n raspi-gpio set 1 op dl")
     reset_task_statuses()
     stop_music()
+    end_time = datetime.now()
+    write_game_data(start_time, end_time)
     if timer_thread is not None and timer_thread.is_alive():
         write_timer_value(timer_value)
         timer_thread = threading.Thread(target=update_timer)
@@ -1742,7 +1784,7 @@ def continue_timer():
 def get_pause_state():
     global timer_running
     return jsonify(timer_running)
-
+update_game_status('awake')
 @app.route('/get-pi-status', methods=['GET'])
 def get_pi_status():
     global ssh, pi2, pi3

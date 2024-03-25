@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape Room Statistics</title>
+    <style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    margin: 20px;
+  }
+
+  h1 {
+    color: #333;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  th, td {
+    padding: 15px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  tr:hover {
+    background-color: #ddd;
+  }
+
+  .statistics-table {
+    width: 50%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .statistics-table th, .statistics-table td {
+    padding: 10px;
+    text-align: left;
+  }
+
+  .statistics-table th {
+    background-color: #3498db;
+    color: white;
+  }
+
+  .statistics-table tr:nth-child(even) {
+    background-color: #ecf0f1;
+  }
+
+  .statistics-table tr:hover {
+    background-color: #bdc3c7;
+  }
+      </style>
+</head>
+<body>
+
+<h2>Game History</h2>
+<table id="gameHistory">
+    <!-- Table content will be dynamically generated here -->
+</table>
+
+<h2>Statistics</h2>
+<table id="statistics">
+    <!-- Table content will be dynamically generated here -->
+</table>
+
+<script>
+// Fetch game data from Flask endpoint
+fetch('/game_data')
+    .then(response => response.json())
+    .then(data => {
+        // Create a table for game history
+        createGameHistoryTable(data);
+
+        // Create a table for statistics
+        createStatisticsTable(data);
+    })
+    .catch(error => console.error('Error fetching game data:', error));
+
+// Function to create a table for game history
+function createGameHistoryTable(data) {
+    const table = document.getElementById('gameHistory');
+
+    let currentDate = null;
+    let gamesCount = 0;
+
+    data.forEach(game => {
+        const startTime = new Date(game.start_time);
+        const endTime = new Date(game.end_time);
+        const date = startTime.toLocaleDateString('en-GB'); // Format as dd/mm/yyyy
+
+        if (date !== currentDate) {
+            // Output previous date and games count
+            if (currentDate !== null) {
+                const countRow = table.insertRow();
+                countRow.insertCell(0).innerHTML = `${currentDate} (${gamesCount} games)`;
+            }
+
+            // Set up for the new date
+            currentDate = date;
+            gamesCount = 1;
+        } else {
+            // Increment games count for the same date
+            gamesCount++;
+        }
+
+        // Output game time entry
+        const timeRow = table.insertRow();
+        timeRow.insertCell(0).innerHTML = `${startTime.toLocaleTimeString()} - ${endTime.toLocaleTimeString()}`;
+    });
+
+    // Output games count for the last date
+    if (currentDate !== null) {
+        const lastCountRow = table.insertRow();
+        lastCountRow.insertCell(0).innerHTML = `${currentDate} (${gamesCount} games)`;
+    }
+}
+
+// Function to create a table for statistics
+function createStatisticsTable(data) {
+    const table = document.getElementById('statistics');
+
+    // Add your statistics calculations here based on the data
+    const totalGames = data.length;
+    const averagePlayTime = calculateAveragePlayTime(data);
+
+    const row = table.insertRow();
+    row.insertCell(0).innerHTML = 'Total Games Played';
+    row.insertCell(1).innerHTML = totalGames;
+
+    const row2 = table.insertRow();
+    row2.insertCell(0).innerHTML = 'Average Play Time';
+    row2.insertCell(1).innerHTML = `${averagePlayTime.toFixed(2)} seconds`;
+}
+
+// Function to calculate the average play time
+function calculateAveragePlayTime(data) {
+    const totalPlayTime = data.reduce((total, game) => {
+        const startTime = new Date(game.start_time);
+        const endTime = new Date(game.end_time);
+        const playTimeInSeconds = (endTime - startTime) / 1000; // Convert to seconds
+        return total + playTimeInSeconds;
+    }, 0);
+
+    return totalPlayTime / data.length;
+}
+</script>
+
+</body>
+</html>
