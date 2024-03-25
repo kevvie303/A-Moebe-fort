@@ -74,21 +74,21 @@
         "type": "Sensor",
         "pin": 17,
         "pi": "cell_pi",
-        "state": "Triggered"
+        "state": "Not Triggered"
     },
     {
         "name": "3-objects",
         "type": "Sensor",
         "pin": 5,
         "pi": "cell_pi",
-        "state": "Triggered"
+        "state": "Not Triggered"
     },
     {
         "name": "nightstand",
         "type": "Sensor",
         "pin": 6,
         "pi": "cell_pi",
-        "state": "Triggered"
+        "state": "Not Triggered"
     },
     {
         "name": "iron-door-child",

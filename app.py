@@ -687,21 +687,30 @@ def pause_music():
     else:
         return 'No file selected to pause'
 @app.route('/fade_music_out', methods=['POST'])
-def fade_music_out():
-        # Gradually reduce the volume from 80 to 40
-    for volume in range(25, 10, -1):
-        # Send the volume command to the Raspberry Pi
-        command = f'echo "volume {volume}" | sudo tee /tmp/mpg123_fifo'
-        
-        if check_task_state("squeekuence") == "solved":
-            stdin, stdout, stderr = pi2.exec_command(command)
+def fade_music_out(file):
+    global broker_ip
+    print(file)
+    if file == "alarm":
+        initial_volume = 100
+        final_volume = 40
+    else:
+        initial_volume = 35
+        final_volume = 17
+
+    # Gradually increase the volume
+    current_volume = initial_volume
+    while current_volume > final_volume:
+        current_volume -= 1  # Increase volume by 1 each second
+        payload = f"{int(current_volume)} {file}.ogg"
+        if file == "alarm":
+            publish.single("audio_control/all/volume", payload, hostname=broker_ip)
         else:
-            stdin, stdout, stderr = pi3.exec_command(command)
-        
-        # Wait for a short duration between volume changes
-        time.sleep(0.05)  # Adjust the sleep duration as needed
-    time.sleep(1)
-    pi3.exec_command('mpg123 -a hw:0,0 Music/prehint.mp3')
+            publish.single("audio_control/raspberrypi/volume", payload, hostname=broker_ip)
+        print(current_volume)
+        if file == "alarm":
+            time.sleep(0.05)
+        else:
+            time.sleep(0.25)
     return "Volume faded successfully"
 def fade_music_out2():
 
@@ -852,12 +861,12 @@ def solve_task(task_name):
                 publish.single(f"actuator/control/guard_room_pi", "26 locked", hostname=broker_ip)
                 publish.single(f"actuator/control/guard_room_pi", "20 unlocked", hostname=broker_ip)
                 publish.single("audio_control/for-corridor/play", "bgCorridor.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/for-poepdoos/play", "bgCorridor.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/for-poepdoos/volume", "40 bgCorridor.ogg", hostname="192.168.50.253")
         elif task_name == "granaat-allemaal":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/all/play", "Sona.ogg", hostname=broker_ip)
                 publish.single("audio_control/all/volume", "100 Sona.ogg", hostname=broker_ip)
+                publish.single("audio_control/all/volume", "5 alarm.ogg", hostname=broker_ip)
         elif task_name == "3-objecten":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/for-cell/volume", "40 newBg.ogg", hostname=broker_ip)
@@ -881,6 +890,9 @@ def solve_task(task_name):
                 publish.single(f"actuator/control/corridor_pi", "20 locked", hostname=broker_ip)
                 publish.single("audio_control/for-corridor/play", "Buzzer.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/for-corridor/volume", "100 Buzzer.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-poepdoos/play", "bgCorridor.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-poepdoos/play", "WC.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-poepdoos/play", "100 WC.ogg", hostname="192.168.50.253")
                 time.sleep(3)
                 publish.single(f"actuator/control/corridor_pi", "13 locked", hostname=broker_ip)
         elif task_name == "kapstok-allemaal":
@@ -894,6 +906,8 @@ def solve_task(task_name):
                 publish.single(f"actuator/control/corridor_pi", "27 unlocked", hostname=broker_ip)
                 publish.single("audio_control/all/play", "alarm.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/all/volume", "100 alarm.ogg", hostname="192.168.50.253")
+                time.sleep(30)
+                fade_music_out("alarm")
         with app.app_context():
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
