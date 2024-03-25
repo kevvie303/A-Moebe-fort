@@ -847,15 +847,13 @@ def solve_task(task_name):
             json.dump(tasks, file, indent=4)
         if task_name == "Stroomstoring":
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/for-guard/play", "shock.mp3", hostname="192.168.50.253")
-                publish.single("audio_control/for-guard/volume", "100 shock.mp3", hostname="192.168.50.253")
-                time.sleep(4)
                 publish.single("audio_control/for-guard/play", "static.mp3", hostname="192.168.50.253")
                 publish.single("audio_control/for-guard/volume", "100 static.mp3", hostname="192.168.50.253")
                 publish.single(f"actuator/control/guard_room_pi", "26 locked", hostname=broker_ip)
                 publish.single(f"actuator/control/guard_room_pi", "20 unlocked", hostname=broker_ip)
                 publish.single("audio_control/for-corridor/play", "bgCorridor.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/for-poepdoos/play", "bgCorridor.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-poepdoos/volume", "40 bgCorridor.ogg", hostname="192.168.50.253")
         elif task_name == "3-objecten":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/for-cell/volume", "40 newBg.ogg", hostname=broker_ip)
