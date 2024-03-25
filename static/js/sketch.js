@@ -1365,8 +1365,8 @@ $(document).ready(function () {
         $("#prepare-result, #reset-list-container").hide();
       }
       if (data.status === "preparing") {
-        $("#prepare-result, #reset-list-container").show();
-        $(".tasks, .locks, .lock-status, .pin-info").hide();
+        $("#prepare-result, #reset-list-container, .locks").show();
+        $(".tasks, .lock-status, .pin-info").hide();
         console.log("preparing!!")
       }
     });
@@ -1379,8 +1379,8 @@ $(document).ready(function () {
       $("#prepare-result, #snooze-game-button, #reset-list-container").hide();
     }
     if (data.status === "preparing") {
-      $("#prepare-result, #reset-list-container").show();
-      $(".tasks, .locks, .lock-status, .pin-info").hide();
+      $("#prepare-result, #reset-list-container, .locks").show();
+      $(".tasks, .lock-status, .pin-info").hide();
       console.log("preparing!!")
     }
   });

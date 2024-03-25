@@ -959,6 +959,21 @@ def reset_task_statuses():
         return jsonify({'message': 'Task statuses reset successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error resetting task statuses'})
+def reset_prepare():
+    file_path = os.path.join(current_dir, 'json', 'tasks.json')
+    try:
+        with open(file_path, 'r') as file:
+            tasks = json.load(file)
+
+        for task in tasks:
+            task['state'] = 'pending'
+
+        with open(file_path, 'w') as file:
+            json.dump(tasks, file, indent=4)
+
+        return jsonify({'message': 'Task statuses reset successfully'})
+    except (FileNotFoundError, json.JSONDecodeError):
+        return jsonify({'message': 'Error resetting task statuses'})
 @app.route('/reset_puzzles', methods=['POST'])
 def reset_puzzles():
     global aborted
@@ -1787,6 +1802,7 @@ def prepare_game():
     if get_game_status() == {'status': 'prepared'}:
         return jsonify({"message": results}), 200
     update_game_status("preparing")
+    reset_prepare()
     prefix = request.form.get('prefix')
     scanner = NetworkScanner()
     raspberry_pis = get_raspberry_pis_with_prefix(prefix, scanner)
