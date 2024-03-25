@@ -93,7 +93,41 @@ def establish_ssh_connection():
       #  pi3.set_missing_host_key_policy(paramiko.AutoAddPolicy())
        # pi3.connect(ip3brink, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
         #pi3.exec_command('pkill -f mqtt.py \n python status.py')
+@app.route('/game_data', methods=['GET'])
+def get_game_data():
+    file_path = 'json/game_data.json'
+    game_data = []
 
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as json_file:
+            game_data = json.load(json_file)
+
+    return jsonify(game_data)
+@app.route('/game_data.html')
+def game_data():
+    return render_template('game_data.html')
+def write_game_data(start_time, end_time):
+    data = {
+        'start_time': start_time.strftime('%Y-%m-%d %H:%M:%S'),
+        'end_time': end_time.strftime('%Y-%m-%d %H:%M:%S')
+    }
+    file_path = 'json/game_data.json'
+
+    # Check if the directory exists, create if not
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+    # Load existing data if the file exists
+    existing_data = []
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as json_file:
+            existing_data = json.load(json_file)
+
+    # Append new data to the list
+    existing_data.append(data)
+
+    # Write the updated list back to the file
+    with open(file_path, 'w') as json_file:
+        json.dump(existing_data, json_file, indent=2)
 def is_online(ip):
     try:
         if platform.system().lower() == "linux":
@@ -1506,10 +1540,9 @@ def update_timer():
 
 @app.route('/timer/start', methods=['POST'])
 def start_timer():
-    global timer_thread, timer_value, speed, timer_running, bird_job
-    if bird_job == False:
-        scheduler.add_job(start_bird_sounds, 'interval', minutes=1, id='birdjob')
-        bird_job = True
+    global timer_thread, timer_value, speed, timer_running, bird_job, start_time
+    update_game_status('playing')
+    start_time = datetime.now()
     update_game_status('playing')
     if timer_thread is None or not timer_thread.is_alive():
         timer_value = 3600  # Reset timer value to 60 minutes
@@ -1535,6 +1568,8 @@ def stop_timer():
     kraken2 = False
     kraken3 = False
     kraken4 = False
+    end_time = datetime.now()
+    write_game_data(start_time, end_time)
     if bird_job == True:
         scheduler.remove_job('birdjob')
         bird_job = False
