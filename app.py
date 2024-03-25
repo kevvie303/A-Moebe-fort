@@ -870,11 +870,14 @@ def solve_task(task_name):
         elif task_name == "3-objecten":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/for-cell/volume", "40 newBg.ogg", hostname=broker_ip)
+                publish.single(f"actuator/control/guard_room_pi", "21 locked", hostname=broker_ip)
+                publish.single("audio_control/for-guard/play", "secretDoor.ogg", hostname=broker_ip)
+                publish.single("audio_control/for-cell/play", "secretDoor.ogg", hostname=broker_ip)
+                time.sleep(3)
                 publish.single("audio_control/for-guard/play", "bgGuard.ogg", hostname=broker_ip)
                 publish.single("audio_control/for-garderobe/play", "bgGuard.ogg", hostname=broker_ip)
                 publish.single("audio_control/for-guard/volume", "100 bgGuard.ogg", hostname=broker_ip)
                 publish.single("audio_control/for-garderobe/volume", "100 bgGuard.ogg", hostname=broker_ip)
-                publish.single(f"actuator/control/guard_room_pi", "21 locked", hostname=broker_ip)
         elif task_name == "scan-mendez":
             if game_status == {'status': 'playing'}:
                 publish.single(f"actuator/control/corridor_pi", "21 unlocked", hostname=broker_ip)
