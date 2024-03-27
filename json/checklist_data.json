@@ -100,7 +100,11 @@
     "completed": false
   },
   {
-    "task": "Filmticket terug onder kussen",
+    "task": "Filmticket terug onder kussen.",
+    "completed": false
+  },
+  {
+    "task": "Dagboek terug onder ander kussen.",
     "completed": false
   },
   {

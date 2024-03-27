@@ -1712,6 +1712,8 @@ def start_timer():
         timer_thread.daemon = True
         timer_thread.start()
         publish.single("audio_control/for-cell/play", "newBg.ogg", hostname=broker_ip)
+        time.sleep(120)
+        publish.single("audio_control/all/play", "Wastafel-sleutel-1.ogg", hostname=broker_ip)
     return 'Timer started'
 
 @app.route('/timer/stop', methods=['POST'])
