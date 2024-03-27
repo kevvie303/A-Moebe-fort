@@ -209,83 +209,80 @@ def on_message(client, userdata, message):
         update_json_file()
         print("State changed. Updated JSON.")
     #print(sensor_states)
-    if sensor_name == "rfid_corridor":
-        print(sensor_state)
-        mendez1 = 584185540695
-        mendez2 = 584199238531
-        roosenthaal1 = 584198160159
-        roosenthaal2 = 584183068095
-        sensor_state_int = int(sensor_state)
-        print(roosenthaal2)
-        if sensor_state_int == mendez1 or sensor_state_int == mendez2:
-            if check_task_state("scan-mendez") == "pending":
-                solve_task("scan-mendez")
-            print("Correct code")
-        elif sensor_state_int == roosenthaal1 or sensor_state_int == roosenthaal2:
-            if check_task_state("scan-rosenthal") == "pending":
-                solve_task("scan-rosenthal")
-            print("Correct code")
-    if check_rule("jas-1"):
-        if check_task_state("kapstok-zuidafrika") == "pending":
-            solve_task("kapstok-zuidafrika")
-    if check_rule("jas-1") == False:
-        if check_task_state("kapstok-zuidafrika") == "solved":
-            pend_task("kapstok-zuidafrika")
-    if check_rule("jas-2"):
-        if check_task_state("kapstok-italie") == "pending":
-            solve_task("kapstok-italie")
-    if check_rule("jas-2") == False:
-        if check_task_state("kapstok-italie") == "solved":
-            pend_task("kapstok-italie")
-    if check_rule("jas-3"):
-        if check_task_state("kapstok-ijsland") == "pending":
-            solve_task("kapstok-ijsland")
-    if check_rule("jas-3") == False:
-        if check_task_state("kapstok-ijsland") == "solved":
-            pend_task("kapstok-ijsland")
-    if check_rule("jas-1") and check_rule("jas-2") and check_rule("jas-3"):
-        if check_task_state("kapstok-allemaal") == "pending":
-            solve_task("kapstok-allemaal")
-    if check_rule("grenade-1"):
-        if check_task_state("granaat-tomsk") == "pending":
-            solve_task("granaat-tomsk")
-    if check_rule("grenade-1") == False:
-        if check_task_state("granaat-tomsk") == "solved":
-            pend_task("granaat-tomsk")
-    if check_rule("grenade-2"):
-        if check_task_state("granaat-khabarovsk") == "pending":
-            solve_task("granaat-khabarovsk")
-    if check_rule("grenade-2") == False:
-        if check_task_state("granaat-khabarovsk") == "solved":
-            pend_task("granaat-khabarovsk")
-    if check_rule("grenade-3"):
-        if check_task_state("granaat-soratov") == "pending":
-            solve_task("granaat-soratov")
-    if check_rule("grenade-3") == False:
-        if check_task_state("granaat-soratov") == "solved":
-            pend_task("granaat-soratov")
-    if check_rule("grenade-1") and check_rule("grenade-2") and check_rule("grenade-3"):
-        if check_task_state("granaat-allemaal") == "pending":
-            solve_task("granaat-allemaal")
-    if check_rule("camera_button"):
-        if check_task_state("Stroomstoring") == "pending":
-            solve_task("Stroomstoring")
-    if check_rule("ehbo-kist") == False:
-        if check_task_state("Medicijnkastje-open") == "pending":
-            solve_task("Medicijnkastje-open")
-    if check_rule("nightstand") == False:
-        if check_task_state("Poster") == "pending":
-            solve_task("Poster")
-    if check_rule("3-objects"):
-        if check_task_state("3-objecten") == "pending":
-            solve_task("3-objecten")
-    if check_rule("alarm-button"):
-        if check_task_state("alarm-knop") == "pending":
-            solve_task("alarm-knop")
-    if check_rule("entrance_door"):
-        current_game_state = get_game_status()
-        if current_game_state == {'status': 'prepared'}:
-            start_timer()
+    if get_game_status() == {'status': 'playing'}:
+        if sensor_name == "rfid_corridor":
+            print(sensor_state)
+            mendez1 = 584185540695
+            mendez2 = 584199238531
+            roosenthaal1 = 584198160159
+            roosenthaal2 = 584183068095
+            sensor_state_int = int(sensor_state)
+            print(roosenthaal2)
+            if sensor_state_int == mendez1 or sensor_state_int == mendez2:
+                if check_task_state("scan-mendez") == "pending":
+                    solve_task("scan-mendez")
+                print("Correct code")
+            elif sensor_state_int == roosenthaal1 or sensor_state_int == roosenthaal2:
+                if check_task_state("scan-rosenthal") == "pending":
+                    solve_task("scan-rosenthal")
+                print("Correct code")
+        if check_rule("jas-1"):
+            if check_task_state("kapstok-zuidafrika") == "pending":
+                solve_task("kapstok-zuidafrika")
+        if check_rule("jas-1") == False:
+            if check_task_state("kapstok-zuidafrika") == "solved":
+                pend_task("kapstok-zuidafrika")
+        if check_rule("jas-2"):
+            if check_task_state("kapstok-italie") == "pending":
+                solve_task("kapstok-italie")
+        if check_rule("jas-2") == False:
+            if check_task_state("kapstok-italie") == "solved":
+                pend_task("kapstok-italie")
+        if check_rule("jas-3"):
+            if check_task_state("kapstok-ijsland") == "pending":
+                solve_task("kapstok-ijsland")
+        if check_rule("jas-3") == False:
+            if check_task_state("kapstok-ijsland") == "solved":
+                pend_task("kapstok-ijsland")
+        if check_rule("jas-1") and check_rule("jas-2") and check_rule("jas-3"):
+            if check_task_state("kapstok-allemaal") == "pending":
+                solve_task("kapstok-allemaal")
+        if check_rule("grenade-1"):
+            if check_task_state("granaat-tomsk") == "pending":
+                solve_task("granaat-tomsk")
+        if check_rule("grenade-1") == False:
+            if check_task_state("granaat-tomsk") == "solved":
+                pend_task("granaat-tomsk")
+        if check_rule("grenade-2"):
+            if check_task_state("granaat-khabarovsk") == "pending":
+                solve_task("granaat-khabarovsk")
+        if check_rule("grenade-2") == False:
+            if check_task_state("granaat-khabarovsk") == "solved":
+                pend_task("granaat-khabarovsk")
+        if check_rule("grenade-3"):
+            if check_task_state("granaat-soratov") == "pending":
+                solve_task("granaat-soratov")
+        if check_rule("grenade-3") == False:
+            if check_task_state("granaat-soratov") == "solved":
+                pend_task("granaat-soratov")
+        if check_rule("grenade-1") and check_rule("grenade-2") and check_rule("grenade-3"):
+            if check_task_state("granaat-allemaal") == "pending":
+                solve_task("granaat-allemaal")
+        if check_rule("camera_button"):
+            if check_task_state("Stroomstoring") == "pending":
+                solve_task("Stroomstoring")
+        if check_rule("ehbo-kist") == False:
+            if check_task_state("Medicijnkastje-open") == "pending":
+                solve_task("Medicijnkastje-open")
+        if check_rule("nightstand") == False:
+            if check_task_state("Poster") == "pending":
+                solve_task("Poster")
+        if check_rule("3-objects"):
+            if check_task_state("3-objecten") == "pending":
+                solve_task("3-objecten")
+        if check_rule("alarm-button"):
+            if check_task_state("alarm-knop") == "pending":
+                solve_task("alarm-knop")
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
@@ -896,7 +893,7 @@ def solve_task(task_name):
                 publish.single("audio_control/for-corridor/play", "Buzzer.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/for-corridor/volume", "100 Buzzer.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/for-poepdoos/play", "bgCorridor.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/for-poepdoos/play", "WC.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-poepdoos/loop", "WC.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/for-poepdoos/play", "100 WC.ogg", hostname="192.168.50.253")
                 time.sleep(3)
                 publish.single(f"actuator/control/corridor_pi", "13 locked", hostname=broker_ip)
@@ -911,7 +908,7 @@ def solve_task(task_name):
                 publish.single(f"actuator/control/corridor_pi", "27 unlocked", hostname=broker_ip)
                 publish.single("audio_control/all/play", "alarm.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/all/volume", "100 alarm.ogg", hostname="192.168.50.253")
-                time.sleep(30)
+                time.sleep(120)
                 fade_music_out("alarm")
         elif task_name == "einddeur-open":
             if game_status == {'status': 'playing'}:
@@ -1719,13 +1716,14 @@ def start_timer():
 
 @app.route('/timer/stop', methods=['POST'])
 def stop_timer():
-    global timer_thread, timer_running, timer_value, kraken1, kraken2, kraken3, kraken4, bird_job
+    global timer_thread, timer_running, timer_value, kraken1, kraken2, kraken3, kraken4, bird_job, start_time
     update_game_status('awake')
     #pi2.exec_command("raspi-gpio set 4 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 8 op dl \n raspi-gpio set 1 op dl")
     reset_task_statuses()
     stop_music()
     end_time = datetime.now()
     write_game_data(start_time, end_time)
+    start_time = None
     if timer_thread is not None and timer_thread.is_alive():
         write_timer_value(timer_value)
         timer_thread = threading.Thread(target=update_timer)

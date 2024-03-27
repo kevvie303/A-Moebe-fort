@@ -1,6 +1,10 @@
 [
   {
-    "task": "Einddeur dicht, code?",
+    "task": "Alle granaten meenemen uit gang naar poepdozen.",
+    "completed": false
+  },
+  {
+    "task": "Einddeur dicht, code SONA",
     "completed": false
   },
   {
@@ -8,7 +12,7 @@
     "completed": false
   },
   {
-    "task": "Knop uitdrukken en op slot, code letterslot vrij",
+    "task": "Knop uitdrukken en op slot, code letterslot VRIJ",
     "completed": false
   },
   {
@@ -44,6 +48,10 @@
     "completed": false
   },
   {
+    "task": "Haal sleutel uit schoonmaakhok, die moet uit kamer.",
+    "completed": false
+  },
+  {
     "task": "Loop naar midden gang, sluit beide hekken.",
     "completed": false
   },
@@ -76,7 +84,7 @@
     "completed": false
   },
   {
-    "task": "Neem hengel en handboeien mee naar kamer 1.",
+    "task": "Neem hengel en handboeien en sloten van handboeien mee naar kamer 1.",
     "completed": false
   },
   {
@@ -104,11 +112,15 @@
     "completed": false
   },
   {
+    "task": "Kinderstand: magneet bij buis hangen. Volwasenenstand: magneet in wasbak.",
+    "completed": false
+  },
+  {
     "task": "Geheime deur dicht door aan ijzeren kabel te trekken.",
     "completed": false
   },
   {
-    "task": "Neem handboeien mee uit kamer.",
+    "task": "Neem handboeien en sloten van handboeien mee uit kamer.",
     "completed": false
   },
   {
