@@ -1101,11 +1101,12 @@ def snooze_game():
         # Iterate over devices
         for device in devices:
             # Check if the device type is maglock or light
-            if device["type"] in ["maglock", "light"]:
+            if device["type"] in ["maglock"]:
                 # Call control maglock with device name and action as "unlocked"
                 call_control_maglock(device["name"], "unlocked")
         
         call_control_maglock("gang-licht-1", "locked")
+        call_control_maglock("radio-guard", "locked")
         return "Room snoozed"
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
