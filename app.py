@@ -899,7 +899,7 @@ def solve_task(task_name):
                 publish.single("audio_control/for-corridor/play", "Buzzer.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/for-corridor/volume", "100 Buzzer.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/for-poepdoos/play", "bgCorridor.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/for-poepdoos/loop", "WC.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-poepdoos/play", "WC.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/for-poepdoos/volume", "100 WC.ogg", hostname="192.168.50.253")
                 time.sleep(3)
                 publish.single(f"actuator/control/corridor_pi", "13 locked", hostname=broker_ip)
@@ -1103,8 +1103,9 @@ def snooze_game():
             # Check if the device type is maglock or light
             if device["type"] in ["maglock", "light"]:
                 # Call control maglock with device name and action as "unlocked"
-                call_control_maglock(device["name"], "locked")
-
+                call_control_maglock(device["name"], "unlocked")
+        
+        call_control_maglock("gang-licht-1", "locked")
         return "Room snoozed"
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
