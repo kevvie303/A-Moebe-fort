@@ -863,10 +863,13 @@ def solve_task(task_name):
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/for-guard/play", "static.mp3", hostname="192.168.50.253")
                 publish.single("audio_control/for-guard/volume", "100 static.mp3", hostname="192.168.50.253")
-                publish.single(f"actuator/control/guard_room_pi", "26 locked", hostname=broker_ip)
-                publish.single(f"actuator/control/guard_room_pi", "20 unlocked", hostname=broker_ip)
                 publish.single("audio_control/for-corridor/play", "bgCorridor.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/for-poepdoos/volume", "40 bgCorridor.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-guard/stop", "static.mp3", hostname="192.168.50.253")
+                time.sleep(5)
+                publish.single(f"actuator/control/guard_room_pi", "26 locked", hostname=broker_ip)
+                publish.single("audio_control/for-guard/play", "drawerCorrect.ogg", hostname=broker_ip)
+                time.sleep(2)
+                publish.single(f"actuator/control/guard_room_pi", "20 unlocked", hostname=broker_ip)
         elif task_name == "granaat-allemaal":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/all/play", "Sona.ogg", hostname=broker_ip)
