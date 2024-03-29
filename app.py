@@ -24,7 +24,12 @@ load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
 #command = 'python relay_control.py'
-loadMqtt = True
+if platform.system().lower() == "linux":
+            # Use the following for Linux
+    loadMqtt = True
+else:
+            # Use the following for non-Linux (assuming it's Windows in this case)
+    loadMqtt = False
 ssh = None
 stdin = None
 pi2 = None
@@ -1189,7 +1194,7 @@ def stop_music():
     file_path = os.path.join(current_dir, 'json', 'file_status.json')
     with open(file_path, 'w') as file:
         json.dump([], file)
-
+    return "Music stopped"
 @app.route('/backup-top-pi', methods=['POST'])
 def backup_top_pi():
     ssh.exec_command('./commit_and_push.sh')
@@ -1713,6 +1718,7 @@ def start_timer():
         timer_thread.start()
         publish.single("audio_control/for-cell/play", "newBg.ogg", hostname=broker_ip)
         time.sleep(120)
+        print("first file played")
         publish.single("audio_control/all/play", "Wastafel-sleutel-1.ogg", hostname=broker_ip)
     return 'Timer started'
 
