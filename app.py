@@ -1730,7 +1730,8 @@ def stop_timer():
     reset_task_statuses()
     stop_music()
     end_time = datetime.now()
-    write_game_data(start_time, end_time)
+    if start_time is not None:
+        write_game_data(start_time, end_time)
     start_time = None
     if timer_thread is not None and timer_thread.is_alive():
         write_timer_value(timer_value)
