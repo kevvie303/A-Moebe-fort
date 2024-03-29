@@ -62,6 +62,7 @@ codesCorrect = 0
 bird_job = False
 squeak_job = False
 should_hint_shed_play = False
+start_time = None
 CHECKLIST_FILE = 'json/checklist_data.json'
 #logging.basicConfig(level=logging.DEBUG)  # Use appropriate log level
 active_ssh_connections = {}
