@@ -899,10 +899,10 @@ def solve_task(task_name):
                 publish.single("audio_control/for-corridor/play", "Buzzer.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/for-corridor/volume", "100 Buzzer.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/for-poepdoos/play", "bgCorridor.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/for-poepdoos/play", "WC.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/for-poepdoos/volume", "100 WC.ogg", hostname="192.168.50.253")
                 time.sleep(3)
                 publish.single(f"actuator/control/corridor_pi", "13 locked", hostname=broker_ip)
+                publish.single("audio_control/for-poepdoos/play", "WC.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-poepdoos/volume", "100 WC.ogg", hostname="192.168.50.253")
         elif task_name == "kapstok-allemaal":
             if game_status == {'status': 'playing'}:
                 publish.single(f"actuator/control/for-garderobe", "23 unlocked", hostname=broker_ip)
