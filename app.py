@@ -1584,7 +1584,7 @@ def start_timer():
         publish.single("video_control/raspberrypi/volume", "35", hostname=broker_ip)
         time.sleep(60)
         publish.single("video_control/raspberrypi/stop", "stop", hostname=broker_ip)
-        publish.single("audio_control/raspberrypi/play", "/intro.ogg", hostname=broker_ip)
+        publish.single("audio_control/raspberrypi/play", "intro.ogg", hostname=broker_ip)
         fade_music_in("intro")
     return 'Timer started'
 
