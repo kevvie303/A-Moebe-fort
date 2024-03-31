@@ -916,7 +916,7 @@ function openTaskPopup(task) {
         url: "/play_music",
         contentType: "application/json",
         data: JSON.stringify({
-          message: `/home/pi/Music/${task.task}-${i}.ogg`,
+          message: `${task.task}-${i}.ogg`,
         }),
         success: function (response) {
           console.log("Response from Flask:", response);

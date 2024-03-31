@@ -732,14 +732,14 @@ def fade_music_out(file):
         final_volume = 30
     else:
         initial_volume = 35
-        final_volume = 17
+        final_volume = 10
     volume_step = (final_volume - initial_volume) / FADE_DURATION  # Calculate volume increment per second
 
     # Gradually increase the volume
     current_volume = initial_volume
     while current_volume > final_volume:
         current_volume -= 1  # Increase volume by 1 each second
-        payload = f"{int(current_volume)} /home/pi/Music/{file}.ogg"
+        payload = f"{int(current_volume)} {file}.ogg"
         if file == "finalsequence":
             publish.single("audio_control/vol-afslag/volume", payload, hostname=broker_ip)
         elif file == "Bg-captain":
@@ -762,13 +762,13 @@ def fade_music_out_hint():
     current_volume = initial_volume
     while current_volume > final_volume:
         current_volume -= 1  # Increase volume by 1 each second
-        publish.single("audio_control/vol-afslag/volume", f"{int(current_volume)} /home/pi/Music/BgAfslag.ogg", hostname=broker_ip)
-        publish.single("audio_control/vol-kapitein/volume", f"{int(current_volume)} /home/pi/Music/Bg-captain.ogg", hostname=broker_ip)
-        publish.single("audio_control/vol-boat/volume", f"{int(current_volume)} /home/pi/Music/BgShip.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-afslag/volume", f"{int(current_volume)} BgAfslag.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-kapitein/volume", f"{int(current_volume)} Bg-captain.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-boat/volume", f"{int(current_volume)} BgShip.ogg", hostname=broker_ip)
         print(current_volume)
         time.sleep(0.05)
-    publish.single("audio_control/all/stop", "/home/pi/Music/prehint.ogg", hostname=broker_ip)
-    publish.single("audio_control/all/play", "/home/pi/Music/prehint.ogg", hostname=broker_ip)
+    publish.single("audio_control/all/stop", "prehint.ogg", hostname=broker_ip)
+    publish.single("audio_control/all/play", "prehint.ogg", hostname=broker_ip)
     return "Volume faded successfully"
 FADE_DURATION = 10  # Adjust as needed
 @app.route('/fade_music_in', methods=['POST'])
@@ -786,7 +786,7 @@ def fade_music_in(file):
     current_volume = initial_volume
     while current_volume < final_volume:
         current_volume += 1  # Increase volume by 1 each second
-        payload = f"{int(current_volume)} /home/pi/Music/{file}.ogg"
+        payload = f"{int(current_volume)} {file}.ogg"
         if file == "finalsequence":
             print("right")
             publish.single("audio_control/vol-afslag/volume", payload, hostname=broker_ip)
@@ -810,9 +810,9 @@ def fade_music_in_hint():
     current_volume = initial_volume
     while current_volume < final_volume:
         current_volume += 1  # Increase volume by 1 each second
-        publish.single("audio_control/vol-afslag/volume", f"{int(current_volume)} /home/pi/Music/BgAfslag.ogg", hostname=broker_ip)
-        publish.single("audio_control/vol-kapitein/volume", f"{int(current_volume)} /home/pi/Music/Bg-captain.ogg", hostname=broker_ip)
-        publish.single("audio_control/vol-boat/volume", f"{int(current_volume)} /home/pi/Music/BgShip.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-afslag/volume", f"{int(current_volume)} BgAfslag.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-kapitein/volume", f"{int(current_volume)} Bg-captain.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-boat/volume", f"{int(current_volume)} BgShip.ogg", hostname=broker_ip)
         print(current_volume)
         time.sleep(0.05)
     # Ensure the final volume is se
@@ -923,22 +923,22 @@ def solve_task(task_name):
             json.dump(tasks, file, indent=4)
         if task_name == "Lutine":
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/vol-kapitein/play", "/home/pi/Music/Bg-captain.ogg", hostname=broker_ip)
-                publish.single("audio_control/vol-kapitein/play", "/home/pi/Music/lutine-solve.ogg", hostname=broker_ip)
+                publish.single("audio_control/vol-kapitein/play", "Bg-captain.ogg", hostname=broker_ip)
+                publish.single("audio_control/vol-kapitein/play", "lutine-solve.ogg", hostname=broker_ip)
                 fade_music_out("intro")
         elif task_name == "YO-HO":
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/vol-boat/play", "/home/pi/Music/BgShip.ogg", hostname=broker_ip)
-                publish.single("audio_control/vol-kapitein/play", "/home/pi/Music/yoho-solve.ogg", hostname=broker_ip)
+                publish.single("audio_control/vol-boat/play", "BgShip.ogg", hostname=broker_ip)
+                publish.single("audio_control/vol-kapitein/play", "yoho-solve.ogg", hostname=broker_ip)
                 fade_music_out("Bg-captain")
                 time.sleep(16)
-                publish.single("audio_control/vol-boat/play", "/home/pi/Music/yoho2.ogg", hostname=broker_ip)
+                publish.single("audio_control/vol-boat/play", "yoho2.ogg", hostname=broker_ip)
                 time.sleep(23)
-                publish.single("audio_control/vol-boat/play", "/home/pi/Music/kaptein.ogg", hostname=broker_ip)
+                publish.single("audio_control/vol-boat/play", "kaptein.ogg", hostname=broker_ip)
                 publish.single(f"actuator/control/vol-boat", "17 unlocked", hostname=broker_ip)
         elif task_name == "Aanmeren":
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/vol-afslag/play", "/home/pi/Music/BgAfslag.ogg", hostname=broker_ip) 
+                publish.single("audio_control/vol-afslag/play", "BgAfslag.ogg", hostname=broker_ip) 
                 publish.single(f"actuator/control/vol-afslag", "22 unlocked", hostname=broker_ip)
         elif task_name == "hendels":
             if game_status == {'status': 'playing'}:
@@ -963,10 +963,10 @@ def solve_task(task_name):
                 publish.single(f"actuator/control/vol-afslag", "5 locked", hostname=broker_ip)
         elif task_name == "eindsequence":
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/vol-afslag/stop", "/home/pi/Music/BgAfslag.ogg", hostname=broker_ip) 
-                publish.single("audio_control/vol-afslag/play", "/home/pi/Music/finalsequence.ogg", hostname=broker_ip)
+                publish.single("audio_control/vol-afslag/stop", "BgAfslag.ogg", hostname=broker_ip) 
+                publish.single("audio_control/vol-afslag/play", "finalsequence.ogg", hostname=broker_ip)
                 time.sleep(22)
-                publish.single("audio_control/vol-afslag/play", "/home/pi/Music/eindsequence.ogg", hostname=broker_ip)
+                publish.single("audio_control/vol-afslag/play", "eindsequence.ogg", hostname=broker_ip)
                 time.sleep(1)
                 fade_music_out("finalsequence")
                 time.sleep(38)
@@ -1245,11 +1245,11 @@ def play_music():
     data = request.json
     message = data.get('message')
     print(message)
-    if message == "/home/pi/Music/Dance-mecabre-4.ogg":
+    if message == "Dance-mecabre-4.ogg":
         publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)
-        publish.single("audio_control/vol-boat/volume", "50 /home/pi/Music/Dance-mecabre-4.ogg", hostname=broker_ip)
-    elif message == "/home/pi/Music/Aanmeren-4.ogg":
+        publish.single("audio_control/vol-boat/volume", "50 Dance-mecabre-4.ogg", hostname=broker_ip)
+    elif message == "/Aanmeren-4.ogg":
         publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)
     else:
@@ -1584,7 +1584,7 @@ def start_timer():
         publish.single("video_control/raspberrypi/volume", "35", hostname=broker_ip)
         time.sleep(60)
         publish.single("video_control/raspberrypi/stop", "stop", hostname=broker_ip)
-        publish.single("audio_control/raspberrypi/play", "/home/pi/Music/intro.ogg", hostname=broker_ip)
+        publish.single("audio_control/raspberrypi/play", "/intro.ogg", hostname=broker_ip)
         fade_music_in("intro")
     return 'Timer started'
 
