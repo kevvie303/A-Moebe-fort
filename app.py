@@ -1570,6 +1570,7 @@ def write_game_data(start_time, end_time):
 def start_timer():
     global timer_thread, timer_value, speed, timer_running, bird_job, start_time
     update_game_status('playing')
+    subprocess.run(['sudo', 'systemctl', 'restart', 'videos'])
     start_time = datetime.now()
     if timer_thread is None or not timer_thread.is_alive():
         timer_value = 3660
@@ -1578,6 +1579,7 @@ def start_timer():
         timer_thread = threading.Thread(target=update_timer)
         timer_thread.daemon = True
         timer_thread.start()
+        time.sleep(2)
         publish.single("video_control/raspberrypi/play", "start", hostname=broker_ip)
         publish.single("video_control/raspberrypi/volume", "35", hostname=broker_ip)
         time.sleep(60)
