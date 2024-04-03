@@ -1894,6 +1894,7 @@ def prepare_game():
         for service_name in services_to_check:
             status = check_service_status(ip, f'{service_name}.service')
             service_statuses[service_name] = status
+            restart_service(ip, f'mqtt.service')
             if not status:
                 restart_service(ip, f'{service_name}.service')
                 status_after_restart = check_service_status(ip, f'{service_name}.service')
