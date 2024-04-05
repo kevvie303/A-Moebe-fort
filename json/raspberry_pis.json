@@ -1,6 +1,6 @@
 [
     {
-        "ip_address": "192.168.1.128",
+        "ip_address": "192.168.1.129",
         "mac_address": "B8:27:EB:26:4F:CE",
         "hostname": "vol-kapitein",
         "services": ["sound"]

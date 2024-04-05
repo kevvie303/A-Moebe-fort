@@ -732,7 +732,7 @@ def fade_music_out(file):
         final_volume = 30
     else:
         initial_volume = 35
-        final_volume = 10
+        final_volume = 5
     volume_step = (final_volume - initial_volume) / FADE_DURATION  # Calculate volume increment per second
 
     # Gradually increase the volume
@@ -1248,10 +1248,11 @@ def play_music():
     if message == "Dance-mecabre-4.ogg":
         publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)
-        publish.single("audio_control/vol-boat/volume", "50 Dance-mecabre-4.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-boat/volume", "10 Dance-mecabre-4.ogg", hostname=broker_ip)
     elif message == "/Aanmeren-4.ogg":
         publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)
+        publish.single("audio_control/vol-boat/volume", "10 Aanmeren-4.ogg", hostname=broker_ip)
     else:
         publish.single("audio_control/all/play", message, hostname=broker_ip)
     return jsonify({"status": "success"})
