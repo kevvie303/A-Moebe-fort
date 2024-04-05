@@ -1317,6 +1317,7 @@ $(document).ready(function () {
       url: "/prepare",
       data: { playerType: playerType, prefix: "for" },
       success: function (response) {
+        console.log("Received data:", response);
         prepareStatus.html(
           "Prepared - Status: OK. Game will start when the door is open or the start game button has been clicked."
         );
@@ -1325,7 +1326,6 @@ $(document).ready(function () {
         console.log(response.message);
 
         resultsSection.empty();
-
         // Loop through the JSON data and create a neat display
         for (var device in response.message) {
           var deviceStatus = response.message[device];
@@ -1337,7 +1337,8 @@ $(document).ready(function () {
 
           for (var script in deviceStatus) {
             var status = deviceStatus[script];
-            var statusText = status ? "Running" : "Not Running";
+            var statusText = status ? "active" : "inactive";
+            console.log(statusText);
             var scriptDiv = $("<div>").addClass("script-status");
 
             // Dynamically set the color based on the service status
@@ -1345,7 +1346,8 @@ $(document).ready(function () {
             scriptDiv.html(
               `<p class="${colorClass}">${script}: ${statusText}</p>`
             );
-
+            //console.log(script);
+            //console.log(statusText);
             statusContainer.append(scriptDiv);
           }
 

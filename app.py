@@ -181,17 +181,6 @@ def connect_device():
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 
-
-
-def monitor_ssh_connections():
-    while True:
-        establish_ssh_connection()
-        # Check the connections every 60 seconds
-        time.sleep(60)
-
-# Start the monitoring thread
-monitor_thread = threading.Thread(target=monitor_ssh_connections)
-monitor_thread.daemon = True  # Make the thread a daemon to exit when the main program exits
 broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
 #broker_ip = "192.168.1.216"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
@@ -199,96 +188,120 @@ prefix_to_subscribe = "state_data/"
 sensor_states = {}
 # Callback function to process incoming MQTT messages
 
+pi_service_statuses = {}  # New dictionary to store service statuses for each Pi
+
+# Function to handle incoming MQTT messages
 def on_message(client, userdata, message):
+    global sensor_states, pi_service_statuses
+    
     # Extract the topic and message payload
-    global code1, code2, code3, code4, code5, bird_job, squeak_job, kraken1, kraken2, kraken3, kraken4, should_balls_drop
     topic = message.topic
     parts = topic.split("/")
-    sensor_name = parts[-1]  # Extract the last part of the topic (sensor name)
-    sensor_state = message.payload.decode("utf-8")
-    sensor_states[sensor_name] = sensor_state
+    if len(parts) == 3 and parts[0] == prefix_to_subscribe[:-1]:
+        pi_name = parts[1]  # Extract the Pi name
+        data = json.loads(message.payload.decode("utf-8"))
+        
+        # Check if the message is for service status
+        if parts[2] == "service_status":
+            # Update service status for the Pi
+            pi_service_statuses[pi_name] = data
+            print(f"Received service status from {pi_name}: {data}")
+            
+            # Now you can process the received service status data as needed
+            # For example, check if all required services are active and take actions accordingly
+            
+            # Example: Check if all services are active for the Pi
+            if all(status == "active" for status in data.values()):
+                print(f"All services are active for {pi_name}")
+            else:
+                print(f"Not all services are active for {pi_name}")
 
-    print(f"Received MQTT message - Sensor: {sensor_name}, State: {sensor_state}")
+        # For other types of messages (e.g., sensor states), you can handle them as before
+        else:
+            sensor_name = parts[2]
+            sensor_state = data
+            sensor_states[sensor_name] = sensor_state
+            print(f"Received MQTT message - Sensor: {sensor_name}, State: {sensor_state}")
     
-    if sensor_name in sensor_states:
-        sensor_states[sensor_name] = sensor_state
-        update_json_file()
-        print("State changed. Updated JSON.")
-    #print(sensor_states)
-    if get_game_status() == {'status': 'playing'}:
-        if sensor_name == "rfid_corridor":
-            print(sensor_state)
-            mendez1 = 584185540695
-            mendez2 = 584199238531
-            roosenthaal1 = 584198160159
-            roosenthaal2 = 584183068095
-            sensor_state_int = int(sensor_state)
-            print(roosenthaal2)
-            if sensor_state_int == mendez1 or sensor_state_int == mendez2:
-                if check_task_state("scan-mendez") == "pending":
-                    solve_task("scan-mendez")
-                print("Correct code")
-            elif sensor_state_int == roosenthaal1 or sensor_state_int == roosenthaal2:
-                if check_task_state("scan-rosenthal") == "pending":
-                    solve_task("scan-rosenthal")
-                print("Correct code")
-        if check_rule("jas-1"):
-            if check_task_state("kapstok-zuidafrika") == "pending":
-                solve_task("kapstok-zuidafrika")
-        if check_rule("jas-1") == False:
-            if check_task_state("kapstok-zuidafrika") == "solved":
-                pend_task("kapstok-zuidafrika")
-        if check_rule("jas-2"):
-            if check_task_state("kapstok-italie") == "pending":
-                solve_task("kapstok-italie")
-        if check_rule("jas-2") == False:
-            if check_task_state("kapstok-italie") == "solved":
-                pend_task("kapstok-italie")
-        if check_rule("jas-3"):
-            if check_task_state("kapstok-ijsland") == "pending":
-                solve_task("kapstok-ijsland")
-        if check_rule("jas-3") == False:
-            if check_task_state("kapstok-ijsland") == "solved":
-                pend_task("kapstok-ijsland")
-        if check_rule("jas-1") and check_rule("jas-2") and check_rule("jas-3"):
-            if check_task_state("kapstok-allemaal") == "pending":
-                solve_task("kapstok-allemaal")
-        if check_rule("grenade-1"):
-            if check_task_state("granaat-tomsk") == "pending":
-                solve_task("granaat-tomsk")
-        if check_rule("grenade-1") == False:
-            if check_task_state("granaat-tomsk") == "solved":
-                pend_task("granaat-tomsk")
-        if check_rule("grenade-2"):
-            if check_task_state("granaat-khabarovsk") == "pending":
-                solve_task("granaat-khabarovsk")
-        if check_rule("grenade-2") == False:
-            if check_task_state("granaat-khabarovsk") == "solved":
-                pend_task("granaat-khabarovsk")
-        if check_rule("grenade-3"):
-            if check_task_state("granaat-soratov") == "pending":
-                solve_task("granaat-soratov")
-        if check_rule("grenade-3") == False:
-            if check_task_state("granaat-soratov") == "solved":
-                pend_task("granaat-soratov")
-        if check_rule("grenade-1") and check_rule("grenade-2") and check_rule("grenade-3"):
-            if check_task_state("granaat-allemaal") == "pending":
-                solve_task("granaat-allemaal")
-        if check_rule("camera_button"):
-            if check_task_state("Stroomstoring") == "pending":
-                solve_task("Stroomstoring")
-        if check_rule("ehbo-kist") == False:
-            if check_task_state("Medicijnkastje-open") == "pending":
-                solve_task("Medicijnkastje-open")
-        if check_rule("nightstand") == False:
-            if check_task_state("Poster") == "pending":
-                solve_task("Poster")
-        if check_rule("3-objects"):
-            if check_task_state("3-objecten") == "pending":
-                solve_task("3-objecten")
-        if check_rule("alarm-button"):
-            if check_task_state("alarm-knop") == "pending":
-                solve_task("alarm-knop")
+            if sensor_name in sensor_states:
+                sensor_states[sensor_name] = sensor_state
+                update_json_file()
+                print("State changed. Updated JSON.")
+            #print(sensor_states)
+            if get_game_status() == {'status': 'playing'}:
+                if sensor_name == "rfid_corridor":
+                    print(sensor_state)
+                    mendez1 = 584185540695
+                    mendez2 = 584199238531
+                    roosenthaal1 = 584198160159
+                    roosenthaal2 = 584183068095
+                    sensor_state_int = int(sensor_state)
+                    print(roosenthaal2)
+                    if sensor_state_int == mendez1 or sensor_state_int == mendez2:
+                        if check_task_state("scan-mendez") == "pending":
+                            solve_task("scan-mendez")
+                        print("Correct code")
+                    elif sensor_state_int == roosenthaal1 or sensor_state_int == roosenthaal2:
+                        if check_task_state("scan-rosenthal") == "pending":
+                            solve_task("scan-rosenthal")
+                        print("Correct code")
+                if check_rule("jas-1"):
+                    if check_task_state("kapstok-zuidafrika") == "pending":
+                        solve_task("kapstok-zuidafrika")
+                if check_rule("jas-1") == False:
+                    if check_task_state("kapstok-zuidafrika") == "solved":
+                        pend_task("kapstok-zuidafrika")
+                if check_rule("jas-2"):
+                    if check_task_state("kapstok-italie") == "pending":
+                        solve_task("kapstok-italie")
+                if check_rule("jas-2") == False:
+                    if check_task_state("kapstok-italie") == "solved":
+                        pend_task("kapstok-italie")
+                if check_rule("jas-3"):
+                    if check_task_state("kapstok-ijsland") == "pending":
+                        solve_task("kapstok-ijsland")
+                if check_rule("jas-3") == False:
+                    if check_task_state("kapstok-ijsland") == "solved":
+                        pend_task("kapstok-ijsland")
+                if check_rule("jas-1") and check_rule("jas-2") and check_rule("jas-3"):
+                    if check_task_state("kapstok-allemaal") == "pending":
+                        solve_task("kapstok-allemaal")
+                if check_rule("grenade-1"):
+                    if check_task_state("granaat-tomsk") == "pending":
+                        solve_task("granaat-tomsk")
+                if check_rule("grenade-1") == False:
+                    if check_task_state("granaat-tomsk") == "solved":
+                        pend_task("granaat-tomsk")
+                if check_rule("grenade-2"):
+                    if check_task_state("granaat-khabarovsk") == "pending":
+                        solve_task("granaat-khabarovsk")
+                if check_rule("grenade-2") == False:
+                    if check_task_state("granaat-khabarovsk") == "solved":
+                        pend_task("granaat-khabarovsk")
+                if check_rule("grenade-3"):
+                    if check_task_state("granaat-soratov") == "pending":
+                        solve_task("granaat-soratov")
+                if check_rule("grenade-3") == False:
+                    if check_task_state("granaat-soratov") == "solved":
+                        pend_task("granaat-soratov")
+                if check_rule("grenade-1") and check_rule("grenade-2") and check_rule("grenade-3"):
+                    if check_task_state("granaat-allemaal") == "pending":
+                        solve_task("granaat-allemaal")
+                if check_rule("camera_button"):
+                    if check_task_state("Stroomstoring") == "pending":
+                        solve_task("Stroomstoring")
+                if check_rule("ehbo-kist") == False:
+                    if check_task_state("Medicijnkastje-open") == "pending":
+                        solve_task("Medicijnkastje-open")
+                if check_rule("nightstand") == False:
+                    if check_task_state("Poster") == "pending":
+                        solve_task("Poster")
+                if check_rule("3-objects"):
+                    if check_task_state("3-objecten") == "pending":
+                        solve_task("3-objecten")
+                if check_rule("alarm-button"):
+                    if check_task_state("alarm-knop") == "pending":
+                        solve_task("alarm-knop")
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
@@ -490,19 +503,18 @@ def check_rule(item_name):
     else:
         pi2.exec_command('raspi-gpio set 8 op dl')
 # Create an MQTT client instance
-if loadMqtt == True:
-    client = mqtt.Client()
+client = mqtt.Client()
 
     # Set the callback function for incoming MQTT messages
-    client.on_message = on_message
+client.on_message = on_message
 
     # Connect to the MQTT broker
-    client.connect(broker_ip, 1883)
+client.connect(broker_ip, 1883)
 
     # Subscribe to all topics under the specified prefix
-    client.subscribe(prefix_to_subscribe + "#")  # Subscribe to all topics under the prefix
-    # Function to execute the delete-locks.py script
-    client.loop_start()
+client.subscribe(prefix_to_subscribe + "#")  # Subscribe to all topics under the prefix
+# Function to execute the delete-locks.py script
+client.loop_start()
 
 @app.route('/trigger', methods=['POST'])
 def trigger():
@@ -512,21 +524,7 @@ def trigger():
 def pow():
     return render_template('pow.html')
 def start_scripts():
-    sensor_thread.start()
-    monitor_thread.start()
-    update_game_status('awake')
-    #pi2.exec_command('python mqtt.py')
-    time.sleep(0.5)
-    #pi2.exec_command('nohup python status.py > /dev/null 2>&1 &')    
-    time.sleep(0.5)
-    pi2.exec_command('python actuator.py')
-    #pi3.exec_command('python mqtt.py')
-    time.sleep(0.5)
-    pi2.exec_command('python mqtt.py')
-    #pi3.exec_command('nohup python status.py > /dev/null 2>&1 &')
-    time.sleep(0.5)
-    ssh.exec_command('python mqtt.py')
-    #scheduler.add_job(monitor_sensor_statuses, 'interval', seconds=0.1)
+    return "nothing"
 
 
 def get_music_files():
@@ -1873,39 +1871,41 @@ def get_required_services():
     with open('json/raspberry_pis.json', 'r') as file:
         data = json.load(file)
     return {entry["hostname"]: entry.get("services", []) for entry in data}
-results = {}
+pi_service_statuses = {}
+preparedValue = {}
 @app.route('/prepare', methods=['POST'])
 def prepare_game():
-    global player_type
-    if get_game_status() == {'status': 'prepared'}:
-        return jsonify({"message": results}), 200
-    update_game_status("preparing")
-    reset_prepare()
+    global client, pi_service_statuses, player_type, preparedValue
     prefix = request.form.get('prefix')
-    scanner = NetworkScanner()
-    raspberry_pis = get_raspberry_pis_with_prefix(prefix, scanner)
-    required_services = get_required_services()
+    print(prefix)
+    if get_game_status() == {'status': 'prepared'}:
+        return jsonify({"message": preparedValue}), 200
+    reset_prepare()
+    # Assuming you have logic for preparing the game
+    # Load Raspberry Pi configuration from JSON file
+    with open('json/raspberry_pis.json', 'r') as file:
+        pi_config = json.load(file)
+
+    # Loop over each Raspberry Pi and request service statuses
+    
+    for pi in pi_config:
+        if "services" in pi and pi["hostname"].startswith(prefix):
+            hostname = pi["hostname"]
+            services = pi["services"]
+            print(services)
+            print(hostname)
+            client.publish(f"request_service_statuses/{hostname}", json.dumps({"services": services}))
+    time.sleep(0.4)
+    # Convert the service statuses to True if active, False if inactive
+    converted_statuses = {}
+    preparedValue = converted_statuses
+    for pi, status_dict in pi_service_statuses.items():
+        converted_statuses[pi] = {service: status == "active" for service, status in status_dict.items()}
     player_type = request.form.get('playerType')
-    print(player_type)
-    for hostname, info in raspberry_pis.items():
-        ip = info["ip_address"]
-        services_to_check = required_services.get(hostname, [])
-
-        service_statuses = {}
-        for service_name in services_to_check:
-            status = check_service_status(ip, f'{service_name}.service')
-            service_statuses[service_name] = status
-            restart_service(ip, f'mqtt.service')
-            if not status:
-                restart_service(ip, f'{service_name}.service')
-                status_after_restart = check_service_status(ip, f'{service_name}.service')
-                service_statuses[f'{service_name}_after_restart'] = status_after_restart
-
-        results[hostname] = service_statuses
-
+    # Return the converted service statuses
+    print(converted_statuses)
     update_game_status("prepared")
-    return jsonify({"message": results}), 200
-
+    return jsonify({"message": converted_statuses}), 200
 if romy == False:
     turn_on_api()
     start_scripts()
