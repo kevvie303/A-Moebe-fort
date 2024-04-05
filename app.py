@@ -909,13 +909,14 @@ def solve_task(task_name):
         elif task_name == "kapstok-allemaal":
             if game_status == {'status': 'playing'}:
                 publish.single(f"actuator/control/for-garderobe", "23 unlocked", hostname=broker_ip)
-                publish.single("audio_control/for-poepdoos/play", "jassenCorrect.ogg", hostname="192.168.50.253")
+                publish.single("audio_control/for-garderobe/play", "jassenCorrect.ogg", hostname="192.168.50.253")
         elif task_name == "alarm-knop":
             if game_status == {'status': 'playing'}:
                 publish.single(f"actuator/control/corridor_pi", "19 unlocked", hostname=broker_ip)
                 publish.single(f"actuator/control/corridor_pi", "26 unlocked", hostname=broker_ip)
                 publish.single(f"actuator/control/corridor_pi", "4 unlocked", hostname=broker_ip)
                 publish.single(f"actuator/control/corridor_pi", "27 unlocked", hostname=broker_ip)
+                publish.single("audio_control/for-poepdoos/stop", "WC.ogg", hostname=broker_ip)
                 publish.single("audio_control/all/play", "alarm.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/all/volume", "100 alarm.ogg", hostname="192.168.50.253")
                 time.sleep(120)
