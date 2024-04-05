@@ -908,8 +908,9 @@ def solve_task(task_name):
                 publish.single("audio_control/for-poepdoos/volume", "100 WC.ogg", hostname="192.168.50.253")
         elif task_name == "kapstok-allemaal":
             if game_status == {'status': 'playing'}:
-                publish.single(f"actuator/control/for-garderobe", "23 unlocked", hostname=broker_ip)
                 publish.single("audio_control/for-garderobe/play", "jassenCorrect.ogg", hostname="192.168.50.253")
+                time.sleep(1)
+                publish.single(f"actuator/control/for-garderobe", "23 unlocked", hostname=broker_ip)
         elif task_name == "alarm-knop":
             if game_status == {'status': 'playing'}:
                 publish.single(f"actuator/control/corridor_pi", "19 unlocked", hostname=broker_ip)
