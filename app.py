@@ -729,7 +729,7 @@ def fade_music_out(file):
     print(file)
     if file == "finalsequence" or file == "Bg-captain":
         initial_volume = 70
-        final_volume = 30
+        final_volume = 10
     else:
         initial_volume = 35
         final_volume = 5
@@ -775,7 +775,7 @@ FADE_DURATION = 10  # Adjust as needed
 def fade_music_in(file):
     global broker_ip
     if file == "finalsequence":
-        initial_volume = 30
+        initial_volume = 10
         final_volume = 70
     else:
         initial_volume = 0
@@ -967,6 +967,7 @@ def solve_task(task_name):
                 publish.single("audio_control/vol-afslag/play", "finalsequence.ogg", hostname=broker_ip)
                 time.sleep(22)
                 publish.single("audio_control/vol-afslag/play", "eindsequence.ogg", hostname=broker_ip)
+                publish.single("audio_control/vol-afslag/volume", "100 eindsequence.ogg", hostname=broker_ip)
                 time.sleep(1)
                 fade_music_out("finalsequence")
                 time.sleep(38)
@@ -1249,7 +1250,7 @@ def play_music():
         publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/volume", "10 Dance-mecabre-4.ogg", hostname=broker_ip)
-    elif message == "/Aanmeren-4.ogg":
+    elif message == "Aanmeren-4.ogg":
         publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/volume", "10 Aanmeren-4.ogg", hostname=broker_ip)
