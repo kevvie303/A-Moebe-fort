@@ -181,8 +181,8 @@ def connect_device():
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 
-broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.216"
+#broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
+broker_ip = "192.168.1.13"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -520,6 +520,17 @@ client.loop_start()
 def trigger():
     # Process the data and respond as needed
     return jsonify({'message': 'Data received successfully'})
+@app.route('/get_current_game_status')
+def get_current_game_status():
+    # Read JSON file
+    with open('json/retrieverStatus.json', 'r') as file:
+        data = json.load(file)
+    
+    # Extract status
+    status = data.get('status', 'unknown')
+
+    # Return status as JSON
+    return jsonify({'status': status})
 @app.route('/krijgsgevangenis')
 def pow():
     return render_template('pow.html')

@@ -1,3 +1,15 @@
+$(document).ready(function() {
+  // Function to fetch status from the server and update the DOM
+  function updateStatus() {
+      $.getJSON('/get_current_game_status', function(data) {
+          // Update the status-display div with the retrieved status
+          //$('#status-display').html('<p style="text-align: center; font-size: 24px; font-weight: bold;">Currently: ' + data.status + '</p>');
+      });
+  }
+
+  // Call the updateStatus function initially to display status
+  updateStatus();
+});
 $(document).ready(function () {
   $("#add-music-button1").click(function () {
     // Open a file selection dialog when the button is clicked
@@ -772,45 +784,45 @@ $(document).ready(function () {
 //setInterval(updateState, 5000);
 
 $(document).ready(function () {
-  function updateStatusDisplay() {
-    $.get("/get_file_status", function (data) {
-      $("#status-display").empty();
+  // function updateStatusDisplay() {
+  //   $.get("/get_file_status", function (data) {
+  //     $("#status-display").empty();
 
-      const playingSongs = data.filter((entry) => entry.status === "playing");
-      const pausedSongs = data.filter((entry) => entry.status === "paused");
+  //     const playingSongs = data.filter((entry) => entry.status === "playing");
+  //     const pausedSongs = data.filter((entry) => entry.status === "paused");
 
-      if (playingSongs.length > 0) {
-        $("#music-list").empty();
+  //     if (playingSongs.length > 0) {
+  //       $("#music-list").empty();
 
-        playingSongs.forEach((entry) => {
-          const { filename, soundcard_channel } = entry;
-          $("#status-display").append(`<div>${filename} is playing!</div>`);
-          $("#music-list").append(`
-                        <li>
-                            ${filename}
-                            <button class="button-style pause-button" data-file="${filename}" data-channel="${soundcard_channel}">Pause</button>
-                        </li>
-                    `);
-        });
-      } else {
-        $("#music-list").empty(); // Clear the list if there are no songs playing
-      }
+  //       playingSongs.forEach((entry) => {
+  //         const { filename, soundcard_channel } = entry;
+  //         $("#status-display").append(`<div>${filename} is playing!</div>`);
+  //         $("#music-list").append(`
+  //                       <li>
+  //                           ${filename}
+  //                           <button class="button-style pause-button" data-file="${filename}" data-channel="${soundcard_channel}">Pause</button>
+  //                       </li>
+  //                   `);
+  //       });
+  //     } else {
+  //       $("#music-list").empty(); // Clear the list if there are no songs playing
+  //     }
 
-      if (pausedSongs.length > 0) {
-        $("#status-display").append("<div>Paused songs:</div>");
-        pausedSongs.forEach((entry) => {
-          const { filename, soundcard_channel } = entry;
-          $("#status-display").append(`<div>${filename} is paused!</div>`);
-          $("#music-list").append(`
-                        <li>
-                            ${filename}
-                            <button class="button-style resume-button" data-file="${filename}" data-channel="${soundcard_channel}">Resume</button>
-                        </li>
-                    `);
-        });
-      }
-    });
-  }
+  //     if (pausedSongs.length > 0) {
+  //       $("#status-display").append("<div>Paused songs:</div>");
+  //       pausedSongs.forEach((entry) => {
+  //         const { filename, soundcard_channel } = entry;
+  //         $("#status-display").append(`<div>${filename} is paused!</div>`);
+  //         $("#music-list").append(`
+  //                       <li>
+  //                           ${filename}
+  //                           <button class="button-style resume-button" data-file="${filename}" data-channel="${soundcard_channel}">Resume</button>
+  //                       </li>
+  //                   `);
+  //       });
+  //     }
+  //   });
+  // }
 
   // Handle pause button click
   $(document).on("click", ".pause-button", function () {
@@ -822,7 +834,7 @@ $(document).ready(function () {
       data: { file: selectedFile, channel: selectedChannel },
       success: function (response) {
         console.log(response);
-        updateStatusDisplay(); // Update the status display after pausing the song
+        //updateStatusDisplay(); // Update the status display after pausing the song
       },
       error: function (error) {
         console.log(error);
@@ -840,7 +852,7 @@ $(document).ready(function () {
       data: { file: selectedFile, channel: selectedChannel },
       success: function (response) {
         console.log(response);
-        updateStatusDisplay(); // Update the status display after resuming the song
+        //updateStatusDisplay(); // Update the status display after resuming the song
       },
       error: function (error) {
         console.log(error);
@@ -849,8 +861,8 @@ $(document).ready(function () {
   });
 
   // Call the function initially and update the status display every 5 seconds
-  updateStatusDisplay();
-  setInterval(updateStatusDisplay, 5000);
+  //updateStatusDisplay();
+  //setInterval(updateStatusDisplay, 5000);
 });
 function updatePiStatus() {
   $.ajax({

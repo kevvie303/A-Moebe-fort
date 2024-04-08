@@ -11,7 +11,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
 </head>
 <body>
-
     <!-- header -->
     <header class="retriever-logo header-logo">
         <figure class="logo-container">
@@ -25,7 +24,6 @@
             <p>Elapsed</p>
             <p id="time-played">00:00</p>
         </div>
-
         <div class="game-controls">
             <button id="media-popup" class="icon"><img src="static/img/media.svg" alt="Button to the media controls"></button>
             <button id="time-popup" class="icon"><img src="static/img/time.svg" alt="Button to time settings"></button>
@@ -38,7 +36,7 @@
             <p id="time-left">60:00</p>
         </div>
     </nav>
-
+    <div id="status-display"></div>
     <!-- media section -->
     <section class="media-hidden hidden-popup hidden">
         <article class="media popup">
@@ -55,8 +53,6 @@
                     Music files will be dynamically added here
                 </p>
             </div>
-
-            <div id="status-display"></div>
         </article>
     </section>
 
