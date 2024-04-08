@@ -155,7 +155,7 @@
         "type": "maglock",
         "pin": 23,
         "pi": "for-garderobe",
-        "state": "Unlocked",
+        "state": "Locked",
         "connection_type": "NO"
     },
     {

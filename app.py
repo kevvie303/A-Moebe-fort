@@ -218,6 +218,7 @@ def on_message(client, userdata, message):
 
         # For other types of messages (e.g., sensor states), you can handle them as before
         else:
+            return "Invalid topic format. Expected: state_data/<pi_name>/<sensor_name>"
             sensor_name = parts[2]
             sensor_state = data
             sensor_states[sensor_name] = sensor_state
@@ -694,7 +695,7 @@ def fade_music_out(file):
     print(file)
     if file == "alarm":
         initial_volume = 100
-        final_volume = 40
+        final_volume = 10
     else:
         initial_volume = 35
         final_volume = 17
@@ -907,7 +908,8 @@ def solve_task(task_name):
         elif task_name == "kapstok-allemaal":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/for-garderobe/play", "jassenCorrect.ogg", hostname="192.168.50.253")
-                time.sleep(1)
+                publish.single("audio_control/for-garderobe/volume", "100 jassenCorrect.ogg", hostname="192.168.50.253")
+                time.sleep(3)
                 publish.single(f"actuator/control/for-garderobe", "23 unlocked", hostname=broker_ip)
         elif task_name == "alarm-knop":
             if game_status == {'status': 'playing'}:
@@ -1896,7 +1898,7 @@ def prepare_game():
             print(services)
             print(hostname)
             client.publish(f"request_service_statuses/{hostname}", json.dumps({"services": services}))
-    time.sleep(0.4)
+    time.sleep(0.7)
     # Convert the service statuses to True if active, False if inactive
     converted_statuses = {}
     preparedValue = converted_statuses

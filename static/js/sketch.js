@@ -1319,7 +1319,7 @@ $(document).ready(function () {
       success: function (response) {
         console.log("Received data:", response);
         prepareStatus.html(
-          "Prepared - Status: OK. Game will start when the door is open or the start game button has been clicked."
+          "Prepared! Druk op start game om het spel te starten."
         );
 
         // Debugging: Output the response.message to the console
