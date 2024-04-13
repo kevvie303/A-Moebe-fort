@@ -1157,19 +1157,33 @@ def wake_room():
     else:
         pi3.exec_command(command)
     return jsonify({'message': f'Light {light_name} control command executed successfully'})
+def call_control_maglock(maglock, action):
+    global squeak_job, should_balls_drop, player_type
+    print(maglock)
+    print(action)
+    sensor_data = read_sensor_data2()
+    for sensor in sensor_data:
+        if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
+            pi_name = sensor['pi']
+            if "wooden-box-front-lock" in maglock or "wooden-box-top-lock" in maglock:
+                print(maglock)
+                # Reverse the action for this specific case
+                action = 'locked' if action == 'unlocked' else 'unlocked'
+            # Publish the MQTT message with the appropriate Pi's name
+            mqtt_message = f"{sensor['pin']} {action}"
+            publish.single(f"actuator/control/{pi_name}", mqtt_message, hostname=broker_ip)
+            return("done")
 @app.route('/snooze_game', methods=['POST'])
 def snooze_game():
-    light1off = 'raspi-gpio set 12 op dh'
-    light2off = 'raspi-gpio set 7 op dh'
-    light3off = 'raspi-gpio set 1 op dh'
-    light4off = 'raspi-gpio set 8 op dh'
-    #lightsoff = f"{light1off}; {light2off}; {light3off}; {light4off}"
-    #pi3.exec_command(lightsoff)
-    #ssh.exec_command('raspi-gpio set 17 op dh \n raspi-gpio set 10 op dh')
-    #ssh.exec_command('raspi-gpio set 27 op dh')
-    #ssh.exec_command('raspi-gpio set 15 op dh \n raspi-gpio set 25 op dh \n raspi-gpio set 6 op dh \n raspi-gpio set 16 op dh \n raspi-gpio set 20 op dh \n raspi-gpio set 21 op dh')
-    #pi3.exec_command('raspi-gpio set 16 op dh')
-    #pi3.exec_command('raspi-gpio set 25 op dh')
+    with open('json/sensor_data.json', 'r') as file:
+        devices = json.load(file)
+
+    # Iterate over devices
+    for device in devices:
+        # Check if the device type is maglock or light
+        if device["type"] in ["maglock"]:
+            # Call control maglock with device name and action as "unlocked"
+            call_control_maglock(device["name"], "unlocked")
     update_game_status('snoozed')
     return "room snoozed"
 @app.route('/add_task', methods=['POST'])
