@@ -248,3 +248,142 @@ media queries
     transform: rotate(360deg);
   }
 }
+.control-container {
+  .light-container {
+    display: flex;
+    justify-content: center;
+    margin: 0 20px;
+    .lights {
+      position: relative;
+      width: 250px;
+      .light-buttons {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        img {
+          position: absolute;
+          cursor: pointer;
+          width: var(--icon-sm);
+
+          &:nth-of-type(1) {
+            left: 40px;
+            top: 20px;
+          }
+          &:nth-of-type(2) {
+            left: 70px;
+            top: 80px;
+          }
+          &:nth-of-type(3) {
+            left: 15px;
+            top: 80px;
+          }
+          &:nth-of-type(4) {
+            left: 40px;
+            top: 100px;
+          }
+          &:nth-of-type(5) {
+            left: 40px;
+            top: 135px;
+          }
+          &:nth-of-type(6) {
+            left: 180px;
+            top: 180px;
+          }
+          &:nth-of-type(7) {
+            left: 50px;
+            top: 200px;
+          }
+          &:nth-of-type(8) {
+            left: 5px;
+            top: 210px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .control-container {
+    .light-container {
+      position: absolute;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      margin: 0 20px;
+      .lights {
+        position: relative;
+        // width: 500px;
+        .light-buttons {
+          position: absolute;
+          top: 0;
+          width: 100%;
+          img {
+            position: absolute;
+            cursor: pointer;
+            width: var(--icon-sm);
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1400px) {
+  .control-container {
+    .light-container {
+      position: absolute;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      margin: 0 20px;
+      .lights {
+        position: relative;
+        width: 400px;
+        .light-buttons {
+          position: absolute;
+          top: 0;
+          width: 100%;
+          img {
+            position: absolute;
+            cursor: pointer;
+            width: var(--icon-lg);
+
+            &:nth-of-type(1) {
+              left: 60px;
+              top: 30px;
+            }
+            &:nth-of-type(2) {
+              left: 100px;
+              top: 110px;
+            }
+            &:nth-of-type(3) {
+              left: 30px;
+              top: 110px;
+            }
+            &:nth-of-type(4) {
+              left: 60px;
+              top: 150px;
+            }
+            &:nth-of-type(5) {
+              left: 60px;
+              top: 215px;
+            }
+            &:nth-of-type(6) {
+              left: 290px;
+              top: 300px;
+            }
+            &:nth-of-type(7) {
+              left: 90px;
+              top: 310px;
+            }
+            &:nth-of-type(8) {
+              left: 5px;
+              top: 330px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1130,6 +1130,135 @@ media queries
     transform: rotate(360deg);
   }
 }
+.control-container .light-container {
+  display: flex;
+  justify-content: center;
+  margin: 0 20px;
+}
+.control-container .light-container .lights {
+  position: relative;
+  width: 250px;
+}
+.control-container .light-container .lights .light-buttons {
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.control-container .light-container .lights .light-buttons img {
+  position: absolute;
+  cursor: pointer;
+  width: var(--icon-sm);
+}
+.control-container .light-container .lights .light-buttons img:nth-of-type(1) {
+  left: 40px;
+  top: 20px;
+}
+.control-container .light-container .lights .light-buttons img:nth-of-type(2) {
+  left: 70px;
+  top: 80px;
+}
+.control-container .light-container .lights .light-buttons img:nth-of-type(3) {
+  left: 15px;
+  top: 80px;
+}
+.control-container .light-container .lights .light-buttons img:nth-of-type(4) {
+  left: 40px;
+  top: 100px;
+}
+.control-container .light-container .lights .light-buttons img:nth-of-type(5) {
+  left: 40px;
+  top: 135px;
+}
+.control-container .light-container .lights .light-buttons img:nth-of-type(6) {
+  left: 180px;
+  top: 180px;
+}
+.control-container .light-container .lights .light-buttons img:nth-of-type(7) {
+  left: 50px;
+  top: 200px;
+}
+.control-container .light-container .lights .light-buttons img:nth-of-type(8) {
+  left: 5px;
+  top: 210px;
+}
+
+@media (min-width: 1200px) {
+  .control-container .light-container {
+    position: absolute;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    margin: 0 20px;
+  }
+  .control-container .light-container .lights {
+    position: relative;
+  }
+  .control-container .light-container .lights .light-buttons {
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+  .control-container .light-container .lights .light-buttons img {
+    position: absolute;
+    cursor: pointer;
+    width: var(--icon-sm);
+  }
+}
+@media (min-width: 1400px) {
+  .control-container .light-container {
+    position: absolute;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    margin: 0 20px;
+  }
+  .control-container .light-container .lights {
+    position: relative;
+    width: 400px;
+  }
+  .control-container .light-container .lights .light-buttons {
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+  .control-container .light-container .lights .light-buttons img {
+    position: absolute;
+    cursor: pointer;
+    width: var(--icon-lg);
+  }
+  .control-container .light-container .lights .light-buttons img:nth-of-type(1) {
+    left: 60px;
+    top: 30px;
+  }
+  .control-container .light-container .lights .light-buttons img:nth-of-type(2) {
+    left: 100px;
+    top: 110px;
+  }
+  .control-container .light-container .lights .light-buttons img:nth-of-type(3) {
+    left: 30px;
+    top: 110px;
+  }
+  .control-container .light-container .lights .light-buttons img:nth-of-type(4) {
+    left: 60px;
+    top: 150px;
+  }
+  .control-container .light-container .lights .light-buttons img:nth-of-type(5) {
+    left: 60px;
+    top: 215px;
+  }
+  .control-container .light-container .lights .light-buttons img:nth-of-type(6) {
+    left: 290px;
+    top: 300px;
+  }
+  .control-container .light-container .lights .light-buttons img:nth-of-type(7) {
+    left: 90px;
+    top: 310px;
+  }
+  .control-container .light-container .lights .light-buttons img:nth-of-type(8) {
+    left: 5px;
+    top: 330px;
+  }
+}
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;

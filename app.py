@@ -197,7 +197,8 @@ def on_message(client, userdata, message):
     # Extract the topic and message payload
     topic = message.topic
     parts = topic.split("/")
-    if len(parts) == 3 and parts[0] == prefix_to_subscribe[:-1]:
+    print(parts)
+    if len(parts) == 3 and parts[2] == "service_status":
         pi_name = parts[1]  # Extract the Pi name
         data = json.loads(message.payload.decode("utf-8"))
         
@@ -217,52 +218,52 @@ def on_message(client, userdata, message):
                 print(f"Not all services are active for {pi_name}")
 
         # For other types of messages (e.g., sensor states), you can handle them as before
-        else:
-            sensor_name = parts[-1]  # Extract the last part of the topic (sensor name)
-            sensor_state = message.payload.decode("utf-8")
+    else:
+        sensor_name = parts[-1]  # Extract the last part of the topic (sensor name)
+        sensor_state = message.payload.decode("utf-8")
+        sensor_states[sensor_name] = sensor_state
+        print(f"Received MQTT message - Sensor: {sensor_name}, State: {sensor_state}")
+
+        if sensor_name in sensor_states:
             sensor_states[sensor_name] = sensor_state
-            print(f"Received MQTT message - Sensor: {sensor_name}, State: {sensor_state}")
-    
-            if sensor_name in sensor_states:
-                sensor_states[sensor_name] = sensor_state
-                update_json_file()
-                print("State changed. Updated JSON.")
-            #print(sensor_states)
-            if get_game_status() == {'status': 'playing'}:
-                global sequence
-                if check_rule("green_house_ir") and sequence == 0:
-                    task_state = check_task_state("tree-lights")
-                    if task_state == "pending":
-                        pi3.exec_command("raspi-gpio set 15 op dh")
-                        print("1")
-                        sequence = 1
-                if check_rule("red_house_ir") and sequence == 1:
-                    task_state = check_task_state("tree-lights")
-                    if task_state == "pending":
-                        pi3.exec_command("raspi-gpio set 21 op dh")
-                        print("2")
-                        sequence = 2
-                elif check_rule("red_house_ir") and sequence <= 0:
-                    task_state = check_task_state("tree-lights")
-                    if task_state == "pending":
-                        pi3.exec_command("raspi-gpio set 21 op dh")
-                        time.sleep(0.5)
-                        pi3.exec_command("raspi-gpio set 21 op dl")
-                        pi3.exec_command("raspi-gpio set 15 op dl")
-                        sequence = 0
-                if check_rule("blue_house_ir") and sequence == 2:
-                    task_state = check_task_state("tree-lights")
-                    if task_state == "pending":
-                        solve_task("tree-lights")
-                elif check_rule("blue_house_ir") and sequence != 2:
-                    task_state = check_task_state("tree-lights")
-                    if task_state == "pending":
-                        pi3.exec_command("raspi-gpio set 23 op dh")
-                        time.sleep(0.5)
-                        pi3.exec_command("raspi-gpio set 23 op dl")
-                        pi3.exec_command("raspi-gpio set 21 op dl")
-                        pi3.exec_command("raspi-gpio set 15 op dl")
-                        sequence = 0
+            update_json_file()
+            print("State changed. Updated JSON.")
+        #print(sensor_states)
+        if get_game_status() == {'status': 'playing'}:
+            global sequence
+            if check_rule("green_house_ir") and sequence == 0:
+                task_state = check_task_state("tree-lights")
+                if task_state == "pending":
+                    pi3.exec_command("raspi-gpio set 15 op dh")
+                    print("1")
+                    sequence = 1
+            if check_rule("red_house_ir") and sequence == 1:
+                task_state = check_task_state("tree-lights")
+                if task_state == "pending":
+                    pi3.exec_command("raspi-gpio set 21 op dh")
+                    print("2")
+                    sequence = 2
+            elif check_rule("red_house_ir") and sequence <= 0:
+                task_state = check_task_state("tree-lights")
+                if task_state == "pending":
+                    pi3.exec_command("raspi-gpio set 21 op dh")
+                    time.sleep(0.5)
+                    pi3.exec_command("raspi-gpio set 21 op dl")
+                    pi3.exec_command("raspi-gpio set 15 op dl")
+                    sequence = 0
+            if check_rule("blue_house_ir") and sequence == 2:
+                task_state = check_task_state("tree-lights")
+                if task_state == "pending":
+                    solve_task("tree-lights")
+            elif check_rule("blue_house_ir") and sequence != 2:
+                task_state = check_task_state("tree-lights")
+                if task_state == "pending":
+                    pi3.exec_command("raspi-gpio set 23 op dh")
+                    time.sleep(0.5)
+                    pi3.exec_command("raspi-gpio set 23 op dl")
+                    pi3.exec_command("raspi-gpio set 21 op dl")
+                    pi3.exec_command("raspi-gpio set 15 op dl")
+                    sequence = 0
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
@@ -481,7 +482,7 @@ client.loop_start()
 def trigger():
     # Process the data and respond as needed
     return jsonify({'message': 'Data received successfully'})
-@app.route('/krijgsgevangenis')
+@app.route('/retriever')
 def pow():
     return render_template('pow.html')
 def start_scripts():
@@ -1159,48 +1160,27 @@ def control_light():
     light_name = request.json.get('light_name')
     print(light_name)
     if light_name == "Light-1" and check_rule("light-1-garden"):
-        command = "raspi-gpio set 1 op dh"
+        call_control_maglock("light-1-garden", "locked")
     elif light_name == "Light-1":
-        command = "raspi-gpio set 1 op dl"
+        call_control_maglock("light-1-garden", "unlocked")
         print(light_name)
-    if light_name == "Light-2" and check_rule("light-2-garden"):
-        command = "raspi-gpio set 7 op dh"
     elif light_name == "Light-2":
-        command = "raspi-gpio set 7 op dl"
-        print(light_name)
-    if light_name == "Light-3" and check_rule("light-3-garden"):
-        command = "raspi-gpio set 12 op dh"
-        print(light_name)
+        call_control_maglock("light-2-garden", "locked" if check_rule("light-2-garden") else "unlocked")
     elif light_name == "Light-3":
-        command = "raspi-gpio set 12 op dl"
-    if light_name == "Light-4" and check_rule("light-4-garden"):
-        command = "raspi-gpio set 8 op dh"
-        print(light_name)
+        call_control_maglock("light-3-garden", "locked" if check_rule("light-3-garden") else "unlocked")
     elif light_name == "Light-4":
-        command = "raspi-gpio set 8 op dl"
-    if light_name == "Light-5" and check_rule("light-1-shed"):
-        command = "raspi-gpio set 15 op dh"
-        print(light_name)
+        call_control_maglock("light-4-garden", "locked" if check_rule("light-4-garden") else "unlocked")
     elif light_name == "Light-5":
-        command = "raspi-gpio set 15 op dl"
-    if light_name == "Light-6" and check_rule("light-1-alley"):
-        command = "raspi-gpio set 25 op dh"
-        print(light_name)
+        call_control_maglock("light-1-shed", "locked" if check_rule("light-1-shed") else "unlocked")
     elif light_name == "Light-6":
-        command = "raspi-gpio set 25 op dl"
-    if light_name == "Light-7" and check_rule("blacklight"):
-        command = "raspi-gpio set 17 op dh \n raspi-gpio set 10 op dh"
-        print(light_name)
+        call_control_maglock("light-1-alley", "locked" if check_rule("light-1-alley") else "unlocked")
     elif light_name == "Light-7":
-        command = "raspi-gpio set 17 op dl \n raspi-gpio set 10 op dl"
-    if light_name == "Light-8":
-        command = "raspi-gpio set 4 op dh"
-    if light_name == "Light-8":
-        pi2.exec_command(command)
-    elif light_name == "Light-5" or light_name == "Light-6" or light_name == "Light-7":
-        ssh.exec_command(command)
-    else:
-        pi3.exec_command(command)
+        if check_rule("blacklight"):
+            call_control_maglock("blacklight", "locked")
+            call_control_maglock("portal-light", "locked")
+        else:
+            call_control_maglock("blacklight", "unlocked")
+            call_control_maglock("portal-light", "unlocked")
     return jsonify({'message': f'Light {light_name} control command executed successfully'})
 @app.route('/snooze_game', methods=['POST'])
 def snooze_game():
@@ -1496,38 +1476,43 @@ def add_sensor():
         # Save the updated sensor data to the JSON file
         with open('json/sensor_data.json', 'w') as json_file:
             json.dump(sensors, json_file, indent=4)
-        update_sensor_data_on_pis("ret")
+        update_sensor_data_on_pis(pi)
 
         return redirect(url_for('list_sensors'))
 
     return render_template('add_sensor.html')
 
-def update_sensor_data_on_pis(prefix):
-    scanner = NetworkScanner()
-    raspberry_pis = get_raspberry_pis_with_prefix(prefix, scanner)
+def update_sensor_data_on_pis(pi):
+    success_message = "Sensor data updated successfully. Updated script sent to the following IP addresses:<br>"
 
-    success_message = "Sensor removed successfully. Updated script sent to the following IP addresses:<br>"
+    # Read Raspberry Pi data from JSON file
+    with open('json/raspberry_pis.json') as json_file:
+        raspberry_pis = json.load(json_file)
 
-    for ip in raspberry_pis:
-        try:
-            # Create an SSH session for each Raspberry Pi
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(ip, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+    for raspberry_pi in raspberry_pis:
+        if raspberry_pi["hostname"] == pi:
+            ip = raspberry_pi["ip_address"]
+            try:
+                # Create an SSH session for the Raspberry Pi
+                ssh = paramiko.SSHClient()
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                ssh.connect(ip, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
 
-            # Create an SFTP session over the existing SSH connection
-            sftp = ssh.open_sftp()
+                # Create an SFTP session over the existing SSH connection
+                sftp = ssh.open_sftp()
 
-            # Transfer the updated file to the Raspberry Pi
-            sftp.put('json/sensor_data.json', '/home/pi/sensor_data.json')
+                # Transfer the updated file to the Raspberry Pi
+                sftp.put('json/sensor_data.json', '/home/pi/sensor_data.json')
 
-            success_message += f"- {ip}<br>"
+                success_message += f"- {ip}<br>"
 
-            # Close the SFTP session and SSH connection
-            sftp.close()
-            ssh.close()
-        except Exception as e:
-            return f'Error occurred while sending updated script to {ip}: {e}'
+                # Close the SFTP session and SSH connection
+                sftp.close()
+                ssh.close()
+            except Exception as e:
+                return f'Error occurred while sending updated script to {ip}: {e}'
+
+            break  # No need to continue searching for matching Raspberry Pi
 
     return success_message
 

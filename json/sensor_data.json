@@ -25,7 +25,7 @@
         "type": "Sensor",
         "pin": 20,
         "pi": "ret-tree",
-        "state": "Not Triggered"
+        "state": "Triggered"
     },
     {
         "name": "bottom_right_kraken",
@@ -46,14 +46,14 @@
         "type": "light",
         "pin": 1,
         "pi": "ret-tree",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "light-2-garden",
         "type": "light",
         "pin": 7,
         "pi": "ret-tree",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "light-3-garden",
@@ -74,28 +74,28 @@
         "type": "light",
         "pin": 15,
         "pi": "ret-top",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "light-1-alley",
         "type": "light",
         "pin": 25,
         "pi": "ret-top",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "blacklight",
         "type": "light",
         "pin": 17,
         "pi": "ret-top",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "portal-light",
         "type": "light",
         "pin": 10,
         "pi": "ret-top",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "bottom_left_kraken",
@@ -158,28 +158,28 @@
         "type": "maglock",
         "pin": 20,
         "pi": "ret-top",
-        "state": "Off"
+        "state": "Unlocked"
     },
     {
         "name": "sliding-door-lock",
         "type": "maglock",
         "pin": 16,
         "pi": "ret-top",
-        "state": "Off"
+        "state": "Unlocked"
     },
     {
         "name": "ball-drop-lock",
         "type": "maglock",
         "pin": 6,
         "pi": "ret-top",
-        "state": "Off"
+        "state": "Unlocked"
     },
     {
         "name": "exit-door-lock",
         "type": "maglock",
         "pin": 21,
         "pi": "ret-top",
-        "state": "Off"
+        "state": "Unlocked"
     },
     {
         "name": "bottom_left_light",
