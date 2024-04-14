@@ -1347,7 +1347,7 @@ def call_control_maglock(maglock, action):
     for sensor in sensor_data:
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
-            if "gang-licht-1" in maglock or "bovenste-la-guard" in maglock or "secret-door-lock" in maglock or "iron-door-adult" in maglock or "iron-door-child" in maglock or "iron-door-adult" in maglock:
+            if "gang-licht-1" in maglock:
                 print(maglock)
                 # Reverse the action for this specific case
                 action = 'locked' if action == 'unlocked' else 'unlocked'
@@ -1496,7 +1496,7 @@ def add_sensor():
         # Save the updated sensor data to the JSON file
         with open('json/sensor_data.json', 'w') as json_file:
             json.dump(sensors, json_file, indent=4)
-        update_sensor_data_on_pis("for")
+        update_sensor_data_on_pis("ret")
 
         return redirect(url_for('list_sensors'))
 
@@ -1552,7 +1552,7 @@ def remove_sensor():
             json.dump(updated_sensors, json_file, indent=4)
 
         # Update sensor data on the Raspberry Pi devices
-        update_result = update_sensor_data_on_pis("for")
+        update_result = update_sensor_data_on_pis("ret")
 
         return f"{update_result}<br>Redirecting to sensor list...<meta http-equiv='refresh' content='2;url={url_for('list_sensors')}'>"
 
