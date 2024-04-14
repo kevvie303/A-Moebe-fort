@@ -1,193 +1,142 @@
 [
     {
-        "name": "entrance_door",
+        "name": "blue_house_ir",
         "type": "Sensor",
         "pin": 18,
-        "pi": "guard_room_pi",
-        "state": "Triggered"
-    },
-    {
-        "name": "camera_button",
-        "type": "button",
-        "pin": 19,
-        "pi": "guard_room_pi",
+        "pi": "tree-pi",
         "state": "Not Triggered"
     },
     {
-        "name": "entrance-door-lock",
-        "type": "maglock",
-        "pin": 23,
-        "pi": "cell_pi",
-        "state": "Unlocked"
-    },
-    {
-        "name": "zwaailamp-groen-kids",
-        "type": "light",
-        "pin": 21,
-        "pi": "corridor_pi",
-        "state": "Off"
-    },
-    {
-        "name": "zwaailamp-rood-kids",
-        "type": "light",
-        "pin": 27,
-        "pi": "corridor_pi",
-        "state": "Off"
-    },
-    {
-        "name": "zwaailamp-groen-volwassen",
-        "type": "light",
-        "pin": 13,
-        "pi": "corridor_pi",
-        "state": "Off"
-    },
-    {
-        "name": "zwaailamp-rood-volwassen",
-        "type": "light",
-        "pin": 4,
-        "pi": "corridor_pi",
-        "state": "Off"
-    },
-    {
-        "name": "gang-blacklight-1",
-        "type": "light",
-        "pin": 19,
-        "pi": "corridor_pi",
-        "state": "Off"
-    },
-    {
-        "name": "gang-licht-1",
-        "type": "light",
-        "pin": 26,
-        "pi": "corridor_pi",
-        "state": "Off"
-    },
-    {
-        "name": "bovenste-la-guard",
-        "type": "maglock",
-        "pin": 26,
-        "pi": "guard_room_pi",
-        "state": "Locked"
-    },
-    {
-        "name": "ehbo-kist",
+        "name": "top_left_kraken",
         "type": "Sensor",
-        "pin": 17,
-        "pi": "cell_pi",
+        "pin": 15,
+        "pi": "middle-pi",
         "state": "Not Triggered"
     },
     {
-        "name": "3-objects",
-        "type": "Sensor",
-        "pin": 5,
-        "pi": "cell_pi",
-        "state": "Not Triggered"
-    },
-    {
-        "name": "nightstand",
-        "type": "Sensor",
-        "pin": 6,
-        "pi": "cell_pi",
-        "state": "Not Triggered"
-    },
-    {
-        "name": "iron-door-child",
-        "type": "maglock",
-        "pin": 12,
-        "pi": "corridor_pi",
-        "state": "Locked"
-    },
-    {
-        "name": "iron-door-adult",
-        "type": "maglock",
-        "pin": 20,
-        "pi": "corridor_pi",
-        "state": "Locked"
-    },
-    {
-        "name": "secret-door-lock",
-        "type": "maglock",
-        "pin": 21,
-        "pi": "guard_room_pi",
-        "state": "Locked"
-    },
-    {
-        "name": "radio-guard",
-        "type": "maglock",
-        "pin": 20,
-        "pi": "guard_room_pi",
-        "state": "Unlocked"
-    },
-    {
-        "name": "jas-2",
-        "type": "button",
-        "pin": 21,
-        "pi": "for-garderobe",
-        "state": "Not Triggered",
-        "connection_type": "NO"
-    },
-    {
-        "name": "jas-3",
-        "type": "button",
-        "pin": 27,
-        "pi": "for-garderobe",
-        "state": "Not Triggered",
-        "connection_type": "NO"
-    },
-    {
-        "name": "jas-1",
-        "type": "button",
-        "pin": 4,
-        "pi": "for-garderobe",
-        "state": "Not Triggered",
-        "connection_type": "NO"
-    },
-    {
-        "name": "test",
-        "type": "Sensor",
-        "pin": 1,
-        "pi": "guard_room_pi",
-        "state": "initial",
-        "connection_type": "NC"
-    },
-    {
-        "name": "key-drop-lock",
-        "type": "maglock",
-        "pin": 23,
-        "pi": "for-garderobe",
-        "state": "Locked",
-        "connection_type": "NO"
-    },
-    {
-        "name": "grenade-1",
-        "type": "Sensor",
-        "pin": 17,
-        "pi": "corridor_pi",
-        "state": "Not Triggered",
-        "connection_type": "NO"
-    },
-    {
-        "name": "grenade-2",
-        "type": "Sensor",
-        "pin": 18,
-        "pi": "corridor_pi",
-        "state": "Not Triggered",
-        "connection_type": "NO"
-    },
-    {
-        "name": "grenade-3",
-        "type": "Sensor",
-        "pin": 12,
-        "pi": "for-poepdoos",
-        "state": "Not Triggered",
-        "connection_type": "NO"
-    },
-    {
-        "name": "alarm-button",
+        "name": "green_house_ir",
         "type": "Sensor",
         "pin": 14,
-        "pi": "for-poepdoos",
-        "state": "Not Triggered",
-        "connection_type": "NO"
+        "pi": "tree-pi",
+        "state": "Not Triggered"
+    },
+    {
+        "name": "red_house_ir",
+        "type": "Sensor",
+        "pin": 20,
+        "pi": "tree-pi",
+        "state": "Not Triggered"
+    },
+    {
+        "name": "bottom_right_kraken",
+        "type": "Sensor",
+        "pin": 23,
+        "pi": "middle-pi",
+        "state": "Not Triggered"
+    },
+    {
+        "name": "top_right_kraken",
+        "type": "Sensor",
+        "pin": 20,
+        "pi": "middle-pi",
+        "state": "Not Triggered"
+    },
+    {
+        "name": "light-1-garden",
+        "type": "light",
+        "pin": 1,
+        "pi": "tree-pi",
+        "state": "Off"
+    },
+    {
+        "name": "light-2-garden",
+        "type": "light",
+        "pin": 7,
+        "pi": "tree-pi",
+        "state": "Off"
+    },
+    {
+        "name": "light-3-garden",
+        "type": "light",
+        "pin": 12,
+        "pi": "tree-pi",
+        "state": "Off"
+    },
+    {
+        "name": "light-4-garden",
+        "type": "light",
+        "pin": 8,
+        "pi": "tree-pi",
+        "state": "Off"
+    },
+    {
+        "name": "light-1-shed",
+        "type": "light",
+        "pin": 15,
+        "pi": "top-pi",
+        "state": "Off"
+    },
+    {
+        "name": "light-1-alley",
+        "type": "light",
+        "pin": 25,
+        "pi": "top-pi",
+        "state": "Off"
+    },
+    {
+        "name": "blacklight",
+        "type": "light",
+        "pin": 17,
+        "pi": "top-pi",
+        "state": "Off"
+    },
+    {
+        "name": "portal-light",
+        "type": "light",
+        "pin": 10,
+        "pi": "top-pi",
+        "state": "Off"
+    },
+    {
+        "name": "bottom_left_kraken",
+        "type": "Sensor",
+        "pin": 16,
+        "pi": "middle-pi",
+        "state": "Not Triggered"
+    },
+    {
+        "name": "maze-sensor",
+        "type": "Sensor",
+        "pin": 18,
+        "pi": "middle-pi",
+        "state": "Not Triggered"
+    },
+    {
+        "name": "top_left_light",
+        "type": "light",
+        "pin": 4,
+        "pi": "middle-pi",
+        "state": "Off"
+    },
+    {
+        "name": "top_right_light",
+        "type": "light",
+        "pin": 7,
+        "pi": "middle-pi",
+        "state": "Off"
+    },
+    {
+        "name": "bottom_right_light",
+        "type": "light",
+        "pin": 8,
+        "pi": "middle-pi",
+        "state": "Off"
+    },
+    {
+        "name": "bottom_left_light",
+        "type": "light",
+        "pin": 1,
+        "pi": "middle-pi",
+        "state": "Off"
     }
 ]

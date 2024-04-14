@@ -1,112 +1,77 @@
 [
     {
-        "task": "Medicijnkastje-open",
-        "description": "Spelers hebben het kastje boven de wastafel opengemaakt met de sleutel, hierin zit een ketting.",
+        "task": "tree-lights",
+        "description": "Players have thrown the balls in the treehouses in the correct order",
         "state": "pending"
     },
     {
-        "task": "Streepjes-tellen",
-        "description": "In de kamer verstopt staan allemaal streepjes, deze kunnen de mensen tellen. Hieruit komt de code 153 voor de kist. Hierin zit een pakje kaarten en de mal voor de posters.",
+        "task": "number-feel",
+        "description": "Players have felt the right numbers, 0128, and filled it in, in the keypad",
         "state": "pending"
     },
     {
-        "task": "Poster",
-        "description": "Door de mal goed over de poster te leggen kunnen de spelers een bepaalde code aflezen, deze code opent de la.",
+        "task": "dog-house",
+        "description": "players have used the scrabble letters to create the word M-A-X code (318)",
         "state": "pending"
     },
     {
-        "task": "3-objecten",
-        "description": "Als de 3 gevonden objecten op de juiste plek liggen, gaat de geheime deur open.",
+        "task": "kite-count",
+        "description": "Players have counted the shapes and found the code, 7867 or 8978, and filled it in, in the keypad",
         "state": "pending"
     },
     {
-        "task": "Sleutel-vissen",
-        "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
+        "task": "fence-decrypt",
+        "description": "players have decrypted the code in the doghouse using the fence's alphabet. Code: 5038",
         "state": "pending"
     },
     {
-        "task": "Medisch-dossier",
-        "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
+        "task": "flowers",
+        "description": "players have put the flowers in the correct order and read can get the code from the bottom of the plants. Code: 1528",
         "state": "pending"
     },
     {
-        "task": "Stroomstoring",
-        "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
+        "task": "woef-woef",
+        "description": "woef woef woef woef",
         "state": "pending"
     },
     {
-        "task": "Radio",
-        "description": "De spelers hebben goed geluisterd naar de radio en een code onderschept, dit zorgt voor toegang tot de 3e ruimte.",
+        "task": "max-vacation",
+        "description": "Players have spotted and ordered the vacations in the right order code (6123)",
         "state": "pending"
     },
     {
-        "task": "scan-mendez",
-        "description": "Het linkerhek gaat open zodra de pas gescand is.",
+        "task": "paw-maze",
+        "description": "players have solved the maze",
         "state": "pending"
     },
     {
-        "task": "Schoenkast",
-        "description": "De schoenen staan op de juiste plek, dit is 1 vd 2 benodigdheden voor de kast.",
+        "task": "squeekuence",
+        "description": "players have used the squeeky-toy in the correct rhythm",
         "state": "pending"
     },
     {
-        "task": "kapstok-italie",
-        "description": "-",
+        "task": "sinus-game",
+        "description": "players have put the sinus wave correctly and and gotten the code from the center speaker (####)",
         "state": "pending"
     },
     {
-        "task": "kapstok-ijsland",
-        "description": "-",
+        "task": "glow-wire",
+        "description": "players have solved the wires code (3456)",
         "state": "pending"
     },
     {
-        "task": "kapstok-zuidafrika",
-        "description": "-",
+        "task": "mirror-see",
+        "description": "players have seen the numbers through the mirrors code (794)",
         "state": "pending"
     },
     {
-        "task": "kapstok-allemaal",
-        "description": "-",
+        "task": "bone-slide",
+        "description": "players have gotten the cyllinders out of the dogtoy. (code 216)",
         "state": "pending"
     },
     {
-        "task": "scan-rosenthal",
-        "description": "-",
-        "state": "pending"
-    },
-    {
-        "task": "stoelvoel",
-        "description": "-",
-        "state": "pending"
-    },
-    {
-        "task": "alarm-knop",
-        "description": "-",
-        "state": "pending"
-    },
-    {
-        "task": "granaat-soratov",
-        "description": "-",
-        "state": "pending"
-    },
-    {
-        "task": "granaat-khabarovsk",
-        "description": "-",
-        "state": "pending"
-    },
-    {
-        "task": "granaat-tomsk",
-        "description": "-",
-        "state": "pending"
-    },
-    {
-        "task": "granaat-allemaal",
-        "description": "-",
-        "state": "pending"
-    },
-    {
-        "task": "einddeur-open",
-        "description": "Code Sona",
+        "task": "squid-game",
+        "description": "players have moved the 4 squidge to the center of the track. ",
         "state": "pending"
     }
 ]

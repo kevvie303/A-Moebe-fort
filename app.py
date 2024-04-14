@@ -181,7 +181,7 @@ def connect_device():
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 
-broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
+broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
 #broker_ip = "192.168.1.216"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
@@ -218,9 +218,8 @@ def on_message(client, userdata, message):
 
         # For other types of messages (e.g., sensor states), you can handle them as before
         else:
-            return "Invalid topic format. Expected: state_data/<pi_name>/<sensor_name>"
-            sensor_name = parts[2]
-            sensor_state = data
+            sensor_name = parts[-1]  # Extract the last part of the topic (sensor name)
+            sensor_state = message.payload.decode("utf-8")
             sensor_states[sensor_name] = sensor_state
             print(f"Received MQTT message - Sensor: {sensor_name}, State: {sensor_state}")
     
@@ -230,79 +229,40 @@ def on_message(client, userdata, message):
                 print("State changed. Updated JSON.")
             #print(sensor_states)
             if get_game_status() == {'status': 'playing'}:
-                if sensor_name == "rfid_corridor":
-                    print(sensor_state)
-                    mendez1 = 584185540695
-                    mendez2 = 584199238531
-                    roosenthaal1 = 584198160159
-                    roosenthaal2 = 584183068095
-                    sensor_state_int = int(sensor_state)
-                    print(roosenthaal2)
-                    if sensor_state_int == mendez1 or sensor_state_int == mendez2:
-                        if check_task_state("scan-mendez") == "pending":
-                            solve_task("scan-mendez")
-                        print("Correct code")
-                    elif sensor_state_int == roosenthaal1 or sensor_state_int == roosenthaal2:
-                        if check_task_state("scan-rosenthal") == "pending":
-                            solve_task("scan-rosenthal")
-                        print("Correct code")
-                if check_rule("jas-1"):
-                    if check_task_state("kapstok-zuidafrika") == "pending":
-                        solve_task("kapstok-zuidafrika")
-                if check_rule("jas-1") == False:
-                    if check_task_state("kapstok-zuidafrika") == "solved":
-                        pend_task("kapstok-zuidafrika")
-                if check_rule("jas-2"):
-                    if check_task_state("kapstok-italie") == "pending":
-                        solve_task("kapstok-italie")
-                if check_rule("jas-2") == False:
-                    if check_task_state("kapstok-italie") == "solved":
-                        pend_task("kapstok-italie")
-                if check_rule("jas-3"):
-                    if check_task_state("kapstok-ijsland") == "pending":
-                        solve_task("kapstok-ijsland")
-                if check_rule("jas-3") == False:
-                    if check_task_state("kapstok-ijsland") == "solved":
-                        pend_task("kapstok-ijsland")
-                if check_rule("jas-1") and check_rule("jas-2") and check_rule("jas-3"):
-                    if check_task_state("kapstok-allemaal") == "pending":
-                        solve_task("kapstok-allemaal")
-                if check_rule("grenade-1"):
-                    if check_task_state("granaat-tomsk") == "pending":
-                        solve_task("granaat-tomsk")
-                if check_rule("grenade-1") == False:
-                    if check_task_state("granaat-tomsk") == "solved":
-                        pend_task("granaat-tomsk")
-                if check_rule("grenade-2"):
-                    if check_task_state("granaat-khabarovsk") == "pending":
-                        solve_task("granaat-khabarovsk")
-                if check_rule("grenade-2") == False:
-                    if check_task_state("granaat-khabarovsk") == "solved":
-                        pend_task("granaat-khabarovsk")
-                if check_rule("grenade-3"):
-                    if check_task_state("granaat-soratov") == "pending":
-                        solve_task("granaat-soratov")
-                if check_rule("grenade-3") == False:
-                    if check_task_state("granaat-soratov") == "solved":
-                        pend_task("granaat-soratov")
-                if check_rule("grenade-1") and check_rule("grenade-2") and check_rule("grenade-3"):
-                    if check_task_state("granaat-allemaal") == "pending":
-                        solve_task("granaat-allemaal")
-                if check_rule("camera_button"):
-                    if check_task_state("Stroomstoring") == "pending":
-                        solve_task("Stroomstoring")
-                if check_rule("ehbo-kist") == False:
-                    if check_task_state("Medicijnkastje-open") == "pending":
-                        solve_task("Medicijnkastje-open")
-                if check_rule("nightstand") == False:
-                    if check_task_state("Poster") == "pending":
-                        solve_task("Poster")
-                if check_rule("3-objects"):
-                    if check_task_state("3-objecten") == "pending":
-                        solve_task("3-objecten")
-                if check_rule("alarm-button"):
-                    if check_task_state("alarm-knop") == "pending":
-                        solve_task("alarm-knop")
+                global sequence
+                if check_rule("green_house_ir") and sequence == 0:
+                    task_state = check_task_state("tree-lights")
+                    if task_state == "pending":
+                        pi3.exec_command("raspi-gpio set 15 op dh")
+                        print("1")
+                        sequence = 1
+                if check_rule("red_house_ir") and sequence == 1:
+                    task_state = check_task_state("tree-lights")
+                    if task_state == "pending":
+                        pi3.exec_command("raspi-gpio set 21 op dh")
+                        print("2")
+                        sequence = 2
+                elif check_rule("red_house_ir") and sequence <= 0:
+                    task_state = check_task_state("tree-lights")
+                    if task_state == "pending":
+                        pi3.exec_command("raspi-gpio set 21 op dh")
+                        time.sleep(0.5)
+                        pi3.exec_command("raspi-gpio set 21 op dl")
+                        pi3.exec_command("raspi-gpio set 15 op dl")
+                        sequence = 0
+                if check_rule("blue_house_ir") and sequence == 2:
+                    task_state = check_task_state("tree-lights")
+                    if task_state == "pending":
+                        solve_task("tree-lights")
+                elif check_rule("blue_house_ir") and sequence != 2:
+                    task_state = check_task_state("tree-lights")
+                    if task_state == "pending":
+                        pi3.exec_command("raspi-gpio set 23 op dh")
+                        time.sleep(0.5)
+                        pi3.exec_command("raspi-gpio set 23 op dl")
+                        pi3.exec_command("raspi-gpio set 21 op dl")
+                        pi3.exec_command("raspi-gpio set 15 op dl")
+                        sequence = 0
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
@@ -858,73 +818,185 @@ def solve_task(task_name):
                 task['state'] = 'solved'
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
-        if task_name == "Stroomstoring":
+        if task_name == "paw-maze":
+            print(task)
+            if squeak_job == False:
+                scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
+                squeak_job = True
+            pi3.exec_command("mpg123 -a hw:0,0 Music/squeek.mp3")
+        elif task_name == "tree-lights":
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/for-guard/play", "static.mp3", hostname="192.168.50.253")
-                publish.single("audio_control/for-guard/volume", "100 static.mp3", hostname="192.168.50.253")
-                publish.single("audio_control/for-corridor/play", "bgCorridor.ogg", hostname="192.168.50.253")
-                time.sleep(5)
-                publish.single("audio_control/for-guard/stop", "static.mp3", hostname="192.168.50.253")
-                publish.single(f"actuator/control/guard_room_pi", "26 locked", hostname=broker_ip)
-                publish.single("audio_control/for-guard/play", "drawerCorrect.ogg", hostname=broker_ip)
-                time.sleep(2)
+                publish.single("audio_control/for-guard/play", "static.mp3", hostname=broker_ip)
                 publish.single(f"actuator/control/guard_room_pi", "20 unlocked", hostname=broker_ip)
-        elif task_name == "granaat-allemaal":
+        elif task_name == "woef-woef":
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/all/play", "Sona.ogg", hostname=broker_ip)
-                publish.single("audio_control/all/volume", "100 Sona.ogg", hostname=broker_ip)
-                publish.single("audio_control/all/volume", "5 alarm.ogg", hostname=broker_ip)
-        elif task_name == "3-objecten":
+                if bird_job == True:
+                    scheduler.remove_job('birdjob')
+                    bird_job = False
+                pi3.exec_command("mpg123 -a hw:0,0 Music/hok.mp3 \n raspi-gpio set 4 op dh")
+        elif task_name == "squeekuence":
+            ssh.exec_command("raspi-gpio set 20 op dh")
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/for-cell/volume", "40 newBg.ogg", hostname=broker_ip)
-                publish.single(f"actuator/control/guard_room_pi", "21 locked", hostname=broker_ip)
-                publish.single("audio_control/for-guard/play", "secretDoor.ogg", hostname=broker_ip)
-                publish.single("audio_control/for-cell/play", "secretDoor.ogg", hostname=broker_ip)
+                pi2.exec_command("sudo python sinus_game.py")
+                print("executed")
+                time.sleep(4)
+                pi2.exec_command("mpg123 -a hw:2,0 Music/lab_intro.mp3")
+                time.sleep(4)
+                load_command = f'echo "load /home/pi/Music/Background.mp3" | sudo tee /tmp/mpg123_fifo \n echo "volume 25" | sudo tee /tmp/mpg123_fifo'
+                pi2.exec_command(load_command)
+                time.sleep(1)
+                command = f'echo "volume 8" | sudo tee /tmp/mpg123_fifo'
+                stdin, stdout, stderr = pi3.exec_command(command)
+            if squeak_job == True:
+                scheduler.remove_job('squeakjob')
+                squeak_job = False
+        elif task_name == "flowers":
+            code1 = True
+            codesCorrect += 1
+            ssh.exec_command("raspi-gpio set 1 op dh")
+            pi3.exec_command("mpg123 -a hw:0,0 Music/correct-effect.mp3")
+            time.sleep(1)
+            fade_music_out()
+            time.sleep(2)
+            pi3.exec_command('mpg123 -a hw:0,0 Music/bloemen.mp3')
+            ssh.exec_command("raspi-gpio set 1 op dl")
+            time.sleep(10)
+            if codesCorrect == 3 or codesCorrect == 4:
+                fade_music_in()
+            elif codesCorrect == 2 or codesCorrect == 1:
+                print(codesCorrect)
+            elif code5 == False:
+                fade_music_in()
+        elif task_name == "kite-count":
+            code2 = True
+            codesCorrect += 1
+            ssh.exec_command("raspi-gpio set 1 op dh")
+            pi3.exec_command("mpg123 -a hw:0,0 Music/correct-effect.mp3")
+            time.sleep(1)
+            fade_music_out()
+            time.sleep(2)
+            pi3.exec_command('mpg123 -a hw:0,0 Music/vlieger.mp3')
+            ssh.exec_command("raspi-gpio set 1 op dl")
+            time.sleep(5)
+            if codesCorrect == 3 or codesCorrect == 4:
+                fade_music_in()
+            elif codesCorrect == 2 or codesCorrect == 1:
+                print(codesCorrect)
+            elif code5 == False:
+                fade_music_in()
+        elif task_name == "number-feel":
+            code3 = True
+            codesCorrect += 1
+            ssh.exec_command("raspi-gpio set 1 op dh")
+            pi3.exec_command("mpg123 -a hw:0,0 Music/correct-effect.mp3")
+            time.sleep(1)
+            fade_music_out()
+            time.sleep(2)
+            pi3.exec_command('mpg123 -a hw:0,0 Music/plantenbak.mp3')
+            ssh.exec_command("raspi-gpio set 1 op dl")
+            time.sleep(5)
+            if codesCorrect == 3 or codesCorrect == 4:
+                fade_music_in()
+            elif codesCorrect == 2 or codesCorrect == 1:
+                print(codesCorrect)
+            elif code5 == False:
+                fade_music_in()
+        elif task_name == "fence-decrypt":
+            code4 = True
+            codesCorrect += 1
+            ssh.exec_command("raspi-gpio set 1 op dh")
+            pi3.exec_command("mpg123 -a hw:0,0 Music/correct-effect.mp3")
+            time.sleep(1)
+            fade_music_out()
+            time.sleep(2)
+            pi3.exec_command('mpg123 -a hw:0,0 Music/hek.mp3')
+            ssh.exec_command("raspi-gpio set 1 op dl")
+            time.sleep(5)
+            if codesCorrect == 3 or codesCorrect == 4:
+                fade_music_in()
+            elif codesCorrect == 2 or codesCorrect == 1:
+                print(codesCorrect)
+            elif code5 == False:
+                fade_music_in()
+        elif task_name == "sinus-game":
+            pi2.exec_command("sudo pkill -f sinus_game.py")
+            time.sleep(0.5)
+            pi2.exec_command("sudo python sinus_override.py")
+        elif task_name == "squid-game":
+            if game_status == {'status': 'playing'}:
+                pi2.exec_command("raspi-gpio set 4 op dh \n raspi-gpio set 7 op dh \n raspi-gpio set 8 op dh \n raspi-gpio set 1 op dh \n mpg123 -a hw:2,0 Music/gelukt.mp3")
                 time.sleep(3)
-                publish.single("audio_control/for-guard/play", "bgGuard.ogg", hostname=broker_ip)
-                publish.single("audio_control/for-garderobe/play", "bgGuard.ogg", hostname=broker_ip)
-                publish.single("audio_control/for-guard/volume", "100 bgGuard.ogg", hostname=broker_ip)
-                publish.single("audio_control/for-garderobe/volume", "100 bgGuard.ogg", hostname=broker_ip)
-        elif task_name == "scan-mendez":
+                ssh.exec_command("raspi-gpio set 16 op dh")
+                time.sleep(6)
+                if should_balls_drop == True:
+                    ssh.exec_command("raspi-gpio set 6 op dh")
+                load_command = f'echo "load /home/pi/Music/Dogsout.mp3" | sudo tee /tmp/mpg123_fifo'
+                pi2.exec_command(load_command)
+        elif task_name == "tree-lights":
+            if bird_job == True:
+                scheduler.remove_job('birdjob')
+                bird_job = False
             if game_status == {'status': 'playing'}:
-                publish.single(f"actuator/control/corridor_pi", "21 unlocked", hostname=broker_ip)
-                publish.single(f"actuator/control/corridor_pi", "12 locked", hostname=broker_ip)
-                publish.single("audio_control/for-corridor/play", "Buzzer.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/for-corridor/volume", "100 Buzzer.ogg", hostname="192.168.50.253")
-                publish.single(f"actuator/control/guard_room_pi", "20 locked", hostname=broker_ip)
-                time.sleep(3)
-                publish.single(f"actuator/control/corridor_pi", "21 locked", hostname=broker_ip)
-        elif task_name == "scan-rosenthal":
-            if game_status == {'status': 'playing'}:
-                publish.single(f"actuator/control/corridor_pi", "13 unlocked", hostname=broker_ip)
-                publish.single(f"actuator/control/corridor_pi", "20 locked", hostname=broker_ip)
-                publish.single("audio_control/for-corridor/play", "Buzzer.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/for-corridor/volume", "100 Buzzer.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/for-poepdoos/play", "bgCorridor.ogg", hostname="192.168.50.253")
-                time.sleep(3)
-                publish.single(f"actuator/control/corridor_pi", "13 locked", hostname=broker_ip)
-                publish.single("audio_control/for-poepdoos/play", "WC.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/for-poepdoos/volume", "100 WC.ogg", hostname="192.168.50.253")
-        elif task_name == "kapstok-allemaal":
-            if game_status == {'status': 'playing'}:
-                publish.single("audio_control/for-garderobe/play", "jassenCorrect.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/for-garderobe/volume", "100 jassenCorrect.ogg", hostname="192.168.50.253")
-                time.sleep(3)
-                publish.single(f"actuator/control/for-garderobe", "23 unlocked", hostname=broker_ip)
-        elif task_name == "alarm-knop":
-            if game_status == {'status': 'playing'}:
-                publish.single(f"actuator/control/corridor_pi", "19 unlocked", hostname=broker_ip)
-                publish.single(f"actuator/control/corridor_pi", "26 unlocked", hostname=broker_ip)
-                publish.single(f"actuator/control/corridor_pi", "4 unlocked", hostname=broker_ip)
-                publish.single(f"actuator/control/corridor_pi", "27 unlocked", hostname=broker_ip)
-                publish.single("audio_control/for-poepdoos/stop", "WC.ogg", hostname=broker_ip)
-                publish.single("audio_control/all/play", "alarm.ogg", hostname="192.168.50.253")
-                publish.single("audio_control/all/volume", "100 alarm.ogg", hostname="192.168.50.253")
-                time.sleep(120)
-                fade_music_out("alarm")
-        elif task_name == "einddeur-open":
-            if game_status == {'status': 'playing'}:
-                stop_timer()
+                pi3.exec_command("mpg123 -a hw:0,0 Music/correct-effect.mp3")
+                time.sleep(1)
+                code5 = True
+                print("3")
+                pi3.exec_command("raspi-gpio set 23 op dh")
+                fade_out_thread = threading.Thread(target=fade_music_out)
+                fade_out_thread.start()
+                time.sleep(1)
+                pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
+                time.sleep(1)
+                pi3.exec_command("raspi-gpio set 23 op dh \n raspi-gpio set 21 op dh \n raspi-gpio set 15 op dh")
+                time.sleep(1)
+                pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
+                time.sleep(1)
+                pi3.exec_command("raspi-gpio set 23 op dh \n raspi-gpio set 21 op dh \n raspi-gpio set 15 op dh")
+                time.sleep(1)
+                pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
+                sequence = 0
+                time.sleep(1)
+                pi3.exec_command("mpg123 -a hw:0,0 Music/boom.mp3")
+                time.sleep(7)
+                if code1 and code2 and code3 and code4 and code5:
+                    print("executed")
+                    time.sleep(7)
+                    pi3.exec_command('mpg123 -a hw:0,0 Music/schuur_open.mp3')
+                    time.sleep(5)
+                    fade_music_in()
+                    pi3.exec_command('raspi-gpio set 16 op dh')
+                    code1 = False
+                    code2 = False
+                    code3 = False
+                    code4 = False
+                    code5 = False
+                else:
+                    fade_in_thread = threading.Thread(target=fade_music_in)
+                    fade_in_thread.start()
+        if code1 and code2 and code3 and code4 and code5:
+            print("executed")
+            time.sleep(2)
+            pi3.exec_command('mpg123 -a hw:0,0 Music/schuur_open.mp3')
+            time.sleep(5)
+            fade_music_in()
+            pi3.exec_command('raspi-gpio set 16 op dh')
+            code1 = False
+            code2 = False
+            code3 = False
+            code4 = False
+            code5 = False
+        if codesCorrect == 2:
+            codesCorrect += 1
+            time.sleep(2)
+            pi3.exec_command('mpg123 -a hw:0,0 Music/goed_bezig.mp3')
+            time.sleep(6)
+            fade_music_in()
+        if codesCorrect == 1 and should_hint_shed_play == True:
+            should_hint_shed_play = False
+            time.sleep(2)
+            pi3.exec_command('mpg123 -a hw:0,0 Music/after1code.mp3')
+            time.sleep(4)
+            fade_music_in()
         with app.app_context():
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
@@ -941,8 +1013,33 @@ def skip_task(task_name):
         for task in tasks:
             if task['task'] == task_name:
                 task['state'] = 'skipped'
-        if task_name == "Wastafel-sleutel":
-            print("skipped!")
+        if task_name == "tree-lights":
+            code5 = True
+            pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
+            if bird_job == True:
+                scheduler.remove_job('birdjob')
+                bird_job = False
+        elif task_name == "flowers":
+            code1 = True
+            codesCorrect += 1
+        elif task_name == "kite-count":
+            code2 = True
+            codesCorrect += 1
+        elif task_name == "number-feel":
+            code3 = True
+            codesCorrect += 1
+        elif task_name == "fence-decrypt":
+            code4 = True
+            codesCorrect += 1
+        if code1 and code2 and code3 and code4 and code5:
+            print("executed")
+            pi3.exec_command('mpg123 -a hw:0,0 Music/schuur_open.mp3')
+            pi3.exec_command('raspi-gpio set 16 op dh')
+            code1 = False
+            code2 = False
+            code3 = False
+            code4 = False
+            code5 = False
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
 
@@ -1007,8 +1104,14 @@ def reset_prepare():
         return jsonify({'message': 'Error resetting task statuses'})
 @app.route('/reset_puzzles', methods=['POST'])
 def reset_puzzles():
-    global aborted
+    global code1, code2, code3, code4, code5, sequence, codesCorrect
     update_game_status('awake')
+    codesCorrect == 0
+    code1 = False
+    code2 = False
+    code3 = False
+    code4 = False
+    code5 = False
     with open('json/sensor_data.json', 'r') as file:
         devices = json.load(file)
 
@@ -1019,8 +1122,6 @@ def reset_puzzles():
                 call_control_maglock(device["name"], "unlocked")
             else:
                 call_control_maglock(device["name"], "locked")
-                
-    aborted = False
     return "puzzles reset"
 
 # Function to read the retriever status from the JSON file
@@ -1043,7 +1144,13 @@ def get_game_status():
 @app.route('/wake_room', methods=['POST'])
 def wake_room():
     # Update the retriever status to 'awake'
-    call_control_maglock("gang-licht-1", "unlocked")
+    with open('json/sensor_data.json', 'r') as file:
+        devices = json.load(file)
+
+    # Iterate over devices
+    for device in devices:
+        if device["type"] in ["light"]:
+            call_control_maglock(device["name"], "locked")
     update_game_status('awake')
     return "room awakened"
 @app.route('/control_light', methods=['POST'])
@@ -1106,13 +1213,8 @@ def snooze_game():
 
         # Iterate over devices
         for device in devices:
-            # Check if the device type is maglock or light
-            if device["type"] in ["maglock"]:
-                # Call control maglock with device name and action as "unlocked"
+            if device["type"] in ["maglock", "light"]:
                 call_control_maglock(device["name"], "unlocked")
-        
-        call_control_maglock("gang-licht-1", "locked")
-        call_control_maglock("radio-guard", "locked")
         return "Room snoozed"
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
@@ -1457,8 +1559,8 @@ def remove_sensor():
     return render_template('remove_sensor.html', sensors=sensors)
 @app.route('/scare_button', methods=['POST'])
 def scare_button():
-    publish.single("audio_control/for-corridor/play", "Buzzer.ogg", hostname="192.168.50.253")
-    publish.single("audio_control/for-corridor/volume", "100 Buzzer.ogg", hostname="192.168.50.253")
+    publish.single("audio_control/for-corridor/play", "Buzzer.ogg", hostname=broker_ip)
+    publish.single("audio_control/for-corridor/volume", "100 Buzzer.ogg", hostname=broker_ip)
     return "Scared the players :)"
 @app.route('/list_sensors')
 def list_sensors():
