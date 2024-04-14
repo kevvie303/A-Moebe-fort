@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, send_from_directory
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, join_room
+from werkzeug.utils import secure_filename
 import json
 import paramiko
 import atexit
@@ -20,6 +21,8 @@ import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 from networkscanner import NetworkScanner
 from datetime import datetime, date
+from pydub import AudioSegment
+from pydub.utils import mediainfo
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -529,8 +532,20 @@ def add_music():
     if 'file' in request.files:
         file = request.files['file']
         if file.filename != '':
-            new_music_file = file.filename
-            file.save(os.path.join('static/Music', new_music_file))
+            filename = secure_filename(file.filename)
+            # Check file extension
+            if filename.endswith(('.ogg', '.OGG')):
+                new_music_file = filename
+            else:
+                # Convert to ogg
+                audio = AudioSegment.from_file(file)
+                target_format = "ogg"
+                # Adjust sample rate if possible
+                sample_rate = mediainfo(file).get('sample_rate')
+                if sample_rate:
+                    audio = audio.set_frame_rate(48000)
+                new_music_file = filename.rsplit('.', 1)[0] + '.' + target_format
+                audio.export(os.path.join('static/Music', new_music_file), format=target_format)
             time.sleep(1)
             synchronize_music_files(new_music_file)
     return redirect(url_for('media_control'))
