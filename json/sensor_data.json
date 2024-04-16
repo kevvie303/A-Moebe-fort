@@ -25,7 +25,7 @@
         "type": "Sensor",
         "pin": 20,
         "pi": "ret-tree",
-        "state": "Triggered"
+        "state": "Not Triggered"
     },
     {
         "name": "bottom_right_kraken",
@@ -53,49 +53,49 @@
         "type": "light",
         "pin": 7,
         "pi": "ret-tree",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "light-3-garden",
         "type": "light",
         "pin": 12,
         "pi": "ret-tree",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "light-4-garden",
         "type": "light",
         "pin": 8,
         "pi": "ret-tree",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "light-1-shed",
         "type": "light",
         "pin": 15,
         "pi": "ret-top",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "light-1-alley",
         "type": "light",
         "pin": 25,
         "pi": "ret-top",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "blacklight",
         "type": "light",
         "pin": 17,
         "pi": "ret-top",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "portal-light",
         "type": "light",
         "pin": 10,
         "pi": "ret-top",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "bottom_left_kraken",
@@ -137,49 +137,49 @@
         "type": "maglock",
         "pin": 25,
         "pi": "ret-tree",
-        "state": "Locked"
+        "state": "Unlocked"
     },
     {
         "name": "doghouse-lock",
         "type": "maglock",
         "pin": 4,
         "pi": "ret-tree",
-        "state": "Locked"
+        "state": "Unlocked"
     },
     {
         "name": "shed-door-lock",
         "type": "maglock",
         "pin": 16,
         "pi": "ret-tree",
-        "state": "Locked"
+        "state": "Unlocked"
     },
     {
         "name": "lab-hatch-lock",
         "type": "maglock",
         "pin": 20,
         "pi": "ret-top",
-        "state": "Locked"
+        "state": "Unlocked"
     },
     {
         "name": "sliding-door-lock",
         "type": "maglock",
         "pin": 16,
         "pi": "ret-top",
-        "state": "Locked"
+        "state": "Unlocked"
     },
     {
         "name": "ball-drop-lock",
         "type": "maglock",
         "pin": 6,
         "pi": "ret-top",
-        "state": "Locked"
+        "state": "Unlocked"
     },
     {
         "name": "exit-door-lock",
         "type": "maglock",
         "pin": 21,
         "pi": "ret-top",
-        "state": "Locked"
+        "state": "Unlocked"
     },
     {
         "name": "bottom_left_light",
@@ -213,7 +213,14 @@
         "name": "green-led-keypad",
         "type": "light",
         "pin": 1,
-        "pi": "ret-tree",
-        "state": "Off"
+        "pi": "ret-top",
+        "state": "On"
+    },
+    {
+        "name": "red-led-keypad",
+        "type": "light",
+        "pin": 12,
+        "pi": "ret-top",
+        "state": "On"
     }
 ]

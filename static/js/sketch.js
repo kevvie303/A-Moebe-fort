@@ -1315,7 +1315,7 @@ $(document).ready(function () {
     $.ajax({
       type: "POST",
       url: "/prepare",
-      data: { playerType: playerType, prefix: "for" },
+      data: { playerType: playerType, prefix: "ret" },
       success: function (response) {
         console.log("Received data:", response);
         prepareStatus.html(

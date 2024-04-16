@@ -192,7 +192,7 @@ pi_service_statuses = {}  # New dictionary to store service statuses for each Pi
 
 # Function to handle incoming MQTT messages
 def on_message(client, userdata, message):
-    global sensor_states, pi_service_statuses, code1, code2, code3, code4, code5
+    global sensor_states, pi_service_statuses, code1, code2, code3, code4, code5, codesCorrect, sequence
     
     # Extract the topic and message payload
     topic = message.topic
@@ -266,22 +266,23 @@ def on_message(client, userdata, message):
                     sequence = 0
             if sensor_name == "keypad":
                 sensor_state_int = int(sensor_state)
-                if sensor_state_int == "1528" and code1 == False:
+                print(sensor_state)
+                if sensor_state == "1528" and code1 == False:
                     code1 = True
                     solve_task("flowers")
-                elif (sensor_state_int == "7867" or sensor_state_int == "8978") and code2 == False:
+                elif (sensor_state == "7867" or sensor_state =="8978") and code2 == False:
                     code2 = True
                     solve_task("kite-count")
-                elif sensor_state_int == "0128" and code3 == False:
+                elif sensor_state == "0128" and code3 == False:
                     code3 = True
                     solve_task("number-feel")
-                elif sensor_state_int == "5038" and code4 == False:
+                elif sensor_state == "5038" and code4 == False:
                     code4 = True
                     solve_task("fence-decrypt")
                 else:
-                    ssh.exec_command("raspi-gpio set 12 op dh")
+                    call_control_maglock("red-led-keypad", "unlocked")
                     time.sleep(1)
-                    ssh.exec_command("raspi-gpio set 12 op dl")
+                    call_control_maglock("red-led-keypad", "locked")
                 
 @socketio.on('connect')
 def handle_connect():
@@ -659,38 +660,58 @@ def pause_music():
             return f'{selected_file} is not currently playing'
     else:
         return 'No file selected to pause'
-@app.route('/fade_music_out', methods=['POST'])
 def fade_music_out(file):
     global broker_ip
     print(file)
-    if file == "alarm":
-        initial_volume = 100
-        final_volume = 10
+    if file == "Lounge":
+        initial_volume = 70
+        final_volume = 0
     else:
         initial_volume = 35
-        final_volume = 17
+        final_volume = 10
 
     # Gradually increase the volume
     current_volume = initial_volume
     while current_volume > final_volume:
         current_volume -= 1  # Increase volume by 1 each second
         payload = f"{int(current_volume)} {file}.ogg"
-        if file == "alarm":
-            publish.single("audio_control/all/volume", payload, hostname=broker_ip)
+        if file == "Lounge":
+            publish.single("audio_control/ret-top/volume", payload, hostname=broker_ip)
         else:
             publish.single("audio_control/ret-top/volume", payload, hostname=broker_ip)
         print(current_volume)
         if file == "alarm":
             time.sleep(0.05)
         else:
-            time.sleep(0.25)
+            time.sleep(0.05)
+    if file != "Lounge":
+        publish.single("audio_control/all/play", "prehint.ogg", hostname=broker_ip)
+    return "Volume faded successfully"
+@app.route('/fade_music_out', methods=['POST'])
+def fade_music_out_hint():
+        # Gradually reduce the volume from 80 to 40
+    for volume in range(35, 10, -1):
+        # Send the volume command to the Raspberry Pi
+        
+        if check_task_state("squeekuence") == "solved":
+            publish.single("audio_control/ret-middle/volume", f"{volume} Background.ogg", hostname=broker_ip)
+        else:
+            publish.single("audio_control/ret-top/volume", f"{volume} Ambience.ogg", hostname=broker_ip)
+        
+        # Wait for a short duration between volume changes
+        time.sleep(0.05)  # Adjust the sleep duration as needed
+    time.sleep(1)
+    publish.single("audio_control/all/play", "prehint.ogg", hostname=broker_ip)
     return "Volume faded successfully"
 @app.route('/fade_music_in', methods=['POST'])
 def fade_music_in():
         # Gradually reduce the volume from 80 to 40
-    for volume in range(10, 25, 1):
+    for volume in range(10, 35, 1):
         # Send the volume command to the Raspberry Pi
-        publish.single("audio_control/ret-top/volume", f"{volume} Ambience.ogg", hostname=broker_ip)
+        if check_task_state("squeekuence") == "solved":
+            publish.single("audio_control/ret-middle/volume", f"{volume} Background.ogg", hostname=broker_ip)
+        else:
+            publish.single("audio_control/ret-top/volume", f"{volume} Ambience.ogg", hostname=broker_ip)
         # Wait for a short duration between volume changes
         time.sleep(0.05)  # Adjust the sleep duration as needed
     return "Volume faded successfully"
@@ -795,7 +816,7 @@ def get_task_status():
     
 @app.route('/solve_task/<task_name>', methods=['POST'])
 def solve_task(task_name):
-    global start_time, sequence, code1, code2, code3, code4, code5, codesCorrect, squeak_job, bird_job
+    global start_time, sequence, code1, code2, code3, code4, code5, codesCorrect, squeak_job, bird_job, should_hint_shed_play
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
     game_status = get_game_status()
     try:
@@ -817,13 +838,13 @@ def solve_task(task_name):
                     scheduler.remove_job('birdjob')
                     bird_job = False
                 publish.single("audio_control/ret-top/play", "hok.ogg", hostname=broker_ip)
-                call_control_maglock("doghouse-lock", "unlocked")
+                call_control_maglock("doghouse-lock", "locked")
         elif task_name == "squeekuence":
             if game_status == {'status': 'playing'}:
-                call_control_maglock("lab-hatch-lock", "unlocked")
+                call_control_maglock("lab-hatch-lock", "locked")
                 time.sleep(4)
                 publish.single("audio_control/ret-middle/play", "Background.ogg", hostname=broker_ip)
-                publish.single("audio_control/ret-middle/volume", "10 Background.ogg", hostname=broker_ip)
+                fade_music_in()
                 publish.single("audio_control/ret-top/volume", "3 Ambience.ogg", hostname=broker_ip)
             if squeak_job == True:
                 scheduler.remove_job('squeakjob')
@@ -831,7 +852,7 @@ def solve_task(task_name):
         elif task_name == "flowers":
             code1 = True
             codesCorrect += 1
-            call_control_maglock("green-led-keypad", "unlocked")
+            call_control_maglock("green-led-keypad", "locked")
             publish.single("audio_control/ret-top/play", "correct-effect.ogg", hostname=broker_ip)
             time.sleep(1)
             fade_music_out("Ambience")
@@ -906,10 +927,10 @@ def solve_task(task_name):
                 call_control_maglock("bottom_right_light", "unlocked")
                 publish.single("audio_control/ret-middle/play", "gelukt.ogg", hostname=broker_ip)
                 time.sleep(3)
-                call_control_maglock("sliding-door-lock", "unlocked")
+                call_control_maglock("sliding-door-lock", "locked")
                 time.sleep(6)
                 if should_balls_drop == True:
-                    call_control_maglock("ball-drop-lock", "unlocked")
+                    call_control_maglock("ball-drop-lock", "locked")
                 publish.single("audio_control/ret-middle/stop", "Background.ogg", hostname=broker_ip)
                 publish.single("audio_control/ret-middle/play", "Dogsout.ogg", hostname=broker_ip)
         elif task_name == "tree-lights":
@@ -951,10 +972,10 @@ def solve_task(task_name):
                 if code1 and code2 and code3 and code4 and code5:
                     print("executed")
                     time.sleep(7)
-                    publish.single("audio_control/ret-tree/play", "schuur_open.ogg", hostname=broker_ip)
+                    publish.single("audio_control/ret-top/play", "schuur_open.ogg", hostname=broker_ip)
                     time.sleep(5)
                     fade_music_in()
-                    call_control_maglock("shed-door-lock", "unlocked")
+                    call_control_maglock("shed-door-lock", "locked")
                     code1 = False
                     code2 = False
                     code3 = False
@@ -966,25 +987,27 @@ def solve_task(task_name):
         if code1 and code2 and code3 and code4 and code5:
             print("executed")
             time.sleep(2)
-            publish.single("audio_control/ret-tree/play", "schuur_open.ogg", hostname=broker_ip)
+            publish.single("audio_control/ret-top/play", "schuur_open.ogg", hostname=broker_ip)
             time.sleep(5)
             fade_music_in()
-            call_control_maglock("shed-door-lock", "unlocked")
+            call_control_maglock("shed-door-lock", "locked")
             code1 = False
             code2 = False
             code3 = False
             code4 = False
             code5 = False
         if codesCorrect == 2:
+            print("TRIGGERED")
             codesCorrect += 1
             time.sleep(2)
-            publish.single("audio_control/ret-tree/play", "goed_bezig.ogg", hostname=broker_ip)
+            publish.single("audio_control/ret-top/play", "goed_bezig.ogg", hostname=broker_ip)
             time.sleep(6)
             fade_music_in()
         if codesCorrect == 1 and should_hint_shed_play == True:
             should_hint_shed_play = False
+            print("TRIGGERED")
             time.sleep(2)
-            publish.single("audio_control/ret-tree/play", "after1code.ogg", hostname=broker_ip)
+            publish.single("audio_control/ret-top/play", "after1code.ogg", hostname=broker_ip)
             time.sleep(4)
             fade_music_in()
         with app.app_context():
@@ -1026,7 +1049,7 @@ def skip_task(task_name):
         if code1 and code2 and code3 and code4 and code5:
             print("executed")
             publish.single("audio_control/ret-top/play", "schuur_open.ogg", hostname=broker_ip)
-            call_control_maglock("shed-door-lock", "unlocked")
+            call_control_maglock("shed-door-lock", "locked")
             code1 = False
             code2 = False
             code3 = False
@@ -1096,8 +1119,9 @@ def reset_prepare():
         return jsonify({'message': 'Error resetting task statuses'})
 @app.route('/reset_puzzles', methods=['POST'])
 def reset_puzzles():
-    global code1, code2, code3, code4, code5, sequence, codesCorrect
+    global code1, code2, code3, code4, code5, sequence, codesCorrect, should_hint_shed_play
     update_game_status('awake')
+    should_hint_shed_play = True
     codesCorrect == 0
     code1 = False
     code2 = False
@@ -1109,7 +1133,7 @@ def reset_puzzles():
 
     # Iterate over devices
     for device in devices:
-        if device["type"] in ["maglock", "light"]:
+        if device["type"] in ["maglock"]:
             if device["name"] == "gang-licht-1":
                 call_control_maglock(device["name"], "unlocked")
             else:
@@ -1141,7 +1165,7 @@ def wake_room():
 
     # Iterate over devices
     for device in devices:
-        if device["type"] in ["light"]:
+        if device["type"] in ["light"] and device["name"] != "green-led" and device["name"] != "red-led" and device["name"] != "blue-led" and device["name"] != "red-led-keypad" and device["name"] != "green-led-keypad":
             call_control_maglock(device["name"], "unlocked")
     update_game_status('awake')
     return "room awakened"
@@ -1184,9 +1208,7 @@ def snooze_game():
 
         # Iterate over devices
         for device in devices:
-            if device["type"] in ["maglock"]:
-                call_control_maglock(device["name"], "unlocked")
-            elif device["type"] in ["light"]:
+            if device["type"] in ["maglock", "light"]:
                 call_control_maglock(device["name"], "locked")
         return "Room snoozed"
     except Exception as e:
@@ -1269,6 +1291,13 @@ def play_music():
     return jsonify({"status": "success"})
 @app.route('/stop_music', methods=['POST'])
 def stop_music():
+    global squeak_job, bird_job
+    if bird_job == True:
+        scheduler.remove_job('birdjob')
+        bird_job = False
+    if squeak_job == True:
+        scheduler.remove_job('squeakjob')
+        squeak_job = False
     publish.single("audio_control/all/full_stop", "stop", hostname=broker_ip)
     # Wipe the entire JSON file by overwriting it with an empty list
     file_path = os.path.join(current_dir, 'json', 'file_status.json')
@@ -1551,7 +1580,7 @@ def start_bird_sounds():
     time.sleep(8)
     publish.single("audio_control/ret-tree/play", "Eagle.ogg", hostname=broker_ip)
 def start_squeak():
-    publish.single("audio_control/ret-tree/play", "squeek.ogg", hostname=broker_ip)
+    publish.single("audio_control/ret-top/play", "squeek.ogg", hostname=broker_ip)
 
 API_URL_IR_SENSORS = 'http://192.168.0.114:5001/ir-sensor/status/'
 
@@ -1796,6 +1825,9 @@ def write_game_data(start_time, end_time):
 def start_timer():
     global timer_thread, timer_value, speed, timer_running, bird_job, start_time
     update_game_status('playing')
+    if bird_job == False:
+        scheduler.add_job(start_bird_sounds, 'interval', minutes=1, id='birdjob')
+        bird_job = True
     start_time = datetime.now()
     if timer_thread is None or not timer_thread.is_alive():
         timer_value = 3600  # Reset timer value to 60 minutes
@@ -1804,8 +1836,10 @@ def start_timer():
         timer_thread = threading.Thread(target=update_timer)
         timer_thread.daemon = True
         timer_thread.start()
-        fade_music_in()
+        fade_music_out("Lounge")
+        time.sleep(1)
         publish.single("audio_control/ret-top/play", "Ambience.ogg", hostname=broker_ip)
+        fade_music_in()
     return 'Timer started'
 
 @app.route('/timer/stop', methods=['POST'])
@@ -1955,7 +1989,8 @@ pi_service_statuses = {}
 preparedValue = {}
 @app.route('/prepare', methods=['POST'])
 def prepare_game():
-    global client, pi_service_statuses, player_type, preparedValue
+    global client, pi_service_statuses, player_type, preparedValue, should_hint_shed_play
+    should_hint_shed_play = True
     prefix = request.form.get('prefix')
     print(prefix)
     if get_game_status() == {'status': 'prepared'}:
@@ -1985,6 +2020,8 @@ def prepare_game():
     # Return the converted service statuses
     print(converted_statuses)
     update_game_status("prepared")
+    time.sleep(0.1)
+    publish.single("audio_control/ret-top/play", "Lounge.ogg", hostname=broker_ip)
     return jsonify({"message": converted_statuses}), 200
 if romy == False:
     turn_on_api()

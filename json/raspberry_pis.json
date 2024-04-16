@@ -1,0 +1,20 @@
+[
+    {
+        "ip_address": "192.168.0.122",
+        "mac_address": "B8:27:EB:88:E9:39",
+        "hostname": "ret-tree",
+        "services": ["mqtt", "sound", "actuator"]
+    },
+    {
+        "ip_address": "192.168.0.124",
+        "mac_address": "B8:27:EB:7B:14:9D",
+        "hostname": "ret-top",
+        "services": ["mqtt", "sound", "actuator", "keypad"]
+    },
+    {
+        "ip_address": "192.168.0.123",
+        "mac_address": "B8:27:EB:CD:D7:D8",
+        "hostname": "ret-middle",
+        "services": ["mqtt", "sound", "actuator"]
+    }
+]
