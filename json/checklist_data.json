@@ -32,7 +32,7 @@
     "completed": false
   },
   {
-    "task": "Controleer of de text \"woef woef\" nog in de deur vast zit",
+    "task": "Controleer of de text 'woef woef' nog in de deur vast zit",
     "completed": false
   },
   {
@@ -52,7 +52,7 @@
     "completed": false
   },
   {
-    "task": "Zet de rest van de foto's op willekeurige volgorde op de plankjes in de vakanatiekamer",
+    "task": "Zet de rest van de foto's op willekeurige volgorde op de plankjes in de vakantiekamer",
     "completed": false
   },
   {
@@ -61,6 +61,38 @@
   },
   {
     "task": "Leg het laatste puzzelstuk in de schuur in de eerste kamer en doe de schuur dicht",
+    "completed": false
+  },
+  {
+    "task": "Verplaats de 4 kraken knoppen naar de buitenste hoeken en doe deze op slot met de gekleurde sleutel slotjes",
+    "completed": false
+  },
+  {
+    "task": "Doe de 4 gekleurde sleutels in de kist en de kist op slot met de sloten (794 midden, 3456 midden, 216 zijkant)",
+    "completed": false
+  },
+  {
+    "task": "Doe alle cylindervormige dingen terug in het hondenbot, de regenboogkleurige met de code 216 als eerste",
+    "completed": false
+  },
+  {
+    "task": "Ga op de voetstappen staan en check of de cijfers nog leesbaar zijn op de grond en door de spiegel",
+    "completed": false
+  },
+  {
+    "task": "Doe het luik richting vakantie kamer dicht",
+    "completed": false
+  },  
+  {
+    "task": "Alle ballen opruimen in lab en eindkamer controleer of Max zijn bal er bij zit.",
+    "completed": false
+  },
+  {
+    "task": "sluit het luik voor de ballen",
+    "completed": false
+  },
+  {
+    "task": "neem Max mee uit de ontvangst naar controle kamer.",
     "completed": false
   }
 ]
