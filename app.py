@@ -182,7 +182,7 @@ def connect_device():
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 
 broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.216"
+#broker_ip = "192.168.1.13"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -227,6 +227,7 @@ def on_message(client, userdata, message):
         if sensor_name in sensor_states:
             sensor_states[sensor_name] = sensor_state
             update_json_file()
+            socketio.emit('sensor_update', room="all_clients")
             print("State changed. Updated JSON.")
         #print(sensor_states)
         if get_game_status() == {'status': 'playing'}:
@@ -827,6 +828,7 @@ def solve_task(task_name):
                 task['state'] = 'solved'
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
+        socketio.emit('task_update', room="all_clients")
         if task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
@@ -1057,7 +1059,7 @@ def skip_task(task_name):
             code5 = False
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
-
+        socketio.emit('task_update', room="all_clients")
         # You can add any additional logic here for handling skipped tasks if needed.
 
         return jsonify({'message': 'Task skipped successfully'})
@@ -1079,6 +1081,7 @@ def pend_task(task_name):
 
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
+        socketio.emit('task_update', room="all_clients")
         with app.app_context():
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
@@ -1122,7 +1125,7 @@ def reset_puzzles():
     global code1, code2, code3, code4, code5, sequence, codesCorrect, should_hint_shed_play
     update_game_status('awake')
     should_hint_shed_play = True
-    codesCorrect == 0
+    codesCorrect = 0
     code1 = False
     code2 = False
     code3 = False
@@ -1160,15 +1163,19 @@ def get_game_status():
 @app.route('/wake_room', methods=['POST'])
 def wake_room():
     # Update the retriever status to 'awake'
-    with open('json/sensor_data.json', 'r') as file:
-        devices = json.load(file)
+    try:
+        with open('json/sensor_data.json', 'r') as file:
+            devices = json.load(file)
 
-    # Iterate over devices
-    for device in devices:
-        if device["type"] in ["light"] and device["name"] != "green-led" and device["name"] != "red-led" and device["name"] != "blue-led" and device["name"] != "red-led-keypad" and device["name"] != "green-led-keypad":
-            call_control_maglock(device["name"], "unlocked")
-    update_game_status('awake')
-    return "room awakened"
+        # Iterate over devices
+        for device in devices:
+            if device["type"] in ["light"] and device["name"] != "green-led" and device["name"] != "red-led" and device["name"] != "blue-led" and device["name"] != "red-led-keypad" and device["name"] != "green-led-keypad":
+                call_control_maglock(device["name"], "unlocked")
+        update_game_status('awake')
+        return "room awakened"
+    except Exception as e:
+        update_game_status('awake')
+        return jsonify({'success': False, 'error': str(e)})
 @app.route('/control_light', methods=['POST'])
 def control_light():
     print("hi")

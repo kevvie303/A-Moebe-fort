@@ -236,6 +236,30 @@ $(document).ready(function () {
   });
 });
 
+var statusDiv = $(".status");
+
+fetchSensorData();
+
+// Function to fetch sensor data from the server
+function fetchSensorData() {
+  $.ajax({
+    type: "GET",
+    url: "/get_sensor_data",
+    success: function (sensor_data) {
+      displayStatus(sensor_data);
+    },
+    error: function (error) {
+      console.log("Error fetching sensor data:", error);
+    },
+  });
+}
+function displayStatus(sensor_data) {
+  var statusHTML = "";
+  sensor_data.forEach(function (item) {
+    statusHTML += "<p style='margin-bottom: 5px;'>" + item.name + ": <strong>" + item.state + "</strong></p>";
+  });
+  statusDiv.html(statusHTML);
+}
 $(document).ready(function () {
   var maglockStatuses = {}; // Object to store maglock statuses
 
@@ -869,7 +893,7 @@ function updatePiStatus() {
 // Start updating status on page load
 $(document).ready(function () {
   updatePiStatus();
-  setInterval(fetchTasks, 2000);
+  //setInterval(fetchTasks, 2000);
 });
 
 async function fetchTasks() {
@@ -1006,9 +1030,8 @@ async function markAsSolved(taskName) {
     console.log(data.message);
 
     closeTaskPopup(); // Close the popup
-    fetchTasks(); // Refresh the list
-    response.classList.remove("pending");
-    response.classList.add("unlocked");
+    //response.classList.remove("pending");
+    //response.classList.add("unlocked");
     console.log();
   } catch (error) {
     console.error("Error marking as solved:", error);
@@ -1025,7 +1048,7 @@ async function markAsSkipped(taskName) {
     console.log(data.message);
 
     closeTaskPopup(); // Close the popup
-    fetchTasks(); // Refresh the list
+    //fetchTasks(); // Refresh the list
     console.log();
   } catch (error) {
     console.error("Error marking as skipped:", error);
@@ -1042,7 +1065,7 @@ async function markAsPending(taskName) {
     console.log(data.message);
 
     closeTaskPopup(); // Close the popup
-    fetchTasks(); // Refresh the list
+    //fetchTasks(); // Refresh the list
   } catch (error) {
     console.error("Error marking as pending:", error);
   }
@@ -1455,9 +1478,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update your checklist UI based on the received data
     updateChecklist();
   }); 
-
+  socket.on("task_update", (data) => {
+    console.log("Received task_update event:", data);
+    // Update your checklist UI based on the received data
+    fetchTasks();
+  }); 
+  socket.on("sensor_update", (data) => {
+    console.log("Received sensor_update event:", data);
+    // Update your checklist UI based on the received data
+    fetchSensorData();
   // ... (other event listeners) ...
-
+  });
   // Function to update the checklist UI
   $("#reset-checklist").click(function () {
     // Send a request to the server to stop the music

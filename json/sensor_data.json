@@ -1,5 +1,12 @@
 [
     {
+        "name": "keypad",
+        "type": "keypad",
+        "pin": "usb",
+        "pi": "ret-top",
+        "state": "2915"
+    },
+    {
         "name": "blue_house_ir",
         "type": "Sensor",
         "pin": 18,
