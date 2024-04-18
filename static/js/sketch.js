@@ -551,7 +551,16 @@ $(document).ready(function () {
     $("#continue-button, #prepare-result, #reset-list-container").hide();
     $("#pause-button").show();
   });
-
+  $("#add-minute-button").click(function () {
+    $.post("/add_minute", function (data) {
+      console.log(data);
+    }).done(function () {});
+  });
+  $("#remove-minute-button").click(function () {
+    $.post("/remove_minute", function (data) {
+      console.log(data);
+    }).done(function () {});
+  });
   $("#end-game-button").click(function () {
     if (cachedUserName === "Brian" || cachedUserName === "brian") {
       $(".tasks, .locks, .lock-status, .pin-info").show();

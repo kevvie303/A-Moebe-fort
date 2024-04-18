@@ -190,6 +190,7 @@ sensor_states = {}
 
 pi_service_statuses = {}  # New dictionary to store service statuses for each Pi
 
+
 # Function to handle incoming MQTT messages
 def on_message(client, userdata, message):
     global sensor_states, pi_service_statuses, code1, code2, code3, code4, code5, codesCorrect, sequence
@@ -1793,6 +1794,22 @@ def update_timer():
         timer_value = max(timer_value - speed, 0)
         write_timer_value(timer_value)
         threading.Event().wait(1)
+@app.route('/add_minute', methods=['POST'])
+def add_minute():
+    global timer_value
+    timer_value += 60
+    current_time = read_timer_value()
+    new_time = current_time + 60
+    write_timer_value(new_time)
+    return "added"
+@app.route('/remove_minute', methods=['POST'])
+def remove_minute():
+    global timer_value
+    timer_value -= 60
+    current_time = read_timer_value()
+    new_time = current_time - 60
+    write_timer_value(new_time)
+    return "removed"
 @app.route('/game_data', methods=['GET'])
 def get_game_data():
     file_path = 'json/game_data.json'
