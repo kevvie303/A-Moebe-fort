@@ -1,3 +1,5 @@
+var cachedUserName = localStorage.getItem("userName");
+
 $(document).ready(function () {
   $("#add-music-button1").click(function () {
     // Open a file selection dialog when the button is clicked
@@ -551,7 +553,11 @@ $(document).ready(function () {
   });
 
   $("#end-game-button").click(function () {
-    $(".tasks, .locks, .lock-status, .pin-info, #reset-list-container").show();
+    if (cachedUserName === "Brian" || cachedUserName === "brian") {
+      $(".tasks, .locks, .lock-status, .pin-info").show();
+    } else {
+      $(".tasks, .locks, .lock-status, .pin-info, #reset-list-container").show();
+    }
     $("#prepare-result").hide();
     $("#pause-button, #prepare-game-button").show();
     clearInterval(intervalId);
@@ -1402,7 +1408,11 @@ $(document).ready(function () {
         $("#prepare-result, #reset-list-container").hide();
       }
       if (data.status === "preparing") {
-        $("#prepare-result, #reset-list-container, .locks").show();
+        if (cachedUserName === "Brian" || cachedUserName === "brian") {
+          $("#prepare-result, .locks").show();
+        } else {
+          $("#prepare-result, #reset-list-container, .locks").show();
+        }
         $(".tasks, .lock-status, .pin-info").hide();
         console.log("preparing!!")
       }
@@ -1416,7 +1426,11 @@ $(document).ready(function () {
       $("#prepare-result, #snooze-game-button, #reset-list-container").hide();
     }
     if (data.status === "preparing") {
-      $("#prepare-result, #reset-list-container, .locks").show();
+      if (cachedUserName === "Brian" || cachedUserName === "brian") {
+        $("#prepare-result, .locks").show();
+      } else {
+        $("#prepare-result, #reset-list-container, .locks").show();
+      }
       $(".tasks, .lock-status, .pin-info").hide();
       console.log("preparing!!")
     }
@@ -1547,7 +1561,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } else {
       // If not all tasks are completed, display the checklist
+      if (cachedUserName === "Brian" || cachedUserName === "brian") {
+        resetList.style.display = "none";
+      } else {
       resetList.style.display = "flex";
+      }
       resetList.innerHTML = ""; // Clear existing checklist items
       checklist.forEach((item, index) => {
         const listItem = document.createElement("li");
@@ -1584,7 +1602,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       // Show the checklist
+      if (cachedUserName === "Brian" || cachedUserName === "brian") {
+        resetList.style.display = "none";
+      } else {
       resetListContainer.style.display = "flex";
+      }
     }
   }
   function fetchAndDisplayChecklist() {
@@ -1670,4 +1692,81 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("pagehide", function () {
     loader.hidden = true; // Hide the loader
   });
+});
+$(document).ready(function () {
+  var modal = $("#myModal");
+  var currentNamePara = $("#currentName");
+  var newUsernameInput = $("#newUsernameInput");
+  var updateNameButton = $("#updateNameButton");
+  var accountButton = $("#accountButton");
+  var statusSection = $("#lockControls");
+  var taskButtonContainer = $(".task-button-container");
+  var raspberryPiButton = $("#raspberryPiButton");
+  var sensorButton = $("#sensorButton");
+  var sdRenewalButton = $("#sdRenewalButton");
+  var resetList = $("#reset-list-container");
+
+  // Check if username is cached
+  if (cachedUserName) {
+    showMainContent();
+  } else {
+    showModal();
+  }
+
+  // Show modal dialog
+  function showModal() {
+    modal.show();
+    currentNamePara.text(cachedUserName || "Your name is not set.");
+    newUsernameInput.val(cachedUserName || "");
+  }
+
+  // Close the modal when the user clicks on the close button
+  $(".close").click(function () {
+    modal.hide();
+  });
+
+  // Close the modal when the user clicks outside of it
+  $(window).click(function (event) {
+    if (event.target == modal[0]) {
+      modal.hide();
+    }
+  });
+
+  // Update Name button click event
+  updateNameButton.click(function () {
+    var newUserName = newUsernameInput.val();
+    localStorage.setItem("userName", newUserName);
+    currentNamePara.text(newUserName);
+    modal.hide();
+    location.reload();
+  });
+
+  // Account button click event
+  accountButton.click(function () {
+    showModal();
+  });
+    // Function to check user permissions and display elements accordingly
+  function checkPermissions(userName) {
+    var allowedNames = ["Brian", "brian", "Brink", "brink", "Kevin", "kevin"];
+    if (allowedNames.includes(userName)) {
+      raspberryPiButton.show();
+      sensorButton.show();
+      sdRenewalButton.show();
+      statusSection.show();
+      taskButtonContainer.show();
+      $("#reset-list-container").hide();
+    } else {
+      raspberryPiButton.hide();
+      sensorButton.hide();
+      sdRenewalButton.hide();
+      statusSection.hide();
+      taskButtonContainer.hide();
+      resetList.show();
+    }
+  }
+
+  // Show main content
+  function showMainContent() {
+    checkPermissions(cachedUserName);
+  }
 });

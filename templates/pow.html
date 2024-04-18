@@ -38,7 +38,16 @@
             <p id="time-left">60:00</p>
         </div>
     </nav>
-
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>My Account</h2>
+          <p>Your current name:</p>
+          <p id="currentName"></p>
+          <input type="text" id="newUsernameInput" placeholder="Enter new name" required>
+          <button id="updateNameButton" class="button-style">Update Name</button>
+        </div>
+      </div>
     <!-- media section -->
     <section class="media-hidden hidden-popup hidden">
         <article class="media popup">
@@ -104,9 +113,9 @@
                     <div class="reboot">
                         <h3>Reboot</h3>
                     </div>
-                <a href="/list_raspberrypi" class="button-style">List Raspberry Pi Devices</a>
-                <a href="/list_sensors" class="button-style">Add Sensor</a>
-                <a href="/sd-renewal" class="button-style">Renew sd card</a>
+                <a href="/list_raspberrypi" id="raspberryPiButton" class="button-style">List Raspberry Pi Devices</a>
+                <a href="/list_sensors" id="sensorButton" class="button-style">Add Sensor</a>
+                <a href="/sd-renewal" id="sdRenewalButton" class="button-style">Renew sd card</a>
             </article>
                 
             </div>
@@ -291,9 +300,9 @@
     <a href="{{ url_for('pin_info') }}" class="pin-info button-style">GPIO pin information</a>
 
     </section>
-
     <footer>
-        <a href="/">Kamers</a>
+        <a href="/" class="button-style">Kamers</a>
+        <button id="accountButton" class="button-style">My Account</button>
     </footer>
 
     
