@@ -207,116 +207,34 @@ pi_service_statuses = {}  # New dictionary to store service statuses for each Pi
 # Function to handle incoming MQTT messages
 def on_message(client, userdata, message):
     global sensor_states, pi_service_statuses
-    
+
     # Extract the topic and message payload
     topic = message.topic
     parts = topic.split("/")
-    if len(parts) == 3 and parts[0] == prefix_to_subscribe[:-1]:
-        pi_name = parts[1]  # Extract the Pi name
-        data = json.loads(message.payload.decode("utf-8"))
-        
-        # Check if the message is for service status
-        if parts[2] == "service_status":
+    try:
+        if len(parts) == 3 and parts[0] == prefix_to_subscribe[:-1]:
+            pi_name = parts[1]  # Extract the Pi name
+            data = json.loads(message.payload.decode("utf-8"))
+            if parts[2] == "service_status":
             # Update service status for the Pi
-            pi_service_statuses[pi_name] = data
-            print(f"Received service status from {pi_name}: {data}")
-            
+                pi_service_statuses[pi_name] = data
+                print(f"Received service status from {pi_name}: {data}")
+
             # Now you can process the received service status data as needed
             # For example, check if all required services are active and take actions accordingly
-            
-            # Example: Check if all services are active for the Pi
-            if all(status == "active" for status in data.values()):
-                print(f"All services are active for {pi_name}")
-            else:
-                print(f"Not all services are active for {pi_name}")
 
+            # Example: Check if all services are active for the Pi
+                if all(status == "active" for status in data.values()):
+                   print(f"All services are active for {pi_name}")
+                else:
+                    print(f"Not all services are active for {pi_name}")
+    except json.decoder.JSONDecodeError as e:
+    # Handle the JSONDecodeError here, you may want to log it or take some other action
+        print("JSONDecodeError occurred:", e)
+    # Optionally, you can assign a default value to data or raise a custom exception
+        #data = {}  # Assigning an empty dictionary as default data
         # For other types of messages (e.g., sensor states), you can handle them as before
-        else:
-            return "Invalid topic format. Expected: state_data/<pi_name>/<sensor_name>"
-            sensor_name = parts[2]
-            sensor_state = data
-            sensor_states[sensor_name] = sensor_state
-            print(f"Received MQTT message - Sensor: {sensor_name}, State: {sensor_state}")
-    
-            if sensor_name in sensor_states:
-                sensor_states[sensor_name] = sensor_state
-                update_json_file()
-                print("State changed. Updated JSON.")
-            #print(sensor_states)
-            if get_game_status() == {'status': 'playing'}:
-                if sensor_name == "rfid_corridor":
-                    print(sensor_state)
-                    mendez1 = 584185540695
-                    mendez2 = 584199238531
-                    roosenthaal1 = 584198160159
-                    roosenthaal2 = 584183068095
-                    sensor_state_int = int(sensor_state)
-                    print(roosenthaal2)
-                    if sensor_state_int == mendez1 or sensor_state_int == mendez2:
-                        if check_task_state("scan-mendez") == "pending":
-                            solve_task("scan-mendez")
-                        print("Correct code")
-                    elif sensor_state_int == roosenthaal1 or sensor_state_int == roosenthaal2:
-                        if check_task_state("scan-rosenthal") == "pending":
-                            solve_task("scan-rosenthal")
-                        print("Correct code")
-                if check_rule("jas-1"):
-                    if check_task_state("kapstok-zuidafrika") == "pending":
-                        solve_task("kapstok-zuidafrika")
-                if check_rule("jas-1") == False:
-                    if check_task_state("kapstok-zuidafrika") == "solved":
-                        pend_task("kapstok-zuidafrika")
-                if check_rule("jas-2"):
-                    if check_task_state("kapstok-italie") == "pending":
-                        solve_task("kapstok-italie")
-                if check_rule("jas-2") == False:
-                    if check_task_state("kapstok-italie") == "solved":
-                        pend_task("kapstok-italie")
-                if check_rule("jas-3"):
-                    if check_task_state("kapstok-ijsland") == "pending":
-                        solve_task("kapstok-ijsland")
-                if check_rule("jas-3") == False:
-                    if check_task_state("kapstok-ijsland") == "solved":
-                        pend_task("kapstok-ijsland")
-                if check_rule("jas-1") and check_rule("jas-2") and check_rule("jas-3"):
-                    if check_task_state("kapstok-allemaal") == "pending":
-                        solve_task("kapstok-allemaal")
-                if check_rule("grenade-1"):
-                    if check_task_state("granaat-tomsk") == "pending":
-                        solve_task("granaat-tomsk")
-                if check_rule("grenade-1") == False:
-                    if check_task_state("granaat-tomsk") == "solved":
-                        pend_task("granaat-tomsk")
-                if check_rule("grenade-2"):
-                    if check_task_state("granaat-khabarovsk") == "pending":
-                        solve_task("granaat-khabarovsk")
-                if check_rule("grenade-2") == False:
-                    if check_task_state("granaat-khabarovsk") == "solved":
-                        pend_task("granaat-khabarovsk")
-                if check_rule("grenade-3"):
-                    if check_task_state("granaat-soratov") == "pending":
-                        solve_task("granaat-soratov")
-                if check_rule("grenade-3") == False:
-                    if check_task_state("granaat-soratov") == "solved":
-                        pend_task("granaat-soratov")
-                if check_rule("grenade-1") and check_rule("grenade-2") and check_rule("grenade-3"):
-                    if check_task_state("granaat-allemaal") == "pending":
-                        solve_task("granaat-allemaal")
-                if check_rule("camera_button"):
-                    if check_task_state("Stroomstoring") == "pending":
-                        solve_task("Stroomstoring")
-                if check_rule("ehbo-kist") == False:
-                    if check_task_state("Medicijnkastje-open") == "pending":
-                        solve_task("Medicijnkastje-open")
-                if check_rule("nightstand") == False:
-                    if check_task_state("Poster") == "pending":
-                        solve_task("Poster")
-                if check_rule("3-objects"):
-                    if check_task_state("3-objecten") == "pending":
-                        solve_task("3-objecten")
-                if check_rule("alarm-button"):
-                    if check_task_state("alarm-knop") == "pending":
-                        solve_task("alarm-knop")
+
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
@@ -1794,7 +1712,11 @@ def reset_timer_speed():
 
 @app.route('/timer/value', methods=['GET'])
 def get_timer_value():
-    return str(read_timer_value())
+    try:
+        return str(read_timer_value())
+    except ValueError:
+        # Log the error or perform some other action here
+        return "Error: Timer value is not available at the moment"
 
 @app.route('/timer/get-speed', methods=['GET'])
 def get_timer_speed():

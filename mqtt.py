@@ -1,10 +1,25 @@
+from flask import Flask, render_template, request, redirect, jsonify, url_for, send_from_directory
+from flask_cors import CORS
+from flask_socketio import SocketIO, emit, join_room
 import json
+import paramiko
+import atexit
+import platform
 import os
+from dotenv import load_dotenv
 import time
-from flask import jsonify
-from app import app
-import paho.mqtt.publish as publish
+import multiprocessing
+import requests
+import subprocess
+import signal
+import sys
+import threading
+import logging
+from apscheduler.schedulers.background import BackgroundScheduler
 import paho.mqtt.client as mqtt
+import paho.mqtt.publish as publish
+from networkscanner import NetworkScanner
+from datetime import datetime, date
 
 
 
@@ -125,10 +140,9 @@ def solve_task(task_name):
                 publish.single("audio_control/for-poepdoos/stop", "WC.ogg", hostname=broker_ip)
                 publish.single("audio_control/all/play", "alarm.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/all/volume", "100 alarm.ogg", hostname="192.168.50.253")
-                time.sleep(120)
+                #time.sleep(120)
                 fade_music_out("alarm")
-        with app.app_context():
-            return jsonify({'message': 'Task updated successfully'})
+        return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error updating task'})
 def pend_task(task_name):
@@ -144,14 +158,14 @@ def pend_task(task_name):
 
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
-        with app.app_context():
-            return jsonify({'message': 'Task updated successfully'})
+        return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error updating task'})
 def fade_music_out(file):
     global broker_ip
     print(file)
     if file == "alarm":
+        time.sleep(120)
         initial_volume = 100
         final_volume = 40
     else:
@@ -178,6 +192,7 @@ def update_json_file():
         # Read existing JSON data
         with open("json/sensor_data.json", 'r') as json_file:
             sensor_data = json.load(json_file)
+        print("Successfully loaded sensor_data.json")
 
         # Update sensor states in the JSON data
         for sensor in sensor_data:
@@ -188,9 +203,11 @@ def update_json_file():
         # Write the updated JSON data back to the file
         with open("json/sensor_data.json", 'w') as json_file:
             json.dump(sensor_data, json_file, indent=4)
+        print("Successfully updated sensor_data.json")
 
     except Exception as e:
         print(f"Error updating JSON file: {e}")
+
 broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
 #broker_ip = "192.168.1.216"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
@@ -205,6 +222,7 @@ def on_message(client, userdata, message):
     global sensor_states, pi_service_statuses
     
     # Extract the topic and message payload
+    sensor_states = {}
     topic = message.topic
     parts = topic.split("/")
     sensor_name = parts[-1]  # Extract the last part of the topic (sensor name)
@@ -217,6 +235,9 @@ def on_message(client, userdata, message):
         sensor_states[sensor_name] = sensor_state
         update_json_file()
         print("State changed. Updated JSON.")
+
+    # Add print statements for debugging
+    print(f"Sensor States: {sensor_states}")  # Print sensor_states for debugging
     #print(sensor_states)
     if get_game_status() == {'status': 'playing'}:
         if sensor_name == "rfid_corridor":
