@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for, send_from_directory
+from flask import Flask, render_template, request, redirect, jsonify, url_for, send_from_directory, send_file
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, join_room
 import json
@@ -20,6 +20,7 @@ import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 from networkscanner import NetworkScanner
 from datetime import datetime, date
+from youtube_downloader import download_video, convert_to_ogg
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -180,9 +181,22 @@ def connect_device():
         print("MAC address not found for the Raspberry Pi at", ip_address)
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
+@app.route('/convert', methods=['POST'])
+def convert():
+    youtube_url = request.form['youtubeURL']
+    # Remove any existing .ogg file before converting a new video
+    remove_existing_ogg()
+    video_file = download_video(youtube_url)
+    ogg_file = convert_to_ogg(video_file)
+    return send_file(ogg_file, as_attachment=True)
 
-broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.216"
+def remove_existing_ogg():
+    # Remove any existing .ogg file
+    for file in os.listdir("."):
+        if file.endswith(".ogg"):
+            os.remove(file)
+#broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
+broker_ip = "192.168.1.13"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -1730,7 +1744,22 @@ def start_timer():
         print("first file played")
         publish.single("audio_control/all/play", "Wastafel-sleutel-1.ogg", hostname=broker_ip)
     return 'Timer started'
-
+@app.route('/add_minute', methods=['POST'])
+def add_minute():
+    global timer_value
+    timer_value += 60
+    current_time = read_timer_value()
+    new_time = current_time + 60
+    write_timer_value(new_time)
+    return "added"
+@app.route('/remove_minute', methods=['POST'])
+def remove_minute():
+    global timer_value
+    timer_value -= 60
+    current_time = read_timer_value()
+    new_time = current_time - 60
+    write_timer_value(new_time)
+    return "removed"
 @app.route('/timer/stop', methods=['POST'])
 def stop_timer():
     global timer_thread, timer_running, timer_value, kraken1, kraken2, kraken3, kraken4, bird_job, start_time
