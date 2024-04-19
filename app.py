@@ -195,8 +195,8 @@ def remove_existing_ogg():
     for file in os.listdir("."):
         if file.endswith(".ogg"):
             os.remove(file)
-#broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
-broker_ip = "192.168.1.13"
+broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
+#broker_ip = "192.168.1.13"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}

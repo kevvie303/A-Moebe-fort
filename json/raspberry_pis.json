@@ -1,0 +1,55 @@
+[
+    {
+        "ip_address": "192.168.50.197",
+        "mac_address": "B8:27:EB:A4:4E:20",
+        "hostname": "for-corridor",
+        "services": [
+            "mqtt",
+            "sound",
+            "actuator",
+            "rfid"
+        ]
+    },
+    {
+        "ip_address": "192.168.50.242",
+        "mac_address": "B8:27:EB:71:A1:59",
+        "hostname": "for-cell",
+        "services": [
+            "mqtt",
+            "sound",
+            "actuator"
+        ]
+    },
+    {
+        "ip_address": "192.168.50.60",
+        "mac_address": "B8:27:EB:A9:28:8B",
+        "hostname": "for-guard",
+        "services": [
+            "mqtt",
+            "sound",
+            "actuator",
+            "camera"
+        ]
+    },
+    {
+        "ip_address": "192.168.50.27",
+        "mac_address": "D8:3A:DD:3A:59:A9",
+        "hostname": "for-garderobe",
+        "services": [
+            "mqtt",
+            "sound",
+            "actuator"
+        ]
+    },
+    {
+        "ip_address": "192.168.50.227",
+        "mac_address": "B8:27:EB:CA:8A:B4",
+        "hostname": "for-poepdoos",
+        "services": [
+            "mqtt",
+            "sound",
+            "actuator"
+        ]
+
+    }
+]
