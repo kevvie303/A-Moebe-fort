@@ -1603,7 +1603,22 @@ def start_timer():
         publish.single("audio_control/raspberrypi/play", "intro.ogg", hostname=broker_ip)
         fade_music_in("intro")
     return 'Timer started'
-
+@app.route('/add_minute', methods=['POST'])
+def add_minute():
+    global timer_value
+    timer_value += 60
+    current_time = read_timer_value()
+    new_time = current_time + 60
+    write_timer_value(new_time)
+    return "added"
+@app.route('/remove_minute', methods=['POST'])
+def remove_minute():
+    global timer_value
+    timer_value -= 60
+    current_time = read_timer_value()
+    new_time = current_time - 60
+    write_timer_value(new_time)
+    return "removed"
 @app.route('/timer/stop', methods=['POST'])
 def stop_timer():
     global timer_thread, timer_running, timer_value
