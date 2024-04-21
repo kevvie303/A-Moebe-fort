@@ -1,9 +1,11 @@
+def create_html_file(name):
+    html_content = f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Prisoners of War</title>
+    <title>{name}</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
     <link rel="icon" href="static/img/logo.png" type="image/png">
@@ -313,3 +315,7 @@
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
 </html>
+    """
+
+    with open(f'templates/rooms/{name}.html', 'w') as file:
+        file.write(html_content)    

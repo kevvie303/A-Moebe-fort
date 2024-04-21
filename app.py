@@ -21,6 +21,7 @@ import paho.mqtt.publish as publish
 from networkscanner import NetworkScanner
 from datetime import datetime, date
 from youtube_downloader import download_video, convert_to_ogg
+from html_creator import create_html_file
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -182,8 +183,8 @@ def connect_device():
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 
-broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.13"
+#broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
+broker_ip = "192.168.1.13"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -507,7 +508,7 @@ def trigger():
     return jsonify({'message': 'Data received successfully'})
 @app.route('/retriever')
 def pow():
-    return render_template('pow.html')
+    return render_template('rooms/pow.html')
 def start_scripts():
     return "nothing"
 
@@ -2065,10 +2066,24 @@ def prepare_game():
 if romy == False:
     turn_on_api()
     start_scripts()
-
+@app.route('/create_room_template')
+def create_room_template():
+    return render_template('create_room.html')
+@app.route('/create_room', methods=['POST'])
+def create_room():
+    if request.method == 'POST':
+        name = request.form['name']
+        create_html_file(name)
+        return f'HTML file "{name}.html" has been created in the templates folder.'
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # Get a list of all HTML files in the 'rooms' folder
+    escape_rooms = [file.split('.')[0] for file in os.listdir('templates/rooms') if file.endswith('.html')]
+    print(escape_rooms)
+    return render_template('index.html', escape_rooms=escape_rooms)
+@app.route('/rooms/<room>')
+def room(room):
+    return render_template(f'rooms/{room}.html')
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, handle_interrupt)
     socketio.run(app, host='0.0.0.0', port=80, allow_unsafe_werkzeug=True)

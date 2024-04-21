@@ -14,29 +14,26 @@
     <header class="logo">
         <figure class="logo-container">
             <img src="static/img/logo.png" alt="Logo">
-            <figcaption>A-Moebe Beta</figcaption>
+            <figcaption>A-Moebe</figcaption>
         </figure>
     </header>
 
     <section class="rooms">
-
         <h2>Kamers</h2>
 
+        <!-- Loop through escape rooms and generate HTML for each -->
+        {% for room in escape_rooms %}
         <article class="krijgsgevangenis-container">
-            <a href="/retriever" id="krijgsgevangenis-link" class="krijgsgevangenis-link">
+            <a href="rooms/{{ room }}" id = "krijgsgevangenis-link" class="krijgsgevangenis-link">
                 <div class="preview">
                     <p id="time-played">00:00</p>
-                    <h3>The Retriever</h3>
+                    <h3>{{ room|capitalize }}</h3>
                     <p id="time-left">60:00</p>
                 </div>
             </a>
         </article>
-    </section>
-    <ul>
-        {% for device in devices %}
-            <li>IP: {{ device[0] }}, MAC: {{ device[1] }}</li>
         {% endfor %}
-    </ul>
+    </section>
     <a href="/game_data.html" class="button-style"><button>View Game Data</button></a>
     <h1>YouTube to OGG Converter</h1>
     <form action="/convert" method="post">
@@ -44,6 +41,7 @@
         <input type="text" id="youtubeURL" name="youtubeURL" required>
         <button type="submit">Convert</button>
     </form>
+    <a href="/create_room_template" class="button-style main-button">Create Room</a>
     <footer>
         <a href="/">Kamers</a>
     </footer>

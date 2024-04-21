@@ -483,6 +483,26 @@ a:focus {
   cursor: pointer;
 }
 
+form {
+  text-align: center;
+  margin-top: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #050505;
+}
+
+input[type=text] {
+  text-align: center;
+  width: 20%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;
