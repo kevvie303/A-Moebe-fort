@@ -553,6 +553,10 @@ $(document).ready(function () {
       console.log(data);
       fetchTasks(); // Refresh the list after resetting statuses
     });
+    $.post("/reset_checklist", function (data) {
+      console.log(data);
+      fetchTasks(); // Refresh the list after resetting statuses
+    });
   });
   $("#snooze-game-button").click(function () {
     $.post("/snooze_game", function (data) {
