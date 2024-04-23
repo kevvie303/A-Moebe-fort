@@ -21,7 +21,7 @@ import paho.mqtt.publish as publish
 from networkscanner import NetworkScanner
 from datetime import datetime, date
 from youtube_downloader import download_video, convert_to_ogg
-from html_creator import create_html_file
+from html_creator import create_html_file, create_room_folder
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -489,18 +489,19 @@ def check_rule(item_name):
     else:
         pi2.exec_command('raspi-gpio set 8 op dl')
     # Create an MQTT client instance
-client = mqtt.Client()
+if loadMqtt:
+    client = mqtt.Client()
 
-    # Set the callback function for incoming MQTT messages
-client.on_message = on_message
+        # Set the callback function for incoming MQTT messages
+    client.on_message = on_message
 
-    # Connect to the MQTT broker
-client.connect(broker_ip, 1883)
+        # Connect to the MQTT broker
+    client.connect(broker_ip, 1883)
 
-    # Subscribe to all topics under the specified prefix
-client.subscribe(prefix_to_subscribe + "#")  # Subscribe to all topics under the prefix
-# Function to execute the delete-locks.py script
-client.loop_start()
+        # Subscribe to all topics under the specified prefix
+    client.subscribe(prefix_to_subscribe + "#")  # Subscribe to all topics under the prefix
+    # Function to execute the delete-locks.py script
+    client.loop_start()
 
 @app.route('/trigger', methods=['POST'])
 def trigger():
@@ -2074,6 +2075,7 @@ def create_room():
     if request.method == 'POST':
         name = request.form['name']
         create_html_file(name)
+        create_room_folder(name)
         return f'HTML file "{name}.html" has been created in the templates folder.'
 @app.route('/')
 def index():

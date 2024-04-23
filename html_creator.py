@@ -1,3 +1,5 @@
+import os
+import json
 def create_html_file(name):
     html_content = f"""
 <!DOCTYPE html>
@@ -319,3 +321,23 @@ def create_html_file(name):
 
     with open(f'templates/rooms/{name}.html', 'w') as file:
         file.write(html_content)    
+
+def create_room_folder(room_name):
+    folder_path = os.path.join('json', room_name)
+    os.makedirs(folder_path, exist_ok=True)
+
+    # Initialize JSON files with empty arrays or initial data
+    files = {
+        "checklist_data.json": [],
+        "file_status.json": [],
+        "game_data.json": [],
+        "raspberry_pis.json": [],
+        "game_status.json": {"status": "awake"},
+        "sensor_data.json": [],
+        "tasks.json": []
+    }
+
+    # Write initial data to JSON files
+    for filename, data in files.items():
+        with open(os.path.join(folder_path, filename), 'w') as f:
+            json.dump(data, f)
