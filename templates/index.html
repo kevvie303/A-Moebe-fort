@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>A-moebe Beta</title>
+    <title>A-moebe</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
     <link rel="icon" href="static/img/logo.png" type="image/png">
@@ -26,9 +26,9 @@
         <article class="krijgsgevangenis-container">
             <a href="rooms/{{ room }}" id = "krijgsgevangenis-link" class="krijgsgevangenis-link">
                 <div class="preview">
-                    <p id="time-played">00:00</p>
+                    <p id="{{ room|replace(' ', '-') }}-time-played" class="text-red">00:00</p>
                     <h3>{{ room|capitalize }}</h3>
-                    <p id="time-left">60:00</p>
+                    <p id="{{ room|replace(' ', '-') }}-time-left" class="text-green">60:00</p>
                 </div>
             </a>
         </article>
@@ -43,10 +43,41 @@
     </form>
     <a href="/create_room_template" class="button-style main-button">Create Room</a>
     <footer>
-        <a href="/">Kamers</a>
+        <a href="/" class="button-style">Kamers</a>
+        <button id="accountButton" class="button-style">Coming soon</button>
     </footer>
 
-    <script src="{{ url_for('static', filename='js/sketch.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='js/sketch.js') }}"></script> -->
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    {% for room in escape_rooms %}
+    <script>
+      function updateTimer() {
+        $.get(`/timer/value/{{ room }}`, function (data) {
+          var timeLeft = parseInt(data);
+          var timePlayed = 3600 - timeLeft;
+
+          var formattedTimeLeft = formatTime(timeLeft);
+          var formattedTimePlayed = formatTime(timePlayed);
+          var roomId = "{{ room }}".replace(/\s+/g, '-'); // Replace spaces with hyphens
+            $("#" + roomId + "-time-left").text(formattedTimeLeft);
+            $("#" + roomId + "-time-played").text(formattedTimePlayed);
+
+        });
+      }
+      // Call the timer update function for {{ room }} initially
+      setInterval(updateTimer, 1000);
+      function formatTime(seconds) {
+        var minutes = Math.floor(seconds / 60);
+        var remainingSeconds = seconds % 60;
+        return (
+            minutes +
+            ":" +
+            (remainingSeconds < 10 ? "0" : "") +
+            remainingSeconds.toFixed(0)
+        );
+  }
+  
+    </script>
+    {% endfor %}
 </body>
 </html>

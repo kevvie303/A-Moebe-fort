@@ -13,6 +13,7 @@ import requests
 import subprocess
 import signal
 import sys
+from threading import Thread
 import threading
 import logging
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -117,10 +118,10 @@ def is_online(ip):
         print(f"Error pinging {ip}: {e}")
         return False
 
-@app.route('/check_devices_status', methods=['GET'])
-def check_devices_status():
+@app.route('/check_devices_status/<room>', methods=['GET'])
+def check_devices_status(room):
     try:
-        with open('json/raspberry_pis.json', 'r') as file:
+        with open(f'json/{room}/raspberry_pis.json', 'r') as file:
             devices = json.load(file)
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({"error": "Failed to read Raspberry Pi data"}), 500
@@ -298,13 +299,13 @@ def lock_route():
     try:
         task = request.json.get('task', '')
         is_checked = request.json.get('isChecked', False)
-
+        roomName = request.json.get('roomName', '')
         # Determine the action based on the isChecked flag
         action = "locked" if is_checked else "unlocked"
         execute_lock_command(task, action)
 
         # Update the checklist status
-        update_checklist(task, is_checked)
+        update_checklist(roomName, task, is_checked)
         socketio.emit('checklist_update', {'task': task, 'isChecked': is_checked}, room="all_clients")
         print(f"Locking action executed successfully for task: {task}, isChecked: {is_checked}")
         return jsonify({'success': True, 'message': 'Locking action executed successfully'})
@@ -329,10 +330,11 @@ def execute_lock_command(task, action):
         print(f"Error executing {action} command: {str(e)}")
 
 
-def update_checklist(task, is_checked):
+def update_checklist(room, task, is_checked):
     try:
+        checklist_file_path = get_checklist_file_path(room)
         # Read the current checklist data
-        with open(CHECKLIST_FILE, 'r') as file:
+        with open(checklist_file_path, 'r') as file:
             checklist_data = json.load(file)
 
         # Find the task in the checklist and update its completed status
@@ -341,30 +343,34 @@ def update_checklist(task, is_checked):
                 item['completed'] = is_checked
 
         # Write the updated data back to the file
-        with open(CHECKLIST_FILE, 'w') as file:
+        with open(checklist_file_path, 'w') as file:
             json.dump(checklist_data, file, indent=2)
     except Exception as e:
         print(f"Error updating checklist: {str(e)}")
-@app.route('/get-checklist', methods=['GET'])
-def get_checklist_route():
+def get_checklist_file_path(room_name):
+    return os.path.join('json', room_name, 'checklist_data.json')
+
+@app.route('/get-checklist/<room>', methods=['GET'])
+def get_checklist_route(room):
     try:
-        checklist = get_checklist()
+        checklist_file_path = get_checklist_file_path(room)
+        checklist = get_checklist(checklist_file_path)
         return jsonify({'success': True, 'checklist': checklist})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
-def get_checklist():
+def get_checklist(checklist_file_path):
     try:
         # Read the current checklist data
-        with open(CHECKLIST_FILE, 'r') as file:
+        with open(checklist_file_path, 'r') as file:
             checklist_data = json.load(file)
 
         return checklist_data
     except Exception as e:
         print(f"Error getting checklist: {str(e)}")
         return []
-def check_task_state(task_name):
-    json_file_path = 'json/tasks.json'  # Set the path to your JSON file
+def check_task_state(task_name, room):
+    json_file_path = f'json/{room}/tasks.json'  # Set the path to your JSON file
     with open(json_file_path, 'r') as json_file:
         task_data = json.load(json_file)
 
@@ -372,10 +378,10 @@ def check_task_state(task_name):
         if task["task"] == task_name:
             return task["state"]
     return "Task not found"
-def update_json_file():
+def update_json_file(room):
     try:
         # Read existing JSON data
-        with open("json/sensor_data.json", 'r') as json_file:
+        with open(f"json/{room}/sensor_data.json", 'r') as json_file:
             sensor_data = json.load(json_file)
 
         # Update sensor states in the JSON data
@@ -385,24 +391,25 @@ def update_json_file():
                 sensor["state"] = sensor_states[sensor_name]
 
         # Write the updated JSON data back to the file
-        with open("json/sensor_data.json", 'w') as json_file:
+        with open(f"json/{room}/sensor_data.json", 'w') as json_file:
             json.dump(sensor_data, json_file, indent=4)
 
     except Exception as e:
         print(f"Error updating JSON file: {e}")
-@app.route('/get_sensor_data', methods=['GET'])
-def read_sensor_data():
-    with open("json/sensor_data.json", "r") as file:
+@app.route('/get_sensor_data/<room>', methods=['GET'])
+def read_sensor_data(room):
+    file_path = os.path.join('json', room, 'sensor_data.json')
+    with open(file_path, "r") as file:
         sensor_data = json.load(file)
     return jsonify(sensor_data)
-def read_sensor_data2():
-    with open("json/sensor_data.json", "r") as file:
+def read_sensor_data2(room):
+    with open(f"json/{room}/sensor_data.json", "r") as file:
         sensor_data = json.load(file)
     return sensor_data
-def check_rule(item_name):
+def check_rule(item_name, room):
     try:
         # Read sensor data from the JSON file
-        with open("json/sensor_data.json", 'r') as json_file:
+        with open(f"json/{room}/sensor_data.json", 'r') as json_file:
             state_data = json.load(json_file)
 
         # Find the sensor with the specified name
@@ -426,82 +433,18 @@ def check_rule(item_name):
     except Exception as e:
         print(f"Error reading JSON file: {e}")
         return False
-#def check_rule(sensor_name):
-    global sequence
-    if sensor_name == 'green_house_ir' and sensor_states.get(sensor_name) == 'Triggered' and sequence == 0:
-        pi3.exec_command("raspi-gpio set 15 op dh")
-        print("1")
-        sequence = 1
-    if sensor_name == 'red_house_ir' and sensor_states.get(sensor_name) == 'Triggered' and sequence == 1:
-        pi3.exec_command("raspi-gpio set 21 op dh")
-        print("2")
-        sequence = 2
-    elif sensor_name == 'red_house_ir' and sensor_states.get(sensor_name) == 'Triggered' and sequence <= 0:
-        pi3.exec_command("raspi-gpio set 21 op dh")
-        time.sleep(0.5)
-        pi3.exec_command("raspi-gpio set 21 op dl")
-        pi3.exec_command("raspi-gpio set 15 op dl")
-        sequence = 0
-    if sensor_name == 'blue_house_ir' and sensor_states.get(sensor_name) == 'Triggered' and sequence == 2:
-        solve_task("tree-lights")
-        print("3")
-        pi3.exec_command("raspi-gpio set 23 op dh")
-        fade_out_thread = threading.Thread(target=fade_music_out)
-        fade_out_thread.start()
-        time.sleep(1)
-        pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
-        time.sleep(1)
-        pi3.exec_command("raspi-gpio set 23 op dh \n raspi-gpio set 21 op dh \n raspi-gpio set 15 op dh")
-        time.sleep(1)
-        pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
-        time.sleep(1)
-        pi3.exec_command("raspi-gpio set 23 op dh \n raspi-gpio set 21 op dh \n raspi-gpio set 15 op dh")
-        time.sleep(1)
-        pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
-        sequence = 0
-        time.sleep(1)
-        pi3.exec_command("mpg123 -a hw:0,0 Music/Tree-solve.mp3")
-        time.sleep(7)
-        fade_in_thread = threading.Thread(target=fade_music_in)
-        fade_in_thread.start()
-    elif sensor_name == 'blue_house_ir' and sensor_states.get(sensor_name) == 'Triggered' and sequence != 2:
-        pi3.exec_command("raspi-gpio set 23 op dh")
-        time.sleep(0.5)
-        pi3.exec_command("raspi-gpio set 23 op dl")
-        pi3.exec_command("raspi-gpio set 21 op dl")
-        pi3.exec_command("raspi-gpio set 15 op dl")
-        sequence = 0
+client = mqtt.Client()
 
-    if sensor_name == 'top_left_kraken' and sensor_states.get(sensor_name) == 'Triggered':
-        pi2.exec_command('raspi-gpio set 12 op dh')
-    else:
-        pi2.exec_command('raspi-gpio set 12 op dl')
-    if sensor_name == 'bottom_left_kraken' and sensor_states.get(sensor_name) == 'Triggered':
-        pi2.exec_command('raspi-gpio set 1 op dh')
-    else:
-        pi2.exec_command('raspi-gpio set 1 op dl')
-    if sensor_name == 'top_right_kraken' and sensor_states.get(sensor_name) == 'Triggered':
-        pi2.exec_command('raspi-gpio set 7 op dh')
-    else:
-        pi2.exec_command('raspi-gpio set 7 op dl')
-    if sensor_name == 'bottom_right_kraken' and sensor_states.get(sensor_name) == 'Triggered':
-        pi2.exec_command('raspi-gpio set 8 op dh')
-    else:
-        pi2.exec_command('raspi-gpio set 8 op dl')
-    # Create an MQTT client instance
-if loadMqtt:
-    client = mqtt.Client()
+    # Set the callback function for incoming MQTT messages
+client.on_message = on_message
 
-        # Set the callback function for incoming MQTT messages
-    client.on_message = on_message
+    # Connect to the MQTT broker
+client.connect(broker_ip, 1883)
 
-        # Connect to the MQTT broker
-    client.connect(broker_ip, 1883)
-
-        # Subscribe to all topics under the specified prefix
-    client.subscribe(prefix_to_subscribe + "#")  # Subscribe to all topics under the prefix
-    # Function to execute the delete-locks.py script
-    client.loop_start()
+    # Subscribe to all topics under the specified prefix
+client.subscribe(prefix_to_subscribe + "#")  # Subscribe to all topics under the prefix
+# Function to execute the delete-locks.py script
+client.loop_start()
 
 @app.route('/trigger', methods=['POST'])
 def trigger():
@@ -600,72 +543,7 @@ def get_played_music_status():
         file_data = []
 
     return jsonify(file_data)
-
-@app.route('/pause_music', methods=['POST'])
-def pause_music():
-    selected_file = request.form['file']
-    soundcard_channel = request.form['channel']  # Get the soundcard channel from the AJAX request
-    if selected_file:
-        # Fade out the music gradually
-        fade_duration = 2  # Adjust the fade duration as needed
-        fade_interval = 0.1  # Adjust the fade interval as needed
-        max_volume = 25
-                # Update the status in the JSON file to "paused"
-        file_path = os.path.join(current_dir, 'json', 'file_status.json')
-        with open(file_path, 'r') as file:
-            file_data = json.load(file)
-
-        for entry in file_data:
-            if entry['filename'] == selected_file and entry['soundcard_channel'] == soundcard_channel:
-                entry['status'] = 'paused'
-                break
-        for entry in file_data:
-            if entry['filename'] == selected_file and entry['soundcard_channel'] == soundcard_channel:
-                pi_name = entry['pi']
-                break
-        else:
-            return 'Selected song not found in the JSON file'
-        
-        if pi_name == 'pi2':
-            pi = pi2
-        elif pi_name == 'pi3':
-            pi = pi3
-            max_volume = 85
-        with open(file_path, 'w') as file:
-            json.dump(file_data, file)
-        # Calculate the step size for volume reduction
-        step_size = max_volume / (fade_duration / fade_interval)
-            # Extract the first number after "hw"
-        import re
-        match = re.search(r'hw:(\d+)', soundcard_channel)
-        if match:
-            soundcard_number = match.group(1)
-        else:
-            return 'Invalid soundcard channel'
-        # Get the process ID of the mpg123 process
-        command = f'pgrep -f "mpg123 -a {soundcard_channel} Music/{selected_file}"'
-        stdin, stdout, stderr = pi.exec_command(command)
-        process_id = stdout.read().decode().strip()
-
-        if process_id:
-            # Reduce the volume gradually
-            for volume in reversed(range(0, max_volume, int(step_size))):
-                command = f'amixer -c {soundcard_number} set PCM Playback Volume {volume}%'
-                pi.exec_command(command)
-                time.sleep(fade_interval)
-
-                # Check if the volume reached 0 
-                if volume <= 0:
-                    # Pause the music by sending a SIGSTOP signal to the mpg123 process
-                    command = f'pkill -STOP -f "mpg123 Music/{selected_file}"'
-                    pi.exec_command(command)
-
-            return f'Music paused for {selected_file} on {pi}'
-        else:
-            return f'{selected_file} is not currently playing'
-    else:
-        return 'No file selected to pause'
-def fade_music_out(file):
+def fade_music_out(file, room):
     global broker_ip
     print(file)
     if file == "Lounge":
@@ -692,13 +570,13 @@ def fade_music_out(file):
     if file != "Lounge":
         publish.single("audio_control/all/play", "prehint.ogg", hostname=broker_ip)
     return "Volume faded successfully"
-@app.route('/fade_music_out', methods=['POST'])
-def fade_music_out_hint():
+@app.route('/fade_music_out/<room>', methods=['POST'])
+def fade_music_out_hint(room):
         # Gradually reduce the volume from 80 to 40
     for volume in range(35, 10, -1):
         # Send the volume command to the Raspberry Pi
         
-        if check_task_state("squeekuence") == "solved":
+        if check_task_state("squeekuence", room) == "solved":
             publish.single("audio_control/ret-middle/volume", f"{volume} Background.ogg", hostname=broker_ip)
         else:
             publish.single("audio_control/ret-top/volume", f"{volume} Ambience.ogg", hostname=broker_ip)
@@ -708,78 +586,18 @@ def fade_music_out_hint():
     time.sleep(1)
     publish.single("audio_control/all/play", "prehint.ogg", hostname=broker_ip)
     return "Volume faded successfully"
-@app.route('/fade_music_in', methods=['POST'])
-def fade_music_in():
+@app.route('/fade_music_in/<room>', methods=['POST'])
+def fade_music_in(room):
         # Gradually reduce the volume from 80 to 40
     for volume in range(10, 35, 1):
         # Send the volume command to the Raspberry Pi
-        if check_task_state("squeekuence") == "solved":
+        if check_task_state("squeekuence", room) == "solved":
             publish.single("audio_control/ret-middle/volume", f"{volume} Background.ogg", hostname=broker_ip)
         else:
             publish.single("audio_control/ret-top/volume", f"{volume} Ambience.ogg", hostname=broker_ip)
         # Wait for a short duration between volume changes
         time.sleep(0.05)  # Adjust the sleep duration as needed
     return "Volume faded successfully"
-@app.route('/resume_music', methods=['POST'])
-def resume_music():
-    selected_file = request.form['file']
-    soundcard_channel = request.form['channel']
-    if selected_file:
-        # Fade in the music gradually
-        fade_duration = 2  # Adjust the fade duration as needed
-        fade_interval = 0.1  # Adjust the fade interval as needed
-        target_volume = 25  # Adjust the desired volume level
-        file_path = os.path.join(current_dir, 'json', 'file_status.json')
-        with open(file_path, 'r') as file:
-            file_data = json.load(file)
-
-        for entry in file_data:
-            if entry['filename'] == selected_file and entry['soundcard_channel'] == soundcard_channel:
-                entry['status'] = 'playing'
-                break
-        for entry in file_data:
-            if entry['filename'] == selected_file and entry['soundcard_channel'] == soundcard_channel:
-                pi_name = entry['pi']
-                break
-        else:
-            return 'Selected song not found in the JSON file'
-        if pi_name == 'pi2':
-            pi = pi2
-        elif pi_name == 'pi3':
-            pi = pi3
-            target_volume = 85
-        with open(file_path, 'w') as file:
-            json.dump(file_data, file)
-        import re
-        match = re.search(r'hw:(\d+)', soundcard_channel)
-        if match:
-            soundcard_number = match.group(1)
-        else:
-            return 'Invalid soundcard channel'
-        # Calculate the step size for volume increase
-        step_size = target_volume / (fade_duration / fade_interval)
-
-        # Get the process ID of the mpg123 process
-        command = f'pgrep -f "mpg123 -a {soundcard_channel} Music/{selected_file}"'
-        stdin, stdout, stderr = pi.exec_command(command)
-        process_id = stdout.read().decode().strip()
-
-        if process_id:
-            # Increase the volume gradually
-            for volume in range(0, target_volume + 1, int(step_size)):
-                # Set the same volume for both Front Left and Front Right channels
-                command = f'amixer -c {soundcard_number} set PCM Playback Volume {volume}%'
-                pi.exec_command(command)
-                time.sleep(fade_interval)
-            print(selected_file)
-            command = f'pkill -CONT -f "mpg123 Music/{selected_file}"'
-            pi.exec_command(command)
-
-            return f'Music resumed on {pi}'
-        else:
-            return 'No music is currently playing'
-    else:
-        return 'No music is currently playing'
 
 # Route to display the SD Renewal page
 @app.route('/sd-renewal')
@@ -806,9 +624,9 @@ def get_file_status():
     else:
         return jsonify([])
     
-@app.route('/get_task_status', methods=['GET'])
-def get_task_status():
-    file_path = os.path.join(current_dir, 'json', 'tasks.json')
+@app.route('/get_task_status/<room>', methods=['GET'])
+def get_task_status(room):
+    file_path = os.path.join('json', room, 'tasks.json')
     if os.path.exists(file_path):
         try:
             with open(file_path, 'r') as file:
@@ -819,11 +637,11 @@ def get_task_status():
     else:
         return jsonify([])
     
-@app.route('/solve_task/<task_name>', methods=['POST'])
-def solve_task(task_name):
+@app.route('/solve_task/<task_name>/<room>', methods=['POST'])
+def solve_task(task_name, room):
     global start_time, sequence, code1, code2, code3, code4, code5, codesCorrect, squeak_job, bird_job, should_hint_shed_play
-    file_path = os.path.join(current_dir, 'json', 'tasks.json')
-    game_status = get_game_status()
+    file_path = os.path.join('json', room, 'tasks.json')
+    game_status = get_game_status(room)
     try:
         with open(file_path, 'r+') as file:
             tasks = json.load(file)
@@ -850,7 +668,7 @@ def solve_task(task_name):
                 call_control_maglock("lab-hatch-lock", "locked")
                 time.sleep(4)
                 publish.single("audio_control/ret-middle/play", "Background.ogg", hostname=broker_ip)
-                fade_music_in()
+                fade_music_in(room)
                 publish.single("audio_control/ret-top/volume", "3 Ambience.ogg", hostname=broker_ip)
             if squeak_job == True:
                 scheduler.remove_job('squeakjob')
@@ -861,68 +679,68 @@ def solve_task(task_name):
             call_control_maglock("green-led-keypad", "locked")
             publish.single("audio_control/ret-top/play", "correct-effect.ogg", hostname=broker_ip)
             time.sleep(1)
-            fade_music_out("Ambience")
+            fade_music_out("Ambience", room)
             time.sleep(2)
             publish.single("audio_control/ret-top/play", "bloemen.ogg", hostname=broker_ip)
             call_control_maglock("green-led-keypad", "locked")
             time.sleep(10)
             if codesCorrect == 3 or codesCorrect == 4:
-                fade_music_in()
+                fade_music_in(room)
             elif codesCorrect == 2 or codesCorrect == 1:
                 print(codesCorrect)
             elif code5 == False:
-                fade_music_in()
+                fade_music_in(room)
         elif task_name == "kite-count":
             code2 = True
             codesCorrect += 1
             call_control_maglock("green-led-keypad", "unlocked")
             publish.single("audio_control/ret-top/play", "correct-effect.ogg", hostname=broker_ip)
             time.sleep(1)
-            fade_music_out("Ambience")
+            fade_music_out("Ambience", room)
             time.sleep(2)
             publish.single("audio_control/ret-top/play", "vlieger.ogg", hostname=broker_ip)
             call_control_maglock("green-led-keypad", "locked")
             time.sleep(5)
             if codesCorrect == 3 or codesCorrect == 4:
-                fade_music_in()
+                fade_music_in(room)
             elif codesCorrect == 2 or codesCorrect == 1:
                 print(codesCorrect)
             elif code5 == False:
-                fade_music_in()
+                fade_music_in(room)
         elif task_name == "number-feel":
             code3 = True
             codesCorrect += 1
             call_control_maglock("green-led-keypad", "unlocked")
             publish.single("audio_control/ret-top/play", "correct-effect.ogg", hostname=broker_ip)
             time.sleep(1)
-            fade_music_out("Ambience")
+            fade_music_out("Ambience", room)
             time.sleep(2)
             publish.single("audio_control/ret-top/play", "plantenbak.ogg", hostname=broker_ip)
             call_control_maglock("green-led-keypad", "locked")
             time.sleep(5)
             if codesCorrect == 3 or codesCorrect == 4:
-                fade_music_in()
+                fade_music_in(room)
             elif codesCorrect == 2 or codesCorrect == 1:
                 print(codesCorrect)
             elif code5 == False:
-                fade_music_in()
+                fade_music_in(room)
         elif task_name == "fence-decrypt":
             code4 = True
             codesCorrect += 1
             call_control_maglock("green-led-keypad", "unlocked")
             publish.single("audio_control/ret-top/play", "correct-effect.ogg", hostname=broker_ip)
             time.sleep(1)
-            fade_music_out("Ambience")
+            fade_music_out("Ambience", room)
             time.sleep(2)
             publish.single("audio_control/ret-top/play", "hek.ogg", hostname=broker_ip)
             call_control_maglock("green-led-keypad", "locked")
             time.sleep(5)
             if codesCorrect == 3 or codesCorrect == 4:
-                fade_music_in()
+                fade_music_in(room)
             elif codesCorrect == 2 or codesCorrect == 1:
                 print(codesCorrect)
             elif code5 == False:
-                fade_music_in()
+                fade_music_in(room)
         elif task_name == "sinus-game":
             print("nothing yet")
         elif task_name == "squid-game":
@@ -949,7 +767,7 @@ def solve_task(task_name):
                 code5 = True
                 print("3")
                 call_control_maglock("blue-led", "unlocked")
-                fade_out_thread = threading.Thread(target=fade_music_out("Ambience"))
+                fade_out_thread = threading.Thread(target=fade_music_out("Ambience", room))
                 fade_out_thread.start()
                 time.sleep(1)
                 call_control_maglock("blue-led", "locked")
@@ -980,7 +798,7 @@ def solve_task(task_name):
                     time.sleep(7)
                     publish.single("audio_control/ret-top/play", "schuur_open.ogg", hostname=broker_ip)
                     time.sleep(5)
-                    fade_music_in()
+                    fade_music_in(room)
                     call_control_maglock("shed-door-lock", "locked")
                     code1 = False
                     code2 = False
@@ -995,7 +813,7 @@ def solve_task(task_name):
             time.sleep(2)
             publish.single("audio_control/ret-top/play", "schuur_open.ogg", hostname=broker_ip)
             time.sleep(5)
-            fade_music_in()
+            fade_music_in(room)
             call_control_maglock("shed-door-lock", "locked")
             code1 = False
             code2 = False
@@ -1008,14 +826,14 @@ def solve_task(task_name):
             time.sleep(2)
             publish.single("audio_control/ret-top/play", "goed_bezig.ogg", hostname=broker_ip)
             time.sleep(6)
-            fade_music_in()
+            fade_music_in(room)
         if codesCorrect == 1 and should_hint_shed_play == True:
             should_hint_shed_play = False
             print("TRIGGERED")
             time.sleep(2)
             publish.single("audio_control/ret-top/play", "after1code.ogg", hostname=broker_ip)
             time.sleep(4)
-            fade_music_in()
+            fade_music_in(room)
         with app.app_context():
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
@@ -1071,9 +889,9 @@ def skip_task(task_name):
         return jsonify({'message': 'Error skipping task'})
 def cause_shortcircuit():
     return "shortcircuited"
-@app.route('/pend_task/<task_name>', methods=['POST'])
-def pend_task(task_name):
-    file_path = os.path.join(current_dir, 'json', 'tasks.json')
+@app.route('/pend_task/<task_name>/<room>', methods=['POST'])
+def pend_task(task_name, room):
+    file_path = os.path.join('json', room, 'tasks.json')
 
     try:
         with open(file_path, 'r+') as file:
@@ -1090,12 +908,12 @@ def pend_task(task_name):
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error updating task'})
-@app.route('/reset_task_statuses', methods=['POST'])
-def reset_task_statuses():
+@app.route('/reset_task_statuses/<room>', methods=['POST'])
+def reset_task_statuses(room):
     global sequence
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
     sequence = 0
-    update_game_status('awake')
+    update_game_status('awake', room)
     try:
         with open(file_path, 'r') as file:
             tasks = json.load(file)
@@ -1138,10 +956,10 @@ def remove_existing_ogg():
     for file in os.listdir("."):
         if file.endswith(".ogg"):
             os.remove(file)
-@app.route('/reset_puzzles', methods=['POST'])
-def reset_puzzles():
+@app.route('/reset_puzzles/<room>', methods=['POST'])
+def reset_puzzles(room):
     global code1, code2, code3, code4, code5, sequence, codesCorrect, should_hint_shed_play
-    update_game_status('awake')
+    update_game_status('awake', room)
     should_hint_shed_play = True
     codesCorrect = 0
     code1 = False
@@ -1149,71 +967,59 @@ def reset_puzzles():
     code3 = False
     code4 = False
     code5 = False
-    with open('json/sensor_data.json', 'r') as file:
+    with open(f'json/{room}/sensor_data.json', 'r') as file:
         devices = json.load(file)
 
     # Iterate over devices
     for device in devices:
         if device["type"] in ["maglock"]:
             if device["name"] == "gang-licht-1":
-                call_control_maglock(device["name"], "unlocked")
+                call_control_maglock(device["name"], "unlocked", room)
             else:
-                call_control_maglock(device["name"], "locked")
+                call_control_maglock(device["name"], "locked", room)
     return "puzzles reset"
 
 # Function to read the retriever status from the JSON file
-def read_game_status():
-    with open('json/retrieverStatus.json', 'r') as file:
+def read_game_status(room):
+    with open(f'json/{room}/game_status.json', 'r') as file:
         data = json.load(file)
     return data.get('status', 'awake')  # Default status is 'awake'
 
 # Function to update the retriever status in the JSON file
-def update_game_status(status):
+def update_game_status(status, room):
     data = {"status": status}
-    with open('json/retrieverStatus.json', 'w') as file:
+    with open(f'json/{room}/game_status.json', 'w') as file:
         json.dump(data, file)
 
-@app.route('/get_game_status', methods=['GET'])
-def get_game_status():
-    game_status = read_game_status()
+@app.route('/get_game_status/<room>', methods=['GET'])
+def get_game_status(room):
+    game_status = read_game_status(room)
     return {"status": game_status}
 
-@app.route('/wake_room', methods=['POST'])
-def wake_room():
+@app.route('/wake_room/<room>', methods=['POST'])
+def wake_room(room):
     # Update the retriever status to 'awake'
     try:
-        with open('json/sensor_data.json', 'r') as file:
+        with open(f'json/{room}/sensor_data.json', 'r') as file:
             devices = json.load(file)
 
         # Iterate over devices
         for device in devices:
             if device["type"] in ["light"] and device["name"] != "green-led" and device["name"] != "red-led" and device["name"] != "blue-led" and device["name"] != "red-led-keypad" and device["name"] != "green-led-keypad":
                 call_control_maglock(device["name"], "unlocked")
-        update_game_status('awake')
+        update_game_status('awake', room)
         return "room awakened"
     except Exception as e:
-        update_game_status('awake')
+        update_game_status('awake', room)
         return jsonify({'success': False, 'error': str(e)})
-@app.route('/control_light', methods=['POST'])
-def control_light():
+@app.route('/control_light/<room>', methods=['POST'])
+def control_light(room):
     print("hi")
     light_name = request.json.get('light_name')
     print(light_name)
-    if light_name == "Light-1" and check_rule("light-1-garden"):
-        call_control_maglock("light-1-garden", "locked")
-    elif light_name == "Light-1":
-        call_control_maglock("light-1-garden", "unlocked")
-        print(light_name)
-    elif light_name == "Light-2":
-        call_control_maglock("light-2-garden", "locked" if check_rule("light-2-garden") else "unlocked")
-    elif light_name == "Light-3":
-        call_control_maglock("light-3-garden", "locked" if check_rule("light-3-garden") else "unlocked")
-    elif light_name == "Light-4":
-        call_control_maglock("light-4-garden", "locked" if check_rule("light-4-garden") else "unlocked")
-    elif light_name == "Light-5":
-        call_control_maglock("light-1-shed", "locked" if check_rule("light-1-shed") else "unlocked")
-    elif light_name == "Light-6":
-        call_control_maglock("light-1-alley", "locked" if check_rule("light-1-alley") else "unlocked")
+    print(room)
+    if light_name and room:
+        call_control_maglock(f"{light_name}", "locked", f"{room}" if check_rule(light_name, room) else "unlocked")
     elif light_name == "Light-7":
         if check_rule("blacklight"):
             call_control_maglock("blacklight", "locked")
@@ -1222,13 +1028,13 @@ def control_light():
             call_control_maglock("blacklight", "unlocked")
             call_control_maglock("portal-light", "unlocked")
     return jsonify({'message': f'Light {light_name} control command executed successfully'})
-@app.route('/snooze_game', methods=['POST'])
-def snooze_game():
+@app.route('/snooze_game/<room>', methods=['POST'])
+def snooze_game(room):
     try:
-        update_game_status('snoozed')
+        update_game_status('snoozed', room)
 
         # Load device information from sensor_data.json
-        with open('json/sensor_data.json', 'r') as file:
+        with open(f'json/{room}/sensor_data.json', 'r') as file:
             devices = json.load(file)
 
         # Iterate over devices
@@ -1238,9 +1044,9 @@ def snooze_game():
         return "Room snoozed"
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
-@app.route('/add_task', methods=['POST'])
-def add_task():
-    file_path = os.path.join(current_dir, 'json', 'tasks.json')
+@app.route('/add_task/<room>', methods=['POST'])
+def add_task(room):
+    file_path = os.path.join('json', room, 'tasks.json')
     task_data = request.get_json()
 
     try:
@@ -1256,9 +1062,9 @@ def add_task():
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error adding task'})
     
-@app.route('/remove_task', methods=['POST'])
-def remove_task():
-    file_path = os.path.join(current_dir, 'json', 'tasks.json')
+@app.route('/remove_task/<room>', methods=['POST'])
+def remove_task(room):
+    file_path = os.path.join('json', room, 'tasks.json')
     task_data = request.get_json()
 
     try:
@@ -1296,9 +1102,9 @@ def edit_task():
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error updating task'})
     
-@app.route('/get_tasks', methods=['GET'])
-def get_tasks():
-    file_path = os.path.join(current_dir, 'json', 'tasks.json')
+@app.route('/get_tasks/<room>', methods=['GET'])
+def get_tasks(room):
+    file_path = os.path.join('json', room, 'tasks.json')
     
     try:
         with open(file_path, 'r') as file:
@@ -1362,11 +1168,12 @@ def control_maglock_route():
     return control_maglock()
 
 
-def call_control_maglock(maglock, action):
+def call_control_maglock(maglock, action, room):
     global squeak_job, should_balls_drop, player_type
     print(maglock)
     print(action)
-    sensor_data = read_sensor_data2()
+    print(room)
+    sensor_data = read_sensor_data2(room)
     for sensor in sensor_data:
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
@@ -1434,8 +1241,6 @@ def get_sensor_status_pi2(sensor_number):
             return 'unknown'
     except requests.exceptions.RequestException:
         return 'unknown'
-with open('json/sensor_data.json', 'r') as json_file:
-    sensors = json.load(json_file)
 def monitor_sensor_statuses():
     global sequence, should_hint_shed_play
     global code1, code2, code3, code4, code5
@@ -1493,8 +1298,8 @@ def reset_checklist():
     except Exception as e:
         print(f"Error resetting checklist: {str(e)}")
     return jsonify({'success': True, 'message': 'Checklist reset successfully'})
-@app.route('/add_sensor', methods=['GET', 'POST'])
-def add_sensor():
+@app.route('/add_sensor/<room>', methods=['GET', 'POST'])
+def add_sensor(room):
     if request.method == 'POST':
         # Retrieve form data including the new 'connection_type' field
         name = request.form['name']
@@ -1517,19 +1322,19 @@ def add_sensor():
         sensors.append(new_sensor)
 
         # Save the updated sensor data to the JSON file
-        with open('json/sensor_data.json', 'w') as json_file:
+        with open(f'json/{room}/sensor_data.json', 'w') as json_file:
             json.dump(sensors, json_file, indent=4)
-        update_sensor_data_on_pis(pi)
+        update_sensor_data_on_pis(pi, room)
 
         return redirect(url_for('list_sensors'))
 
     return render_template('add_sensor.html')
 
-def update_sensor_data_on_pis(pi):
+def update_sensor_data_on_pis(pi, room):
     success_message = "Sensor data updated successfully. Updated script sent to the following IP addresses:<br>"
 
     # Read Raspberry Pi data from JSON file
-    with open('json/raspberry_pis.json') as json_file:
+    with open(f'json/{room}/raspberry_pis.json') as json_file:
         raspberry_pis = json.load(json_file)
 
     for raspberry_pi in raspberry_pis:
@@ -1545,7 +1350,7 @@ def update_sensor_data_on_pis(pi):
                 sftp = ssh.open_sftp()
 
                 # Transfer the updated file to the Raspberry Pi
-                sftp.put('json/sensor_data.json', '/home/pi/sensor_data.json')
+                sftp.put(f'json/{room}/sensor_data.json', '/home/pi/sensor_data.json')
 
                 success_message += f"- {ip}<br>"
 
@@ -1559,8 +1364,8 @@ def update_sensor_data_on_pis(pi):
 
     return success_message
 
-@app.route('/remove_sensor', methods=['GET', 'POST'])
-def remove_sensor():
+@app.route('/remove_sensor/<room>', methods=['GET', 'POST'])
+def remove_sensor(room):
     # Access the global sensors variable
     global sensors
 
@@ -1569,14 +1374,14 @@ def remove_sensor():
         sensor_name_to_remove = request.form['sensor_name']
 
         # Read the existing sensor data from the JSON file
-        with open('json/sensor_data.json', 'r') as json_file:
+        with open(f'json/{room}/sensor_data.json', 'r') as json_file:
             sensors = json.load(json_file)
 
         # Remove the sensor from the list
         updated_sensors = [sensor for sensor in sensors if sensor['name'] != sensor_name_to_remove]
 
         # Save the updated sensor data back to the JSON file
-        with open('json/sensor_data.json', 'w') as json_file:
+        with open(f'json/{room}/sensor_data.json', 'w') as json_file:
             json.dump(updated_sensors, json_file, indent=4)
 
         # Update sensor data on the Raspberry Pi devices
@@ -1590,10 +1395,10 @@ def scare_button():
     publish.single("audio_control/for-corridor/play", "Buzzer.ogg", hostname=broker_ip)
     publish.single("audio_control/for-corridor/volume", "100 Buzzer.ogg", hostname=broker_ip)
     return "Scared the players :)"
-@app.route('/list_sensors')
-def list_sensors():
+@app.route('/list_sensors/<room>')
+def list_sensors(room):
     # Read the sensor data from the JSON file
-    with open('json/sensor_data.json', 'r') as json_file:
+    with open(f'json/{room}/sensor_data.json', 'r') as json_file:
         sensors = json.load(json_file)
 
     # Render the template with the updated sensor data
@@ -1790,27 +1595,31 @@ def handle_interrupt(signal, frame):
     # Add any additional cleanup or termination logic here
     sys.exit()
 TIMER_FILE = 'timer_value.txt'  # File to store the timer value
-timer_value = 3600  # Initial timer value in seconds
+timer_values = {}
 timer_thread = None  # Reference to the timer thread
 speed = 1
-timer_running = False  # Flag to indicate if the timer is running
-def read_timer_value():
+timer_running = {}
+timer_threads = {}
+def read_timer_value(room):
     try:
-        with open(TIMER_FILE, 'r') as file:
+        with open(f'json/{room}/{TIMER_FILE}', 'r') as file:
             return float(file.read().strip())
     except FileNotFoundError:
         return timer_value  # Default timer value if the file doesn't exist
 
-def write_timer_value(value):
-    with open(TIMER_FILE, 'w') as file:
+def write_timer_value(value, room):
+    with open(f'json/{room}/{TIMER_FILE}', 'w') as file:
         file.write(str(value))
 
-def update_timer():
-    global timer_value, speed, timer_running
-    while timer_value > 0 and timer_running:
+def update_timer(room, speed):
+    global timer_values, timer_running
+    timer_value = timer_values[room]
+
+    while timer_value > 0 and timer_running[room]:
         timer_value = max(timer_value - speed, 0)
-        write_timer_value(timer_value)
-        threading.Event().wait(1)
+        timer_values[room] = timer_value
+        write_timer_value(timer_value, room)
+        time.sleep(1)
 @app.route('/add_minute', methods=['POST'])
 def add_minute():
     global timer_value
@@ -1862,43 +1671,45 @@ def write_game_data(start_time, end_time):
     # Write the updated list back to the file
     with open(file_path, 'w') as json_file:
         json.dump(existing_data, json_file, indent=2)
-@app.route('/timer/start', methods=['POST'])
-def start_timer():
-    global timer_thread, timer_value, speed, timer_running, bird_job, start_time
-    update_game_status('playing')
-    if bird_job == False:
-        scheduler.add_job(start_bird_sounds, 'interval', minutes=1, id='birdjob')
-        bird_job = True
-    start_time = datetime.now()
-    if timer_thread is None or not timer_thread.is_alive():
-        timer_value = 3600  # Reset timer value to 60 minutes
-        write_timer_value(timer_value)
-        timer_running = True
-        timer_thread = threading.Thread(target=update_timer)
-        timer_thread.daemon = True
-        timer_thread.start()
-        fade_music_out("Lounge")
+@app.route('/timer/start/<room>', methods=['POST'])
+def start_timer(room):
+    global timer_value, speed, timer_running, timer_thread, start_time, bird_job
+
+    # Start a new timer thread for the room if not already running
+    if room not in timer_threads or not timer_threads[room].is_alive():
+        timer_values[room] = 3600  # Reset timer value to 60 minutes
+        write_timer_value(timer_values[room], room)
+        timer_running[room] = True
+        timer_threads[room] = Thread(target=update_timer, args=(room, speed))
+        timer_threads[room].daemon = True
+        timer_threads[room].start()
+
+        # Your existing code to start the timer
+        update_game_status('playing', room)
+        if bird_job == False:
+            scheduler.add_job(start_bird_sounds, 'interval', minutes=1, id='birdjob')
+            bird_job = True
+        start_time = datetime.now()
+        fade_music_out("Lounge", room)
         time.sleep(1)
         publish.single("audio_control/ret-top/play", "Ambience.ogg", hostname=broker_ip)
-        fade_music_in()
-    return 'Timer started'
-
-@app.route('/timer/stop', methods=['POST'])
-def stop_timer():
-    global timer_thread, timer_running, timer_value, kraken1, kraken2, kraken3, kraken4, bird_job, start_time
-    update_game_status('awake')
-    #pi2.exec_command("raspi-gpio set 4 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 8 op dl \n raspi-gpio set 1 op dl")
-    reset_task_statuses()
-    stop_music()
-    end_time = datetime.now()
+        fade_music_in(room)
+        return 'Timer started'
+@app.route('/timer/stop/<room>', methods=['POST'])
+def stop_timer(room):
+    global timer_thread, timer_running, kraken1, kraken2, kraken3, kraken4, bird_job, start_time
+    if room in timer_threads and timer_threads[room].is_alive():
+        timer_running[room] = False
+        print("Stopping timer thread")
+        timer_threads[room].join()
+        update_game_status('awake', room)
+        del timer_threads[room]
+        reset_task_statuses(room)
+        stop_music()
+        end_time = datetime.now()
     if start_time is not None:
         write_game_data(start_time, end_time)
     start_time = None
-    if timer_thread is not None and timer_thread.is_alive():
-        write_timer_value(timer_value)
-        timer_thread = threading.Thread(target=update_timer)
-        timer_running = False
-        timer_thread = None  # Stop the timer thread
 
     return 'Timer stopped'
 
@@ -1915,17 +1726,17 @@ def reset_timer_speed():
     speed = 1
     return 'Timer speed reset'
 
-@app.route('/timer/value', methods=['GET'])
-def get_timer_value():
-    return str(read_timer_value())
+@app.route('/timer/value/<room>', methods=['GET'])
+def get_timer_value(room):
+    return str(read_timer_value(room))
 
 @app.route('/timer/get-speed', methods=['GET'])
 def get_timer_speed():
     global speed
     return str(speed)
 
-@app.route('/timer/pause', methods=['POST'])
-def pause_timer():
+@app.route('/timer/pause/<room>', methods=['POST'])
+def pause_timer(room):
     global timer_thread, timer_running
 
     if timer_thread is not None and timer_thread.is_alive() and timer_running:
@@ -1934,12 +1745,12 @@ def pause_timer():
     else:
         return 'Timer is not running or already paused'
 
-@app.route('/timer/continue', methods=['POST'])
-def continue_timer():
+@app.route('/timer/continue/<room>', methods=['POST'])
+def continue_timer(room):
     global timer_thread, timer_running
     current_game_state = get_game_status()
     if current_game_state == {'status': 'prepared'}:
-        update_game_status('playing')
+        update_game_status('playing', room)
     if timer_thread is not None and not timer_thread.is_alive() and not timer_running:
         timer_running = True
         timer_thread = threading.Thread(target=update_timer)
@@ -1948,11 +1759,10 @@ def continue_timer():
         return 'Timer continued'
     else:
         return 'Timer is already running or not paused'
-@app.route('/timer/pause-state', methods=['GET'])
-def get_pause_state():
+@app.route('/timer/pause-state/<room>', methods=['GET'])
+def get_pause_state(room):
     global timer_running
     return jsonify(timer_running)
-update_game_status('awake')
 @app.route('/get-pi-status', methods=['GET'])
 def get_pi_status():
     global ssh, pi2, pi3
@@ -2028,8 +1838,8 @@ def get_required_services():
     return {entry["hostname"]: entry.get("services", []) for entry in data}
 pi_service_statuses = {}
 preparedValue = {}
-@app.route('/prepare', methods=['POST'])
-def prepare_game():
+@app.route('/prepare/<room>', methods=['POST'])
+def prepare_game(room):
     global client, pi_service_statuses, player_type, preparedValue, should_hint_shed_play
     should_hint_shed_play = True
     prefix = request.form.get('prefix')
@@ -2039,7 +1849,7 @@ def prepare_game():
     reset_prepare()
     # Assuming you have logic for preparing the game
     # Load Raspberry Pi configuration from JSON file
-    with open('json/raspberry_pis.json', 'r') as file:
+    with open(f'json/{room}/raspberry_pis.json', 'r') as file:
         pi_config = json.load(file)
 
     # Loop over each Raspberry Pi and request service statuses
@@ -2060,7 +1870,7 @@ def prepare_game():
     player_type = request.form.get('playerType')
     # Return the converted service statuses
     print(converted_statuses)
-    update_game_status("prepared")
+    update_game_status("prepared", room)
     time.sleep(0.1)
     publish.single("audio_control/ret-top/play", "Lounge.ogg", hostname=broker_ip)
     return jsonify({"message": converted_statuses}), 200

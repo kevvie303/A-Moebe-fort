@@ -1,0 +1,16 @@
+[
+    {
+        "name": "light-4-garden",
+        "type": "light",
+        "pin": 8,
+        "pi": "ret-tree",
+        "state": "On"
+    },
+    {
+        "name": "keypad",
+        "type": "keypad",
+        "pin": "usb",
+        "pi": "ret-top",
+        "state": "2915"
+    }
+]

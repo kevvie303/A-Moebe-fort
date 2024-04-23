@@ -1,5 +1,5 @@
 var cachedUserName = localStorage.getItem("userName");
-
+var roomName = document.title.trim();
 $(document).ready(function () {
   $("#add-music-button1").click(function () {
     // Open a file selection dialog when the button is clicked
@@ -141,7 +141,7 @@ function sendLightControlRequest(lightName) {
   // Make an AJAX request using jQuery
   $.ajax({
     type: "POST",
-    url: "/control_light",
+    url: `/control_light/${roomName}`, // Replace with the actual endpoint to control the light
     data: JSON.stringify({ light_name: lightName }),
     contentType: "application/json; charset=utf-8",
     dataType: "json",
@@ -161,7 +161,7 @@ $(document).ready(function () {
   // Fetch the sensor data from the server
   $.ajax({
     type: "GET",
-    url: "/get_sensor_data", // Replace with the actual endpoint to fetch sensor data
+    url: `/get_sensor_data/${roomName}`, // Replace with the actual endpoint to fetch sensor data
     success: function (sensor_data) {
       // Filter out items that are not maglocks or lights
       var filteredData = sensor_data.filter(function (item) {
@@ -246,7 +246,7 @@ fetchSensorData();
 function fetchSensorData() {
   $.ajax({
     type: "GET",
-    url: "/get_sensor_data",
+    url: `/get_sensor_data/${roomName}`,
     success: function (sensor_data) {
       displayStatus(sensor_data);
     },
@@ -499,7 +499,8 @@ $(document).ready(function () {
   }, 1000);
 
   function updateTimers() {
-    $.get("/timer/value", function (data) {
+    if (roomName != "A-moebe") {
+    $.get(`/timer/value/${roomName}`, function (data) {
       var timeLeft = parseInt(data);
       var timePlayed = 3600 - timeLeft;
       var formattedTimeLeft = formatTime(timeLeft);
@@ -516,7 +517,7 @@ $(document).ready(function () {
       $("#krijgsgevangenis-link .preview #time-left").text(formattedTimeLeft);
     });
   }
-
+  }
   function formatTime(seconds) {
     var minutes = Math.floor(seconds / 60);
     var remainingSeconds = seconds % 60;
@@ -541,7 +542,7 @@ $(document).ready(function () {
   }
 
   $("#start-game-button").click(function () {
-    $.post("/timer/start", function (data) {
+    $.post(`/timer/start/${roomName}`, function (data) {
       console.log(data);
     }).done(function () {});
     intervalId = setInterval(function () {
@@ -571,21 +572,21 @@ $(document).ready(function () {
     $("#pause-button, #prepare-game-button").show();
     clearInterval(intervalId);
     updateTimers();
-    $.post("/timer/stop", function (data) {
+    $.post(`/timer/stop/${roomName}`, function (data) {
       console.log(data);
     });
 
-    $.post("/reset_task_statuses", function (data) {
+    $.post(`/reset_task_statuses/${roomName}`, function (data) {
       console.log(data);
       fetchTasks(); // Refresh the list after resetting statuses
     });
-    $.post("/reset_puzzles", function (data) {
+    $.post(`/reset_puzzles/${roomName}`, function (data) {
       console.log(data);
       fetchTasks(); // Refresh the list after resetting statuses
     });
   });
   $("#snooze-game-button").click(function () {
-    $.post("/snooze_game", function (data) {
+    $.post(`/snooze_game/${roomName}`, function (data) {
       console.log(data);
     });
     // Display snoozed status in the nav
@@ -666,7 +667,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   // Check the retriever status from the JSON file
-  $.get("/get_game_status", function (data) {
+  $.get(`/get_game_status/${roomName}`, function (data) {
     if (data.status === "snoozed") {
       // Display snoozed status in the nav
       $("#nav-snooze-status").text("Room Snoozed");
@@ -679,7 +680,7 @@ $(document).ready(function () {
   // Handle the "Wake" button click
   $("#wake-button").click(function () {
     // Send a request to reset retriever status to 'awake'
-    $.post("/wake_room", function (data) {
+    $.post(`/wake_room/${roomName}`, function (data) {
       console.log(data);
       // Hide the "Wake" button
       $("#wake-button").hide();
@@ -689,7 +690,7 @@ $(document).ready(function () {
     });
   });
   // Check the retriever status from the JSON file
-  $.get("/get_game_status", function (data) {
+  $.get(`/get_game_status/${roomName}`, function (data) {
     if (data.status === "prepared") {
       // Hide everything from the comment "HIDE FROM HERE"
       hideFromHere();
@@ -914,7 +915,7 @@ $(document).ready(function () {
 async function fetchTasks() {
   console.log("Fetching tasks...");
   try {
-    const response = await fetch("/get_task_status"); // Corrected route
+    const response = await fetch(`/get_task_status/${roomName}`);
     const tasks = await response.json();
     console.log("Fetched tasks:", tasks);
 
@@ -1037,7 +1038,7 @@ closePopupButton.addEventListener("click", () => {
 async function markAsSolved(taskName) {
   console.log(`Marking ${taskName} as solved...`);
   try {
-    const response = await fetch(`/solve_task/${taskName}`, {
+    const response = await fetch(`/solve_task/${taskName}/${roomName}`, {
       method: "POST",
     });
 
@@ -1055,7 +1056,7 @@ async function markAsSolved(taskName) {
 async function markAsSkipped(taskName) {
   console.log(`Marking ${taskName} as skipped...`);
   try {
-    const response = await fetch(`/skip_task/${taskName}`, {
+    const response = await fetch(`/skip_task/${taskName}/${roomName}`, {
       method: "POST",
     });
 
@@ -1072,7 +1073,7 @@ async function markAsSkipped(taskName) {
 async function markAsPending(taskName) {
   console.log(`Marking ${taskName} as pending...`);
   try {
-    const response = await fetch(`/pend_task/${taskName}`, {
+    const response = await fetch(`/pend_task/${taskName}/${roomName}`, {
       method: "POST",
     });
 
@@ -1116,7 +1117,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (taskName && taskDescription) {
         // Send a POST request to your Flask route to add a new task
         // Adjust the route and data as needed
-        fetch("/add_task", {
+        fetch(`/add_task/${roomName}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -1152,7 +1153,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function removeTask(taskName) {
     console.log(`Removing ${taskName}...`);
     try {
-      const response = await fetch("/remove_task", {
+      const response = await fetch(`/remove_task/${roomName}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1187,7 +1188,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function populateTaskRemovalList() {
     try {
-      const response = await fetch("/get_task_status");
+      const response = await fetch(`/get_task_status/${roomName}`);
       const tasks = await response.json();
 
       const taskRemovalList = document.getElementById("task-removal-list");
@@ -1220,7 +1221,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Event listener for opening the edit modal
   editButton.addEventListener("click", function () {
     // Fetch the list of tasks from the server
-    fetch("/get_tasks")
+    fetch(`/get_tasks/${roomName}`)
       .then((response) => response.json())
       .then((tasks) => {
         // Clear the previous task list
@@ -1400,7 +1401,7 @@ $(document).ready(function () {
   }
   function updateRetrieverStatus() {
     console.log("hi");
-    $.get("/get_game_status", function (data) {
+    $.get(`/get_game_status/${roomName}`, function (data) {
       if (data.status === "prepared") {
         prepareButton.hide();
         performPreparation(); // Trigger the preparation function
@@ -1408,7 +1409,7 @@ $(document).ready(function () {
     });
   }
   function updatePlayingStatus() {
-    $.get("/get_game_status", function (data) {
+    $.get(`/get_game_status/${roomName}`, function (data) {
       if (data.status === "playing") {
         console.log("hii");
         clearInterval(updatePlayStatus);
@@ -1427,7 +1428,7 @@ $(document).ready(function () {
       }
     });
   }
-  $.get("/get_game_status", function (data) {
+  $.get(`/get_game_status/${roomName}`, function (data) {
     if (data.status === "playing") {
       clearInterval(updatePlayStatus);
       prepareButton.hide();
@@ -1444,7 +1445,7 @@ $(document).ready(function () {
       console.log("preparing!!")
     }
   });
-  $.get("/get_game_status", function (data) {
+  $.get(`/get_game_status/${roomName}`, function (data) {
     if (data.status === "awake") {
       console.log("hii");
       clearInterval(updateWakeStatus);
@@ -1457,14 +1458,14 @@ $(document).ready(function () {
 
 let programmaticChange = false;
 
-async function sendLockRequest(task, isChecked) {
+async function sendLockRequest(roomName, task, isChecked) {
   try {
     const response = await fetch("/lock", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ task, isChecked }),
+      body: JSON.stringify({roomName, task, isChecked }),
     });
 
     const data = await response.json();
@@ -1517,7 +1518,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Send a request to the server to stop the music
     $.ajax({
       type: "POST",
-      url: "/reset-checklist",
+      url: `/reset-checklist/{roomName}`,
       success: function (response) {
         updateChecklist();
         console.log(response);
@@ -1538,10 +1539,10 @@ document.addEventListener("DOMContentLoaded", () => {
   async function updateChecklist() {
     try {
       // Fetch game status using $.get
-      $.get("/get_game_status", function (data) {
+      $.get(`/get_game_status/${roomName}`, function (data) {
         if (data.status === "awake") {
           // If the game is "awake," proceed to fetch and display the checklist
-          fetchAndDisplayChecklist();
+          fetchAndDisplayChecklist(roomName);
         } else {
           // If the game is not "awake," hide the reset list
           hideResetList();
@@ -1551,98 +1552,101 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error:", error);
     }
   }
-  function displayChecklist(checklist) {
-    const resetListContainer = document.getElementById("reset-list-container");
-    const resetList = document.getElementById("reset-list");
 
-    // Check if all tasks are completed
-    const allCompleted = checklist.every((item) => item.completed);
-
-    if (allCompleted) {
-      // If all tasks are completed, hide the checklist and show "ready to prepare"
-      resetList.style.display = "none";
-      const readyToPrepareMessage = document.createElement("p");
-      readyToPrepareMessage.textContent = "Ready to prepare";
-
-      // Check if the message is already present to avoid duplication
-      if (!resetListContainer.contains(readyToPrepareMessage)) {
-        resetListContainer.appendChild(readyToPrepareMessage);
-      }
-    } else {
-      // If not all tasks are completed, display the checklist
-      if (cachedUserName === "Brian" || cachedUserName === "brian") {
-        resetList.style.display = "none";
-      } else {
-      resetList.style.display = "flex";
-      }
-      resetList.innerHTML = ""; // Clear existing checklist items
-      checklist.forEach((item, index) => {
-        const listItem = document.createElement("li");
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.id = item.task.replace(/\s/g, "");
-        checkbox.checked = item.completed;
-
-        const label = document.createElement("label");
-        label.textContent = item.task;
-        label.setAttribute("for", checkbox.id);
-
-        // Apply line-through style if the task is completed
-        if (item.completed) {
-          label.style.textDecoration = "line-through";
-        }
-
-        listItem.appendChild(checkbox);
-        listItem.appendChild(label);
-        // if (index < checklist.length - 1) {
-        //   listItem.style.borderBottom = "1px solid #ccc";
-        // }
-        resetList.appendChild(listItem);
-
-        checkbox.addEventListener("change", async () => {
-          if (!programmaticChange) {
-            programmaticChange = true;
-            const isChecked = checkbox.checked;
-            const task = label.textContent.trim();
-            await sendLockRequest(task, isChecked);
-            programmaticChange = false;
-          }
-        });
-      });
-
-      // Show the checklist
-      if (cachedUserName === "Brian" || cachedUserName === "brian") {
-        resetList.style.display = "none";
-      } else {
-      resetListContainer.style.display = "flex";
-      }
-    }
-  }
-  function fetchAndDisplayChecklist() {
-    // Fetch checklist data
-    fetch("/get-checklist")
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          console.log("Checklist data:", data.checklist);
-          displayChecklist(data.checklist);
-        } else {
-          console.error("Error getting checklist:", data.error);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
+  console.log("Room name:", roomName);
+  fetchAndDisplayChecklist(roomName);
 
   function hideResetList() {
     const resetListContainer = document.getElementById("reset-list-container");
     resetListContainer.style.display = "none";
   }
 });
+function displayChecklist(checklist) {
+  const resetListContainer = document.getElementById("reset-list-container");
+  const resetList = document.getElementById("reset-list");
+
+  // Check if all tasks are completed
+  const allCompleted = checklist.every((item) => item.completed);
+
+  if (allCompleted) {
+    // If all tasks are completed, hide the checklist and show "ready to prepare"
+    resetList.style.display = "none";
+    const readyToPrepareMessage = document.createElement("p");
+    readyToPrepareMessage.textContent = "Ready to prepare";
+
+    // Check if the message is already present to avoid duplication
+    if (!resetListContainer.contains(readyToPrepareMessage)) {
+      resetListContainer.appendChild(readyToPrepareMessage);
+    }
+  } else {
+    // If not all tasks are completed, display the checklist
+    if (cachedUserName === "Brian" || cachedUserName === "brian") {
+      resetList.style.display = "none";
+    } else {
+    resetList.style.display = "flex";
+    }
+    resetList.innerHTML = ""; // Clear existing checklist items
+    checklist.forEach((item, index) => {
+      const listItem = document.createElement("li");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = item.task.replace(/\s/g, "");
+      checkbox.checked = item.completed;
+
+      const label = document.createElement("label");
+      label.textContent = item.task;
+      label.setAttribute("for", checkbox.id);
+
+      // Apply line-through style if the task is completed
+      if (item.completed) {
+        label.style.textDecoration = "line-through";
+      }
+
+      listItem.appendChild(checkbox);
+      listItem.appendChild(label);
+      // if (index < checklist.length - 1) {
+      //   listItem.style.borderBottom = "1px solid #ccc";
+      // }
+      resetList.appendChild(listItem);
+
+      checkbox.addEventListener("change", async () => {
+        if (!programmaticChange) {
+          programmaticChange = true;
+          const isChecked = checkbox.checked;
+          const task = label.textContent.trim();
+          await sendLockRequest(roomName, task, isChecked);
+          programmaticChange = false;
+        }
+      });
+    });
+
+    // Show the checklist
+    if (cachedUserName === "Brian" || cachedUserName === "brian") {
+      resetList.style.display = "none";
+    } else {
+    resetListContainer.style.display = "flex";
+    }
+  }
+}
+function fetchAndDisplayChecklist(room) {
+  // Fetch checklist data for the specified room
+  fetch(`/get-checklist/${room}`)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        console.log("Checklist data:", data.checklist);
+        displayChecklist(data.checklist);
+      } else {
+        console.error("Error getting checklist:", data.error);
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
 document.addEventListener("DOMContentLoaded", function () {
   function fetchAndDisplayRaspberryPis() {
-    fetch("/check_devices_status")
+    fetch(`/check_devices_status/${roomName}`)
       .then((response) => response.json())
       .then((data) => {
         let piListDiv = document.querySelector(".pi-list");

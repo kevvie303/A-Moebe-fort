@@ -1,15 +1,12 @@
-import os
-import json
-def create_html_file(name):
-    html_content = f"""
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{name}</title>
-    <link rel="stylesheet" type="text/css" href="{{{{ url_for('static', filename='css/styles.css') }}}}">
-    <link rel="stylesheet" type="text/css" href="{{{{ url_for('static', filename='fonts/fonts.css')}}}}">
+    <title>m</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
     <link rel="icon" href="/static/img/logo.png" type="image/png">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
@@ -201,11 +198,11 @@ def create_html_file(name):
             <article class="lights">
                 <img src="../static/img/room-layout.svg" alt="Layout of the room">
                 <figure class="light-buttons">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-1'); console.log('Clicked on Light-1');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-3'); console.log('Clicked on Light-3');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-2'); console.log('Clicked on Light-2');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-4'); console.log('Clicked on Light-4');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-5'); console.log('Clicked on Light-5');">
+                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('light-1-garden'); console.log('Clicked on Light-1');">
+                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('light-3-garden'); console.log('Clicked on Light-3');">
+                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('light-2-garden'); console.log('Clicked on Light-2');">
+                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('light-4-garden'); console.log('Clicked on Light-4');">
+                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('light-1-alley'); console.log('Clicked on Light-5');">
                     <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-6'); console.log('Clicked on Light-6');">
                     <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-7'); console.log('Clicked on Light-7');">
                 </figure>        
@@ -303,7 +300,7 @@ def create_html_file(name):
         </div>
     </section>
 
-    <a href="{{{{ url_for('pin_info') }}}}" class="pin-info button-style">GPIO pin information</a>
+    <a href="{{ url_for('pin_info') }}" class="pin-info button-style">GPIO pin information</a>
 
     </section>
     <footer>
@@ -313,32 +310,8 @@ def create_html_file(name):
 
     
 
-    <script src="{{{{ url_for('static', filename='js/sketch.js') }}}}"></script>
-    <script src="{{{{ url_for('static', filename='js/index.js') }}}}"></script>
+    <script src="{{ url_for('static', filename='js/sketch.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
 </html>
-    """
-
-    with open(f'templates/rooms/{name}.html', 'w') as file:
-        file.write(html_content)    
-
-def create_room_folder(room_name):
-    folder_path = os.path.join('json', room_name)
-    os.makedirs(folder_path, exist_ok=True)
-
-    # Initialize JSON files with empty arrays or initial data
-    files = {
-        "checklist_data.json": [],
-        "file_status.json": [],
-        "game_data.json": [],
-        "raspberry_pis.json": [],
-        "game_status.json": {"status": "awake"},
-        "sensor_data.json": [],
-        "tasks.json": [],
-        "timer_value": 3600
-    }
-
-    # Write initial data to JSON files
-    for filename, data in files.items():
-        with open(os.path.join(folder_path, filename), 'w') as f:
-            json.dump(data, f)
+    
