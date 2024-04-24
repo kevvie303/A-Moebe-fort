@@ -1,5 +1,12 @@
 [
     {
+        "name": "laser",
+        "type": "laser",
+        "pin": "26",
+        "pi": "ret-laser",
+        "state": "0"
+    },
+    {
         "name": "keypad",
         "type": "keypad",
         "pin": "usb",
