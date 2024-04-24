@@ -14,13 +14,6 @@
         "state": "Not Triggered"
     },
     {
-        "name": "top_left_kraken",
-        "type": "Sensor",
-        "pin": 15,
-        "pi": "ret-middle",
-        "state": "Not Triggered"
-    },
-    {
         "name": "green_house_ir",
         "type": "Sensor",
         "pin": 14,
@@ -32,20 +25,6 @@
         "type": "Sensor",
         "pin": 20,
         "pi": "ret-tree",
-        "state": "Not Triggered"
-    },
-    {
-        "name": "bottom_right_kraken",
-        "type": "Sensor",
-        "pin": 23,
-        "pi": "ret-middle",
-        "state": "Not Triggered"
-    },
-    {
-        "name": "top_right_kraken",
-        "type": "Sensor",
-        "pin": 20,
-        "pi": "ret-middle",
         "state": "Not Triggered"
     },
     {
@@ -105,13 +84,6 @@
         "state": "On"
     },
     {
-        "name": "bottom_left_kraken",
-        "type": "Sensor",
-        "pin": 16,
-        "pi": "ret-middle",
-        "state": "Not Triggered"
-    },
-    {
         "name": "maze-sensor",
         "type": "Sensor",
         "pin": 18,
@@ -123,21 +95,21 @@
         "type": "light",
         "pin": 4,
         "pi": "ret-middle",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "top_right_light",
         "type": "light",
         "pin": 7,
         "pi": "ret-middle",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "bottom_right_light",
         "type": "light",
         "pin": 8,
         "pi": "ret-middle",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "entrance-door-lock",
@@ -193,7 +165,7 @@
         "type": "light",
         "pin": 1,
         "pi": "ret-middle",
-        "state": "Off"
+        "state": "On"
     },
     {
         "name": "green-led",
@@ -229,5 +201,13 @@
         "pin": 12,
         "pi": "ret-top",
         "state": "On"
+    },
+    {
+        "name": "laser-1",
+        "type": "maglock",
+        "pin": 6,
+        "pi": "ret-middle",
+        "state": "Locked",
+        "connection_type": "NO"
     }
 ]

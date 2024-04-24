@@ -286,6 +286,9 @@ def on_message(client, userdata, message):
                     call_control_maglock("red-led-keypad", "unlocked")
                     time.sleep(1)
                     call_control_maglock("red-led-keypad", "locked")
+            if sensor_name == "laser":
+                if sensor_state == "100":
+                    solve_task("laser-game")
                 
 @socketio.on('connect')
 def handle_connect():
@@ -836,6 +839,8 @@ def solve_task(task_name):
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
                 squeak_job = True
             publish.single("audio_control/ret-top/play", "squeek.ogg", hostname=broker_ip)
+        elif task_name == "laser-game":
+            publish.single("actuator/control/ret-laser", "100", hostname=broker_ip)
         elif task_name == "woef-woef":
             if game_status == {'status': 'playing'}:
                 if bird_job == True:
@@ -846,6 +851,7 @@ def solve_task(task_name):
         elif task_name == "squeekuence":
             if game_status == {'status': 'playing'}:
                 call_control_maglock("lab-hatch-lock", "locked")
+                call_control_maglock("laser-1", "locked")
                 time.sleep(4)
                 publish.single("audio_control/ret-middle/play", "Background.ogg", hostname=broker_ip)
                 fade_music_in()
@@ -1147,6 +1153,7 @@ def reset_puzzles():
     code3 = False
     code4 = False
     code5 = False
+    publish.single("actuator/control/ret-laser", "0", hostname=broker_ip)
     with open('json/sensor_data.json', 'r') as file:
         devices = json.load(file)
 
@@ -1233,6 +1240,8 @@ def snooze_game():
         for device in devices:
             if device["type"] in ["maglock", "light"]:
                 call_control_maglock(device["name"], "locked")
+            if device["name"] == "laser-1":
+                call_control_maglock(device["name"], "unlocked")
         return "Room snoozed"
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
