@@ -1,7 +1,6 @@
 import os
 from pytube import YouTube
-import moviepy.editor as mp
-import requests
+import subprocess
 
 def download_video(url):
     yt = YouTube(url)
@@ -10,9 +9,8 @@ def download_video(url):
     return out_file
 
 def convert_to_ogg(file_path):
-    clip = mp.AudioFileClip(file_path)
     ogg_file_path = file_path.replace(".mp4", ".ogg")
-    clip.write_audiofile(ogg_file_path)
+    subprocess.run(['ffmpeg', '-i', file_path, '-c:a', 'libvorbis', ogg_file_path])
     os.remove(file_path)  # Remove the original download
     return ogg_file_path
 
