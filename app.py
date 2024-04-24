@@ -20,7 +20,6 @@ import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 from networkscanner import NetworkScanner
 from datetime import datetime, date
-from youtube_downloader import download_video, convert_to_ogg
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -1128,14 +1127,7 @@ def reset_prepare():
         return jsonify({'message': 'Task statuses reset successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error resetting task statuses'})
-@app.route('/convert', methods=['POST'])
-def convert():
-    youtube_url = request.form['youtubeURL']
-    # Remove any existing .ogg file before converting a new video
-    remove_existing_ogg()
-    video_file = download_video(youtube_url)
-    ogg_file = convert_to_ogg(video_file)
-    return send_file(ogg_file, as_attachment=True)
+
 
 def remove_existing_ogg():
     # Remove any existing .ogg file
