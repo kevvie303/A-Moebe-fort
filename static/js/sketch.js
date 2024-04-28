@@ -1,5 +1,5 @@
 var cachedUserName = localStorage.getItem("userName");
-
+var initialTime = 3600;
 $(document).ready(function () {
   $("#add-music-button1").click(function () {
     // Open a file selection dialog when the button is clicked
@@ -501,7 +501,7 @@ $(document).ready(function () {
   function updateTimers() {
     $.get("/timer/value", function (data) {
       var timeLeft = parseInt(data);
-      var timePlayed = 3600 - timeLeft;
+      var timePlayed = initialTime - timeLeft;
       var formattedTimeLeft = formatTime(timeLeft);
       var formattedTimePlayed = formatTime(timePlayed);
       $("#time-left").text(formattedTimeLeft);
@@ -554,11 +554,13 @@ $(document).ready(function () {
   $("#add-minute-button").click(function () {
     $.post("/add_minute", function (data) {
       console.log(data);
+      initialTime += 60;
     }).done(function () {});
   });
   $("#remove-minute-button").click(function () {
     $.post("/remove_minute", function (data) {
       console.log(data);
+      initialTime -= 60;
     }).done(function () {});
   });
   $("#end-game-button").click(function () {
