@@ -821,6 +821,11 @@ def get_task_status():
         return jsonify([])
     
 @app.route('/solve_task/<task_name>', methods=['POST'])
+def solve_task_wrapper(task_name):
+    thread = threading.Thread(target=solve_task, args=(task_name,))
+    thread.start()
+    return jsonify({'message': 'Task update started'})
+    
 def solve_task(task_name):
     global start_time, sequence, code1, code2, code3, code4, code5, codesCorrect, squeak_job, bird_job, should_hint_shed_play
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
