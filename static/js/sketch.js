@@ -240,11 +240,13 @@ $(document).ready(function () {
         lockButtons.append(onButton, offButton);
 
         lockButtons.find("button").click(function () {
-          var action = $(this).hasClass("turn-on-button") ? "on" : "off";
+          var action = $(this).hasClass("turn-on-button")
+            ? "locked"
+            : "unlocked";
           $.ajax({
             type: "POST",
-            url: "/control_light",
-            data: { light: actuator.name, action: action },
+            url: "/control_maglock",
+            data: { maglock: actuator.name, action: action },
             success: function (response) {
               console.log(response);
             },
