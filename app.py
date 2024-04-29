@@ -1645,6 +1645,7 @@ def write_game_data(start_time, end_time):
     # Write the updated list back to the file
     with open(file_path, 'w') as json_file:
         json.dump(existing_data, json_file, indent=2)
+new_init_time = 3600
 @app.route('/timer/start', methods=['POST'])
 def start_timer():
     global timer_thread, timer_value, speed, timer_running, bird_job, start_time
@@ -1664,18 +1665,20 @@ def start_timer():
     return 'Timer started'
 @app.route('/add_minute', methods=['POST'])
 def add_minute():
-    global timer_value
+    global timer_value, new_init_time
     timer_value += 60
     current_time = read_timer_value()
     new_time = current_time + 60
+    new_init_time += 60
     write_timer_value(new_time)
     return "added"
 @app.route('/remove_minute', methods=['POST'])
 def remove_minute():
-    global timer_value
+    global timer_value, new_init_time
     timer_value -= 60
     current_time = read_timer_value()
     new_time = current_time - 60
+    new_init_time -= 60
     write_timer_value(new_time)
     return "removed"
 @app.route('/timer/stop', methods=['POST'])
@@ -1717,7 +1720,9 @@ def get_timer_value():
     except ValueError:
         # Log the error or perform some other action here
         return "Error: Timer value is not available at the moment"
-
+@app.route('/initial_time', methods=['GET'])
+def get_initial_time():
+    return str(new_init_time)
 @app.route('/timer/get-speed', methods=['GET'])
 def get_timer_speed():
     global speed
@@ -1829,7 +1834,8 @@ pi_service_statuses = {}
 preparedValue = {}
 @app.route('/prepare', methods=['POST'])
 def prepare_game():
-    global client, pi_service_statuses, player_type, preparedValue
+    global client, pi_service_statuses, player_type, preparedValue, new_init_time
+    new_init_time = 3600
     prefix = request.form.get('prefix')
     print(prefix)
     if get_game_status() == {'status': 'prepared'}:
