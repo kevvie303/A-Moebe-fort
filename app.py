@@ -1823,22 +1823,28 @@ def update_timer():
         timer_value = max(timer_value - speed, 0)
         write_timer_value(timer_value)
         threading.Event().wait(1)
+new_init_time = 3600
 @app.route('/add_minute', methods=['POST'])
 def add_minute():
-    global timer_value
+    global timer_value, new_init_time
     timer_value += 60
+    new_init_time += 60
     current_time = read_timer_value()
     new_time = current_time + 60
     write_timer_value(new_time)
     return "added"
 @app.route('/remove_minute', methods=['POST'])
 def remove_minute():
-    global timer_value
+    global timer_value, new_init_time
     timer_value -= 60
+    new_init_time -= 60
     current_time = read_timer_value()
     new_time = current_time - 60
     write_timer_value(new_time)
     return "removed"
+@app.route('/initial_time', methods=['GET'])
+def get_initial_time():
+    return str(new_init_time)
 @app.route('/game_data', methods=['GET'])
 def get_game_data():
     file_path = 'json/game_data.json'
@@ -2042,7 +2048,8 @@ pi_service_statuses = {}
 preparedValue = {}
 @app.route('/prepare', methods=['POST'])
 def prepare_game():
-    global client, pi_service_statuses, player_type, preparedValue, should_hint_shed_play
+    global client, pi_service_statuses, player_type, preparedValue, should_hint_shed_play, new_init_time
+    new_init_time = 3600
     should_hint_shed_play = True
     prefix = request.form.get('prefix')
     print(prefix)

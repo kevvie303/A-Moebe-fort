@@ -566,6 +566,9 @@ $(document).ready(function () {
       );
       $("#krijgsgevangenis-link .preview #time-left").text(formattedTimeLeft);
     });
+    $.get("/initial_time", function (data) {
+      initialTime = parseInt(data);
+    });
   }
 
   function formatTime(seconds) {
