@@ -206,34 +206,42 @@ pi_service_statuses = {}  # New dictionary to store service statuses for each Pi
 
 # Function to handle incoming MQTT messages
 def on_message(client, userdata, message):
-    global sensor_states, pi_service_statuses
-
+    global sensor_states, pi_service_statuses, code1, code2, code3, code4, code5, codesCorrect, sequence
+    
     # Extract the topic and message payload
     topic = message.topic
     parts = topic.split("/")
-    try:
-        if len(parts) == 3 and parts[0] == prefix_to_subscribe[:-1]:
-            pi_name = parts[1]  # Extract the Pi name
-            data = json.loads(message.payload.decode("utf-8"))
-            if parts[2] == "service_status":
+    print(parts)
+    if len(parts) == 3 and parts[2] == "service_status":
+        pi_name = parts[1]  # Extract the Pi name
+        data = json.loads(message.payload.decode("utf-8"))
+        
+        # Check if the message is for service status
+        if parts[2] == "service_status":
             # Update service status for the Pi
-                pi_service_statuses[pi_name] = data
-                print(f"Received service status from {pi_name}: {data}")
-
+            pi_service_statuses[pi_name] = data
+            print(f"Received service status from {pi_name}: {data}")
+            
             # Now you can process the received service status data as needed
             # For example, check if all required services are active and take actions accordingly
-
+            
             # Example: Check if all services are active for the Pi
-                if all(status == "active" for status in data.values()):
-                   print(f"All services are active for {pi_name}")
-                else:
-                    print(f"Not all services are active for {pi_name}")
-    except json.decoder.JSONDecodeError as e:
-    # Handle the JSONDecodeError here, you may want to log it or take some other action
-        print("JSONDecodeError occurred:", e)
-    # Optionally, you can assign a default value to data or raise a custom exception
-        #data = {}  # Assigning an empty dictionary as default data
+            if all(status == "active" for status in data.values()):
+                print(f"All services are active for {pi_name}")
+            else:
+                print(f"Not all services are active for {pi_name}")
+
         # For other types of messages (e.g., sensor states), you can handle them as before
+    else:
+        sensor_name = parts[-1]  # Extract the last part of the topic (sensor name)
+        sensor_state = message.payload.decode("utf-8")
+        sensor_states[sensor_name] = sensor_state
+        print(f"Received MQTT message - Sensor: {sensor_name}, State: {sensor_state}")
+
+        if sensor_name in sensor_states:
+            sensor_states[sensor_name] = sensor_state
+            socketio.emit('sensor_update', room="all_clients")
+            print("State changed. Updated JSON.")
 
 @socketio.on('connect')
 def handle_connect():

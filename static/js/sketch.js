@@ -163,50 +163,36 @@ $(document).ready(function () {
     url: "/get_sensor_data", // Replace with the actual endpoint to fetch sensor data
     success: function (sensor_data) {
       // Filter out items that are not maglocks or lights
-      var filteredData = sensor_data.filter(function (item) {
-        return item.type === "maglock" || item.type === "light";
+      var maglocks = sensor_data.filter(function (item) {
+        return item.type === "maglock";
       });
 
-      var lockControlArticle = $("<article>").addClass("lock-control");
+      var lights = sensor_data.filter(function (item) {
+        return item.type === "light";
+      });
 
-      filteredData.forEach(function (actuator) {
+      // Render maglocks
+      var maglockControlArticle = $("<article>").addClass("lock-control");
+      maglocks.forEach(function (actuator) {
         var lockDiv = $("<div>").addClass("lock");
         var actuatorName = $("<p>").text(actuator.name);
         var lockButtons = $("<div>").addClass("lock-buttons");
 
-        if (actuator.type === "maglock") {
-          var lockButton = $("<button>")
-            .addClass("turn-on-button icon")
-            .append(
-              $("<img>")
-                .attr("src", "static/img/unlock.svg")
-                .attr("alt", "Lock")
-            );
-          var unlockButton = $("<button>")
-            .addClass("turn-off-button icon")
-            .append(
-              $("<img>")
-                .attr("src", "static/img/lock.svg")
-                .attr("alt", "Unlock")
-            );
-          lockButtons.append(lockButton, unlockButton);
-        } else if (actuator.type === "light") {
-          var onButton = $("<button>")
-            .addClass("turn-on-button icon")
-            .append(
-              $("<img>")
-                .attr("src", "static/img/light-on.svg")
-                .attr("alt", "Light On")
-            );
-          var offButton = $("<button>")
-            .addClass("turn-off-button icon")
-            .append(
-              $("<img>")
-                .attr("src", "static/img/light-off.svg")
-                .attr("alt", "Light Off")
-            );
-          lockButtons.append(onButton, offButton);
-        }
+        var lockButton = $("<button>")
+          .addClass("turn-on-button icon")
+          .append(
+            $("<img>")
+              .attr("src", "static/img/unlock.svg")
+              .attr("alt", "Lock")
+          );
+        var unlockButton = $("<button>")
+          .addClass("turn-off-button icon")
+          .append(
+            $("<img>")
+              .attr("src", "static/img/lock.svg")
+              .attr("alt", "Unlock")
+          );
+        lockButtons.append(lockButton, unlockButton);
 
         lockButtons.find("button").click(function () {
           var action = $(this).hasClass("turn-on-button")
@@ -226,95 +212,109 @@ $(document).ready(function () {
         });
 
         lockDiv.append(actuatorName, lockButtons);
-        lockControlArticle.append(lockDiv);
+        maglockControlArticle.append(lockDiv);
       });
 
-      lockControls.append(lockControlArticle);
+      // Render lights
+      var lightControlArticle = $("<article>").addClass("lock-control").hide();
+      lights.forEach(function (actuator) {
+        var lockDiv = $("<div>").addClass("lock");
+        var actuatorName = $("<p>").text(actuator.name);
+        var lockButtons = $("<div>").addClass("lock-buttons");
+
+        var onButton = $("<button>")
+          .addClass("turn-on-button icon")
+          .append(
+            $("<img>")
+              .attr("src", "static/img/light-on.svg")
+              .attr("alt", "Light On")
+          );
+        var offButton = $("<button>")
+          .addClass("turn-off-button icon")
+          .append(
+            $("<img>")
+              .attr("src", "static/img/light-off.svg")
+              .attr("alt", "Light Off")
+          );
+        lockButtons.append(onButton, offButton);
+
+        lockButtons.find("button").click(function () {
+          var action = $(this).hasClass("turn-on-button")
+            ? "locked"
+            : "unlocked";
+          $.ajax({
+            type: "POST",
+            url: "/control_maglock",
+            data: { maglock: actuator.name, action: action },
+            success: function (response) {
+              console.log(response);
+            },
+            error: function (error) {
+              console.log(error);
+            },
+          });
+        });
+
+        lockDiv.append(actuatorName, lockButtons);
+        lightControlArticle.append(lockDiv);
+      });
+
+      // Add toggle button for lights
+      var toggleButton = $("<button>")
+        .addClass("toggle-button")
+        .text("Laat lichten zien") // Initially set to show
+        .click(function () {
+          lightControlArticle.slideToggle(function () {
+            // Update button text after toggle animation completes
+            toggleButton.text(lightControlArticle.is(":visible") ? "Verstop lichten" : "Laat lichten zien");
+          });
+        });
+      // Append maglocks, toggle button, and lights to the lockControls element
+      lockControls.append(maglockControlArticle, toggleButton, lightControlArticle);
     },
     error: function (error) {
       console.log("Error fetching sensor data:", error);
     },
   });
 });
-
-$(document).ready(function () {
-  var maglockStatuses = {}; // Object to store maglock statuses
-
-  function generateMaglockElementId(maglockNumber, maglockURL) {
-    // Replace non-alphanumeric characters in the URL with underscores
-    var sanitizedURL = maglockURL.replace(/[^a-zA-Z0-9]/g, "_");
-    return `maglock${maglockNumber}_${sanitizedURL}_status`;
-  }
-
-  function updateMaglockStatus(maglockNumber, maglockName, maglockURL) {
-    $.ajax({
-      type: "GET",
-      url: `${maglockURL}/maglock/status/${maglockNumber}`,
-      success: function (response) {
-        var maglockStatus = response.status;
-        var maglockStatusText =
-          maglockStatus === "locked" ? "Locked" : "Unlocked";
-
-        // Create a unique identifier for this maglock
-        var maglockElementId = generateMaglockElementId(
-          maglockNumber,
-          maglockURL
-        );
-
-        // Check if the maglockStatus for this maglock is already stored
-        if (maglockStatuses[maglockElementId] === undefined) {
-          // If not, create a new element
-          var newMaglockStatusElement = $("<p>").html(
-            `${maglockName}: <strong>${maglockStatusText}</strong>`
-          );
-          newMaglockStatusElement.attr("id", maglockElementId);
-          $("#maglock-status-container").append(newMaglockStatusElement);
-        } else {
-          // If yes, update the existing element
-          var maglockStatusElement = $(`#${maglockElementId}`);
-          maglockStatusElement.html(
-            `${maglockName}: <strong>${maglockStatusText}</strong>`
-          );
-        }
-
-        // Store the updated maglock status in the object
-        maglockStatuses[maglockElementId] = maglockStatusText;
-      },
-      error: function (error) {
-        console.log(error);
-      },
+var statusDiv = $(".status");
+var toggleButton = $("<button>")
+  .addClass("toggle-button")
+  .text("Laat sensoren zien") // Initially, set to show
+  .click(function () {
+    statusDiv.slideToggle(function () {
+      // Update button text after toggle animation completes
+      toggleButton.text(statusDiv.is(":visible") ? "Verstop sensoren" : "Laat sensoren zien");
     });
-  }
+  });
+statusDiv.hide();
+fetchSensorData();
 
-  function updateAllMaglockStatuses(maglockURL) {
-    $.ajax({
-      type: "GET",
-      url: `${maglockURL}/maglock/list`,
-      success: function (response) {
-        var maglocks = response.maglocks;
+// Function to fetch sensor data from the server
+function fetchSensorData() {
+  $.ajax({
+    type: "GET",
+    url: "/get_sensor_data",
+    success: function (sensor_data) {
+      displayStatus(sensor_data);
+    },
+    error: function (error) {
+      console.log("Error fetching sensor data:", error);
+    },
+  });
+}
 
-        for (var i = 0; i < maglocks.length; i++) {
-          var maglock = maglocks[i];
-          updateMaglockStatus(maglock.number, maglock.name, maglockURL);
-        }
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
+function displayStatus(sensor_data) {
+  var statusHTML = "";
+  sensor_data.forEach(function (item) {
+    statusHTML += "<p style='margin-bottom: 5px;'>" + item.name + ": <strong>" + item.state + "</strong></p>";
+  });
+  statusDiv.html(statusHTML);
+}
 
-  // Initial update for maglocks from the URL where you list them
-  //updateAllMaglockStatuses("http://192.168.0.104:5000");
-  //updateAllMaglockStatuses("http://192.168.0.114:5001");
 
-  // Update maglock statuses periodically
-  /*setInterval(function () {
-    updateAllMaglockStatuses("http://192.168.0.104:5000");
-    updateAllMaglockStatuses("http://192.168.0.114:5001");
-  }, 500); // Update every 2 seconds*/
-});
-
+// Append toggle button below h2 inside the section
+$(".lock-status.control").find("h2").after(toggleButton);
 $(document).ready(function () {
   // Create an object to store the latest sensor statuses
   var latestSensorStatuses = {};
@@ -1474,7 +1474,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update your checklist UI based on the received data
     updateChecklist();
   }); 
-
+  socket.on("sensor_update", (data) => {
+    console.log("Received sensor_update event:", data);
+    // Update your checklist UI based on the received data
+    fetchSensorData();
+  });
   // ... (other event listeners) ...
 
   // Function to update the checklist UI

@@ -1,12 +1,5 @@
 [
     {
-        "name": "entrance_door",
-        "type": "Sensor",
-        "pin": 18,
-        "pi": "guard_room_pi",
-        "state": "Triggered"
-    },
-    {
         "name": "camera_button",
         "type": "button",
         "pin": 19,
@@ -141,14 +134,6 @@
         "pi": "for-garderobe",
         "state": "Not Triggered",
         "connection_type": "NO"
-    },
-    {
-        "name": "test",
-        "type": "Sensor",
-        "pin": 1,
-        "pi": "guard_room_pi",
-        "state": "initial",
-        "connection_type": "NC"
     },
     {
         "name": "key-drop-lock",
