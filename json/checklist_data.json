@@ -1,6 +1,11 @@
 [
   {
     "task": "Alle granaten meenemen uit gang naar poepdozen.",
+    "dependencies": {
+      "grenade-1": "Not Triggered",
+      "grenade-2": "Not Triggered",
+      "grenade-3": "Not Triggered"
+    },
     "completed": false
   },
   {
@@ -9,6 +14,11 @@
   },
   {
     "task": "Alle granaten terug in poepdozen, 1 onder slot code 2412",
+    "dependencies": {
+      "grenade-1": "Not Triggered",
+      "grenade-2": "Not Triggered",
+      "grenade-3": "Not Triggered"
+    },
     "completed": false
   },
   {
@@ -41,6 +51,11 @@
   },
   {
     "task": "Check of haakjes niet zijn ingedrukt, anders trek ze naar buiten.",
+    "dependencies": {
+      "jas-1": "Not Triggered",
+      "jas-2": "Not Triggered",
+      "jas-3": "Not Triggered"
+    },
     "completed": false
   },
   {
@@ -65,6 +80,9 @@
   },
   {
     "task": "Knop uitdrukken bovenste la rechts bureau, la dicht, 2 sloten. 1e slot code 6102, 2e slot sleutelbos. Sleutelbos meenemen.",
+    "dependencies": {
+      "camera_button": "Not Triggered"
+    },
     "completed": false
   },
   {
@@ -97,6 +115,9 @@
   },
   {
     "task": "Pyramide terug in bovenste lade, op slot met code 513.",
+    "dependencies": {
+      "nightstand": "Triggered"
+    },
     "completed": false
   },
   {
@@ -109,6 +130,9 @@
   },
   {
     "task": "Munt terug in medicijnkast, plek de munt over de 'III'.",
+    "dependencies": {
+      "ehbo-kist": "Triggered"
+    },
     "completed": false
   },
   {

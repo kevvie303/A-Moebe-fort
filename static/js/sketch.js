@@ -1547,33 +1547,35 @@ document.addEventListener("DOMContentLoaded", () => {
         checkbox.type = "checkbox";
         checkbox.id = item.task.replace(/\s/g, "");
         checkbox.checked = item.completed;
+        checkbox.disabled = !item.dependencies_met; // Disable checkbox if dependencies are not met
 
         const label = document.createElement("label");
         label.textContent = item.task;
         label.setAttribute("for", checkbox.id);
 
+        if (!item.dependencies_met) {
+            label.style.color = "grey"; // Gray out text if dependencies are not met
+        }
+
         // Apply line-through style if the task is completed
         if (item.completed) {
-          label.style.textDecoration = "line-through";
+            label.style.textDecoration = "line-through";
         }
 
         listItem.appendChild(checkbox);
         listItem.appendChild(label);
-        // if (index < checklist.length - 1) {
-        //   listItem.style.borderBottom = "1px solid #ccc";
-        // }
         resetList.appendChild(listItem);
 
         checkbox.addEventListener("change", async () => {
-          if (!programmaticChange) {
-            programmaticChange = true;
-            const isChecked = checkbox.checked;
-            const task = label.textContent.trim();
-            await sendLockRequest(task, isChecked);
-            programmaticChange = false;
-          }
+            if (!programmaticChange) {
+                programmaticChange = true;
+                const isChecked = checkbox.checked;
+                const task = label.textContent.trim();
+                await sendLockRequest(task, isChecked);
+                programmaticChange = false;
+            }
         });
-      });
+    });
 
       // Show the checklist
       resetListContainer.style.display = "flex";

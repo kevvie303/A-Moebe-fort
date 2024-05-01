@@ -209,7 +209,6 @@ def update_json_file():
         print(f"Error updating JSON file: {e}")
 
 broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.216"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}

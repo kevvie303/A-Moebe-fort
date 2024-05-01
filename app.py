@@ -241,6 +241,7 @@ def on_message(client, userdata, message):
         if sensor_name in sensor_states:
             sensor_states[sensor_name] = sensor_state
             socketio.emit('sensor_update', room="all_clients")
+            socketio.emit('checklist_update', room="all_clients")
             print("State changed. Updated JSON.")
 
 @socketio.on('connect')
@@ -310,14 +311,34 @@ def get_checklist_route():
 
 def get_checklist():
     try:
-        # Read the current checklist data
-        with open(CHECKLIST_FILE, 'r') as file:
+        with open('json/checklist_data.json', 'r') as file:
             checklist_data = json.load(file)
+            
+            # Check dependencies
+            for item in checklist_data:
+                if 'dependencies' in item:
+                    dependencies_met = all(
+                        dependency_state(dependency) == state
+                        for dependency, state in item['dependencies'].items()
+                    )
+                    item['dependencies_met'] = dependencies_met
+                else:
+                    item['dependencies_met'] = True
 
         return checklist_data
     except Exception as e:
         print(f"Error getting checklist: {str(e)}")
         return []
+
+def dependency_state(dependency_name):
+    # Fetch sensor data and check state
+    with open('json/sensor_data.json', 'r') as file:
+        sensor_data = json.load(file)
+        for sensor in sensor_data:
+            if sensor['name'] == dependency_name:
+                return sensor['state']
+    return "Unknown"
+
 def check_task_state(task_name):
     json_file_path = 'json/tasks.json'  # Set the path to your JSON file
     with open(json_file_path, 'r') as json_file:
