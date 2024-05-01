@@ -287,8 +287,16 @@ def on_message(client, userdata, message):
                     time.sleep(1)
                     call_control_maglock("red-led-keypad", "locked")
             if sensor_name == "laser":
+                print(sensor_state)
                 if sensor_state == "100":
                     solve_task("laser-game")
+                    publish.single("servo_control/ret-middle", "servo1", hostname=broker_ip)
+                    call_control_maglock("laser-1", "unlocked")
+                    call_control_maglock("laser-2", "unlocked")
+                if sensor_state == "50":
+                    publish.single("servo_control/ret-middle", "servo2", hostname=broker_ip)
+                    call_control_maglock("laser-2", "unlocked")
+                    call_control_maglock("laser-1", "locked")
                 
 @socketio.on('connect')
 def handle_connect():
@@ -509,7 +517,7 @@ def trigger():
     # Process the data and respond as needed
     return jsonify({'message': 'Data received successfully'})
 @app.route('/retriever')
-def pow():
+def retriever():
     return render_template('pow.html')
 def start_scripts():
     return "nothing"
@@ -856,7 +864,7 @@ def solve_task(task_name):
         elif task_name == "squeekuence":
             if game_status == {'status': 'playing'}:
                 call_control_maglock("lab-hatch-lock", "locked")
-                call_control_maglock("laser-1", "locked")
+                call_control_maglock("laser-2", "locked")
                 time.sleep(4)
                 publish.single("audio_control/ret-middle/play", "Background.ogg", hostname=broker_ip)
                 fade_music_in()
@@ -1167,6 +1175,8 @@ def reset_puzzles():
         if device["type"] in ["maglock"]:
             if device["name"] == "gang-licht-1":
                 call_control_maglock(device["name"], "unlocked")
+            elif device["name"] == "laser-1" or device["name"] == "laser-2":
+                call_control_maglock(device["name"], "unlocked")
             else:
                 call_control_maglock(device["name"], "locked")
     return "puzzles reset"
@@ -1245,7 +1255,7 @@ def snooze_game():
         for device in devices:
             if device["type"] in ["maglock", "light"]:
                 call_control_maglock(device["name"], "locked")
-            if device["name"] == "laser-1":
+            if device["name"] == "laser-1" or device["name"] == "laser-2":
                 call_control_maglock(device["name"], "unlocked")
         return "Room snoozed"
     except Exception as e:
