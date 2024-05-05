@@ -216,5 +216,13 @@
         "pi": "ret-middle",
         "state": "Locked",
         "connection_type": "NO"
+    },
+    {
+        "name": "laser-2",
+        "type": "light",
+        "pin": 10,
+        "pi": "ret-middle",
+        "state": "On",
+        "connection_type": "NO"
     }
 ]
