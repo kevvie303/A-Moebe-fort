@@ -310,7 +310,7 @@ def lock_route():
         is_checked = request.json.get('isChecked', False)
 
         # Determine the action based on the isChecked flag
-        action = "locked" if is_checked else "unlocked"
+        action = "unlocked" if is_checked else "locked"
         execute_lock_command(task, action)
 
         # Update the checklist status
@@ -323,17 +323,18 @@ def lock_route():
 
 def execute_lock_command(task, action):
     try:
-        if task == "Doe de entree deur dicht":
+        if task == "sluit het luik voor de ballen":
+            call_control_maglock("ball-drop-lock", action)
+        if task == "Doe het luik richting vakantie kamer dicht":
+            call_control_maglock("lab-hatch-lock", action)
+        if task == "Leg het laatste puzzelstuk in de schuur in de eerste kamer en doe de schuur dicht":
+            call_control_maglock("shed-door-lock", action)
+        if task == "Sta in de laatste kamer en sluit de schuifdeur.":
+            call_control_maglock("sliding-door-lock", action)
+        if task == "Sluit luik vanuit vakantiekamer naar de tuin, zorg ervoor dat deze goed vastzit!":
+            call_control_maglock("doghouse-lock", action)
+        if task == "(vanuit buiten de kamer) doe de entreedeur dicht":
             call_control_maglock("entrance-door-lock", action)
-        if task == "Loop naar midden gang, sluit beide hekken.":
-            call_control_maglock("iron-door-child", action)
-            call_control_maglock("iron-door-adult", action)
-        if task == "Leg personeelspas Mendez in onderste la links van bureau, sluit la.":
-            call_control_maglock("bovenste-la-guard", action)
-        if task == "Geheime deur dicht door aan ijzeren kabel te trekken.":
-            call_control_maglock("secret-door-lock", action)
-        if task == "Sleutel terughangen achter speaker.":
-            call_control_maglock("key-drop-lock", action)
         
     except Exception as e:
         print(f"Error executing {action} command: {str(e)}")
@@ -1911,6 +1912,7 @@ def start_timer():
         timer_thread = threading.Thread(target=update_timer)
         timer_thread.daemon = True
         timer_thread.start()
+        call_control_maglock("entrance-door-lock", "locked")
         fade_music_out("Lounge")
         time.sleep(1)
         publish.single("audio_control/ret-top/play", "Ambience.ogg", hostname=broker_ip)

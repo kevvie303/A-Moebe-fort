@@ -56,6 +56,10 @@
     "completed": false
   },
   {
+    "task": "Sluit luik vanuit vakantiekamer naar de tuin, zorg ervoor dat deze goed vastzit!",
+    "completed": false
+  },
+  {
     "task": "Haal alle puzzelsstukken uit het frame en verspreid er 5 door deze kamer",
     "completed": false
   },
@@ -84,7 +88,11 @@
     "completed": false
   },
   {
-    "task": "Alle ballen opruimen in lab en eindkamer controleer of Max zijn bal er bij zit.",
+    "task": "Alle ballen opruimen in lab en eindkamer. Controleer of Max zijn bal erbij zit.",
+    "completed": false
+  },
+  {
+    "task": "Sta in de laatste kamer en sluit de schuifdeur.",
     "completed": false
   },
   {
@@ -92,7 +100,19 @@
     "completed": false
   },
   {
+    "task": "(vanuit buiten de kamer) doe de entreedeur dicht",
+    "completed": false
+  },
+  {
+    "task": "(vanuit buiten de kamer) doe de einddeur dicht, deze gaat niet op slot.",
+    "completed": false
+  },
+  {
     "task": "neem Max mee uit de ontvangst naar controle kamer.",
+    "completed": false
+  },
+  {
+    "task": "Dump alle ballen terug op het luik boven het plafond, zodat ze vallen tijdens het spel.",
     "completed": false
   }
 ]
