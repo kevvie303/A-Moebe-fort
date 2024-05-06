@@ -23,6 +23,9 @@
   },
   {
     "task": "Knop uitdrukken en op slot, code letterslot VRIJ",
+    "dependencies": {
+      "alarm-button": "Not Triggered"
+    },
     "completed": false
   },
   {
