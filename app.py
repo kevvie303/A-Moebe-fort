@@ -23,6 +23,7 @@ from networkscanner import NetworkScanner
 from datetime import datetime, date
 from youtube_downloader import download_video, convert_to_ogg
 from html_creator import create_html_file, create_room_folder
+from functools import partial
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -38,6 +39,7 @@ stdin = None
 pi2 = None
 pi3 = None
 romy = True
+room = None
 last_keypad_code = None
 aborted = False
 player_type = None
@@ -183,8 +185,8 @@ def connect_device():
         print("MAC address not found for the Raspberry Pi at", ip_address)
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
-#broker_ip = "192.168.18.66"
-broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
+broker_ip = "192.168.18.66"
+#broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
 #broker_ip = "192.168.1.13"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
@@ -193,7 +195,61 @@ sensor_states = {}
 
 pi_service_statuses = {}  # New dictionary to store service statuses for each Pi
 
-
+def handle_rules(sensor_name, sensor_state, room):
+    global sequence, code1, code2, code3, code4, code5, codesCorrect
+    if get_game_status(room) == {'status': 'playing'}:
+        if check_rule("green_house_ir", room) and sequence == 0:
+            task_state = check_task_state("tree-lights", room)
+            if task_state == "pending":
+                call_control_maglock_retriever("green-led", "unlocked")
+                print("1")
+                sequence = 1
+        if check_rule("red_house_ir", room) and sequence == 1:
+            task_state = check_task_state("tree-lights", room)
+            if task_state == "pending":
+                call_control_maglock_retriever("red-led", "unlocked")
+                print("2")
+                sequence = 2
+        elif check_rule("red_house_ir", room) and sequence <= 0:
+            task_state = check_task_state("tree-lights", room)
+            if task_state == "pending":
+                call_control_maglock_retriever("red-led", "unlocked")
+                time.sleep(0.5)
+                call_control_maglock_retriever("green-led", "locked")
+                call_control_maglock_retriever("red-led", "locked")
+                sequence = 0
+        if check_rule("blue_house_ir", room) and sequence == 2:
+            task_state = check_task_state("tree-lights", room)
+            if task_state == "pending":
+                solve_task("tree-lights", room)
+        elif check_rule("blue_house_ir", room) and sequence != 2:
+            task_state = check_task_state("tree-lights", room)
+            if task_state == "pending":
+                call_control_maglock_retriever("green-led", "unlocked")
+                time.sleep(0.5)
+                call_control_maglock_retriever("red-led", "locked")
+                call_control_maglock_retriever("green-led", "locked")
+                call_control_maglock_retriever("blue-led", "locked")
+                sequence = 0
+        if sensor_name == "keypad":
+            sensor_state_int = int(sensor_state)
+            print(sensor_state)
+            if sensor_state == "1528" and not code1:
+                code1 = True
+                solve_task("flowers", room)
+            elif (sensor_state == "7867" or sensor_state == "8978") and not code2:
+                code2 = True
+                solve_task("kite-count", room)
+            elif sensor_state == "0128" and not code3:
+                code3 = True
+                solve_task("number-feel", room)
+            elif sensor_state == "5038" and not code4:
+                code4 = True
+                solve_task("fence-decrypt", room)
+            else:
+                call_control_maglock_retriever("red-led-keypad", "unlocked")
+                time.sleep(1)
+                call_control_maglock_retriever("red-led-keypad", "locked")
 # Function to handle incoming MQTT messages
 def on_message(client, userdata, message):
     global sensor_states, pi_service_statuses, code1, code2, code3, code4, code5, codesCorrect, sequence
@@ -224,70 +280,23 @@ def on_message(client, userdata, message):
         # For other types of messages (e.g., sensor states), you can handle them as before
     else:
         sensor_name = parts[-1]  # Extract the last part of the topic (sensor name)
+        pi = parts[1]
+        if "ret" in pi:
+            room = "The Retriever"
+        else:
+            room = "m"
+        print(room)
         sensor_state = message.payload.decode("utf-8")
         sensor_states[sensor_name] = sensor_state
         print(f"Received MQTT message - Sensor: {sensor_name}, State: {sensor_state}")
 
         if sensor_name in sensor_states:
             sensor_states[sensor_name] = sensor_state
-            update_json_file()
+            update_json_file(room)
             socketio.emit('sensor_update', room="all_clients")
             print("State changed. Updated JSON.")
         #print(sensor_states)
-        if get_game_status() == {'status': 'playing'}:
-            global sequence
-            if check_rule("green_house_ir") and sequence == 0:
-                task_state = check_task_state("tree-lights")
-                if task_state == "pending":
-                    call_control_maglock("green-led", "unlocked")
-                    print("1")
-                    sequence = 1
-            if check_rule("red_house_ir") and sequence == 1:
-                task_state = check_task_state("tree-lights")
-                if task_state == "pending":
-                    call_control_maglock("red-led", "unlocked")
-                    print("2")
-                    sequence = 2
-            elif check_rule("red_house_ir") and sequence <= 0:
-                task_state = check_task_state("tree-lights")
-                if task_state == "pending":
-                    call_control_maglock("red-led", "unlocked")
-                    time.sleep(0.5)
-                    call_control_maglock("green-led", "locked")
-                    call_control_maglock("red-led", "locked")
-                    sequence = 0
-            if check_rule("blue_house_ir") and sequence == 2:
-                task_state = check_task_state("tree-lights")
-                if task_state == "pending":
-                    solve_task("tree-lights")
-            elif check_rule("blue_house_ir") and sequence != 2:
-                task_state = check_task_state("tree-lights")
-                if task_state == "pending":
-                    call_control_maglock("green-led", "unlocked")
-                    time.sleep(0.5)
-                    call_control_maglock("red-led", "locked")
-                    call_control_maglock("green-led", "locked")
-                    call_control_maglock("blue-led", "locked")
-                    sequence = 0
-            if sensor_name == "keypad":
-                sensor_state_int = int(sensor_state)
-                print(sensor_state)
-                if sensor_state == "1528" and code1 == False:
-                    code1 = True
-                    solve_task("flowers")
-                elif (sensor_state == "7867" or sensor_state =="8978") and code2 == False:
-                    code2 = True
-                    solve_task("kite-count")
-                elif sensor_state == "0128" and code3 == False:
-                    code3 = True
-                    solve_task("number-feel")
-                elif sensor_state == "5038" and code4 == False:
-                    code4 = True
-                    solve_task("fence-decrypt")
-                else:
-                    call_control_maglock("red-led-keypad", "unlocked")
-                    time.sleep(1)
-                    call_control_maglock("red-led-keypad", "locked")
+        threading.Thread(target=handle_rules, args=(sensor_name, sensor_state, room)).start()
                 
 @socketio.on('connect')
 def handle_connect():
@@ -315,16 +324,16 @@ def lock_route():
 def execute_lock_command(task, action):
     try:
         if task == "Doe de entree deur dicht":
-            call_control_maglock("entrance-door-lock", action)
+            call_control_maglock_retriever("entrance-door-lock", action)
         if task == "Loop naar midden gang, sluit beide hekken.":
-            call_control_maglock("iron-door-child", action)
-            call_control_maglock("iron-door-adult", action)
+            call_control_maglock_retriever("iron-door-child", action)
+            call_control_maglock_retriever("iron-door-adult", action)
         if task == "Leg personeelspas Mendez in onderste la links van bureau, sluit la.":
-            call_control_maglock("bovenste-la-guard", action)
+            call_control_maglock_retriever("bovenste-la-guard", action)
         if task == "Geheime deur dicht door aan ijzeren kabel te trekken.":
-            call_control_maglock("secret-door-lock", action)
+            call_control_maglock_retriever("secret-door-lock", action)
         if task == "Sleutel terughangen achter speaker.":
-            call_control_maglock("key-drop-lock", action)
+            call_control_maglock_retriever("key-drop-lock", action)
         
     except Exception as e:
         print(f"Error executing {action} command: {str(e)}")
@@ -662,10 +671,10 @@ def solve_task(task_name, room):
                     scheduler.remove_job('birdjob')
                     bird_job = False
                 publish.single("audio_control/ret-top/play", "hok.ogg", hostname=broker_ip)
-                call_control_maglock("doghouse-lock", "locked")
+                call_control_maglock_retriever("doghouse-lock", "locked")
         elif task_name == "squeekuence":
             if game_status == {'status': 'playing'}:
-                call_control_maglock("lab-hatch-lock", "locked")
+                call_control_maglock_retriever("lab-hatch-lock", "locked")
                 time.sleep(4)
                 publish.single("audio_control/ret-middle/play", "Background.ogg", hostname=broker_ip)
                 fade_music_in(room)
@@ -676,13 +685,13 @@ def solve_task(task_name, room):
         elif task_name == "flowers":
             code1 = True
             codesCorrect += 1
-            call_control_maglock("green-led-keypad", "locked")
+            call_control_maglock_retriever("green-led-keypad", "locked")
             publish.single("audio_control/ret-top/play", "correct-effect.ogg", hostname=broker_ip)
             time.sleep(1)
             fade_music_out("Ambience", room)
             time.sleep(2)
             publish.single("audio_control/ret-top/play", "bloemen.ogg", hostname=broker_ip)
-            call_control_maglock("green-led-keypad", "locked")
+            call_control_maglock_retriever("green-led-keypad", "locked")
             time.sleep(10)
             if codesCorrect == 3 or codesCorrect == 4:
                 fade_music_in(room)
@@ -693,13 +702,13 @@ def solve_task(task_name, room):
         elif task_name == "kite-count":
             code2 = True
             codesCorrect += 1
-            call_control_maglock("green-led-keypad", "unlocked")
+            call_control_maglock_retriever("green-led-keypad", "unlocked")
             publish.single("audio_control/ret-top/play", "correct-effect.ogg", hostname=broker_ip)
             time.sleep(1)
             fade_music_out("Ambience", room)
             time.sleep(2)
             publish.single("audio_control/ret-top/play", "vlieger.ogg", hostname=broker_ip)
-            call_control_maglock("green-led-keypad", "locked")
+            call_control_maglock_retriever("green-led-keypad", "locked")
             time.sleep(5)
             if codesCorrect == 3 or codesCorrect == 4:
                 fade_music_in(room)
@@ -710,13 +719,13 @@ def solve_task(task_name, room):
         elif task_name == "number-feel":
             code3 = True
             codesCorrect += 1
-            call_control_maglock("green-led-keypad", "unlocked")
+            call_control_maglock_retriever("green-led-keypad", "unlocked")
             publish.single("audio_control/ret-top/play", "correct-effect.ogg", hostname=broker_ip)
             time.sleep(1)
             fade_music_out("Ambience", room)
             time.sleep(2)
             publish.single("audio_control/ret-top/play", "plantenbak.ogg", hostname=broker_ip)
-            call_control_maglock("green-led-keypad", "locked")
+            call_control_maglock_retriever("green-led-keypad", "locked")
             time.sleep(5)
             if codesCorrect == 3 or codesCorrect == 4:
                 fade_music_in(room)
@@ -727,13 +736,13 @@ def solve_task(task_name, room):
         elif task_name == "fence-decrypt":
             code4 = True
             codesCorrect += 1
-            call_control_maglock("green-led-keypad", "unlocked")
+            call_control_maglock_retriever("green-led-keypad", "unlocked")
             publish.single("audio_control/ret-top/play", "correct-effect.ogg", hostname=broker_ip)
             time.sleep(1)
             fade_music_out("Ambience", room)
             time.sleep(2)
             publish.single("audio_control/ret-top/play", "hek.ogg", hostname=broker_ip)
-            call_control_maglock("green-led-keypad", "locked")
+            call_control_maglock_retriever("green-led-keypad", "locked")
             time.sleep(5)
             if codesCorrect == 3 or codesCorrect == 4:
                 fade_music_in(room)
@@ -745,16 +754,16 @@ def solve_task(task_name, room):
             print("nothing yet")
         elif task_name == "squid-game":
             if game_status == {'status': 'playing'}:
-                call_control_maglock("top_left_light", "unlocked")
-                call_control_maglock("top_right_light", "unlocked")
-                call_control_maglock("bottom_left_light", "unlocked")
-                call_control_maglock("bottom_right_light", "unlocked")
+                call_control_maglock_retriever("top_left_light", "unlocked")
+                call_control_maglock_retriever("top_right_light", "unlocked")
+                call_control_maglock_retriever("bottom_left_light", "unlocked")
+                call_control_maglock_retriever("bottom_right_light", "unlocked")
                 publish.single("audio_control/ret-middle/play", "gelukt.ogg", hostname=broker_ip)
                 time.sleep(3)
-                call_control_maglock("sliding-door-lock", "locked")
+                call_control_maglock_retriever("sliding-door-lock", "locked")
                 time.sleep(6)
                 if should_balls_drop == True:
-                    call_control_maglock("ball-drop-lock", "locked")
+                    call_control_maglock_retriever("ball-drop-lock", "locked")
                 publish.single("audio_control/ret-middle/stop", "Background.ogg", hostname=broker_ip)
                 publish.single("audio_control/ret-middle/play", "Dogsout.ogg", hostname=broker_ip)
         elif task_name == "tree-lights":
@@ -766,29 +775,29 @@ def solve_task(task_name, room):
                 time.sleep(1)
                 code5 = True
                 print("3")
-                call_control_maglock("blue-led", "unlocked")
+                call_control_maglock_retriever("blue-led", "unlocked")
                 fade_out_thread = threading.Thread(target=fade_music_out("Ambience", room))
                 fade_out_thread.start()
                 time.sleep(1)
-                call_control_maglock("blue-led", "locked")
-                call_control_maglock("green-led", "locked")
-                call_control_maglock("red-led", "locked")
+                call_control_maglock_retriever("blue-led", "locked")
+                call_control_maglock_retriever("green-led", "locked")
+                call_control_maglock_retriever("red-led", "locked")
                 time.sleep(1)
-                call_control_maglock("green-led", "unlocked")
-                call_control_maglock("red-led", "unlocked")
-                call_control_maglock("blue-led", "unlocked")
+                call_control_maglock_retriever("green-led", "unlocked")
+                call_control_maglock_retriever("red-led", "unlocked")
+                call_control_maglock_retriever("blue-led", "unlocked")
                 time.sleep(1)
-                call_control_maglock("green-led", "locked")
-                call_control_maglock("red-led", "locked")
-                call_control_maglock("blue-led", "locked")
+                call_control_maglock_retriever("green-led", "locked")
+                call_control_maglock_retriever("red-led", "locked")
+                call_control_maglock_retriever("blue-led", "locked")
                 time.sleep(1)
-                call_control_maglock("green-led", "unlocked")
-                call_control_maglock("red-led", "unlocked")
-                call_control_maglock("blue-led", "unlocked")
+                call_control_maglock_retriever("green-led", "unlocked")
+                call_control_maglock_retriever("red-led", "unlocked")
+                call_control_maglock_retriever("blue-led", "unlocked")
                 time.sleep(1)
-                call_control_maglock("green-led", "locked")
-                call_control_maglock("red-led", "locked")
-                call_control_maglock("blue-led", "locked")
+                call_control_maglock_retriever("green-led", "locked")
+                call_control_maglock_retriever("red-led", "locked")
+                call_control_maglock_retriever("blue-led", "locked")
                 sequence = 0
                 time.sleep(1)
                 publish.single("audio_control/ret-top/play", "boom.ogg", hostname=broker_ip)
@@ -799,7 +808,7 @@ def solve_task(task_name, room):
                     publish.single("audio_control/ret-top/play", "schuur_open.ogg", hostname=broker_ip)
                     time.sleep(5)
                     fade_music_in(room)
-                    call_control_maglock("shed-door-lock", "locked")
+                    call_control_maglock_retriever("shed-door-lock", "locked")
                     code1 = False
                     code2 = False
                     code3 = False
@@ -814,7 +823,7 @@ def solve_task(task_name, room):
             publish.single("audio_control/ret-top/play", "schuur_open.ogg", hostname=broker_ip)
             time.sleep(5)
             fade_music_in(room)
-            call_control_maglock("shed-door-lock", "locked")
+            call_control_maglock_retriever("shed-door-lock", "locked")
             code1 = False
             code2 = False
             code3 = False
@@ -852,9 +861,9 @@ def skip_task(task_name):
                 task['state'] = 'skipped'
         if task_name == "tree-lights":
             code5 = True
-            call_control_maglock("blue-led", "locked")
-            call_control_maglock("green-led", "locked")
-            call_control_maglock("red-led", "locked")
+            call_control_maglock_retriever("blue-led", "locked")
+            call_control_maglock_retriever("green-led", "locked")
+            call_control_maglock_retriever("red-led", "locked")
             if bird_job == True:
                 scheduler.remove_job('birdjob')
                 bird_job = False
@@ -873,7 +882,7 @@ def skip_task(task_name):
         if code1 and code2 and code3 and code4 and code5:
             print("executed")
             publish.single("audio_control/ret-top/play", "schuur_open.ogg", hostname=broker_ip)
-            call_control_maglock("shed-door-lock", "locked")
+            call_control_maglock_retriever("shed-door-lock", "locked")
             code1 = False
             code2 = False
             code3 = False
@@ -974,9 +983,9 @@ def reset_puzzles(room):
     for device in devices:
         if device["type"] in ["maglock"]:
             if device["name"] == "gang-licht-1":
-                call_control_maglock(device["name"], "unlocked", room)
+                call_control_maglock_retriever(device["name"], "unlocked", room)
             else:
-                call_control_maglock(device["name"], "locked", room)
+                call_control_maglock_retriever(device["name"], "locked", room)
     return "puzzles reset"
 
 # Function to read the retriever status from the JSON file
@@ -1006,7 +1015,7 @@ def wake_room(room):
         # Iterate over devices
         for device in devices:
             if device["type"] in ["light"] and device["name"] != "green-led" and device["name"] != "red-led" and device["name"] != "blue-led" and device["name"] != "red-led-keypad" and device["name"] != "green-led-keypad":
-                call_control_maglock(device["name"], "unlocked")
+                call_control_maglock_retriever(device["name"], "unlocked")
         update_game_status('awake', room)
         return "room awakened"
     except Exception as e:
@@ -1019,14 +1028,14 @@ def control_light(room):
     print(light_name)
     print(room)
     if light_name and room:
-        call_control_maglock(f"{light_name}", "locked", f"{room}" if check_rule(light_name, room) else "unlocked")
+        call_control_maglock_retriever(f"{light_name}", "locked", f"{room}" if check_rule(light_name, room) else "unlocked")
     elif light_name == "Light-7":
         if check_rule("blacklight"):
-            call_control_maglock("blacklight", "locked")
-            call_control_maglock("portal-light", "locked")
+            call_control_maglock_retriever("blacklight", "locked")
+            call_control_maglock_retriever("portal-light", "locked")
         else:
-            call_control_maglock("blacklight", "unlocked")
-            call_control_maglock("portal-light", "unlocked")
+            call_control_maglock_retriever("blacklight", "unlocked")
+            call_control_maglock_retriever("portal-light", "unlocked")
     return jsonify({'message': f'Light {light_name} control command executed successfully'})
 @app.route('/snooze_game/<room>', methods=['POST'])
 def snooze_game(room):
@@ -1040,7 +1049,7 @@ def snooze_game(room):
         # Iterate over devices
         for device in devices:
             if device["type"] in ["maglock", "light"]:
-                call_control_maglock(device["name"], "locked")
+                call_control_maglock_retriever(device["name"], "locked")
         return "Room snoozed"
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
@@ -1168,7 +1177,7 @@ def control_maglock_route():
     return control_maglock()
 
 
-def call_control_maglock(maglock, action, room):
+def call_control_maglock_partial(room, maglock, action):
     global squeak_job, should_balls_drop, player_type
     print(maglock)
     print(action)
@@ -1184,7 +1193,11 @@ def call_control_maglock(maglock, action, room):
             # Publish the MQTT message with the appropriate Pi's name
             mqtt_message = f"{sensor['pin']} {action}"
             publish.single(f"actuator/control/{pi_name}", mqtt_message, hostname=broker_ip)
-            return("done")
+            return "done"
+
+# Create a partial function with room argument already applied
+call_control_maglock_retriever = partial(call_control_maglock_partial, "The Retriever")
+call_control_maglock_m = partial(call_control_maglock_partial, "m")
 API_URL = 'http://192.168.0.105:5001/current_state'
 
 @app.route('/get_state', methods=['GET'])
