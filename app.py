@@ -1334,7 +1334,10 @@ def play_music():
     data = request.json
     message = data.get('message')
     print(message)
-    publish.single("audio_control/play", message, hostname=broker_ip)
+    if message == "laser-game-1":
+        publish.single("actuator/control/ret-laser", "50", hostname=broker_ip)
+    else:
+        publish.single("audio_control/play", message, hostname=broker_ip)
     return jsonify({"status": "success"})
 @app.route('/stop_music', methods=['POST'])
 def stop_music():
