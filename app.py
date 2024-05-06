@@ -1336,6 +1336,9 @@ def play_music():
     print(message)
     if message == "laser-game-1":
         publish.single("actuator/control/ret-laser", "50", hostname=broker_ip)
+        publish.single("servo_control/ret-middle", "servo2", hostname=broker_ip)
+        call_control_maglock("laser-2", "unlocked")
+        call_control_maglock("laser-1", "locked")
     else:
         publish.single("audio_control/play", message, hostname=broker_ip)
     return jsonify({"status": "success"})
