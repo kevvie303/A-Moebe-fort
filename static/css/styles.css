@@ -503,6 +503,25 @@ input[type=text] {
   border-radius: 4px;
 }
 
+.toggle-button {
+  padding: 10px 20px;
+  border: 2px solid #007bff;
+  border-radius: 5px;
+  background-color: transparent;
+  color: #007bff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.toggle-button:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.toggle-button:focus {
+  outline: none;
+}
+
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;

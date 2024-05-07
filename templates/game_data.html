@@ -81,85 +81,99 @@
 </table>
 
 <script>
-// Fetch game data from Flask endpoint
-fetch('/game_data')
-    .then(response => response.json())
-    .then(data => {
-        // Create a table for game history
-        createGameHistoryTable(data);
+  // Fetch game data from Flask endpoint
+  fetch('/game_data')
+      .then(response => response.json())
+      .then(data => {
+          // Filter out games under 15 minutes
+          const filteredData = data.filter(game => calculatePlayTime(game) >= 15 * 60); // 15 minutes in seconds
 
-        // Create a table for statistics
-        createStatisticsTable(data);
-    })
-    .catch(error => console.error('Error fetching game data:', error));
+          // Create a table for game history
+          createGameHistoryTable(filteredData);
 
-// Function to create a table for game history
-function createGameHistoryTable(data) {
-    const table = document.getElementById('gameHistory');
+          // Create a table for statistics
+          createStatisticsTable(filteredData);
+      })
+      .catch(error => console.error('Error fetching game data:', error));
 
-    let currentDate = null;
-    let gamesCount = 0;
+  // Function to create a table for game history
+  function createGameHistoryTable(data) {
+      const table = document.getElementById('gameHistory');
 
-    data.forEach(game => {
-        const startTime = new Date(game.start_time);
-        const endTime = new Date(game.end_time);
-        const date = startTime.toLocaleDateString('en-GB'); // Format as dd/mm/yyyy
+      let currentDate = null;
+      let gamesCount = 0;
 
-        if (date !== currentDate) {
-            // Output previous date and games count
-            if (currentDate !== null) {
-                const countRow = table.insertRow();
-                countRow.insertCell(0).innerHTML = `${currentDate} (${gamesCount} games)`;
-            }
+      data.forEach(game => {
+          const startTime = new Date(game.start_time);
+          const endTime = new Date(game.end_time);
+          const date = startTime.toLocaleDateString('en-GB'); // Format as dd/mm/yyyy
 
-            // Set up for the new date
-            currentDate = date;
-            gamesCount = 1;
-        } else {
-            // Increment games count for the same date
-            gamesCount++;
-        }
+          if (date !== currentDate) {
+              // Output previous date and games count
+              if (currentDate !== null) {
+                  const countRow = table.insertRow();
+                  countRow.insertCell(0).innerHTML = `${currentDate} (${gamesCount} games)`;
+              }
 
-        // Output game time entry
-        const timeRow = table.insertRow();
-        timeRow.insertCell(0).innerHTML = `${startTime.toLocaleTimeString()} - ${endTime.toLocaleTimeString()}`;
-    });
+              // Set up for the new date
+              currentDate = date;
+              gamesCount = 1;
+          } else {
+              // Increment games count for the same date
+              gamesCount++;
+          }
 
-    // Output games count for the last date
-    if (currentDate !== null) {
-        const lastCountRow = table.insertRow();
-        lastCountRow.insertCell(0).innerHTML = `${currentDate} (${gamesCount} games)`;
-    }
-}
+          // Output game time entry
+          const timeRow = table.insertRow();
+          timeRow.insertCell(0).innerHTML = `${startTime.toLocaleTimeString()} - ${endTime.toLocaleTimeString()}`;
+      });
 
-// Function to create a table for statistics
-function createStatisticsTable(data) {
-    const table = document.getElementById('statistics');
+      // Output games count for the last date
+      if (currentDate !== null) {
+          const lastCountRow = table.insertRow();
+          lastCountRow.insertCell(0).innerHTML = `${currentDate} (${gamesCount} games)`;
+      }
+  }
 
-    // Add your statistics calculations here based on the data
-    const totalGames = data.length;
-    const averagePlayTime = calculateAveragePlayTime(data);
+  // Function to create a table for statistics
+  function createStatisticsTable(data) {
+      const table = document.getElementById('statistics');
 
-    const row = table.insertRow();
-    row.insertCell(0).innerHTML = 'Total Games Played';
-    row.insertCell(1).innerHTML = totalGames;
+      // Add your statistics calculations here based on the data
+      const totalGames = data.length;
+      const averagePlayTime = calculateAveragePlayTime(data);
 
-    const row2 = table.insertRow();
-    row2.insertCell(0).innerHTML = 'Average Play Time';
-    row2.insertCell(1).innerHTML = `${averagePlayTime.toFixed(2)} seconds`;
-}
+      const row = table.insertRow();
+      row.insertCell(0).innerHTML = 'Total Games Played';
+      row.insertCell(1).innerHTML = totalGames;
 
-// Function to calculate the average play time
-function calculateAveragePlayTime(data) {
-    const totalPlayTime = data.reduce((total, game) => {
-        const startTime = new Date(game.start_time);
-        const endTime = new Date(game.end_time);
-        const playTimeInSeconds = (endTime - startTime) / 1000; // Convert to seconds
-        return total + playTimeInSeconds;
-    }, 0);
+      const row2 = table.insertRow();
+      row2.insertCell(0).innerHTML = 'Average Play Time';
+      row2.insertCell(1).innerHTML = formatTime(averagePlayTime); // Format average play time
+  }
 
-    return totalPlayTime / data.length;
-}
+  // Function to calculate the average play time
+  function calculateAveragePlayTime(data) {
+      const totalPlayTime = data.reduce((total, game) => {
+          return total + calculatePlayTime(game);
+      }, 0);
+
+      return totalPlayTime / data.length;
+  }
+
+  // Function to calculate play time of a game in seconds
+  function calculatePlayTime(game) {
+      const startTime = new Date(game.start_time);
+      const endTime = new Date(game.end_time);
+      return (endTime - startTime) / 1000; // Convert to seconds
+  }
+
+  // Function to format time from seconds to MM:SS format
+  function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = Math.floor(seconds % 60);
+      return `${minutes} minutes and ${remainingSeconds < 10 ? '0' : ''}${remainingSeconds} seconds`;
+  }
 </script>
 <a href="/" class="button-style">Back to main page</a>
 </body>

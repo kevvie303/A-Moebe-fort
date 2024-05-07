@@ -1,5 +1,5 @@
 var cachedUserName = localStorage.getItem("userName");
-var roomName = document.title.trim();
+var roomName = document.title.trim();var initialTime = 3600;
 $(document).ready(function () {
   $("#add-music-button1").click(function () {
     // Open a file selection dialog when the button is clicked
@@ -164,50 +164,36 @@ $(document).ready(function () {
     url: `/get_sensor_data/${roomName}`, // Replace with the actual endpoint to fetch sensor data
     success: function (sensor_data) {
       // Filter out items that are not maglocks or lights
-      var filteredData = sensor_data.filter(function (item) {
-        return item.type === "maglock" || item.type === "light";
+      var maglocks = sensor_data.filter(function (item) {
+        return item.type === "maglock";
       });
 
-      var lockControlArticle = $("<article>").addClass("lock-control");
+      var lights = sensor_data.filter(function (item) {
+        return item.type === "light";
+      });
 
-      filteredData.forEach(function (actuator) {
+      // Render maglocks
+      var maglockControlArticle = $("<article>").addClass("lock-control");
+      maglocks.forEach(function (actuator) {
         var lockDiv = $("<div>").addClass("lock");
         var actuatorName = $("<p>").text(actuator.name);
         var lockButtons = $("<div>").addClass("lock-buttons");
 
-        if (actuator.type === "maglock") {
-          var lockButton = $("<button>")
-            .addClass("turn-on-button icon")
-            .append(
-              $("<img>")
-                .attr("src", "/static/img/unlock.svg")
-                .attr("alt", "Lock")
-            );
-          var unlockButton = $("<button>")
-            .addClass("turn-off-button icon")
-            .append(
-              $("<img>")
-                .attr("src", "/static/img/lock.svg")
-                .attr("alt", "Unlock")
-            );
-          lockButtons.append(lockButton, unlockButton);
-        } else if (actuator.type === "light") {
-          var onButton = $("<button>")
-            .addClass("turn-on-button icon")
-            .append(
-              $("<img>")
-                .attr("src", "/static/img/light-on.svg")
-                .attr("alt", "Light On")
-            );
-          var offButton = $("<button>")
-            .addClass("turn-off-button icon")
-            .append(
-              $("<img>")
-                .attr("src", "/static/img/light-off.svg")
-                .attr("alt", "Light Off")
-            );
-          lockButtons.append(onButton, offButton);
-        }
+        var lockButton = $("<button>")
+          .addClass("turn-on-button icon")
+          .append(
+            $("<img>")
+              .attr("src", "/static/img/unlock.svg")
+              .attr("alt", "Lock")
+          );
+        var unlockButton = $("<button>")
+          .addClass("turn-off-button icon")
+          .append(
+            $("<img>")
+              .attr("src", "/static/img/lock.svg")
+              .attr("alt", "Unlock")
+          );
+        lockButtons.append(lockButton, unlockButton);
 
         lockButtons.find("button").click(function () {
           var action = $(this).hasClass("turn-on-button")
@@ -227,16 +213,69 @@ $(document).ready(function () {
         });
 
         lockDiv.append(actuatorName, lockButtons);
-        lockControlArticle.append(lockDiv);
+        maglockControlArticle.append(lockDiv);
       });
 
-      lockControls.append(lockControlArticle);
+      // Render lights
+      var lightControlArticle = $("<article>").addClass("lock-control").hide();
+      lights.forEach(function (actuator) {
+        var lockDiv = $("<div>").addClass("lock");
+        var actuatorName = $("<p>").text(actuator.name);
+        var lockButtons = $("<div>").addClass("lock-buttons");
+
+        var onButton = $("<button>")
+          .addClass("turn-on-button icon")
+          .append(
+            $("<img>")
+              .attr("src", "/static/img/light-on.svg")
+              .attr("alt", "Light On")
+          );
+        var offButton = $("<button>")
+          .addClass("turn-off-button icon")
+          .append(
+            $("<img>")
+              .attr("src", "/static/img/light-off.svg")
+              .attr("alt", "Light Off")
+          );
+        lockButtons.append(onButton, offButton);
+
+        lockButtons.find("button").click(function () {
+          var action = $(this).hasClass("turn-on-button")
+            ? "locked"
+            : "unlocked";
+          $.ajax({
+            type: "POST",
+            url: "/control_maglock",
+            data: { maglock: actuator.name, action: action },
+            success: function (response) {
+              console.log(response);
+            },
+            error: function (error) {
+              console.log(error);
+            },
+          });
+        });
+
+        lockDiv.append(actuatorName, lockButtons);
+        lightControlArticle.append(lockDiv);
+      });
+
+      // Add toggle button for lights
+      var toggleButton = $("<button>")
+        .addClass("toggle-button")
+        .text("Toggle Lights")
+        .click(function () {
+          lightControlArticle.slideToggle();
+        });
+      // Append maglocks, toggle button, and lights to the lockControls element
+      lockControls.append(maglockControlArticle, toggleButton, lightControlArticle);
     },
     error: function (error) {
       console.log("Error fetching sensor data:", error);
     },
   });
 });
+
 
 var statusDiv = $(".status");
 
@@ -255,6 +294,7 @@ function fetchSensorData() {
     },
   });
 }
+
 function displayStatus(sensor_data) {
   var statusHTML = "";
   sensor_data.forEach(function (item) {
@@ -262,6 +302,17 @@ function displayStatus(sensor_data) {
   });
   statusDiv.html(statusHTML);
 }
+
+// Create toggle button
+var toggleButton = $("<button>")
+  .addClass("toggle-button")
+  .text("Toggle Sensor Status")
+  .click(function () {
+    statusDiv.slideToggle();
+  });
+
+// Append toggle button below h2 inside the section
+$(".lock-status.control").find("h2").after(toggleButton);
 $(document).ready(function () {
   var maglockStatuses = {}; // Object to store maglock statuses
 
@@ -502,7 +553,7 @@ $(document).ready(function () {
     if (roomName != "A-moebe") {
     $.get(`/timer/value/${roomName}`, function (data) {
       var timeLeft = parseInt(data);
-      var timePlayed = 3600 - timeLeft;
+      var timePlayed = initialTime - timeLeft;
       var formattedTimeLeft = formatTime(timeLeft);
       var formattedTimePlayed = formatTime(timePlayed);
       $("#time-left").text(formattedTimeLeft);
@@ -515,6 +566,9 @@ $(document).ready(function () {
         formattedTimePlayed
       );
       $("#krijgsgevangenis-link .preview #time-left").text(formattedTimeLeft);
+    });
+    $.get("/initial_time", function (data) {
+      initialTime = parseInt(data);
     });
   }
   }
@@ -555,11 +609,13 @@ $(document).ready(function () {
   $("#add-minute-button").click(function () {
     $.post("/add_minute", function (data) {
       console.log(data);
+      initialTime += 60;
     }).done(function () {});
   });
   $("#remove-minute-button").click(function () {
     $.post("/remove_minute", function (data) {
       console.log(data);
+      initialTime -= 60;
     }).done(function () {});
   });
   $("#end-game-button").click(function () {

@@ -50,8 +50,8 @@
         "state": "pending"
     },
     {
-        "task": "sinus-game",
-        "description": "players have put the sinus wave correctly and and gotten the code from the center speaker (####)",
+        "task": "laser-game",
+        "description": "Players have shined the laser twice in the LDR.",
         "state": "pending"
     },
     {

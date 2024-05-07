@@ -310,7 +310,7 @@ def lock_route():
         is_checked = request.json.get('isChecked', False)
         roomName = request.json.get('roomName', '')
         # Determine the action based on the isChecked flag
-        action = "locked" if is_checked else "unlocked"
+        action = "unlocked" if is_checked else "locked"
         execute_lock_command(task, action)
 
         # Update the checklist status
@@ -323,17 +323,18 @@ def lock_route():
 
 def execute_lock_command(task, action):
     try:
-        if task == "Doe de entree deur dicht":
-            call_control_maglock_retriever("entrance-door-lock", action)
-        if task == "Loop naar midden gang, sluit beide hekken.":
-            call_control_maglock_retriever("iron-door-child", action)
-            call_control_maglock_retriever("iron-door-adult", action)
-        if task == "Leg personeelspas Mendez in onderste la links van bureau, sluit la.":
-            call_control_maglock_retriever("bovenste-la-guard", action)
-        if task == "Geheime deur dicht door aan ijzeren kabel te trekken.":
-            call_control_maglock_retriever("secret-door-lock", action)
-        if task == "Sleutel terughangen achter speaker.":
-            call_control_maglock_retriever("key-drop-lock", action)
+        if task == "sluit het luik voor de ballen":
+            call_control_maglock("ball-drop-lock", action)
+        if task == "Doe het luik richting vakantie kamer dicht":
+            call_control_maglock("lab-hatch-lock", action)
+        if task == "Leg het laatste puzzelstuk in de schuur in de eerste kamer en doe de schuur dicht":
+            call_control_maglock("shed-door-lock", action)
+        if task == "Sta in de laatste kamer en sluit de schuifdeur.":
+            call_control_maglock("sliding-door-lock", action)
+        if task == "Sluit luik vanuit vakantiekamer naar de tuin, zorg ervoor dat deze goed vastzit!":
+            call_control_maglock("doghouse-lock", action)
+        if task == "(vanuit buiten de kamer) doe de entreedeur dicht":
+            call_control_maglock("entrance-door-lock", action)
         
     except Exception as e:
         print(f"Error executing {action} command: {str(e)}")
@@ -665,6 +666,8 @@ def solve_task(task_name, room):
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
                 squeak_job = True
             publish.single("audio_control/ret-top/play", "squeek.ogg", hostname=broker_ip)
+        elif task_name == "laser-game":
+            publish.single("actuator/control/ret-laser", "100", hostname=broker_ip)
         elif task_name == "woef-woef":
             if game_status == {'status': 'playing'}:
                 if bird_job == True:
@@ -675,6 +678,7 @@ def solve_task(task_name, room):
         elif task_name == "squeekuence":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_retriever("lab-hatch-lock", "locked")
+                call_control_maglock_retriever("laser-2", "locked")
                 time.sleep(4)
                 publish.single("audio_control/ret-middle/play", "Background.ogg", hostname=broker_ip)
                 fade_music_in(room)
@@ -976,6 +980,7 @@ def reset_puzzles(room):
     code3 = False
     code4 = False
     code5 = False
+    publish.single("actuator/control/ret-laser", "0", hostname=broker_ip)
     with open(f'json/{room}/sensor_data.json', 'r') as file:
         devices = json.load(file)
 
@@ -983,6 +988,8 @@ def reset_puzzles(room):
     for device in devices:
         if device["type"] in ["maglock"]:
             if device["name"] == "gang-licht-1":
+                call_control_maglock_retriever(device["name"], "unlocked")
+            elif device["name"] == "laser-1" or device["name"] == "laser-2":
                 call_control_maglock_retriever(device["name"], "unlocked")
             else:
                 call_control_maglock_retriever(device["name"], "locked")
@@ -1050,6 +1057,8 @@ def snooze_game(room):
         for device in devices:
             if device["type"] in ["maglock", "light"]:
                 call_control_maglock_retriever(device["name"], "locked")
+            if device["name"] == "laser-1" or device["name"] == "laser-2":
+                call_control_maglock_retriever(device["name"], "unlocked")
         return "Room snoozed"
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
@@ -1127,7 +1136,13 @@ def play_music():
     data = request.json
     message = data.get('message')
     print(message)
-    publish.single("audio_control/play", message, hostname=broker_ip)
+    if message == "laser-game-1":
+        publish.single("actuator/control/ret-laser", "50", hostname=broker_ip)
+        publish.single("servo_control/ret-middle", "servo2", hostname=broker_ip)
+        call_control_maglock("laser-2", "unlocked")
+        call_control_maglock("laser-1", "locked")
+    else:
+        publish.single("audio_control/play", message, hostname=broker_ip)
     return jsonify({"status": "success"})
 @app.route('/stop_music', methods=['POST'])
 def stop_music():
@@ -1633,22 +1648,28 @@ def update_timer(room, speed):
         timer_values[room] = timer_value
         write_timer_value(timer_value, room)
         time.sleep(1)
+new_init_time = 3600
 @app.route('/add_minute', methods=['POST'])
 def add_minute():
-    global timer_value
+    global timer_value, new_init_time
     timer_value += 60
+    new_init_time += 60
     current_time = read_timer_value()
     new_time = current_time + 60
     write_timer_value(new_time)
     return "added"
 @app.route('/remove_minute', methods=['POST'])
 def remove_minute():
-    global timer_value
+    global timer_value, new_init_time
     timer_value -= 60
+    new_init_time -= 60
     current_time = read_timer_value()
     new_time = current_time - 60
     write_timer_value(new_time)
     return "removed"
+@app.route('/initial_time', methods=['GET'])
+def get_initial_time():
+    return str(new_init_time)
 @app.route('/game_data', methods=['GET'])
 def get_game_data():
     file_path = 'json/game_data.json'
@@ -1853,7 +1874,8 @@ pi_service_statuses = {}
 preparedValue = {}
 @app.route('/prepare/<room>', methods=['POST'])
 def prepare_game(room):
-    global client, pi_service_statuses, player_type, preparedValue, should_hint_shed_play
+    global client, pi_service_statuses, player_type, preparedValue, should_hint_shed_play, new_init_time
+    new_init_time = 3600
     should_hint_shed_play = True
     prefix = request.form.get('prefix')
     print(prefix)
