@@ -185,8 +185,8 @@ def connect_device():
         print("MAC address not found for the Raspberry Pi at", ip_address)
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
-broker_ip = "192.168.18.66"
-#broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
+#broker_ip = "192.168.18.66"
+broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
 #broker_ip = "192.168.1.13"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
@@ -983,9 +983,9 @@ def reset_puzzles(room):
     for device in devices:
         if device["type"] in ["maglock"]:
             if device["name"] == "gang-licht-1":
-                call_control_maglock_retriever(device["name"], "unlocked", room)
+                call_control_maglock_retriever(device["name"], "unlocked")
             else:
-                call_control_maglock_retriever(device["name"], "locked", room)
+                call_control_maglock_retriever(device["name"], "locked")
     return "puzzles reset"
 
 # Function to read the retriever status from the JSON file

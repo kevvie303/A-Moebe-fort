@@ -4,7 +4,7 @@
         "type": "keypad",
         "pin": "usb",
         "pi": "ret-top",
-        "state": "5038"
+        "state": "1528"
     },
     {
         "name": "blue_house_ir",
