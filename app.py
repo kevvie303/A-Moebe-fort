@@ -250,6 +250,17 @@ def handle_rules(sensor_name, sensor_state, room):
                 call_control_maglock_retriever("red-led-keypad", "unlocked")
                 time.sleep(1)
                 call_control_maglock_retriever("red-led-keypad", "locked")
+            if sensor_name == "laser":
+                print(sensor_state)
+                if sensor_state == "100":
+                    solve_task("laser-game")
+                    publish.single("servo_control/ret-middle", "servo1", hostname=broker_ip)
+                    call_control_maglock_retriever("laser-1", "unlocked")
+                    call_control_maglock_retriever("laser-2", "unlocked")
+                if sensor_state == "50":
+                    publish.single("servo_control/ret-middle", "servo2", hostname=broker_ip)
+                    call_control_maglock_retriever("laser-2", "unlocked")
+                    call_control_maglock_retriever("laser-1", "locked")
 # Function to handle incoming MQTT messages
 def on_message(client, userdata, message):
     global sensor_states, pi_service_statuses, code1, code2, code3, code4, code5, codesCorrect, sequence
@@ -324,17 +335,17 @@ def lock_route():
 def execute_lock_command(task, action):
     try:
         if task == "sluit het luik voor de ballen":
-            call_control_maglock("ball-drop-lock", action)
+            call_control_maglock_retriever("ball-drop-lock", action)
         if task == "Doe het luik richting vakantie kamer dicht":
-            call_control_maglock("lab-hatch-lock", action)
+            call_control_maglock_retriever("lab-hatch-lock", action)
         if task == "Leg het laatste puzzelstuk in de schuur in de eerste kamer en doe de schuur dicht":
-            call_control_maglock("shed-door-lock", action)
+            call_control_maglock_retriever("shed-door-lock", action)
         if task == "Sta in de laatste kamer en sluit de schuifdeur.":
-            call_control_maglock("sliding-door-lock", action)
+            call_control_maglock_retriever("sliding-door-lock", action)
         if task == "Sluit luik vanuit vakantiekamer naar de tuin, zorg ervoor dat deze goed vastzit!":
-            call_control_maglock("doghouse-lock", action)
+            call_control_maglock_retriever("doghouse-lock", action)
         if task == "(vanuit buiten de kamer) doe de entreedeur dicht":
-            call_control_maglock("entrance-door-lock", action)
+            call_control_maglock_retriever("entrance-door-lock", action)
         
     except Exception as e:
         print(f"Error executing {action} command: {str(e)}")
@@ -987,9 +998,7 @@ def reset_puzzles(room):
     # Iterate over devices
     for device in devices:
         if device["type"] in ["maglock"]:
-            if device["name"] == "gang-licht-1":
-                call_control_maglock_retriever(device["name"], "unlocked")
-            elif device["name"] == "laser-1" or device["name"] == "laser-2":
+            if device["name"] == "laser-1" or device["name"] == "laser-2":
                 call_control_maglock_retriever(device["name"], "unlocked")
             else:
                 call_control_maglock_retriever(device["name"], "locked")
@@ -1139,8 +1148,8 @@ def play_music():
     if message == "laser-game-1":
         publish.single("actuator/control/ret-laser", "50", hostname=broker_ip)
         publish.single("servo_control/ret-middle", "servo2", hostname=broker_ip)
-        call_control_maglock("laser-2", "unlocked")
-        call_control_maglock("laser-1", "locked")
+        call_control_maglock_retriever("laser-2", "unlocked")
+        call_control_maglock_retriever("laser-1", "locked")
     else:
         publish.single("audio_control/play", message, hostname=broker_ip)
     return jsonify({"status": "success"})
