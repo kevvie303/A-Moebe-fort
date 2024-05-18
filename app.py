@@ -269,7 +269,7 @@ def lock_route():
 
 def execute_lock_command(task, action):
     try:
-        if task == "Doe de entree deur dicht":
+        if task == "Sluit entree-deur":
             call_control_maglock("entrance-door-lock", action)
         if task == "Loop naar midden gang, sluit beide hekken.":
             call_control_maglock("iron-door-child", action)
