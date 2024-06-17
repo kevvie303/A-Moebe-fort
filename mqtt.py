@@ -243,15 +243,19 @@ def on_message(client, userdata, message):
             print(sensor_state)
             mendez1 = 584185540695
             mendez2 = 584199238531
+            mendez3 = 584184252114
+            mendez4 = 584190275286
             roosenthaal1 = 584198160159
             roosenthaal2 = 584183068095
+            roosenthaal3 = 584191180531
+            roosenthaal4 = 584194717134
             sensor_state_int = int(sensor_state)
             print(roosenthaal2)
-            if sensor_state_int == mendez1 or sensor_state_int == mendez2:
+            if sensor_state_int == mendez1 or sensor_state_int == mendez2 or sensor_state_int == mendez3 or sensor_state_int == mendez4:
                 if check_task_state("scan-mendez") == "pending":
                     solve_task("scan-mendez")
                 print("Correct code")
-            elif sensor_state_int == roosenthaal1 or sensor_state_int == roosenthaal2:
+            elif sensor_state_int == roosenthaal1 or sensor_state_int == roosenthaal2 or sensor_state_int == roosenthaal3 or sensor_state_int == roosenthaal4:
                 if check_task_state("scan-rosenthal") == "pending":
                     solve_task("scan-rosenthal")
                 print("Correct code")
