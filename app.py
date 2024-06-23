@@ -244,9 +244,9 @@ def lock_route():
 def execute_lock_command(task):
     try:
         # Add logic to map tasks to corresponding SSH commands for locking
-        if task == "Haal alle schilden uit de stamboom, sluit de stamboom.":
+        if task == "Haal alle schilden uit de stamboom, behalve Jacobus Visser, sluit de stamboom.":
             publish.single(f"actuator/control/vol-afslag", "17 locked", hostname=broker_ip)
-        elif task == "Leg de goudstaven + het juiste schild (Hendrik Visser) in de kast onder de stamboom. Kast dicht.":
+        elif task == "Leg 3 goudstaven + het juiste schild (Hendrik Visser) in de kast onder de stamboom. Kast dicht.":
             publish.single(f"actuator/control/vol-afslag", "18 locked", hostname=broker_ip)
         elif task == "Leg een willekeurig schild in de wasmand, sluit wasmand.":
             publish.single(f"actuator/control/vol-afslag", "4 locked", hostname=broker_ip)
@@ -254,9 +254,9 @@ def execute_lock_command(task):
             publish.single(f"actuator/control/vol-boat", "12 locked", hostname=broker_ip)
         elif task == "Leg een willekeurig schild in de bovenkant van de houten kist, sluit bovenkant.":
             publish.single(f"actuator/control/vol-afslag", "6 locked", hostname=broker_ip)
-        elif task == "Leg een willekeurig schild in de voorkant van de houten kist, sluit voorkant.":
+        elif task == "Leg een willekeurig schild + 3 foto's in de voorkant van de houten kist, sluit voorkant.":
             publish.single(f"actuator/control/vol-afslag", "5 locked", hostname=broker_ip)
-        elif task == "Leg een willekeurig schild in de kast naast de hendelpuzzel, kast dicht.":
+        elif task == "Kortste touw in kast naast hendels, sluit kast.":
             publish.single(f"actuator/control/vol-boat", "27 locked", hostname=broker_ip)
         elif task == "Sluit einddeur.":
             publish.single(f"actuator/control/vol-afslag", "23 locked", hostname=broker_ip)
@@ -264,7 +264,7 @@ def execute_lock_command(task):
             publish.single(f"actuator/control/vol-afslag", "22 locked", hostname=broker_ip)
         elif task == "Langste touw in middelste kist, sluit kist.":
             publish.single(f"actuator/control/vol-boat", "4 locked", hostname=broker_ip)
-        elif task == "Kortste touw in de ton, sluit de ton.":
+        elif task == "2 lichte, 1 zware goudstaaf + vissen in ton, sluit ton.":
             publish.single(f"actuator/control/vol-boat", "23 locked", hostname=broker_ip)
         elif task == "Resterend touwtje in resterende kist, sluit kist.":
             publish.single(f"actuator/control/vol-boat", "22 locked", hostname=broker_ip)
@@ -943,12 +943,15 @@ def solve_task(task_name):
         elif task_name == "hendels":
             if game_status == {'status': 'playing'}:
                 publish.single(f"actuator/control/vol-boat", "27 unlocked", hostname=broker_ip)
-        elif task_name == "Dance-mecabre":
+        elif task_name == "Dance-Macabre":
             if game_status == {'status': 'playing'}:
                 publish.single(f"actuator/control/vol-boat", "4 unlocked", hostname=broker_ip)
         elif task_name == "roeispanen":
             if game_status == {'status': 'playing'}:
                 publish.single(f"actuator/control/vol-boat", "22 unlocked", hostname=broker_ip)
+        elif task_name == "meeuw-open":
+            if game_status == {'status': 'playing'}:
+                publish.single(f"actuator/control/vol-boat", "23 unlocked", hostname=broker_ip)
         elif task_name == "Zeil":
             if game_status == {'status': 'playing'}:
                 publish.single(f"actuator/control/vol-boat", "23 unlocked", hostname=broker_ip)
@@ -1260,10 +1263,10 @@ def play_music():
     data = request.json
     message = data.get('message')
     print(message)
-    if message == "Dance-mecabre-4.ogg":
+    if message == "Dance-Macabre-4.ogg":
         publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)
-        publish.single("audio_control/vol-boat/volume", "10 Dance-mecabre-4.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-boat/volume", "10 Dance-Macabre-4.ogg", hostname=broker_ip)
     elif message == "Aanmeren-4.ogg":
         publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)

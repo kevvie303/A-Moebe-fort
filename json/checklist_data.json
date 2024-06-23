@@ -1,10 +1,10 @@
 [
   {
-    "task": "Haal alle schilden uit de stamboom, sluit de stamboom.",
+    "task": "Haal alle schilden uit de stamboom, behalve Jacobus Visser, sluit de stamboom.",
     "completed": false
   },
   {
-    "task": "Leg de goudstaven + het juiste schild (Hendrik Visser) in de kast onder de stamboom. Kast dicht.",
+    "task": "Leg 3 goudstaven + het juiste schild (Hendrik Visser) in de kast onder de stamboom. Kast dicht.",
     "completed": false
   },
   {
@@ -16,11 +16,7 @@
     "completed": false
   },
   {
-    "task": "Leg een willekeurig schild in de bovenkant van de houten kist, sluit bovenkant.",
-    "completed": false
-  },
-  {
-    "task": "Leg een willekeurig schild in de voorkant van de houten kist, sluit voorkant.",
+    "task": "Leg een willekeurig schild + 3 foto's in de voorkant van de houten kist, sluit voorkant.",
     "completed": false
   },
   {
@@ -28,7 +24,7 @@
     "completed": false
   },
   {
-    "task": "Leg een willekeurig schild in de kast naast de hendelpuzzel, kast dicht.",
+    "task": "Leg een willekeurig schild in de kast naast de hendelpuzzel.",
     "completed": true
   },
   {
@@ -36,7 +32,7 @@
     "completed": false
   },
   {
-    "task": "Leg hamer terug in voorkant timmerkast, sluit met slot 605.",
+    "task": "Leg hamer + willekeurig schild in voorkant timmerkast, sluit met slot 605.",
     "completed": false
   },
   {
@@ -64,7 +60,11 @@
     "completed": false
   },
   {
-    "task": "Kortste touw in de ton, sluit de ton.",
+    "task": "Kortste touw in kast naast hendels, sluit kast.",
+    "completed": false
+  },
+  {
+    "task": "2 lichte, 1 zware goudstaaf + vissen in ton, sluit ton.",
     "completed": false
   },
   {
@@ -72,7 +72,7 @@
     "completed": false
   },
   {
-    "task": "Roeispanen loshalen en verspreiden over schip.",
+    "task": "Roeispanen loshalen en verspreiden over schip, 1 roeispaan in reddingskast van kapiteinskamer.",
     "completed": false
   },
   {
@@ -84,27 +84,31 @@
     "completed": false
   },
   {
-    "task": "Ring west, zuid en oost op slot met codes: 1689, 1622, 293.",
+    "task": "Ring west, zuid en oost op slot met codes: 1689, 1622, 493.",
     "completed": false
   },
   {
-    "task": "Cryptex in lade kapitein, lade op slot, code 1755",
+    "task": "Cryptex in lade kapitein, lade op slot, code 1622",
     "completed": false
   },
   {
-    "task": "Wodka vles achterop de tafel.",
+    "task": "Wodka vles achterop de tafel. (8 pers)",
     "completed": false
   },
   {
-    "task": "Reddingskast op slot, code 854",
+    "task": "Reddingskast op slot, code 855",
     "completed": false
   },
   {
-    "task": "Doorstreeppuzzel kist leeg, dan op slot, code 356",
+    "task": "Doorstreeppuzzel kist leeg.",
     "completed": false
   },
   {
-    "task": "Kaartenpuzzel om map heen wikkelen, touwtje los eromheen. Terugleggen achterop tafel.",
+    "task": "Doorstreeppuzzel kist op slot met 1755 (8 pers).",
+    "completed": false
+  },
+  {
+    "task": "Kaartenpuzzel vastmaken en linksachter op tafel neerleggen.",
     "completed": false
   },
   {

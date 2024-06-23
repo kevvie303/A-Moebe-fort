@@ -1,72 +1,72 @@
 [
     {
         "task": "Lutine",
-        "description": "Spelers hebben lutine ingedrukt op de knoppen",
+        "description": "Spelers hebben lutine ingedrukt op de knoppen, dit start de muziek in kapiteinskamer",
         "state": "pending"
     },
     {
         "task": "Kaarten",
-        "description": "Spelers halen een code uit de kaarten",
+        "description": "Spelers halen een code uit de kaarten ( leeck - Colberg - Wald) 531",
         "state": "pending"
     },
     {
         "task": "Drankfles",
-        "description": "Spelers lezen de code van de drankfles af (MCDDLV = 1755)",
+        "description": "Spelers lezen de code van de drankfles af (MCDDLV = 1755) *Tijdelijk buiten gebruik*",
         "state": "pending"
     },
     {
         "task": "Fotos",
-        "description": "Spelers tellen de objecten in de foto's",
+        "description": "Spelers tellen de kaarsen (8) windmolens (5) en ganzen (5) in de gang en kapiteinskamer",
         "state": "pending"
     },
     {
         "task": "Flessen",
-        "description": "Spelers tellen de flessen in de kist en strepen dubbele weg, hierdoor houden ze de code (9861) over",
+        "description": "Spelers tellen de flessen in de kist en strepen dubbele weg, hierdoor houden ze de code (1689) over",
         "state": "pending"
     },
     {
         "task": "Cryptex",
-        "description": "De spelers hebben het jaartal door de cryptex heen gehaald en krijgen de code (1807)",
+        "description": "De spelers hebben het jaartal 1799 door de cryptex heen gehaald en komen hiermee op de code 1622",
         "state": "pending"
     },
     {
         "task": "Inventaris",
-        "description": "De spelers hebben de inventaris gecheckt en zijn er achter gekomen dat ze een aantal objecten nog missen ",
+        "description": "aantal klompen geteld in de kamer + aantal dobbers + aantal reddingsvesten ( 493)",
         "state": "pending"
     },
     {
         "task": "Kapiteinsgeheim",
-        "description": "De spelers hebben met de 4 ringen de code gevonden voor het kapiteinsgeheim. ( 0821 )",
+        "description": "Door steeds 2 van de ringen te gebruiken komen de spelers achter de code (N = 0 O = 8 Z = 2 W = 1 ) 0821",
         "state": "pending"
     },
     {
         "task": "YO-HO",
-        "description": "OPLOSSEN NADAT SPELERS (******) HEBBEN GEZEGD",
+        "description": "Mensen hebben (yoho) geroepen, dit opent uiteindelijk de deur naar de boot en start daar muziek.",
         "state": "pending"
     },
     {
         "task": "hendels",
-        "description": "1-1-1",
+        "description": "De spelers hebben de hendels in de juiste volgorde gezet naar de posities 1-1-1, dit opent deurtje links van de hendels.",
         "state": "pending"
     },
     {
-        "task": "Dance-mecabre",
-        "description": "De spelers hebben gedjensd",
+        "task": "Dance-Macabre",
+        "description": "De spelers hebben de danspasjes ongeveer bijna goed gedaan, dit opent de middelste kist.",
         "state": "pending"
     },
     {
         "task": "roeispanen",
-        "description": "De spelers hebben de roeispanen op de juiste manier opgehangen.",
+        "description": "De spelers hebben de roeispanen op de juiste manier opgehangen in het houten rek, dit opent de rechterkist.",
         "state": "pending"
     },
     {
         "task": "Zeil",
-        "description": "De spelers hebben het zeil in de juiste richting gezet.",
+        "description": "De spelers hebben het zeil in de juiste richting gezet, dit opent de ton.",
         "state": "pending"
     },
     {
         "task": "Aanmeren",
-        "description": "De spelers hebben de touwen op de klossen aan wal geworpen.",
+        "description": "De spelers hebben de touwen op de klossen aan wal geworpen. ALTIJD alle hens aan dek laten afspelen voordat je deze solvet, dit laat de deur vallen naar de afslag.",
         "state": "pending"
     },
     {
@@ -75,33 +75,28 @@
         "state": "pending"
     },
     {
-        "task": "meeuw-open",
-        "description": "Skidoosh",
-        "state": "pending"
-    },
-    {
-        "task": "bootje-leggen",
-        "description": "Emma ligt",
+        "task": "Biedingen",
+        "description": "De spelers hebben geslagen met de hamer op de tafel, dit opent de stamboom, de wasmand en de voorkant van de houten toren.",
         "state": "pending"
     },
     {
         "task": "schilderijen-drukken",
-        "description": "Skidoosh2",
+        "description": "De spelers hebben de plaatjes ongeveer bijna op de juiste schilderijen gedrukt, dit opent rechter-schilderij.",
         "state": "pending"
     },
     {
-        "task": "Biedingen",
-        "description": "De spelers hebben de juiste codes gevonden voor de biedingen.",
+        "task": "meeuw-open",
+        "description": "Mensen hebben de 2 teksten gecombineerd en de meeuw geopend, dit opent de ton.",
         "state": "pending"
     },
     {
         "task": "eindsequence",
-        "description": "start de eindsequence",
+        "description": "Solve deze task als mensen nog maar 1 onderdeel nodig hebben voor de stamboom, dus als alles behalve stamboom is opgelost, dit start de eindsequence.",
         "state": "pending"
     },
     {
         "task": "stamboom",
-        "description": "De speler hebben de stamboom correct gemaakt.",
+        "description": "De speler hebben de stamboom correct gemaakt, dit eindigt het spel.",
         "state": "pending"
     }
 ]
