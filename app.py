@@ -277,9 +277,9 @@ def execute_lock_command(task):
 def execute_unlock_command(task):
     try:
         # Add logic to map tasks to corresponding SSH commands for unlocking
-        if task == "Haal alle schilden uit de stamboom, sluit de stamboom.":
+        if task == "Haal alle schilden uit de stamboom, behalve Jacobus Visser, sluit de stamboom.":
             publish.single(f"actuator/control/vol-afslag", "17 unlocked", hostname=broker_ip)
-        elif task == "Leg de goudstaven + het juiste schild (Hendrik Visser) in de kast onder de stamboom. Kast dicht.":
+        elif task == "Leg 3 goudstaven + het juiste schild (Hendrik Visser) in de kast onder de stamboom. Kast dicht.":
             publish.single(f"actuator/control/vol-afslag", "18 unlocked", hostname=broker_ip)
         elif task == "Leg een willekeurig schild in de wasmand, sluit wasmand.":
             publish.single(f"actuator/control/vol-afslag", "4 unlocked", hostname=broker_ip)
@@ -289,7 +289,7 @@ def execute_unlock_command(task):
             publish.single(f"actuator/control/vol-afslag", "6 unlocked", hostname=broker_ip)
         elif task == "Leg een willekeurig schild + 3 foto's in de voorkant van de houten kist, sluit voorkant.":
             publish.single(f"actuator/control/vol-afslag", "5 unlocked", hostname=broker_ip)
-        elif task == "Leg een willekeurig schild in de kast naast de hendelpuzzel, kast dicht.":
+        elif task == "Kortste touw in kast naast hendels, sluit kast.":
             publish.single(f"actuator/control/vol-boat", "27 unlocked", hostname=broker_ip)
         elif task == "Sluit einddeur.":
             publish.single(f"actuator/control/vol-afslag", "23 unlocked", hostname=broker_ip)
@@ -297,7 +297,7 @@ def execute_unlock_command(task):
             publish.single(f"actuator/control/vol-afslag", "22 unlocked", hostname=broker_ip)
         elif task == "Langste touw in middelste kist, sluit kist.":
             publish.single(f"actuator/control/vol-boat", "4 unlocked", hostname=broker_ip)
-        elif task == "Kortste touw in de ton, sluit de ton.":    
+        elif task == "2 lichte, 1 zware goudstaaf + vissen in ton, sluit ton.":    
             publish.single(f"actuator/control/vol-boat", "23 unlocked", hostname=broker_ip)
         elif task == "Resterend touwtje in resterende kist, sluit kist.":    
             publish.single(f"actuator/control/vol-boat", "22 unlocked", hostname=broker_ip)
@@ -764,7 +764,6 @@ def fade_music_out_hint():
         current_volume -= 1  # Increase volume by 1 each second
         publish.single("audio_control/vol-afslag/volume", f"{int(current_volume)} BgAfslag.ogg", hostname=broker_ip)
         publish.single("audio_control/vol-kapitein/volume", f"{int(current_volume)} Bg-captain.ogg", hostname=broker_ip)
-        publish.single("audio_control/vol-boat/volume", f"{int(current_volume)} BgShip.ogg", hostname=broker_ip)
         print(current_volume)
         time.sleep(0.05)
     publish.single("audio_control/all/stop", "prehint.ogg", hostname=broker_ip)
@@ -812,7 +811,6 @@ def fade_music_in_hint():
         current_volume += 1  # Increase volume by 1 each second
         publish.single("audio_control/vol-afslag/volume", f"{int(current_volume)} BgAfslag.ogg", hostname=broker_ip)
         publish.single("audio_control/vol-kapitein/volume", f"{int(current_volume)} Bg-captain.ogg", hostname=broker_ip)
-        publish.single("audio_control/vol-boat/volume", f"{int(current_volume)} BgShip.ogg", hostname=broker_ip)
         print(current_volume)
         time.sleep(0.05)
     # Ensure the final volume is se
@@ -929,6 +927,7 @@ def solve_task(task_name):
         elif task_name == "YO-HO":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/vol-boat/play", "BgShip.ogg", hostname=broker_ip)
+                publish.single("audio_control/vol-boat/volume", "15 BgShip.ogg", hostname=broker_ip)
                 publish.single("audio_control/vol-kapitein/play", "yoho-solve.ogg", hostname=broker_ip)
                 fade_music_out("Bg-captain")
                 time.sleep(16)
@@ -975,7 +974,6 @@ def solve_task(task_name):
                 fade_music_out("finalsequence")
                 time.sleep(38)
                 fade_music_in("finalsequence")
-                time.sleep(6)
                 publish.single(f"actuator/control/vol-afslag", "18 unlocked", hostname=broker_ip)
         elif task_name == "stamboom":
             if game_status == {'status': 'playing'}:
@@ -1266,7 +1264,7 @@ def play_music():
     if message == "Dance-Macabre-4.ogg":
         publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)
-        publish.single("audio_control/vol-boat/volume", "10 Dance-Macabre-4.ogg", hostname=broker_ip)
+        publish.single("audio_control/vol-boat/volume", "20 Dance-Macabre-4.ogg", hostname=broker_ip)
     elif message == "Aanmeren-4.ogg":
         publish.single("audio_control/vol-boat/stop", message, hostname=broker_ip)
         publish.single("audio_control/vol-boat/play", message, hostname=broker_ip)
