@@ -223,12 +223,12 @@ def lock_route():
         is_checked = request.json.get('isChecked', False)
 
         if is_checked:
-            if task != "Leg een willekeurig schild in de bovenkant van de houten kist, sluit bovenkant." and task != "Leg een willekeurig schild in de voorkant van de houten kist, sluit voorkant.":
+            if task != "Leg een willekeurig schild in de bovenkant van de houten kist, sluit bovenkant." and task != "Leg een willekeurig schild + 3 foto's in de voorkant van de houten kist, sluit voorkant.":
                 execute_lock_command(task)
             else:
                 execute_unlock_command(task)
         else:
-            if task != "Leg een willekeurig schild in de bovenkant van de houten kist, sluit bovenkant." and task != "Leg een willekeurig schild in de voorkant van de houten kist, sluit voorkant.":
+            if task != "Leg een willekeurig schild in de bovenkant van de houten kist, sluit bovenkant." and task != "Leg een willekeurig schild + 3 foto's in de voorkant van de houten kist, sluit voorkant.":
                 execute_unlock_command(task)
             else:
                 execute_lock_command(task)
@@ -287,7 +287,7 @@ def execute_unlock_command(task):
             publish.single(f"actuator/control/vol-boat", "12 unlocked", hostname=broker_ip)
         elif task == "Leg een willekeurig schild in de bovenkant van de houten kist, sluit bovenkant.":
             publish.single(f"actuator/control/vol-afslag", "6 unlocked", hostname=broker_ip)
-        elif task == "Leg een willekeurig schild in de voorkant van de houten kist, sluit voorkant.":
+        elif task == "Leg een willekeurig schild + 3 foto's in de voorkant van de houten kist, sluit voorkant.":
             publish.single(f"actuator/control/vol-afslag", "5 unlocked", hostname=broker_ip)
         elif task == "Leg een willekeurig schild in de kast naast de hendelpuzzel, kast dicht.":
             publish.single(f"actuator/control/vol-boat", "27 unlocked", hostname=broker_ip)
