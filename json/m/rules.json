@@ -1,0 +1,16 @@
+[
+    {
+        "sensor": "green_house_ir",
+        "sequence": 0,
+        "actions": [
+            {"type": "maglock", "id": "green-led", "action": "unlocked"}
+        ]
+    },
+    {
+        "sensor": "red_house_ir",
+        "sequence": 1,
+        "actions": [
+            {"type": "maglock", "id": "red-led", "action": "unlocked"}
+        ]
+    }
+]

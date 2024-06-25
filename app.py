@@ -454,18 +454,71 @@ def check_rule(item_name, room):
     except Exception as e:
         print(f"Error reading JSON file: {e}")
         return False
-client = mqtt.Client()
+    
+@app.route('/api/tasks')
+def get_tasks_api():
+    room = request.args.get('room')
+    try:
+        with open(f'json/{room}/tasks.json', 'r') as file:
+            tasks = json.load(file)
+        return jsonify(tasks)
+    except FileNotFoundError:
+        return jsonify([])
+@app.route('/game-design-studio')
+def game_design_studio():
+    return send_from_directory('templates', 'game_design_studio.html')
 
-    # Set the callback function for incoming MQTT messages
-client.on_message = on_message
+@app.route('/api/rooms')
+def get_rooms():
+    rooms = [f.name for f in os.scandir('json') if f.is_dir()]
+    return jsonify(rooms)
 
-    # Connect to the MQTT broker
-client.connect(broker_ip, 1883)
+@app.route('/api/sensors-maglocks')
+def get_sensors_maglocks():
+    room = request.args.get('room')
+    if not room:
+        return jsonify({'sensors': [], 'maglocks': []})
 
-    # Subscribe to all topics under the specified prefix
-client.subscribe(prefix_to_subscribe + "#")  # Subscribe to all topics under the prefix
-# Function to execute the delete-locks.py script
-client.loop_start()
+    try:
+        with open(f'json/{room}/sensor_data.json', 'r') as file:
+            sensors = json.load(file)
+    except FileNotFoundError:
+        return jsonify({'sensors': [], 'maglocks': []})
+    
+    maglocks = [sensor for sensor in sensors if sensor['type'] == 'maglock']
+    return jsonify({'sensors': sensors, 'maglocks': maglocks})
+
+
+@app.route('/api/rules/<room>', methods=['GET'])
+def get_rules(room):
+    try:
+        with open(f'json/{room}/rules.json', 'r') as file:
+            rules = json.load(file)
+        print(f"Rules for {room}: {rules}")  # Debug print
+        return jsonify(rules)
+    except FileNotFoundError:
+        print(f"No rules found for room: {room}")
+        return jsonify([])
+
+@app.route('/api/rules/<room>', methods=['POST'])
+def save_rules(room):
+    rules = request.json
+    with open(f'json/{room}/rules.json', 'w') as file:
+        json.dump(rules, file, indent=4)
+    print(f"Saved rules for {room}: {rules}")  # Debug print
+    return jsonify({'status': 'success'})
+# client = mqtt.Client()
+
+#     # Set the callback function for incoming MQTT messages
+# client.on_message = on_message
+
+#     # Connect to the MQTT broker
+# client.connect(broker_ip, 1883)
+
+#     # Subscribe to all topics under the specified prefix
+# client.subscribe(prefix_to_subscribe + "#")  # Subscribe to all topics under the prefix
+# # Function to execute the delete-locks.py script
+# client.loop_start()
 
 @app.route('/trigger', methods=['POST'])
 def trigger():

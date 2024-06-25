@@ -1,0 +1,54 @@
+[
+    {
+        "id": "null",
+        "triggers": [
+            {
+                "type": "sensor",
+                "sensor": "blue_house_ir"
+            },
+            {
+                "type": "rule_max_executions",
+                "max_executions": 1
+            }
+        ],
+        "consequences": []
+    },
+    {
+        "id": "null",
+        "triggers": [
+            {
+                "type": "sensor",
+                "sensor": "doghouse-lock"
+            },
+            {
+                "type": "rule_max_executions",
+                "max_executions": 1
+            }
+        ],
+        "consequences": [
+            {
+                "maglock": "shed-door-lock",
+                "action": "unlock"
+            }
+        ]
+    },
+    {
+        "id": null,
+        "triggers": [
+            {
+                "type": "sensor",
+                "sensor": "doghouse-lock"
+            },
+            {
+                "type": "rule_max_executions",
+                "max_executions": 1
+            }
+        ],
+        "consequences": [
+            {
+                "maglock": "entrance-door-lock",
+                "action": "unlock"
+            }
+        ]
+    }
+]
