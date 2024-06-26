@@ -121,7 +121,7 @@
             <select id="triggerType">
                 <option value="sensor">Sensor</option>
                 <option value="rule_max_executions">Rule Max Executions</option>
-                <option value="tasks">Tasks</option> <!-- Added tasks option here -->
+                <option value="tasks">Tasks</option>
             </select>
             <div id="sensorOptions" style="display: none;">
                 <label for="sensorSelect">Select Sensor:</label>
@@ -131,7 +131,7 @@
                 <label for="maxExecInput">Max Executions:</label>
                 <input type="number" id="maxExecInput" min="1" value="1">
             </div>
-            <div id="taskOptions" style="display: none;"> <!-- New task options -->
+            <div id="taskOptions" style="display: none;">
                 <label for="taskSelect">Select Task:</label>
                 <select id="taskSelect">
                     <!-- Options will be dynamically populated -->
@@ -217,39 +217,76 @@
 
     ruleDiv.appendChild(newConsequenceDiv);
 }
-        function createRuleElement(rule) {
-            let ruleDiv = document.createElement('div');
-            ruleDiv.className = 'rule';
-            ruleDiv.dataset.ruleId = rule.id;
+function createRuleElement(rule) {
+    let ruleDiv = document.createElement('div');
+    ruleDiv.className = 'rule';
+    ruleDiv.dataset.ruleId = rule.id;
 
-            let triggersDiv = document.createElement('div');
-            triggersDiv.className = 'side-left';
-            triggersDiv.innerHTML = '<strong>Triggers</strong>';
+    let triggersDiv = document.createElement('div');
+    triggersDiv.className = 'side-left';
+    triggersDiv.innerHTML = '<strong>Triggers</strong>';
 
-            rule.triggers.forEach(trigger => {
-                let triggerDiv;
-                if (trigger.type === 'sensor') {
-                    triggerDiv = createSensorTriggerElement(trigger.sensor);
-                } else if (trigger.type === 'rule_max_executions') {
-                    triggerDiv = createMaxExecutionsElement(trigger.max_executions);
-                }
-                triggersDiv.appendChild(triggerDiv);
-            });
-
-            let consequencesDiv = document.createElement('div');
-            consequencesDiv.className = 'side-right';
-            consequencesDiv.innerHTML = '<strong>Consequences</strong>';
-
-            rule.consequences.forEach(consequence => {
-                let consequenceDiv = createConsequenceElement(consequence.maglock, consequence.action);
-                consequencesDiv.appendChild(consequenceDiv);
-            });
-
-            ruleDiv.appendChild(triggersDiv);
-            ruleDiv.appendChild(consequencesDiv);
-
-            return ruleDiv;
+    rule.triggers.forEach(trigger => {
+        let triggerDiv;
+        if (trigger.type === 'sensor') {
+            triggerDiv = createSensorTriggerElement(trigger.sensor);
+        } else if (trigger.type === 'rule_max_executions') {
+            triggerDiv = createMaxExecutionsElement(trigger.max_executions);
+        } else if (trigger.type === 'tasks') {
+            triggerDiv = createTasksTriggerElement(trigger.task, trigger.task_state);
         }
+        triggersDiv.appendChild(triggerDiv);
+    });
+
+    let consequencesDiv = document.createElement('div');
+    consequencesDiv.className = 'side-right';
+    consequencesDiv.innerHTML = '<strong>Consequences</strong>';
+
+    rule.consequences.forEach(consequence => {
+        let consequenceDiv = createConsequenceElement(consequence.maglock, consequence.action);
+        consequencesDiv.appendChild(consequenceDiv);
+    });
+
+    ruleDiv.appendChild(triggersDiv);
+    ruleDiv.appendChild(consequencesDiv);
+
+    return ruleDiv;
+}
+
+function createTasksTriggerElement(task, taskState) {
+    let triggerDiv = document.createElement('div');
+    triggerDiv.dataset.type = 'tasks';
+
+    let taskSelect = document.createElement('select');
+    taskSelect.className = 'task-select';
+    // Populate task options (already selected in saveRules)
+
+    let taskOption = document.createElement('option');
+    taskOption.textContent = task;
+    taskOption.value = task;
+    taskSelect.appendChild(taskOption);
+
+    triggerDiv.appendChild(taskSelect);
+
+    let taskStateSelect = document.createElement('select');
+    taskStateSelect.className = 'task-state-select';
+    // Populate task state options (already selected in saveRules)
+
+    let stateOption = document.createElement('option');
+    stateOption.textContent = taskState;
+    stateOption.value = taskState;
+    taskStateSelect.appendChild(stateOption);
+
+    triggerDiv.appendChild(taskStateSelect);
+
+    let deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete Trigger';
+    deleteButton.className = 'delete-button';
+    deleteButton.onclick = () => triggerDiv.parentNode.removeChild(triggerDiv);
+    triggerDiv.appendChild(deleteButton);
+
+    return triggerDiv;
+}
 
         function createSensorTriggerElement(selectedSensor = '') {
             let triggerDiv = document.createElement('div');
@@ -360,18 +397,28 @@
             document.getElementById('triggerPopup').style.display = 'none';
         }
 
-        function addSelectedTrigger() {
-    let triggerType = document.getElementById('triggerType').value;
-    if (triggerType === 'sensor') {
-        addSensorTrigger();
-    } else if (triggerType === 'rule_max_executions') {
-        addRuleMaxExecutionsTrigger();
-    } else if (triggerType === 'tasks') {
-        addTasksTrigger();
-    }
-    closePopup();
-}
+        async function loadTasksIntoSelect(taskSelect) {
+    let room = document.getElementById('rooms').value;
+    let taskState = document.getElementById('taskState').value;
 
+    let response = await fetch(`/api/tasks?room=${room}&state=${taskState}`);
+    let tasks = await response.json();
+
+    taskSelect.innerHTML = ''; // Clear previous options
+
+    if (tasks.length === 0) {
+        let option = document.createElement('option');
+        option.textContent = 'No tasks available';
+        taskSelect.appendChild(option);
+    } else {
+        tasks.forEach(task => {
+            let option = document.createElement('option');
+            option.value = task.task; // Assuming task.task is unique
+            option.textContent = task.task; // Display task name
+            taskSelect.appendChild(option);
+        });
+    }
+}
 function addTasksTrigger() {
     let newTriggerDiv = document.createElement('div');
     newTriggerDiv.dataset.type = 'tasks';
@@ -384,6 +431,16 @@ function addTasksTrigger() {
 
     newTriggerDiv.appendChild(taskSelect);
 
+    let taskStateSelect = document.createElement('select');
+    taskStateSelect.className = 'task-state-select';
+    ['solved', 'pending', 'skipped'].forEach(state => {
+        let option = document.createElement('option');
+        option.value = state;
+        option.textContent = state.charAt(0).toUpperCase() + state.slice(1); // Capitalize first letter
+        taskStateSelect.appendChild(option);
+    });
+    newTriggerDiv.appendChild(taskStateSelect);
+
     let deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete Trigger';
     deleteButton.className = 'delete-button';
@@ -393,24 +450,18 @@ function addTasksTrigger() {
     document.querySelector('.rule:last-child .side-left').appendChild(newTriggerDiv);
 }
 
-async function loadTasksIntoSelect(taskSelect) {
-    let room = document.getElementById('rooms').value;
-    let response = await fetch(`/api/tasks?room=${room}`);
-    let tasks = await response.json();
+async function addSelectedTrigger() {
+    let triggerType = document.getElementById('triggerType').value;
 
-    taskSelect.innerHTML = ''; // Clear loading state
-    if (tasks.length === 0) {
-        let option = document.createElement('option');
-        option.textContent = 'No tasks available';
-        taskSelect.appendChild(option);
-    } else {
-        tasks.forEach(task => {
-            let option = document.createElement('option');
-            option.value = task.id;
-            option.textContent = task.name;
-            taskSelect.appendChild(option);
-        });
+    if (triggerType === 'sensor') {
+        addSensorTrigger();
+    } else if (triggerType === 'rule_max_executions') {
+        addRuleMaxExecutionsTrigger();
+    } else if (triggerType === 'tasks') {
+        addTasksTrigger();
     }
+
+    closePopup();
 }
         function addSensorTrigger() {
             let selectedSensor = document.getElementById('sensorSelect').value;
@@ -425,35 +476,44 @@ async function loadTasksIntoSelect(taskSelect) {
         }
 
         async function saveRules() {
-            let room = document.getElementById('rooms').value;
-            let rules = [];
-            document.querySelectorAll('.rule').forEach(ruleDiv => {
-                let ruleId = ruleDiv.dataset.ruleId || null;
-                let triggers = [];
-                ruleDiv.querySelectorAll('.sensor-select').forEach(sensorSelect => {
-                    let sensor = sensorSelect.value;
-                    triggers.push({ type: 'sensor', sensor });
-                });
-                ruleDiv.querySelectorAll('[data-type="rule_max_executions"]').forEach(maxExecDiv => {
-                    let maxExecutions = parseInt(maxExecDiv.textContent.match(/\d+/)[0]);
-                    triggers.push({ type: 'rule_max_executions', max_executions: maxExecutions });
-                });
-                let consequences = [];
-                ruleDiv.querySelectorAll('.maglock-select').forEach((maglockSelect, index) => {
-                    let maglock = maglockSelect.value;
-                    let action = ruleDiv.querySelectorAll('.action-select')[index].value;
-                    consequences.push({ maglock, action });
-                });
-                rules.push({ id: ruleId, triggers, consequences });
-            });
-            await fetch(`/api/rules/${room}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(rules)
-            });
-            console.log(`Saved rules for ${room}:`, rules);
-            loadRules();  // Reload rules after save
-        }
+    let room = document.getElementById('rooms').value;
+    let rules = [];
+    document.querySelectorAll('.rule').forEach(ruleDiv => {
+        let ruleId = ruleDiv.dataset.ruleId || null;
+        let triggers = [];
+        ruleDiv.querySelectorAll('.sensor-select').forEach(sensorSelect => {
+            let sensor = sensorSelect.value;
+            triggers.push({ type: 'sensor', sensor });
+        });
+        ruleDiv.querySelectorAll('[data-type="rule_max_executions"]').forEach(maxExecDiv => {
+            let maxExecutions = parseInt(maxExecDiv.textContent.match(/\d+/)[0]);
+            triggers.push({ type: 'rule_max_executions', max_executions: maxExecutions });
+        });
+        ruleDiv.querySelectorAll('[data-type="tasks"]').forEach(taskDiv => {
+            let taskSelect = taskDiv.querySelector('.task-select');
+            let taskStateSelect = taskDiv.querySelector('.task-state-select');
+
+            let task = taskSelect.value;
+            let taskState = taskStateSelect.value;
+
+            triggers.push({ type: 'tasks', task, task_state: taskState });
+        });
+        let consequences = [];
+        ruleDiv.querySelectorAll('.maglock-select').forEach((maglockSelect, index) => {
+            let maglock = maglockSelect.value;
+            let action = ruleDiv.querySelectorAll('.action-select')[index].value;
+            consequences.push({ maglock, action });
+        });
+        rules.push({ id: ruleId, triggers, consequences });
+    });
+    await fetch(`/api/rules/${room}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(rules)
+    });
+    console.log(`Saved rules for ${room}:`, rules);
+    loadRules();  // Reload rules after save
+}
 
         document.addEventListener('DOMContentLoaded', async () => {
             await loadRooms();

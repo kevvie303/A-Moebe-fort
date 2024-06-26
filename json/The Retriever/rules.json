@@ -33,7 +33,7 @@
         ]
     },
     {
-        "id": null,
+        "id": "null",
         "triggers": [
             {
                 "type": "sensor",
@@ -47,6 +47,156 @@
         "consequences": [
             {
                 "maglock": "entrance-door-lock",
+                "action": "unlock"
+            }
+        ]
+    },
+    {
+        "id": "null",
+        "triggers": [],
+        "consequences": [
+            {
+                "maglock": "entrance-door-lock",
+                "action": "unlock"
+            }
+        ]
+    },
+    {
+        "id": "null",
+        "triggers": [],
+        "consequences": [
+            {
+                "maglock": "entrance-door-lock",
+                "action": "unlock"
+            }
+        ]
+    },
+    {
+        "id": "null",
+        "triggers": [
+            {
+                "type": "sensor",
+                "sensor": "bottom_right_light"
+            }
+        ],
+        "consequences": [
+            {
+                "maglock": "entrance-door-lock",
+                "action": "unlock"
+            }
+        ]
+    },
+    {
+        "id": "null",
+        "triggers": [
+            {
+                "type": "sensor",
+                "sensor": "entrance-door-lock"
+            },
+            {
+                "type": "rule_max_executions",
+                "max_executions": 1
+            }
+        ],
+        "consequences": [
+            {
+                "maglock": "entrance-door-lock",
+                "action": "unlock"
+            }
+        ]
+    },
+    {
+        "id": "null",
+        "triggers": [],
+        "consequences": [
+            {
+                "maglock": "entrance-door-lock",
+                "action": "unlock"
+            }
+        ]
+    },
+    {
+        "id": "null",
+        "triggers": [],
+        "consequences": [
+            {
+                "maglock": "entrance-door-lock",
+                "action": "unlock"
+            }
+        ]
+    },
+    {
+        "id": "null",
+        "triggers": [],
+        "consequences": []
+    },
+    {
+        "id": "null",
+        "triggers": [],
+        "consequences": []
+    },
+    {
+        "id": "null",
+        "triggers": [],
+        "consequences": []
+    },
+    {
+        "id": "null",
+        "triggers": [],
+        "consequences": []
+    },
+    {
+        "id": "null",
+        "triggers": [],
+        "consequences": [
+            {
+                "maglock": "entrance-door-lock",
+                "action": "unlock"
+            }
+        ]
+    },
+    {
+        "id": "null",
+        "triggers": [
+            {
+                "type": "tasks",
+                "task": "tree-lights",
+                "task_state": "solved"
+            }
+        ],
+        "consequences": []
+    },
+    {
+        "id": "null",
+        "triggers": [
+            {
+                "type": "tasks",
+                "task": "tree-lights",
+                "task_state": "solved"
+            }
+        ],
+        "consequences": []
+    },
+    {
+        "id": null,
+        "triggers": [
+            {
+                "type": "sensor",
+                "sensor": "doghouse-lock"
+            },
+            {
+                "type": "rule_max_executions",
+                "max_executions": 1
+            },
+            {
+                "type": "tasks",
+                "task": "tree-lights",
+                "task_state": "solved"
+            }
+        ],
+        "consequences": [
+            {
+                "maglock": "lab-hatch-lock",
                 "action": "unlock"
             }
         ]
