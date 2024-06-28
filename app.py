@@ -1152,6 +1152,7 @@ def play_music():
     message = data.get('message')
     print(message)
     publish.single("audio_control/all/play", message, hostname=broker_ip)
+    publish.single("audio_control/all/volume", f"100 {message}", hostname=broker_ip)
     return jsonify({"status": "success"})
 def set_starting_volume(soundcard_channel):
     command = f'amixer -c {soundcard_channel} set PCM Playback Volume 25%'
