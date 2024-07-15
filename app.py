@@ -822,7 +822,7 @@ def solve_task(task_name):
         if task_name == "Stroomstoring":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/for-guard/play", "static.mp3", hostname="192.168.50.253")
-                publish.single("audio_control/for-guard/volume", "100 static.mp3", hostname="192.168.50.253")
+                publish.single("audio_control/for-guard/volume", "20 static.mp3", hostname="192.168.50.253")
                 publish.single("audio_control/for-corridor/play", "bgCorridor.ogg", hostname="192.168.50.253")
                 time.sleep(5)
                 publish.single("audio_control/for-guard/stop", "static.mp3", hostname="192.168.50.253")

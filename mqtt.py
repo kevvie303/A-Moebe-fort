@@ -82,7 +82,7 @@ def solve_task(task_name):
         if task_name == "Stroomstoring":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/for-guard/play", "static.mp3", hostname="192.168.50.253")
-                publish.single("audio_control/for-guard/volume", "100 static.mp3", hostname="192.168.50.253")
+                publish.single("audio_control/for-guard/volume", "20 static.mp3", hostname="192.168.50.253")
                 publish.single("audio_control/for-corridor/play", "bgCorridor.ogg", hostname="192.168.50.253")
                 time.sleep(5)
                 publish.single("audio_control/for-guard/stop", "static.mp3", hostname="192.168.50.253")
@@ -142,9 +142,9 @@ def solve_task(task_name):
                 publish.single("audio_control/all/volume", "100 alarm.ogg", hostname="192.168.50.253")
                 #time.sleep(120)
                 fade_music_out("alarm")
-        return jsonify({'message': 'Task updated successfully'})
+        return 'Task updated successfully'
     except (FileNotFoundError, json.JSONDecodeError):
-        return jsonify({'message': 'Error updating task'})
+        return 'Error updating task'
 def pend_task(task_name):
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
 
@@ -158,9 +158,9 @@ def pend_task(task_name):
 
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
-        return jsonify({'message': 'Task updated successfully'})
+        return 'Task updated successfully'
     except (FileNotFoundError, json.JSONDecodeError):
-        return jsonify({'message': 'Error updating task'})
+        return 'Error updating task'
 def fade_music_out(file):
     global broker_ip
     print(file)
@@ -280,10 +280,10 @@ def on_message(client, userdata, message):
         if check_rule("jas-1") and check_rule("jas-2") and check_rule("jas-3"):
             if check_task_state("kapstok-allemaal") == "pending":
                 solve_task("kapstok-allemaal")
-        if check_rule("grenade-1"):
+        if check_rule("grenade-3"):
             if check_task_state("granaat-tomsk") == "pending":
                 solve_task("granaat-tomsk")
-        if check_rule("grenade-1") == False:
+        if check_rule("grenade-3") == False:
             if check_task_state("granaat-tomsk") == "solved":
                 pend_task("granaat-tomsk")
         if check_rule("grenade-2"):
@@ -292,10 +292,10 @@ def on_message(client, userdata, message):
         if check_rule("grenade-2") == False:
             if check_task_state("granaat-khabarovsk") == "solved":
                 pend_task("granaat-khabarovsk")
-        if check_rule("grenade-3"):
+        if check_rule("grenade-1"):
             if check_task_state("granaat-soratov") == "pending":
                 solve_task("granaat-soratov")
-        if check_rule("grenade-3") == False:
+        if check_rule("grenade-1") == False:
             if check_task_state("granaat-soratov") == "solved":
                 pend_task("granaat-soratov")
         if check_rule("grenade-1") and check_rule("grenade-2") and check_rule("grenade-3"):
