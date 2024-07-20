@@ -1150,9 +1150,19 @@ def get_tasks():
 def play_music():
     data = request.json
     message = data.get('message')
-    print(message)
-    publish.single("audio_control/all/play", message, hostname=broker_ip)
-    publish.single("audio_control/all/volume", f"100 {message}", hostname=broker_ip)
+    
+    # Check if "kapstok" is in the message and replace it with "kapstop"
+    if "kapstok" in message:
+        corrected_message = message.replace("kapstok", "kapstop")
+    else:
+        corrected_message = message
+    
+    print(corrected_message)
+    
+    # Publish the message to MQTT topics
+    publish.single("audio_control/all/play", corrected_message, hostname=broker_ip)
+    publish.single("audio_control/all/volume", f"100 {corrected_message}", hostname=broker_ip)
+    
     return jsonify({"status": "success"})
 def set_starting_volume(soundcard_channel):
     command = f'amixer -c {soundcard_channel} set PCM Playback Volume 25%'
