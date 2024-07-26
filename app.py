@@ -1025,7 +1025,7 @@ def pend_task(task_name, room):
 @app.route('/reset_task_statuses/<room>', methods=['POST'])
 def reset_task_statuses(room):
     global sequence
-    file_path = os.path.join(current_dir, 'json', 'tasks.json')
+    file_path = os.path.join('json', room, 'tasks.json')
     sequence = 0
     update_game_status('awake', room)
     try:
@@ -1041,8 +1041,8 @@ def reset_task_statuses(room):
         return jsonify({'message': 'Task statuses reset successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error resetting task statuses'})
-def reset_prepare():
-    file_path = os.path.join(current_dir, 'json', 'tasks.json')
+def reset_prepare(room):
+    file_path = os.path.join('json', room, 'tasks.json')
     try:
         with open(file_path, 'r') as file:
             tasks = json.load(file)
@@ -1268,27 +1268,27 @@ def backup_middle_pi():
     ssh.exec_command('./commit_and_push.sh')
     return "Middle pi backed up"
 
-def control_maglock():
+def control_maglock(room):
     global squeak_job, should_balls_drop, player_type
     maglock = request.form.get('maglock')
     action = request.form.get('action')
     print(maglock)
     print(action)
-    sensor_data = read_sensor_data2()
+    sensor_data = read_sensor_data2(room)
     for sensor in sensor_data:
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
-            if "gang-licht-1" in maglock or "key-drop-lock" in maglock or "entrance-door-lock" in maglock:
+            if "green-led" in maglock or "red-led" in maglock or "blue-led" in maglock:
                 print(maglock)
                 # Reverse the action for this specific case
                 action = 'locked' if action == 'unlocked' else 'unlocked'
             # Publish the MQTT message with the appropriate Pi's name
             mqtt_message = f"{sensor['pin']} {action}"
             publish.single(f"actuator/control/{pi_name}", mqtt_message, hostname=broker_ip)
-            return("done")
-@app.route('/control_maglock', methods=['POST'])
-def control_maglock_route():
-    return control_maglock()
+            return "done"
+@app.route('/control_maglock/<room>', methods=['POST'])
+def control_maglock_route(room):
+    return control_maglock(room)
 
 
 def call_control_maglock_partial(room, maglock, action):
@@ -1838,8 +1838,8 @@ def stop_timer(room):
         update_game_status('awake', room)
         del timer_threads[room]
         reset_task_statuses(room)
-        stop_music()
         end_time = datetime.now()
+    stop_music()
     if start_time is not None:
         write_game_data(start_time, end_time)
     start_time = None
@@ -1978,9 +1978,9 @@ def prepare_game(room):
     should_hint_shed_play = True
     prefix = request.form.get('prefix')
     print(prefix)
-    if get_game_status() == {'status': 'prepared'}:
+    if get_game_status(room) == {'status': 'prepared'}:
         return jsonify({"message": preparedValue}), 200
-    reset_prepare()
+    reset_prepare(room)
     # Assuming you have logic for preparing the game
     # Load Raspberry Pi configuration from JSON file
     with open(f'json/{room}/raspberry_pis.json', 'r') as file:

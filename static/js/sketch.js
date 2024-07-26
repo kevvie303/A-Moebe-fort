@@ -201,7 +201,7 @@ $(document).ready(function () {
             : "unlocked";
           $.ajax({
             type: "POST",
-            url: "/control_maglock",
+            url: `/control_maglock/${roomName}`,
             data: { maglock: actuator.name, action: action },
             success: function (response) {
               console.log(response);
@@ -1409,7 +1409,7 @@ $(document).ready(function () {
     // Use the playerType variable in your preparation logic
     $.ajax({
       type: "POST",
-      url: "/prepare",
+      url: `/prepare/${roomName}`,
       data: { playerType: playerType, prefix: "ret" },
       success: function (response) {
         console.log("Received data:", response);
