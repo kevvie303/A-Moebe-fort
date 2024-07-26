@@ -862,7 +862,7 @@ def solve_task(task_name, room):
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error updating task'})
-PRESETS_FILE = 'json/m/presets.json'
+PRESETS_FILE = 'json/Moonlight Village/presets.json'
 @app.route('/presets', methods=['GET'])
 def get_presets():
     """Retrieve the list of available presets."""
@@ -948,7 +948,6 @@ def stop_sequence():
     global sequence_running
     sequence_running = False
     # Send a message to stop the sequence (e.g., set values to 0)
-    threading.Thread(target=sequence_thread).stop()
     stop_message = {'pan': 0, 'tilt': 0, 'colour': 0, 'gobo': 0}
     send_mqtt_message(stop_message)
     return jsonify({'message': 'Sequence stopped and DMX values reset to 0.', 'status': 'success'})
