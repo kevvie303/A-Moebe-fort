@@ -684,7 +684,7 @@ $(document).ready(function () {
     }
   }
   function getButtonState() {
-    $.get("/timer/pause-state", function (data) {
+    $.get(`/timer/pause-state/${roomName}`, function (data) {
       var pauseState = !data;
       updateButtonState(pauseState);
       console.log(data);

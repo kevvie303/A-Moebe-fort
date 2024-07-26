@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>m</title>
+    <title>Moonlight Village</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
     <link rel="icon" href="/static/img/logo.png" type="image/png">
@@ -28,6 +28,7 @@
         </div>
 
         <div class="game-controls">
+            <a href="/dmx_control" class="icon"><img src="/static/img/dmx.svg" alt="Button to the media controls"></a>
             <button id="media-popup" class="icon"><img src="/static/img/media.svg" alt="Button to the media controls"></button>
             <button id="time-popup" class="icon"><img src="/static/img/time.svg" alt="Button to time settings"></button>
             <button id="pi-popup" class="icon"><img src="/static/img/pi.svg" alt="Button to Pi settings"></button>
@@ -194,20 +195,6 @@
             <div id="results-section">
             </div>
         </div>
-        <section class="light-container">
-            <article class="lights">
-                <img src="../static/img/room-layout.svg" alt="Layout of the room">
-                <figure class="light-buttons">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('light-1-garden'); console.log('Clicked on Light-1');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('light-3-garden'); console.log('Clicked on Light-3');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('light-2-garden'); console.log('Clicked on Light-2');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('light-4-garden'); console.log('Clicked on Light-4');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('light-1-alley'); console.log('Clicked on Light-5');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-6'); console.log('Clicked on Light-6');">
-                    <img src="/static/img/light-bulb.svg" onclick="sendLightControlRequest('Light-7'); console.log('Clicked on Light-7');">
-                </figure>        
-            </article>
-        </section>
     <!-- main -->
     <section id="reset-list-container" class="reset-list control">
         <h2>Reset Lijst</h2>

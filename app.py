@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for, send_from_directory, send_file, after_this_request
+from flask import Flask, render_template, request, redirect, jsonify, url_for, send_from_directory, send_file, after_this_request, flash
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, join_room
 import json
@@ -186,8 +186,8 @@ def connect_device():
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 #broker_ip = "192.168.18.66"
-broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.13"
+#broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
+broker_ip = "192.168.1.27"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -862,6 +862,96 @@ def solve_task(task_name, room):
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error updating task'})
+PRESETS_FILE = 'json/m/presets.json'
+@app.route('/presets', methods=['GET'])
+def get_presets():
+    """Retrieve the list of available presets."""
+    if os.path.exists(PRESETS_FILE):
+        with open(PRESETS_FILE, 'r') as f:
+            presets = json.load(f)
+        return jsonify(presets)
+    else:
+        return jsonify({'status': 'error', 'message': 'Presets file not found.'})
+@app.route('/apply_preset', methods=['POST'])
+def apply_preset():
+    """Apply a selected preset."""
+    data = request.json
+    preset_name = data.get('preset')
+    if os.path.exists(PRESETS_FILE):
+        with open(PRESETS_FILE, 'r') as f:
+            presets = json.load(f)
+        preset = presets.get(preset_name)
+        if preset:
+            send_dmx_command(preset['pan'], preset['tilt'], preset['colour'], preset['gobo'])
+            return jsonify({'status': 'success', 'message': f'Applied preset: {preset_name}'})
+        else:
+            return jsonify({'status': 'error', 'message': 'Preset not found.'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Presets file not found.'})
+MQTT_TOPIC = 'actuator/control/dmx/raspberrypi'
+def send_dmx_command(pan, tilt, colour, gobo):
+    """Send DMX command via MQTT."""
+    payload = {
+        'pan': pan,
+        'tilt': tilt,
+        'colour': colour,
+        'gobo': gobo
+    }
+    payload_str = json.dumps(payload)
+    publish.single(MQTT_TOPIC, payload=payload_str, qos=0, hostname=broker_ip)
+    print(f"Published to {MQTT_TOPIC}: {payload_str}")
+sequence_running = False
+@app.route('/dmx_control', methods=['GET', 'POST'])
+def dmx_control():
+    if request.method == 'POST':
+        try:
+            pan = int(request.form['pan'])
+            tilt = int(request.form['tilt'])
+            colour = int(request.form['colour'])
+            gobo = int(request.form['gobo'])
+            send_dmx_command(pan, tilt, colour, gobo)
+            return jsonify({'status': 'success', 'message': 'DMX command sent successfully!'})
+        except ValueError:
+            return jsonify({'status': 'error', 'message': 'Invalid input. Please enter valid numbers.'})
+    return render_template('dmx_control.html')
+def send_mqtt_message(message):
+    publish.single(MQTT_TOPIC, payload=json.dumps(message), qos=1, hostname=broker_ip)
+def sequence_thread():
+    try:
+        sequence_duration = 0.1  # seconds
+        num_steps = 256  # pan value range
+
+        for pan_value in range(num_steps):
+            message = {'pan': pan_value, 'tilt': pan_value, 'colour': 12, 'gobo': 0}
+            send_mqtt_message(message)
+            time.sleep(sequence_duration)
+
+        print('Sequence completed successfully!')
+    except Exception as e:
+        print(f'Error: {str(e)}')
+@app.route('/start_sequence', methods=['POST'])
+def start_sequence():
+    global sequence_running
+    if sequence_running:
+        return jsonify({'message': 'Sequence already running!', 'status': 'error'})
+
+    try:
+        # Start the sequence in a separate thread to avoid blocking
+        sequence_running = True
+        threading.Thread(target=sequence_thread).start()
+        return jsonify({'message': 'Sequence started successfully!', 'status': 'success'})
+    except Exception as e:
+        return jsonify({'message': f'Error: {str(e)}', 'status': 'error'})
+
+@app.route('/stop_sequence', methods=['POST'])
+def stop_sequence():
+    global sequence_running
+    sequence_running = False
+    # Send a message to stop the sequence (e.g., set values to 0)
+    threading.Thread(target=sequence_thread).stop()
+    stop_message = {'pan': 0, 'tilt': 0, 'colour': 0, 'gobo': 0}
+    send_mqtt_message(stop_message)
+    return jsonify({'message': 'Sequence stopped and DMX values reset to 0.', 'status': 'success'})
 @app.route('/skip_task/<task_name>', methods=['POST'])
 def skip_task(task_name):
     global bird_job, code1, code2, code3, code4, code5, sequence, codesCorrect
