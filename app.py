@@ -196,7 +196,7 @@ def remove_existing_ogg():
         if file.endswith(".ogg"):
             os.remove(file)
 broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.13"
+#broker_ip = "192.168.1.27"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -650,7 +650,6 @@ def pause_music():
             return f'{selected_file} is not currently playing'
     else:
         return 'No file selected to pause'
-@app.route('/fade_music_out', methods=['POST'])
 def fade_music_out(file):
     global broker_ip
     print(file)
@@ -676,36 +675,47 @@ def fade_music_out(file):
         else:
             time.sleep(0.25)
     return "Volume faded successfully"
-def fade_music_out2():
-
+@app.route('/fade_music_out', methods=['POST'])
+def fade_music_out_hint():
         # Gradually reduce the volume from 80 to 40
-    for volume in range(65, 1, -1):
         # Send the volume command to the Raspberry Pi
-        command = f'echo "volume {volume}" | sudo tee /tmp/mpg123_fifo'
-        stdin, stdout, stderr = pi3.exec_command(command)
-        stdin, stdout, stderr = pi2.exec_command(command)
-        # Wait for a short duration between volume changes
-        time.sleep(0.05)  # Adjust the sleep duration as needed
-def fade_music_out3():
-        # Gradually reduce the volume from 80 to 40
-    for volume in range(25, 0, -1):
-        # Send the volume command to the Raspberry Pi
-        command = f'echo "volume {volume}" | sudo tee /tmp/mpg123_fifo'
-        stdin, stdout, stderr = pi2.exec_command(command)
-        # Wait for a short duration between volume changes
-        time.sleep(0.2)  # Adjust the sleep duration as needed
+    if check_task_state("scan-rosenthal") == "solved":
+        publish.single("audio_control/for-poepdoos/volume", "10 bgCorridor.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-corridor/volume", "10 bgCorridor.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-guard/volume", "10 bgGuard.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-garderobe/volume", "10 bgGuard.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-cell/volume", "10 newBg.ogg", hostname=broker_ip)
+    elif check_task_state("Stroomstoring") == "solved":
+        publish.single("audio_control/for-corridor/volume", "10 bgCorridor.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-guard/volume", "10 bgGuard.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-garderobe/volume", "10 bgGuard.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-cell/volume", "10 newBg.ogg", hostname=broker_ip)
+    elif check_task_state("3-objecten") == "solved":
+        publish.single("audio_control/for-guard/volume", "10 bgGuard.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-garderobe/volume", "10 bgGuard.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-cell/volume", "10 newBg.ogg", hostname=broker_ip)
+    else:
+        publish.single("audio_control/for-cell/volume", "10 newBg.ogg", hostname=broker_ip)
+    return "Volume faded successfully"
 @app.route('/fade_music_in', methods=['POST'])
-def fade_music_in():
-        # Gradually reduce the volume from 80 to 40
-    for volume in range(10, 25, 1):
-        # Send the volume command to the Raspberry Pi
-        command = f'echo "volume {volume}" | sudo tee /tmp/mpg123_fifo'
-        if check_task_state("squeekuence") == "solved":
-            stdin, stdout, stderr = pi2.exec_command(command)
-        else:
-            stdin, stdout, stderr = pi3.exec_command(command)
-        # Wait for a short duration between volume changes
-        time.sleep(0.05)  # Adjust the sleep duration as needed
+def fade_music_in_hint():
+    if check_task_state("scan-rosenthal") == "solved":
+        publish.single("audio_control/for-poepdoos/volume", "70 bgCorridor.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-corridor/volume", "70 bgCorridor.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-guard/volume", "100 bgGuard.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-garderobe/volume", "100 bgGuard.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-cell/volume", "40 newBg.ogg", hostname=broker_ip)
+    elif check_task_state("Stroomstoring") == "solved":
+        publish.single("audio_control/for-corridor/volume", "70 bgCorridor.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-guard/volume", "100 bgGuard.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-garderobe/volume", "100 bgGuard.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-cell/volume", "40 newBg.ogg", hostname=broker_ip)
+    elif check_task_state("3-objecten") == "solved":
+        publish.single("audio_control/for-guard/volume", "100 bgGuard.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-garderobe/volume", "100 bgGuard.ogg", hostname=broker_ip)
+        publish.single("audio_control/for-cell/volume", "40 newBg.ogg", hostname=broker_ip)
+    else:
+        publish.single("audio_control/for-cell/volume", "70 newBg.ogg", hostname=broker_ip)
     return "Volume faded successfully"
 @app.route('/resume_music', methods=['POST'])
 def resume_music():
