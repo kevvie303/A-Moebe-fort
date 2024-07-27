@@ -7,97 +7,119 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f0f0f0;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
         }
         .container {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
         }
         h1 {
+            text-align: center;
             color: #333;
+            font-size: 24px;
         }
-        form {
-            margin-bottom: 20px;
+        .form-group {
+            margin-bottom: 15px;
         }
         label {
             display: block;
-            margin-top: 10px;
+            margin-bottom: 5px;
             color: #555;
         }
         input[type="number"] {
-            width: calc(100% - 20px);
-            padding: 8px;
-            margin-top: 5px;
+            width: calc(100% - 22px);
+            padding: 10px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         button {
-            background-color: #28a745;
-            color: white;
             padding: 10px 20px;
+            background-color: #007bff;
             border: none;
             border-radius: 4px;
+            color: #fff;
             cursor: pointer;
-            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            flex: 1 1 calc(50% - 10px);
+            box-sizing: border-box;
         }
         button:hover {
-            background-color: #218838;
-        }
-        #presetButtons {
-            margin-top: 20px;
-        }
-        #presetButtons button {
-            background-color: #007bff;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        #presetButtons button:hover {
             background-color: #0056b3;
         }
-        #responseMessage {
+        .preset-button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .response-message {
+            text-align: center;
             margin-top: 20px;
-            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 20px;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            button {
+                flex: 1 1 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>DMX Control Interface</h1>
-    <form id="dmxForm">
-        <label for="pan">Pan:</label>
-        <input type="number" id="pan" name="pan" min="0" max="255" required>
-        <label for="tilt">Tilt:</label>
-        <input type="number" id="tilt" name="tilt" min="0" max="255" required>
-        <label for="colour">Colour:</label>
-        <input type="number" id="colour" name="colour" min="0" max="255" required>
-        <label for="gobo">Gobo:</label>
-        <input type="number" id="gobo" name="gobo" min="0" max="255" required>
-        <button type="button" class="button" id="sendDMX">Send DMX</button>
-    </form>
-
-    <div class="preset-container">
+    <div class="container">
+        <h1>DMX Control</h1>
+        <div class="form-group">
+            <label for="pan">Pan</label>
+            <input type="number" id="pan" min="0" max="255">
+        </div>
+        <div class="form-group">
+            <label for="tilt">Tilt</label>
+            <input type="number" id="tilt" min="0" max="255">
+        </div>
+        <div class="form-group">
+            <label for="colour">Colour</label>
+            <input type="number" id="colour" min="0" max="255">
+        </div>
+        <div class="form-group">
+            <label for="gobo">Gobo</label>
+            <input type="number" id="gobo" min="0" max="255">
+        </div>
+        <div class="button-group">
+            <button id="sendDMX">Send DMX</button>
+            <button id="startSequence">Start Sequence</button>
+        </div>
+        <div class="button-group">
+            <button id="stopSequence">Stop Sequence</button>
+            <button id="stopAll">Turn Off All</button>
+        </div>
         <h2>Presets</h2>
-        <!-- Presets will be loaded here by JavaScript -->
+        <div id="presets" class="preset-container">
+            <!-- Preset buttons will be generated here by JavaScript -->
+        </div>
+        <div id="responseMessage" class="response-message"></div>
     </div>
-
-    <button type="button" class="button" id="startSequence">Start Pan Sequence</button>
-    <button type="button" class="button" id="stopSequence">Stop Sequence & Reset</button>
-
-    <div class="response" id="responseMessage"></div>
 
     <script>
         // Function to load presets and add buttons
@@ -109,7 +131,7 @@
                     for (const [name, preset] of Object.entries(data)) {
                         const button = document.createElement('button');
                         button.textContent = name;
-                        button.className = 'button';
+                        button.className = 'preset-button';
                         button.addEventListener('click', () => applyPreset(name));
                         container.appendChild(button);
                     }

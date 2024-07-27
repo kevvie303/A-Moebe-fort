@@ -26,9 +26,9 @@
         <article class="krijgsgevangenis-container">
             <a href="rooms/{{ room }}" id = "krijgsgevangenis-link" class="krijgsgevangenis-link">
                 <div class="preview">
-                    <p id="{{ room|replace(' ', '-') }}-time-played" class="text-red">00:00</p>
+                    <p id="{{ room|replace(' ', '-') }}-time-played" class="text-red">loading...</p>
                     <h3>{{ room|capitalize }}</h3>
-                    <p id="{{ room|replace(' ', '-') }}-time-left" class="text-green">60:00</p>
+                    <p id="{{ room|replace(' ', '-') }}-time-left" class="text-green">loading...</p>
                 </div>
             </a>
         </article>
@@ -44,7 +44,6 @@
     <a href="/create_room_template" class="button-style main-button">Create Room</a>
     <footer>
         <a href="/" class="button-style">Kamers</a>
-        <button id="accountButton" class="button-style">Coming soon</button>
     </footer>
 
     <!-- <script src="{{ url_for('static', filename='js/sketch.js') }}"></script> -->

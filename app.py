@@ -948,7 +948,7 @@ def stop_sequence():
     global sequence_running
     sequence_running = False
     # Send a message to stop the sequence (e.g., set values to 0)
-    stop_message = {'pan': 0, 'tilt': 0, 'colour': 0, 'gobo': 0}
+    stop_message = {'pan': 0, 'tilt': 0, 'colour': 0, 'gobo': 0, 'shutter': 0}
     send_mqtt_message(stop_message)
     return jsonify({'message': 'Sequence stopped and DMX values reset to 0.', 'status': 'success'})
 @app.route('/skip_task/<task_name>', methods=['POST'])
@@ -1073,24 +1073,24 @@ def remove_existing_ogg():
 def reset_puzzles(room):
     global code1, code2, code3, code4, code5, sequence, codesCorrect, should_hint_shed_play
     update_game_status('awake', room)
-    should_hint_shed_play = True
-    codesCorrect = 0
-    code1 = False
-    code2 = False
-    code3 = False
-    code4 = False
-    code5 = False
-    publish.single("actuator/control/ret-laser", "0", hostname=broker_ip)
-    with open(f'json/{room}/sensor_data.json', 'r') as file:
-        devices = json.load(file)
-
+    if room == "The Retriever":
+        should_hint_shed_play = True
+        codesCorrect = 0
+        code1 = False
+        code2 = False
+        code3 = False
+        code4 = False
+        code5 = False
+        publish.single("actuator/control/ret-laser", "0", hostname=broker_ip)
+        with open(f'json/{room}/sensor_data.json', 'r') as file:
+            devices = json.load(file)
     # Iterate over devices
-    for device in devices:
-        if device["type"] in ["maglock"]:
-            if device["name"] == "laser-1" or device["name"] == "laser-2":
-                call_control_maglock_retriever(device["name"], "unlocked")
-            else:
-                call_control_maglock_retriever(device["name"], "locked")
+        for device in devices:
+            if device["type"] in ["maglock"]:
+                if device["name"] == "laser-1" or device["name"] == "laser-2":
+                    call_control_maglock_retriever(device["name"], "unlocked")
+                else:
+                    call_control_maglock_retriever(device["name"], "locked")
     return "puzzles reset"
 
 # Function to read the retriever status from the JSON file
