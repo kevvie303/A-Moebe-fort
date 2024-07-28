@@ -1574,7 +1574,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Send a request to the server to stop the music
     $.ajax({
       type: "POST",
-      url: `/reset-checklist/{roomName}`,
+      url: `/reset-checklist/${roomName}`,
       success: function (response) {
         updateChecklist();
         console.log(response);

@@ -68,7 +68,7 @@ bird_job = False
 squeak_job = False
 should_hint_shed_play = False
 start_time = None
-CHECKLIST_FILE = 'json/checklist_data.json'
+CHECKLIST_FILE = 'checklist_data.json'
 #logging.basicConfig(level=logging.DEBUG)  # Use appropriate log level
 active_ssh_connections = {}
 CORS(app)
@@ -186,8 +186,8 @@ def connect_device():
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 #broker_ip = "192.168.18.66"
-broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.27"
+#broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
+broker_ip = "192.168.1.27"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -1257,15 +1257,6 @@ def stop_music():
     with open(file_path, 'w') as file:
         json.dump([], file)
     return "Music stopped"
-@app.route('/backup-top-pi', methods=['POST'])
-def backup_top_pi():
-    ssh.exec_command('./commit_and_push.sh')
-    return "Top pi backed up"
-
-@app.route('/backup-middle-pi', methods=['POST'])
-def backup_middle_pi():
-    ssh.exec_command('./commit_and_push.sh')
-    return "Middle pi backed up"
 
 def control_maglock(room):
     global squeak_job, should_balls_drop, player_type
@@ -1311,106 +1302,12 @@ def call_control_maglock_partial(room, maglock, action):
 # Create a partial function with room argument already applied
 call_control_maglock_retriever = partial(call_control_maglock_partial, "The Retriever")
 call_control_maglock_m = partial(call_control_maglock_partial, "m")
-API_URL = 'http://192.168.0.105:5001/current_state'
 
-@app.route('/get_state', methods=['GET'])
-def get_state():
-    try:
-        # Make a GET request to the API to fetch the current state
-        response = requests.get(API_URL)
-        if response.status_code == 200:
-            state = response.json().get('state')
-        else:
-            state = 'unknown'
-    except requests.exceptions.RequestException:
-        state = 'unknown'
-    return jsonify({'state': state})
-
-API_URL_SENSORS = 'http://192.168.0.104:5000/sensor/status/'
-def get_sensor_status(sensor_number):
-    try:
-        response = requests.get(API_URL_SENSORS + str(sensor_number))
-        if response.status_code == 200:
-            return response.json().get('status')
-        else:
-            return 'unknown'
-    except requests.exceptions.RequestException:
-        return 'unknown'
-    
-API_URL_SHED_KEYPAD = 'http://192.168.0.104:5000/keypad/pressed_keys'
-
-def get_shed_keypad_code():
-    try:
-        response = requests.get(API_URL_SHED_KEYPAD)
-        if response.status_code == 200:
-            pressed_keys_arrays = response.json().get('pressed_keys_arrays')
-            if pressed_keys_arrays:
-                # Get the last-used code from the array
-                last_used_code_array = pressed_keys_arrays[-1]
-                last_used_code = ''.join(last_used_code_array)
-                return last_used_code
-            else:
-                return 'No code entered yet'
-        else:
-            return 'unknown'
-    except requests.exceptions.RequestException:
-        return 'unknown'
-
-API_URL_SENSORS_PI2 = 'http://192.168.0.105:5001/sensor/status/'
-
-def get_sensor_status_pi2(sensor_number):
-    try:
-        response = requests.get(API_URL_SENSORS_PI2 + str(sensor_number))
-        if response.status_code == 200:
-            return response.json().get('status')
-        else:
-            return 'unknown'
-    except requests.exceptions.RequestException:
-        return 'unknown'
-def monitor_sensor_statuses():
-    global sequence, should_hint_shed_play
-    global code1, code2, code3, code4, code5
-    global codesCorrect
-    global last_keypad_code
-    while True:
-        #green_house_ir_status = get_ir_sensor_status(14)
-        #red_house_ir_status = get_ir_sensor_status(20)
-        #blue_house_ir_status = get_ir_sensor_status(18)
-        #entrance_door_status = get_sensor_status(14)
-        sinus_status = get_sinus_status()
-        #top_left_kraken = get_sensor_status_pi2(15)
-        #bottom_left_kraken = get_sensor_status_pi2(16)
-        #top_right_kraken = get_sensor_status_pi2(20)
-        #bottom_right_kraken = get_sensor_status_pi2(23)
-        last_used_keypad_code = get_shed_keypad_code()
-        if last_used_keypad_code != last_keypad_code:
-            last_keypad_code = last_used_keypad_code  # Update the last keypad code
-            if last_used_keypad_code == "1528" and code1 == False:
-                code1 = True
-                solve_task("flowers")
-            elif (last_used_keypad_code == "7867" or last_used_keypad_code == "8978") and code2 == False:
-                code2 = True
-                solve_task("kite-count")
-            elif last_used_keypad_code == "0128" and code3 == False:
-                code3 = True
-                solve_task("number-feel")
-            elif last_used_keypad_code == "5038" and code4 == False:
-                code4 = True
-                solve_task("fence-decrypt")
-            else:
-                ssh.exec_command("raspi-gpio set 12 op dh")
-                time.sleep(1)
-                ssh.exec_command("raspi-gpio set 12 op dl")
-        if sinus_status == "solved" and aborted == False:
-            solve_task("sinus-game")
-            #pi2.exec_command("mpg123 -a hw:1,0 Music/pentakill.mp3")
-        time.sleep(0.1)
-# Start a new thread for monitoring sensor statuses
-@app.route('/reset-checklist', methods=['POST'])
+@app.route('/reset-checklist/<room>', methods=['POST'])
 def reset_checklist():
     try:
         # Read the current checklist data
-        with open(CHECKLIST_FILE, 'r') as file:
+        with open(f'json/{room}/{CHECKLIST_FILE}', 'r') as file:
             checklist_data = json.load(file)
 
         # Reset the completed status of all tasks
@@ -1418,7 +1315,7 @@ def reset_checklist():
             item['completed'] = False
 
         # Write the updated data back to the file
-        with open(CHECKLIST_FILE, 'w') as file:
+        with open(f'json/{room}/{CHECKLIST_FILE}', 'w') as file:
             json.dump(checklist_data, file, indent=2)
         socketio.emit('checklist_update', "message", room="all_clients")
     except Exception as e:
@@ -1516,11 +1413,6 @@ def remove_sensor(room):
         return f"{update_result}<br>Redirecting to sensor list...<meta http-equiv='refresh' content='2;url={url_for('list_sensors')}'>"
 
     return render_template('remove_sensor.html', sensors=sensors)
-@app.route('/scare_button', methods=['POST'])
-def scare_button():
-    publish.single("audio_control/for-corridor/play", "Buzzer.ogg", hostname=broker_ip)
-    publish.single("audio_control/for-corridor/volume", "100 Buzzer.ogg", hostname=broker_ip)
-    return "Scared the players :)"
 @app.route('/list_sensors/<room>')
 def list_sensors(room):
     # Read the sensor data from the JSON file
@@ -1537,41 +1429,6 @@ def start_bird_sounds():
     publish.single("audio_control/ret-tree/play", "Eagle.ogg", hostname=broker_ip)
 def start_squeak():
     publish.single("audio_control/ret-top/play", "squeek.ogg", hostname=broker_ip)
-
-API_URL_IR_SENSORS = 'http://192.168.0.114:5001/ir-sensor/status/'
-
-def get_ir_sensor_status(sensor_number):
-    try:
-        response = requests.get(API_URL_IR_SENSORS + str(sensor_number))
-        if response.status_code == 200:
-            return response.json().get('status')
-        else:
-            return 'unknown'
-    except requests.exceptions.RequestException:
-        return 'unknown'
-sensor_thread = threading.Thread(target=monitor_sensor_statuses)
-sensor_thread.daemon = True
-
-API_URL_SINUS = 'http://192.168.0.105:5001/sinus-game/state'
-
-def get_sinus_status():
-    try:
-        response = requests.get(API_URL_SINUS)
-        if response.status_code == 200:
-            return response.json().get('state')
-        else:
-            return 'unknown'
-    except requests.exceptions.RequestException:
-        return 'unknown'
-#@app.route('/turn_on', methods=['POST'])
-#def turn_on():
-    maglock = request.form['maglock']
-    return turn_on_maglock(maglock)
-
-#@app.route('/turn_off', methods=['POST'])
-#def turn_off():
-    maglock = request.form['maglock']
-    return turn_off_maglock(maglock)
 
 
 @app.route('/send_script')
@@ -1974,7 +1831,8 @@ preparedValue = {}
 def prepare_game(room):
     global client, pi_service_statuses, player_type, preparedValue, should_hint_shed_play, new_init_time
     new_init_time = 3600
-    should_hint_shed_play = True
+    if room == "The Retriever":
+        should_hint_shed_play = True
     prefix = request.form.get('prefix')
     print(prefix)
     if get_game_status(room) == {'status': 'prepared'}:
@@ -2005,7 +1863,8 @@ def prepare_game(room):
     print(converted_statuses)
     update_game_status("prepared", room)
     time.sleep(0.1)
-    publish.single("audio_control/ret-top/play", "Lounge.ogg", hostname=broker_ip)
+    if room == "The Retriever":
+        publish.single("audio_control/ret-top/play", "Lounge.ogg", hostname=broker_ip)
     return jsonify({"message": converted_statuses}), 200
 if romy == False:
     turn_on_api()
