@@ -67,7 +67,7 @@
         "type": "Sensor",
         "pin": 17,
         "pi": "cell_pi",
-        "state": "Not Triggered"
+        "state": "Triggered"
     },
     {
         "name": "3-objects",
@@ -81,7 +81,7 @@
         "type": "Sensor",
         "pin": 6,
         "pi": "cell_pi",
-        "state": "Not Triggered"
+        "state": "Triggered"
     },
     {
         "name": "iron-door-child",
