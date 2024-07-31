@@ -38,6 +38,7 @@ pi3 = None
 romy = True
 last_keypad_code = None
 aborted = False
+alarmfaded = False
 player_type = None
 fade_duration = 3  # Fade-out duration in seconds
 fade_interval = 0.1  # Interval between volume adjustments in seconds
@@ -679,7 +680,9 @@ def fade_music_out(file):
 def fade_music_out_hint():
         # Gradually reduce the volume from 80 to 40
         # Send the volume command to the Raspberry Pi
-    if check_task_state("scan-rosenthal") == "solved":
+    if check_task_state("alarm-knop") == "solved":
+        publish.single("audio_control/all/volume", "10 alarm.ogg", hostname=broker_ip)
+    elif check_task_state("scan-rosenthal") == "solved":
         publish.single("audio_control/for-poepdoos/volume", "10 bgCorridor.ogg", hostname=broker_ip)
         publish.single("audio_control/for-corridor/volume", "10 bgCorridor.ogg", hostname=broker_ip)
         publish.single("audio_control/for-guard/volume", "10 bgGuard.ogg", hostname=broker_ip)
@@ -699,7 +702,11 @@ def fade_music_out_hint():
     return "Volume faded successfully"
 @app.route('/fade_music_in', methods=['POST'])
 def fade_music_in_hint():
-    if check_task_state("scan-rosenthal") == "solved":
+    global alarmfaded
+    if check_task_state("alarm-knop") == "solved":
+        if alarmfaded == False:
+            publish.single("audio_control/all/volume", "100 alarm.ogg", hostname=broker_ip)
+    elif check_task_state("scan-rosenthal") == "solved":
         publish.single("audio_control/for-poepdoos/volume", "70 bgCorridor.ogg", hostname=broker_ip)
         publish.single("audio_control/for-corridor/volume", "70 bgCorridor.ogg", hostname=broker_ip)
         publish.single("audio_control/for-guard/volume", "100 bgGuard.ogg", hostname=broker_ip)
@@ -818,7 +825,7 @@ def get_task_status():
     
 @app.route('/solve_task/<task_name>', methods=['POST'])
 def solve_task(task_name):
-    global start_time
+    global start_time, alarmfaded
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
     game_status = get_game_status()
     try:
@@ -892,6 +899,7 @@ def solve_task(task_name):
                 publish.single("audio_control/all/play", "alarm.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/all/volume", "100 alarm.ogg", hostname="192.168.50.253")
                 time.sleep(120)
+                alarmfaded = True
                 fade_music_out("alarm")
         elif task_name == "einddeur-open":
             if game_status == {'status': 'playing'}:
@@ -1700,7 +1708,8 @@ def write_game_data(start_time, end_time):
 new_init_time = 3600
 @app.route('/timer/start', methods=['POST'])
 def start_timer():
-    global timer_thread, timer_value, speed, timer_running, bird_job, start_time
+    global timer_thread, timer_value, speed, timer_running, bird_job, start_time, alarmfaded
+    alarmfaded = False
     update_game_status('playing')
     start_time = datetime.now()
     if timer_thread is None or not timer_thread.is_alive():
