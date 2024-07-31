@@ -1170,9 +1170,11 @@ def play_music():
     print(corrected_message)
     
     # Publish the message to MQTT topics
+    fade_music_out_hint()
     publish.single("audio_control/all/play", corrected_message, hostname=broker_ip)
     publish.single("audio_control/all/volume", f"100 {corrected_message}", hostname=broker_ip)
-    
+    time.sleep(15)
+    fade_music_in_hint()
     return jsonify({"status": "success"})
 def set_starting_volume(soundcard_channel):
     command = f'amixer -c {soundcard_channel} set PCM Playback Volume 25%'
