@@ -133,9 +133,6 @@
   },
   {
     "task": "Munt terug in medicijnkast, plek de munt over de 'III'.",
-    "dependencies": {
-      "ehbo-kist": "Triggered"
-    },
     "completed": false
   },
   {
