@@ -39,6 +39,17 @@ input {
   color: black;
 }
 
+footer {
+  a,
+  button {
+    color: var(--button-color);
+    &:hover {
+      text-decoration: underline;
+      color: var(--button-color-hover);
+    }
+  }
+}
+
 body.landing-page {
   header {
     figure {
@@ -121,7 +132,8 @@ media queries
   }
 
   footer {
-    a {
+    a,
+    button {
       font-size: 18px;
     }
   }

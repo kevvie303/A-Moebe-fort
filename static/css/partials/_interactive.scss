@@ -12,7 +12,7 @@ a {
   border: none;
   cursor: pointer;
   &:hover {
-    filter: drop-shadow(0 0 2px #c0c0c0);
+    // filter: drop-shadow(0 0 2px #c0c0c0);
   }
   &:active {
     border: 2px solid #161616;
@@ -63,7 +63,8 @@ input[type="text"] {
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-}.toggle-button {
+}
+.toggle-button {
   padding: 10px 20px;
   border: 2px solid #007bff;
   border-radius: 5px;

@@ -1,5 +1,6 @@
 var cachedUserName = localStorage.getItem("userName");
-var roomName = document.title.trim();var initialTime = 3600;
+var roomName = document.title.trim();
+var initialTime = 3600;
 $(document).ready(function () {
   $("#add-music-button1").click(function () {
     // Open a file selection dialog when the button is clicked
@@ -182,16 +183,12 @@ $(document).ready(function () {
         var lockButton = $("<button>")
           .addClass("turn-on-button icon")
           .append(
-            $("<img>")
-              .attr("src", "/static/img/unlock.svg")
-              .attr("alt", "Lock")
+            $("<img>").attr("src", "/static/img/unlock.svg").attr("alt", "Lock")
           );
         var unlockButton = $("<button>")
           .addClass("turn-off-button icon")
           .append(
-            $("<img>")
-              .attr("src", "/static/img/lock.svg")
-              .attr("alt", "Unlock")
+            $("<img>").attr("src", "/static/img/lock.svg").attr("alt", "Unlock")
           );
         lockButtons.append(lockButton, unlockButton);
 
@@ -262,20 +259,23 @@ $(document).ready(function () {
 
       // Add toggle button for lights
       var toggleButton = $("<button>")
-        .addClass("toggle-button")
+        .addClass("button-style")
         .text("Toggle Lights")
         .click(function () {
           lightControlArticle.slideToggle();
         });
       // Append maglocks, toggle button, and lights to the lockControls element
-      lockControls.append(maglockControlArticle, toggleButton, lightControlArticle);
+      lockControls.append(
+        maglockControlArticle,
+        toggleButton,
+        lightControlArticle
+      );
     },
     error: function (error) {
       console.log("Error fetching sensor data:", error);
     },
   });
 });
-
 
 var statusDiv = $(".status");
 
@@ -298,14 +298,19 @@ function fetchSensorData() {
 function displayStatus(sensor_data) {
   var statusHTML = "";
   sensor_data.forEach(function (item) {
-    statusHTML += "<p style='margin-bottom: 5px;'>" + item.name + ": <strong>" + item.state + "</strong></p>";
+    statusHTML +=
+      "<p style='margin-bottom: 5px;'>" +
+      item.name +
+      ": <strong>" +
+      item.state +
+      "</strong></p>";
   });
   statusDiv.html(statusHTML);
 }
 
 // Create toggle button
 var toggleButton = $("<button>")
-  .addClass("toggle-button")
+  .addClass("button-style")
   .text("Toggle Sensor Status")
   .click(function () {
     statusDiv.slideToggle();
@@ -551,26 +556,26 @@ $(document).ready(function () {
 
   function updateTimers() {
     if (roomName != "A-moebe") {
-    $.get(`/timer/value/${roomName}`, function (data) {
-      var timeLeft = parseInt(data);
-      var timePlayed = initialTime - timeLeft;
-      var formattedTimeLeft = formatTime(timeLeft);
-      var formattedTimePlayed = formatTime(timePlayed);
-      $("#time-left").text(formattedTimeLeft);
-      $("#time-played").text(formattedTimePlayed);
+      $.get(`/timer/value/${roomName}`, function (data) {
+        var timeLeft = parseInt(data);
+        var timePlayed = initialTime - timeLeft;
+        var formattedTimeLeft = formatTime(timeLeft);
+        var formattedTimePlayed = formatTime(timePlayed);
+        $("#time-left").text(formattedTimeLeft);
+        $("#time-played").text(formattedTimePlayed);
 
-      $(".time-display #time-left").text(formattedTimeLeft);
-      $(".time-display #time-played").text(formattedTimePlayed);
+        $(".time-display #time-left").text(formattedTimeLeft);
+        $(".time-display #time-played").text(formattedTimePlayed);
 
-      $("#krijgsgevangenis-link .preview #time-played").text(
-        formattedTimePlayed
-      );
-      $("#krijgsgevangenis-link .preview #time-left").text(formattedTimeLeft);
-    });
-    $.get("/initial_time", function (data) {
-      initialTime = parseInt(data);
-    });
-  }
+        $("#krijgsgevangenis-link .preview #time-played").text(
+          formattedTimePlayed
+        );
+        $("#krijgsgevangenis-link .preview #time-left").text(formattedTimeLeft);
+      });
+      $.get("/initial_time", function (data) {
+        initialTime = parseInt(data);
+      });
+    }
   }
   function formatTime(seconds) {
     var minutes = Math.floor(seconds / 60);
@@ -622,7 +627,9 @@ $(document).ready(function () {
     if (cachedUserName === "Brian" || cachedUserName === "brian") {
       $(".tasks, .locks, .lock-status, .pin-info").show();
     } else {
-      $(".tasks, .locks, .lock-status, .pin-info, #reset-list-container").show();
+      $(
+        ".tasks, .locks, .lock-status, .pin-info, #reset-list-container"
+      ).show();
     }
     $("#prepare-result").hide();
     $("#pause-button, #prepare-game-button").show();
@@ -759,7 +766,6 @@ $(document).ready(function () {
     $(".tasks, .lock-status, .pin-info, #reset-list-container").hide();
   }
 });
-
 
 $(document).ready(function () {
   $("#resume-music-button").click(function () {
@@ -1014,10 +1020,14 @@ function openTaskPopup(task) {
   solvedButton.onclick = null;
   pendingButton.onclick = null;
   skipButton.onclick = null;
-  const taskControlContainer = taskPopup.querySelector(".task-control-container");
+  const taskControlContainer = taskPopup.querySelector(
+    ".task-control-container"
+  );
 
   // Remove any previously added dynamic buttons and "Play hint" message
-  const existingDynamicButtonContainer = taskControlContainer.querySelector(".dynamic-button-container");
+  const existingDynamicButtonContainer = taskControlContainer.querySelector(
+    ".dynamic-button-container"
+  );
   if (existingDynamicButtonContainer) {
     existingDynamicButtonContainer.remove();
   }
@@ -1042,21 +1052,21 @@ function openTaskPopup(task) {
 
     // Add an event listener to each button
     dynamicButton.addEventListener("click", () => {
-        // AJAX request using jQuery
-        $.ajax({
-            type: "POST",
-            url: "/play_music",
-            contentType: "application/json",
-            data: JSON.stringify({
-                message: `/home/pi/Music/${task.task}-${i}.ogg`
-            }),
-            success: function(response) {
-                console.log("Response from Flask:", response);
-            },
-            error: function(error) {
-                console.error("Error:", error);
-            }
-        });
+      // AJAX request using jQuery
+      $.ajax({
+        type: "POST",
+        url: "/play_music",
+        contentType: "application/json",
+        data: JSON.stringify({
+          message: `/home/pi/Music/${task.task}-${i}.ogg`,
+        }),
+        success: function (response) {
+          console.log("Response from Flask:", response);
+        },
+        error: function (error) {
+          console.error("Error:", error);
+        },
+      });
     });
 
     // Append the button to the dynamicButtonContainer
@@ -1064,7 +1074,10 @@ function openTaskPopup(task) {
   }
 
   // Insert the dynamicButtonContainer before the ".current-state" element
-  taskControlContainer.insertBefore(dynamicButtonContainer, taskControlContainer.querySelector(".current-state"));
+  taskControlContainer.insertBefore(
+    dynamicButtonContainer,
+    taskControlContainer.querySelector(".current-state")
+  );
 
   // Show the appropriate button based on the task state
   if (task.state === "solved" || task.state === "skipped") {
@@ -1480,7 +1493,7 @@ $(document).ready(function () {
           $("#prepare-result, #reset-list-container, .locks").show();
         }
         $(".tasks, .lock-status, .pin-info").hide();
-        console.log("preparing!!")
+        console.log("preparing!!");
       }
     });
   }
@@ -1498,7 +1511,7 @@ $(document).ready(function () {
         $("#prepare-result, #reset-list-container, .locks").show();
       }
       $(".tasks, .lock-status, .pin-info").hide();
-      console.log("preparing!!")
+      console.log("preparing!!");
     }
   });
   $.get(`/get_game_status/${roomName}`, function (data) {
@@ -1521,7 +1534,7 @@ async function sendLockRequest(roomName, task, isChecked) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({roomName, task, isChecked }),
+      body: JSON.stringify({ roomName, task, isChecked }),
     });
 
     const data = await response.json();
@@ -1557,17 +1570,17 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Received checklist_update event:", data);
     // Update your checklist UI based on the received data
     updateChecklist();
-  }); 
+  });
   socket.on("task_update", (data) => {
     console.log("Received task_update event:", data);
     // Update your checklist UI based on the received data
     fetchTasks();
-  }); 
+  });
   socket.on("sensor_update", (data) => {
     console.log("Received sensor_update event:", data);
     // Update your checklist UI based on the received data
     fetchSensorData();
-  // ... (other event listeners) ...
+    // ... (other event listeners) ...
   });
   // Function to update the checklist UI
   $("#reset-checklist").click(function () {
@@ -1639,7 +1652,7 @@ function displayChecklist(checklist) {
     if (cachedUserName === "Brian" || cachedUserName === "brian") {
       resetList.style.display = "none";
     } else {
-    resetList.style.display = "flex";
+      resetList.style.display = "flex";
     }
     resetList.innerHTML = ""; // Clear existing checklist items
     checklist.forEach((item, index) => {
@@ -1680,7 +1693,7 @@ function displayChecklist(checklist) {
     if (cachedUserName === "Brian" || cachedUserName === "brian") {
       resetList.style.display = "none";
     } else {
-    resetListContainer.style.display = "flex";
+      resetListContainer.style.display = "flex";
     }
   }
 }
@@ -1814,7 +1827,7 @@ $(document).ready(function () {
   accountButton.click(function () {
     showModal();
   });
-    // Function to check user permissions and display elements accordingly
+  // Function to check user permissions and display elements accordingly
   function checkPermissions(userName) {
     var allowedNames = ["Brian", "brian", "Brink", "brink", "Kevin", "kevin"];
     if (allowedNames.includes(userName)) {
