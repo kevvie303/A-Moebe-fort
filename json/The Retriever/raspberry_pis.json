@@ -1,18 +1,18 @@
 [
     {
-        "ip_address": "192.168.0.122",
+        "ip_address": "192.168.0.104",
         "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "ret-tree",
         "services": ["mqtt", "sound", "actuator"]
     },
     {
-        "ip_address": "192.168.0.124",
+        "ip_address": "192.168.0.107",
         "mac_address": "B8:27:EB:7B:14:9D",
         "hostname": "ret-top",
         "services": ["mqtt", "sound", "actuator", "keypad"]
     },
     {
-        "ip_address": "192.168.0.123",
+        "ip_address": "192.168.0.108",
         "mac_address": "B8:27:EB:CD:D7:D8",
         "hostname": "ret-middle",
         "services": ["mqtt", "sound", "actuator"]
