@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DMX Control</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
+    <link rel="icon" href="/static/img/logo.png" type="image/png">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -88,11 +93,22 @@
     </style>
 </head>
 <body>
+
+    <!-- <main class="control-container">
+        <section class="dmx-control control">
+            <h1>DMX CONTROL</h1>
+
+            <form style="display: flex; flex-direction: column;">
+                <label for="pan">Pan</label>
+                <input type="number" id="pan" min="0" max="255">
+            </form>
+
+        </section>
+
+    </main> -->
     <div class="container">
         <h1>DMX Control</h1>
         <div class="form-group">
-            <label for="pan">Pan</label>
-            <input type="number" id="pan" min="0" max="255">
         </div>
         <div class="form-group">
             <label for="tilt">Tilt</label>

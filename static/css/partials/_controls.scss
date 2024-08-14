@@ -84,6 +84,9 @@ section.control-container {
       flex-direction: column;
       gap: 5px;
     }
+    button {
+      align-self: center;
+    }
   }
   section.tasks {
     div#task-list {

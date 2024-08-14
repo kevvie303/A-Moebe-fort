@@ -82,6 +82,16 @@ input {
   color: black;
 }
 
+footer a,
+footer button {
+  color: var(--button-color);
+}
+footer a:hover,
+footer button:hover {
+  text-decoration: underline;
+  color: var(--button-color-hover);
+}
+
 body.landing-page header figure figcaption {
   color: var(--secondary-text-color);
 }
@@ -141,7 +151,8 @@ media queries
   label {
     font-size: 18px;
   }
-  footer a {
+  footer a,
+  footer button {
     font-size: 18px;
   }
 }
@@ -201,11 +212,9 @@ landing page
 }
 .landing-page .rooms .krijgsgevangenis-container .controls .info {
   display: flex;
-  width: -moz-fit-content;
   width: fit-content;
 }
 .landing-page .rooms .krijgsgevangenis-container .controls .info a {
-  width: -moz-fit-content;
   width: fit-content;
 }
 .landing-page .rooms .media {
@@ -445,10 +454,6 @@ a {
   background: none;
   border: none;
   cursor: pointer;
-}
-button:hover,
-a:hover {
-  filter: drop-shadow(0 0 2px #c0c0c0);
 }
 button:active,
 a:active {
@@ -710,7 +715,6 @@ section.time-hidden article.time div.time-controls div.speed-up-slow-down {
 }
 section.time-hidden article.time div.time-controls div.reset-speed {
   display: flex;
-  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -740,7 +744,6 @@ section.pi-hidden article.pi article.pi-buttons div.pi-controls div.backup {
   justify-content: center;
   align-items: center;
   gap: 10px;
-  width: -moz-fit-content;
   width: fit-content;
 }
 section.pi-hidden article.pi article.pi-buttons div.pi-controls div.reboot div.pies,
@@ -768,7 +771,6 @@ section.game-hidden article.game-controls div.game-buttons {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: -moz-fit-content;
   width: fit-content;
   justify-content: center;
 }
@@ -776,7 +778,6 @@ section.game-hidden article.game-controls div.abort p {
   text-align: center;
 }
 section.game-hidden article.game-controls div.abort button {
-  width: -moz-fit-content;
   width: fit-content;
   align-self: center;
   background: var(--locked);
@@ -863,7 +864,6 @@ section.media-selection.container form select {
   width: 100%;
 }
 section.media-selection.container form input {
-  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -1047,6 +1047,10 @@ section.control-container section.lock-status div.status {
   flex-direction: column;
   gap: 5px;
 }
+section.control-container section.locks button,
+section.control-container section.lock-status button {
+  align-self: center;
+}
 section.control-container section.tasks div#task-list {
   display: flex;
   flex-direction: column;
@@ -1106,7 +1110,6 @@ pin info button
 ###############
 */
 .pin-info {
-  width: -moz-fit-content;
   width: fit-content;
   align-self: center;
 }
@@ -1394,6 +1397,10 @@ media queries
 }
 
 footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
   text-align: center;
   background: var(--secondary-background-color);
   padding: 0.5em 0;
@@ -1401,9 +1408,7 @@ footer {
   bottom: 0;
   width: 100%;
   z-index: 1;
-}
-footer a:hover {
-  text-decoration: underline;
+  a: hover;
 }
 
 .raspberrypi_list body {
