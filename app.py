@@ -889,13 +889,14 @@ def apply_preset():
     else:
         return jsonify({'status': 'error', 'message': 'Presets file not found.'})
 MQTT_TOPIC = 'actuator/control/dmx/raspberrypi'
-def send_dmx_command(pan, tilt, colour, gobo):
+def send_dmx_command(pan, tilt, colour, gobo, smoke):
     """Send DMX command via MQTT."""
     payload = {
         'pan': pan,
         'tilt': tilt,
         'colour': colour,
-        'gobo': gobo
+        'gobo': gobo,
+        'smoke': smoke
     }
     payload_str = json.dumps(payload)
     publish.single(MQTT_TOPIC, payload=payload_str, qos=0, hostname=broker_ip)
@@ -903,13 +904,16 @@ def send_dmx_command(pan, tilt, colour, gobo):
 sequence_running = False
 @app.route('/dmx_control', methods=['GET', 'POST'])
 def dmx_control():
+    print("DMX control")
     if request.method == 'POST':
         try:
             pan = int(request.form['pan'])
             tilt = int(request.form['tilt'])
             colour = int(request.form['colour'])
             gobo = int(request.form['gobo'])
-            send_dmx_command(pan, tilt, colour, gobo)
+            smoke = int(request.form['smoke'])
+            print(f'Pan: {pan}, Tilt: {tilt}, Colour: {colour}, Gobo: {gobo}, Smoke: {smoke}')
+            send_dmx_command(pan, tilt, colour, gobo, smoke)
             return jsonify({'status': 'success', 'message': 'DMX command sent successfully!'})
         except ValueError:
             return jsonify({'status': 'error', 'message': 'Invalid input. Please enter valid numbers.'})

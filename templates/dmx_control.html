@@ -108,28 +108,35 @@
     </main> -->
     <div class="container">
         <h1>DMX Control</h1>
-        <div class="form-group">
-        </div>
-        <div class="form-group">
-            <label for="tilt">Tilt</label>
-            <input type="number" id="tilt" min="0" max="255">
-        </div>
-        <div class="form-group">
-            <label for="colour">Colour</label>
-            <input type="number" id="colour" min="0" max="255">
-        </div>
-        <div class="form-group">
-            <label for="gobo">Gobo</label>
-            <input type="number" id="gobo" min="0" max="255">
-        </div>
-        <div class="button-group">
-            <button id="sendDMX">Send DMX</button>
-            <button id="startSequence">Start Sequence</button>
-        </div>
-        <div class="button-group">
-            <button id="stopSequence">Stop Sequence</button>
-            <button id="stopAll">Turn Off All</button>
-        </div>
+        <form id="dmxForm">
+            <div class="form-group">
+                <label for="pan">Pan</label>
+                <input type="number" id="pan" name="pan" min="0" max="255">
+            <div class="form-group">
+                <label for="tilt">Tilt</label>
+                <input type="number" id="tilt" name="tilt" min="0" max="255">
+            </div>
+            <div class="form-group">
+                <label for="colour">Colour</label>
+                <input type="number" id="colour" name="colour" min="0" max="255">
+            </div>
+            <div class="form-group">
+                <label for="gobo">Gobo</label>
+                <input type="number" id="gobo" name="gobo" min="0" max="255">
+            </div>
+            <div class="form-group">
+                <label for="smoke">Smoke</label>
+                <input type="number" id="smoke" name="smoke" min="0" max="255">
+            </div>
+            <div class="button-group">
+                <button type="button" id="sendDMX">Send DMX</button>
+                <button type="button" id="startSequence">Start Sequence</button>
+            </div>
+            <div class="button-group">
+                <button type="button" id="stopSequence">Stop Sequence</button>
+                <button type="button" id="stopAll">Turn Off All</button>
+            </div>
+        </form>
         <h2>Presets</h2>
         <div id="presets" class="preset-container">
             <!-- Preset buttons will be generated here by JavaScript -->
@@ -155,33 +162,64 @@
         }
 
         // Function to send DMX control command
-        function sendDMX() {
-            const form = document.getElementById('dmxForm');
-            const formData = new FormData(form);
-            const data = new URLSearchParams(formData).toString();
+        
+        // Function to load presets and add buttons
+        function loadPresets() {
+            fetch('/presets')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.querySelector('.preset-container');
+                    for (const [name, preset] of Object.entries(data)) {
+                        const button = document.createElement('button');
+                        button.textContent = name;
+                        button.className = 'preset-button';
+                        button.addEventListener('click', () => applyPreset(name));
+                        container.appendChild(button);
+                    }
+                });
+        }
 
-            fetch('/dmx_control', {
-                method: 'POST',
-                body: data,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                const responseMessage = document.getElementById('responseMessage');
-                if (data.status === 'success') {
-                    responseMessage.textContent = data.message;
-                    responseMessage.style.color = 'green';
-                } else {
-                    responseMessage.textContent = data.message;
-                    responseMessage.style.color = 'red';
-                }
-            })
-            .catch(error => {
-                console.error('Error sending DMX control command:', error);
+        // Function to send DMX control command
+        function sendDMX() {
+    const form = document.getElementById('dmxForm');
+    const formData = new FormData(form);
+    const data = new URLSearchParams(formData).toString();
+
+    console.log("Data being sent:", data); // Debugging log
+
+    fetch('/dmx_control', {
+        method: 'POST',
+        body: data,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            // If response is not OK, throw an error with the status text
+            return response.text().then(text => {
+                throw new Error(`${response.status} ${response.statusText}: ${text}`);
             });
         }
+        return response.json();
+    })
+    .then(data => {
+        const responseMessage = document.getElementById('responseMessage');
+        if (data.status === 'success') {
+            responseMessage.textContent = data.message;
+            responseMessage.style.color = 'green';
+        } else {
+            responseMessage.textContent = data.message;
+            responseMessage.style.color = 'red';
+        }
+    })
+    .catch(error => {
+        console.error('Error sending DMX control command:', error);
+        const responseMessage = document.getElementById('responseMessage');
+        responseMessage.textContent = `Error: ${error.message}`;
+        responseMessage.style.color = 'red';
+    });
+}
 
         // Function to apply preset
         function applyPreset(presetName) {
