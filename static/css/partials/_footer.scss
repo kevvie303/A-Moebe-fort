@@ -1,6 +1,10 @@
 @import "../helpers/_variables";
 
 footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
   text-align: center;
   background: var(--secondary-background-color);
   padding: 0.5em 0;
@@ -8,7 +12,5 @@ footer {
   bottom: 0;
   width: 100%;
   z-index: 1;
-  a:hover {
-    text-decoration: underline;
-  }
+  a: hover;
 }
