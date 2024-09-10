@@ -1137,7 +1137,7 @@ def control_light(room):
     print(light_name)
     print(room)
     if light_name and room:
-        call_control_maglock_retriever(f"{light_name}", "locked", f"{room}" if check_rule(light_name, room) else "unlocked")
+        call_control_maglock_retriever(f"{light_name}", "locked" if check_rule(light_name, room) else "unlocked")
     elif light_name == "Light-7":
         if check_rule("blacklight"):
             call_control_maglock_retriever("blacklight", "locked")
