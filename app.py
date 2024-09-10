@@ -1132,20 +1132,31 @@ def wake_room(room):
         return jsonify({'success': False, 'error': str(e)})
 @app.route('/control_light/<room>', methods=['POST'])
 def control_light(room):
-    print("hi")
     light_name = request.json.get('light_name')
-    print(light_name)
-    print(room)
-    if light_name and room:
-        call_control_maglock_retriever(f"{light_name}", "unlocked" if check_rule(light_name, room) else "locked")
+    if light_name == "Light-1" and check_rule("light-1-garden", room):
+        call_control_maglock_retriever("light-1-garden", "locked")
+    elif light_name == "Light-1":
+        call_control_maglock_retriever("light-1-garden", "unlocked")
+        print(light_name)
+    elif light_name == "Light-2":
+        call_control_maglock_retriever("light-2-garden", "locked" if check_rule("light-2-garden", room) else "unlocked")
+    elif light_name == "Light-3":
+        call_control_maglock_retriever("light-3-garden", "locked" if check_rule("light-3-garden", room) else "unlocked")
+    elif light_name == "Light-4":
+        call_control_maglock_retriever("light-4-garden", "locked" if check_rule("light-4-garden", room) else "unlocked")
+    elif light_name == "Light-5":
+        call_control_maglock_retriever("light-1-shed", "locked" if check_rule("light-1-shed", room) else "unlocked")
+    elif light_name == "Light-6":
+        call_control_maglock_retriever("light-1-alley", "locked" if check_rule("light-1-alley", room) else "unlocked")
     elif light_name == "Light-7":
-        if check_rule("blacklight"):
+        if check_rule("blacklight", room):
             call_control_maglock_retriever("blacklight", "locked")
             call_control_maglock_retriever("portal-light", "locked")
         else:
             call_control_maglock_retriever("blacklight", "unlocked")
             call_control_maglock_retriever("portal-light", "unlocked")
     return jsonify({'message': f'Light {light_name} control command executed successfully'})
+
 @app.route('/snooze_game/<room>', methods=['POST'])
 def snooze_game(room):
     try:
