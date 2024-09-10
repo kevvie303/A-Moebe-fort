@@ -346,6 +346,8 @@ def execute_lock_command(task, action):
             call_control_maglock_retriever("doghouse-lock", action)
         if task == "(vanuit buiten de kamer) doe de entreedeur dicht":
             call_control_maglock_retriever("entrance-door-lock", action)
+        if task == "Gang-leds aan":
+            publish.single("led/control/mlv-corridors", action, hostname=broker_ip)
         
     except Exception as e:
         print(f"Error executing {action} command: {str(e)}")
