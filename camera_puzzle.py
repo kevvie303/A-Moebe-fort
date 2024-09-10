@@ -102,7 +102,7 @@ while True:
     if all(abs(square_positions[i][0] - target_positions[i][0]) < 20 and 
            abs(square_positions[i][1] - target_positions[i][1]) < 20 for i in range(4)):
         font = pygame.font.Font(None, 74)
-        text = font.render("Puzzle Solved!", True, (255, 255, 255))
+        text = font.render("Lekker sicko", True, (255, 255, 255))
         screen.blit(text, (100, 200))
     
     pygame.display.flip()
@@ -114,3 +114,4 @@ while True:
 
 cap.release()
 pygame.quit()
+
