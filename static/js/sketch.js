@@ -1423,7 +1423,7 @@ $(document).ready(function () {
     $.ajax({
       type: "POST",
       url: `/prepare/${roomName}`,
-      data: { playerType: playerType, prefix: "ret" },
+      data: { playerType: playerType},
       success: function (response) {
         console.log("Received data:", response);
         prepareStatus.html(

@@ -1837,7 +1837,9 @@ def prepare_game(room):
     new_init_time = 3600
     if room == "The Retriever":
         should_hint_shed_play = True
-    prefix = request.form.get('prefix')
+        prefix = "ret"
+    else:
+        prefix = "mlv"
     print(prefix)
     if get_game_status(room) == {'status': 'prepared'}:
         return jsonify({"message": preparedValue}), 200
