@@ -9,7 +9,7 @@
 </head>
 <body class="add-sensor-page">
     <h1>Add a New Item</h1>
-    <form method="POST" action="/add_sensor">
+    <form method="POST" action="/add_sensor/Moonlight Village">
         <label for="name">Item Name:</label>
         <input type="text" name="name" required><br>
 
@@ -26,9 +26,11 @@
 
         <label for="pi">Connected to Raspberry Pi:</label>
         <select name="pi" required>
-            <option value="ret-top">ret-top</option>
-            <option value="ret-middle">ret-middle</option>
-            <option value="ret-tree">ret-tree</option>
+            <option value="mlv-corridors">mlv-corridors</option>
+            <option value="mlv-astronomy">mlv-astronomy</option>
+            <option value="mlv-herbalist">mlv-herbalist</option>
+            <option value="mlv-central">mlv-central</option>
+            <option value="mlv-tavern">mlv-tavern</option>
         </select><br>
         <label for="connection_type">Connection Type:</label>
         <select name="connection_type" required>

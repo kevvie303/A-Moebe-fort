@@ -114,7 +114,7 @@ $(document).ready(function () {
     // Send a request to the server to stop the music
     $.ajax({
       type: "POST",
-      url: "/fade_music_out",
+      url: `/fade_music_out/${roomName}`,
       success: function (response) {
         console.log(response);
       },
@@ -127,7 +127,7 @@ $(document).ready(function () {
     // Send a request to the server to stop the music
     $.ajax({
       type: "POST",
-      url: "/fade_music_in",
+      url: `/fade_music_in/${roomName}`,
       success: function (response) {
         console.log(response);
       },
