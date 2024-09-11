@@ -1340,6 +1340,7 @@ def reset_checklist():
     return jsonify({'success': True, 'message': 'Checklist reset successfully'})
 @app.route('/add_sensor/<room>', methods=['GET', 'POST'])
 def add_sensor(room):
+    global sensors
     if request.method == 'POST':
         # Retrieve form data including the new 'connection_type' field
         name = request.form['name']
@@ -1357,20 +1358,21 @@ def add_sensor(room):
             "state": "initial",
             "connection_type": connection_type
         }
-
+        with open(f'json/{room}/sensor_data.json', 'r') as json_file:
+            sensors = json.load(json_file)
         # Add the new sensor to the list
         sensors.append(new_sensor)
 
         # Save the updated sensor data to the JSON file
         with open(f'json/{room}/sensor_data.json', 'w') as json_file:
             json.dump(sensors, json_file, indent=4)
-        update_sensor_data_on_pis(pi, room)
+        update_sensor_data_on_pis(room)
 
-        return redirect(url_for('list_sensors'))
+        return redirect(url_for('list_sensors', room=room))
 
     return render_template('add_sensor.html')
 
-def update_sensor_data_on_pis(pi, room):
+def update_sensor_data_on_pis(room):
     success_message = "Sensor data updated successfully. Updated script sent to the following IP addresses:<br>"
 
     # Read Raspberry Pi data from JSON file
@@ -1378,44 +1380,42 @@ def update_sensor_data_on_pis(pi, room):
         raspberry_pis = json.load(json_file)
 
     for raspberry_pi in raspberry_pis:
-        if raspberry_pi["hostname"] == pi:
-            ip = raspberry_pi["ip_address"]
-            try:
-                # Create an SSH session for the Raspberry Pi
-                ssh = paramiko.SSHClient()
-                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                ssh.connect(ip, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+        ip = raspberry_pi["ip_address"]
+        try:
+            # Create an SSH session for the Raspberry Pi
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(ip, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
 
-                # Create an SFTP session over the existing SSH connection
-                sftp = ssh.open_sftp()
+            # Create an SFTP session over the existing SSH connection
+            sftp = ssh.open_sftp()
 
-                # Transfer the updated file to the Raspberry Pi
-                sftp.put(f'json/{room}/sensor_data.json', '/home/pi/sensor_data.json')
+            # Transfer the updated file to the Raspberry Pi
+            sftp.put(f'json/{room}/sensor_data.json', '/home/pi/sensor_data.json')
 
-                success_message += f"- {ip}<br>"
+            success_message += f"- {ip}<br>"
 
-                # Close the SFTP session and SSH connection
-                sftp.close()
-                ssh.close()
-            except Exception as e:
-                return f'Error occurred while sending updated script to {ip}: {e}'
-
-            break  # No need to continue searching for matching Raspberry Pi
+            # Close the SFTP session and SSH connection
+            sftp.close()
+            ssh.close()
+        except Exception as e:
+            return f'Error occurred while sending updated script to {ip}: {e}'
 
     return success_message
+
 
 @app.route('/remove_sensor/<room>', methods=['GET', 'POST'])
 def remove_sensor(room):
     # Access the global sensors variable
     global sensors
 
+    # Read the existing sensor data from the JSON file for both GET and POST methods
+    with open(f'json/{room}/sensor_data.json', 'r') as json_file:
+        sensors = json.load(json_file)
+
     if request.method == 'POST':
         # Retrieve the selected sensor name to remove
         sensor_name_to_remove = request.form['sensor_name']
-
-        # Read the existing sensor data from the JSON file
-        with open(f'json/{room}/sensor_data.json', 'r') as json_file:
-            sensors = json.load(json_file)
 
         # Remove the sensor from the list
         updated_sensors = [sensor for sensor in sensors if sensor['name'] != sensor_name_to_remove]
@@ -1425,10 +1425,12 @@ def remove_sensor(room):
             json.dump(updated_sensors, json_file, indent=4)
 
         # Update sensor data on the Raspberry Pi devices
-        update_result = update_sensor_data_on_pis("ret")
+        update_sensor_data_on_pis(room)
 
-        return f"{update_result}<br>Redirecting to sensor list...<meta http-equiv='refresh' content='2;url={url_for('list_sensors')}'>"
+        # Redirect to the list_sensors view for the specific room
+        return redirect(url_for('list_sensors', room=room))
 
+    # Render the remove sensor page for GET requests
     return render_template('remove_sensor.html', sensors=sensors)
 @app.route('/list_sensors/<room>')
 def list_sensors(room):

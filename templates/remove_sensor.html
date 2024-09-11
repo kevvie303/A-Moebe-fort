@@ -9,7 +9,7 @@
 </head>
 <body class="remove-sensor-page">
     <h1>Remove Sensor</h1>
-    <form method="POST" action="/remove_sensor">
+    <form method="POST" action="/remove_sensor/Moonlight Village">
         <label for="sensor_name">Select Sensor to Remove:</label>
         <select name="sensor_name" required>
             {% for sensor in sensors %}
@@ -19,6 +19,6 @@
 
         <input type="submit" value="Remove">
     </form>
-    <a href="/list_sensors" class="button-style">Back to List</a>
+    <a href="/list_sensors/Moonlight Village" class="button-style">Back to List</a>
 </body>
 </html>
