@@ -957,10 +957,10 @@ def stop_sequence():
     stop_message = {'pan': 0, 'tilt': 0, 'colour': 0, 'gobo': 0, 'shutter': 0}
     send_mqtt_message(stop_message)
     return jsonify({'message': 'Sequence stopped and DMX values reset to 0.', 'status': 'success'})
-@app.route('/skip_task/<task_name>', methods=['POST'])
+@app.route('/skip_task/<task_name>/<room>', methods=['POST'])
 def skip_task(task_name):
     global bird_job, code1, code2, code3, code4, code5, sequence, codesCorrect
-    file_path = os.path.join(current_dir, 'json', 'tasks.json')
+    file_path = os.path.join('json', room, 'tasks.json')
 
     try:
         with open(file_path, 'r+') as file:
