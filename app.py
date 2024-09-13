@@ -295,7 +295,7 @@ def on_message(client, userdata, message):
         if "ret" in pi:
             room = "The Retriever"
         else:
-            room = "m"
+            room = "Moonlight Village"
         print(room)
         sensor_state = message.payload.decode("utf-8")
         sensor_states[sensor_name] = sensor_state
@@ -1319,7 +1319,7 @@ def call_control_maglock_partial(room, maglock, action):
 
 # Create a partial function with room argument already applied
 call_control_maglock_retriever = partial(call_control_maglock_partial, "The Retriever")
-call_control_maglock_m = partial(call_control_maglock_partial, "m")
+call_control_maglock_moonlight = partial(call_control_maglock_partial, "Moonlight Village")
 
 @app.route('/reset-checklist/<room>', methods=['POST'])
 def reset_checklist(room):
@@ -1350,7 +1350,6 @@ def reset_checklist(room):
 
     except Exception as e:
         print(f"Error resetting checklist: {str(e)}")
-    return jsonify({'success': True, 'message': 'Checklist reset successfully'})
     return jsonify({'success': True, 'message': 'Checklist reset successfully'})
 @app.route('/add_sensor/<room>', methods=['GET', 'POST'])
 def add_sensor(room):
@@ -1455,11 +1454,14 @@ def list_sensors(room):
     # Render the template with the updated sensor data
     return render_template('list_sensors.html', sensors=sensors)
 def start_bird_sounds():
-    publish.single("audio_control/ret-tree/play", "Gull.ogg", hostname=broker_ip)
+    publish.single("audio_control/ret-top/play", "Gull.ogg", hostname=broker_ip)
+    publish.single("audio_control/ret-top/volume", "100 Gull.ogg", hostname=broker_ip)
     time.sleep(8)
-    publish.single("audio_control/ret-tree/play", "Duck.ogg", hostname=broker_ip)
+    publish.single("audio_control/ret-top/play", "Duck.ogg", hostname=broker_ip)
+    publish.single("audio_control/ret-top/volume", "50 Duck.ogg", hostname=broker_ip)
     time.sleep(8)
-    publish.single("audio_control/ret-tree/play", "Eagle.ogg", hostname=broker_ip)
+    publish.single("audio_control/ret-top/play", "Eagle.ogg", hostname=broker_ip)
+    publish.single("audio_control/ret-top/volume", "50 Eagle.ogg", hostname=broker_ip)
 def start_squeak():
     publish.single("audio_control/ret-top/play", "squeek.ogg", hostname=broker_ip)
 
@@ -1635,6 +1637,7 @@ def update_timer(room, speed):
         timer_value = max(timer_value - speed, 0)
         timer_values[room] = timer_value
         write_timer_value(timer_value, room)
+        socketio.emit('timer_update', room="all_clients")
         time.sleep(1)
 new_init_time = 3600
 @app.route('/add_minute', methods=['POST'])

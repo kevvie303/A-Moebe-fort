@@ -550,9 +550,11 @@ $(document).ready(function () {
 $(document).ready(function () {
   var intervalId;
   var speed = 2;
-  intervalId = setInterval(function () {
+  socket.on("timer_update", (data) => {
+    // Update your checklist UI based on the received data
     updateTimers();
-  }, 1000);
+    // ... (other event listeners) ...
+  });
 
   function updateTimers() {
     if (roomName != "A-moebe") {
@@ -604,9 +606,9 @@ $(document).ready(function () {
     $.post(`/timer/start/${roomName}`, function (data) {
       console.log(data);
     }).done(function () {});
-    intervalId = setInterval(function () {
-      updateTimers();
-    }, 1000);
+    // intervalId = setInterval(function () {
+    //   updateTimers();
+    // }, 1000);
     $(".tasks, .locks, .lock-status, .pin-info").show();
     $("#continue-button, #prepare-result, #reset-list-container").hide();
     $("#pause-button").show();
@@ -874,106 +876,8 @@ $(document).ready(function () {
 // Update the state every 5 seconds (5000 milliseconds)
 //setInterval(updateState, 5000);
 
-$(document).ready(function () {
-  function updateStatusDisplay() {
-    $.get("/get_file_status", function (data) {
-      $("#status-display").empty();
 
-      const playingSongs = data.filter((entry) => entry.status === "playing");
-      const pausedSongs = data.filter((entry) => entry.status === "paused");
-
-      if (playingSongs.length > 0) {
-        $("#music-list").empty();
-
-        playingSongs.forEach((entry) => {
-          const { filename, soundcard_channel } = entry;
-          $("#status-display").append(`<div>${filename} is playing!</div>`);
-          $("#music-list").append(`
-                        <li>
-                            ${filename}
-                            <button class="button-style pause-button" data-file="${filename}" data-channel="${soundcard_channel}">Pause</button>
-                        </li>
-                    `);
-        });
-      } else {
-        $("#music-list").empty(); // Clear the list if there are no songs playing
-      }
-
-      if (pausedSongs.length > 0) {
-        $("#status-display").append("<div>Paused songs:</div>");
-        pausedSongs.forEach((entry) => {
-          const { filename, soundcard_channel } = entry;
-          $("#status-display").append(`<div>${filename} is paused!</div>`);
-          $("#music-list").append(`
-                        <li>
-                            ${filename}
-                            <button class="button-style resume-button" data-file="${filename}" data-channel="${soundcard_channel}">Resume</button>
-                        </li>
-                    `);
-        });
-      }
-    });
-  }
-
-  // Handle pause button click
-  $(document).on("click", ".pause-button", function () {
-    const selectedFile = $(this).data("file");
-    const selectedChannel = $(this).data("channel");
-    $.ajax({
-      type: "POST",
-      url: "/pause_music",
-      data: { file: selectedFile, channel: selectedChannel },
-      success: function (response) {
-        console.log(response);
-        updateStatusDisplay(); // Update the status display after pausing the song
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  });
-
-  // Handle resume button click
-  $(document).on("click", ".resume-button", function () {
-    const selectedFile = $(this).data("file");
-    const selectedChannel = $(this).data("channel");
-    $.ajax({
-      type: "POST",
-      url: "/resume_music",
-      data: { file: selectedFile, channel: selectedChannel },
-      success: function (response) {
-        console.log(response);
-        updateStatusDisplay(); // Update the status display after resuming the song
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  });
-
-  // Call the function initially and update the status display every 5 seconds
-  updateStatusDisplay();
-  setInterval(updateStatusDisplay, 5000);
-});
-function updatePiStatus() {
-  $.ajax({
-    url: "/get-pi-status",
-    method: "GET",
-    success: function (data) {
-      // Update the table with the latest status data
-      $("#status-table").html(data);
-    },
-    complete: function () {
-      // Schedule the next update after 5 seconds
-      setTimeout(updatePiStatus, 5000);
-    },
-  });
-}
 // Start updating status on page load
-$(document).ready(function () {
-  updatePiStatus();
-  //setInterval(fetchTasks, 2000);
-});
 
 async function fetchTasks() {
   console.log("Fetching tasks...");
@@ -1479,7 +1383,7 @@ function displayDeviceStatus(device, deviceStatus) {
     resultsSection.append(deviceDiv);
 }
   function updateRetrieverStatus() {
-    console.log("hi");
+    console.log("Getting retriever status... TODO: Change to socket");
     $.get(`/get_game_status/${roomName}`, function (data) {
       if (data.status === "prepared") {
         prepareButton.hide();
@@ -1558,9 +1462,8 @@ async function sendLockRequest(roomName, task, isChecked) {
     console.error("Error:", error);
   }
 }
-
+const socket = io({ transports: ["websocket"] });
 document.addEventListener("DOMContentLoaded", () => {
-  const socket = io({ transports: ["websocket"] });
 
   // Event listener for Socket.IO connection
   socket.on("connect", () => {
@@ -1592,6 +1495,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchSensorData();
     // ... (other event listeners) ...
   });
+
   // Function to update the checklist UI
   $("#reset-checklist").click(function () {
     // Send a request to the server to stop the music
