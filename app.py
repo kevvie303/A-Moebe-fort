@@ -1335,9 +1335,22 @@ def reset_checklist(room):
         # Write the updated data back to the file
         with open(f'json/{room}/{CHECKLIST_FILE}', 'w') as file:
             json.dump(checklist_data, file, indent=2)
+
+        # Unlock all tasks
+        if room == "The Retriever":
+            call_control_maglock_retriever("ball-drop-lock", "unlocked")
+            call_control_maglock_retriever("lab-hatch-lock", "unlocked")
+            call_control_maglock_retriever("shed-door-lock", "unlocked")
+            call_control_maglock_retriever("sliding-door-lock", "unlocked")
+            call_control_maglock_retriever("doghouse-lock", "unlocked")
+            call_control_maglock_retriever("entrance-door-lock", "unlocked")
+
+        # Emit checklist update event
         socketio.emit('checklist_update', "message", room="all_clients")
+
     except Exception as e:
         print(f"Error resetting checklist: {str(e)}")
+    return jsonify({'success': True, 'message': 'Checklist reset successfully'})
     return jsonify({'success': True, 'message': 'Checklist reset successfully'})
 @app.route('/add_sensor/<room>', methods=['GET', 'POST'])
 def add_sensor(room):
@@ -1714,6 +1727,7 @@ def stop_timer(room):
         update_game_status('awake', room)
         del timer_threads[room]
         reset_task_statuses(room)
+        reset_checklist(room)
         end_time = datetime.now()
     stop_music(room)
     if start_time is not None:
