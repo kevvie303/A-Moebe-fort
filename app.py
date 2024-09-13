@@ -488,7 +488,7 @@ def get_music_files():
             music_files.append(file)
     return music_files
 def synchronize_music_files(new_music_file):
-    with open('json/raspberry_pis.json') as f:
+    with open('json/Moonlight Village/raspberry_pis.json') as f:
         raspberry_pis = json.load(f)
     for pi in raspberry_pis:
         if 'services' in pi and 'sound' in pi['services']:
