@@ -1640,11 +1640,17 @@ function displayChecklist(checklist) {
   if (allCompleted) {
     // If all tasks are completed, hide the checklist and show "ready to prepare"
     resetList.style.display = "none";
-    const readyToPrepareMessage = document.createElement("p");
-    readyToPrepareMessage.textContent = "Ready to prepare";
-
-    // Check if the message is already present to avoid duplication
-    if (!resetListContainer.contains(readyToPrepareMessage)) {
+  
+    // Check if the message is already present by checking for an element with a specific ID or class
+    let readyToPrepareMessage = document.getElementById("readyToPrepareMessage");
+  
+    if (!readyToPrepareMessage) {
+      console.log("Adding ready to prepare message");
+      
+      // Create and append the message only if it's not already present
+      readyToPrepareMessage = document.createElement("p");
+      readyToPrepareMessage.id = "readyToPrepareMessage"; // Use an ID to identify it later
+      readyToPrepareMessage.textContent = "Ready to prepare";
       resetListContainer.appendChild(readyToPrepareMessage);
     }
   } else {
