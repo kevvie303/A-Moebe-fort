@@ -1321,7 +1321,7 @@ call_control_maglock_retriever = partial(call_control_maglock_partial, "The Retr
 call_control_maglock_m = partial(call_control_maglock_partial, "m")
 
 @app.route('/reset-checklist/<room>', methods=['POST'])
-def reset_checklist():
+def reset_checklist(room):
     try:
         # Read the current checklist data
         with open(f'json/{room}/{CHECKLIST_FILE}', 'r') as file:
