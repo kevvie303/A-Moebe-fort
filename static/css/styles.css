@@ -1,6 +1,7 @@
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;
+  --moonlight-background-color: #5b5f5b;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
   --second-button-color-hover: #31982f;
@@ -24,6 +25,7 @@
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;
+  --moonlight-background-color: #5b5f5b;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
   --second-button-color-hover: #31982f;
@@ -212,9 +214,11 @@ landing page
 }
 .landing-page .rooms .krijgsgevangenis-container .controls .info {
   display: flex;
+  width: -moz-fit-content;
   width: fit-content;
 }
 .landing-page .rooms .krijgsgevangenis-container .controls .info a {
+  width: -moz-fit-content;
   width: fit-content;
 }
 .landing-page .rooms .media {
@@ -302,6 +306,7 @@ media queries
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;
+  --moonlight-background-color: #5b5f5b;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
   --second-button-color-hover: #31982f;
@@ -424,6 +429,7 @@ main {
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;
+  --moonlight-background-color: #5b5f5b;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
   --second-button-color-hover: #31982f;
@@ -530,6 +536,7 @@ input[type=text] {
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;
+  --moonlight-background-color: #5b5f5b;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
   --second-button-color-hover: #31982f;
@@ -616,6 +623,7 @@ header.retriever-logo {
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;
+  --moonlight-background-color: #5b5f5b;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
   --second-button-color-hover: #31982f;
@@ -715,6 +723,7 @@ section.time-hidden article.time div.time-controls div.speed-up-slow-down {
 }
 section.time-hidden article.time div.time-controls div.reset-speed {
   display: flex;
+  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -744,6 +753,7 @@ section.pi-hidden article.pi article.pi-buttons div.pi-controls div.backup {
   justify-content: center;
   align-items: center;
   gap: 10px;
+  width: -moz-fit-content;
   width: fit-content;
 }
 section.pi-hidden article.pi article.pi-buttons div.pi-controls div.reboot div.pies,
@@ -771,6 +781,7 @@ section.game-hidden article.game-controls div.game-buttons {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: -moz-fit-content;
   width: fit-content;
   justify-content: center;
 }
@@ -778,6 +789,7 @@ section.game-hidden article.game-controls div.abort p {
   text-align: center;
 }
 section.game-hidden article.game-controls div.abort button {
+  width: -moz-fit-content;
   width: fit-content;
   align-self: center;
   background: var(--locked);
@@ -864,6 +876,7 @@ section.media-selection.container form select {
   width: 100%;
 }
 section.media-selection.container form input {
+  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -953,6 +966,7 @@ section.control-container section.tasks div.modal div.modal-content input[type=t
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;
+  --moonlight-background-color: #5b5f5b;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
   --second-button-color-hover: #31982f;
@@ -1110,6 +1124,7 @@ pin info button
 ###############
 */
 .pin-info {
+  width: -moz-fit-content;
   width: fit-content;
   align-self: center;
 }
@@ -1304,6 +1319,7 @@ media queries
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;
+  --moonlight-background-color: #5b5f5b;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
   --second-button-color-hover: #31982f;
@@ -1376,6 +1392,7 @@ media queries
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;
+  --moonlight-background-color: #5b5f5b;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
   --second-button-color-hover: #31982f;
@@ -1455,6 +1472,7 @@ footer {
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;
+  --moonlight-background-color: #5b5f5b;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
   --second-button-color-hover: #31982f;
@@ -1517,6 +1535,7 @@ section#task-modal {
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;
+  --moonlight-background-color: #5b5f5b;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
   --second-button-color-hover: #31982f;
@@ -1600,6 +1619,7 @@ section#task-modal {
 :root {
   --background-color: #b1eeb0;
   --secondary-background-color: #efefef;
+  --moonlight-background-color: #5b5f5b;
   --button-color: #6197d4;
   --button-color-hover: #4684be;
   --second-button-color-hover: #31982f;
