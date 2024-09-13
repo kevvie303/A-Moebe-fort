@@ -1259,8 +1259,8 @@ def play_music():
     else:
         publish.single("audio_control/play", message, hostname=broker_ip)
     return jsonify({"status": "success"})
-@app.route('/stop_music', methods=['POST'])
-def stop_music():
+@app.route('/stop_music/<room>', methods=['POST'])
+def stop_music(room):
     global squeak_job, bird_job
     if bird_job == True:
         scheduler.remove_job('birdjob')
@@ -1268,7 +1268,8 @@ def stop_music():
     if squeak_job == True:
         scheduler.remove_job('squeakjob')
         squeak_job = False
-    publish.single("audio_control/all/full_stop", "stop", hostname=broker_ip)
+    if room == "The Retriever":
+        publish.single("audio_control/all_retriever/full_stop", "stop", hostname=broker_ip)
     # Wipe the entire JSON file by overwriting it with an empty list
     file_path = os.path.join(current_dir, 'json', 'file_status.json')
     with open(file_path, 'w') as file:
@@ -1714,7 +1715,7 @@ def stop_timer(room):
         del timer_threads[room]
         reset_task_statuses(room)
         end_time = datetime.now()
-    stop_music()
+    stop_music(room)
     if start_time is not None:
         write_game_data(start_time, end_time)
     start_time = None

@@ -787,7 +787,7 @@ $(document).ready(function () {
   $("#stop-music-button").click(function () {
     $.ajax({
       type: "POST",
-      url: "/stop_music",
+      url: `/stop_music/${roomName}`,
       success: function (response) {
         console.log(response);
       },
@@ -1422,53 +1422,62 @@ $(document).ready(function () {
 
     // Use the playerType variable in your preparation logic
     $.ajax({
-      type: "POST",
-      url: `/prepare/${roomName}`,
-      data: { playerType: playerType},
-      success: function (response) {
-        console.log("Received data:", response);
-        prepareStatus.html(
-          "Prepared! Druk op start game om het spel te starten."
-        );
-
-        // Debugging: Output the response.message to the console
-        console.log(response.message);
-
-        resultsSection.empty();
-        // Loop through the JSON data and create a neat display
-        for (var device in response.message) {
-          var deviceStatus = response.message[device];
-          var deviceDiv = $("<div>").addClass("device-status");
-          var header = $("<h3>").text(device);
-          deviceDiv.append(header);
-
-          var statusContainer = $("<div>").addClass("prepare-status-container");
-
-          for (var script in deviceStatus) {
-            var status = deviceStatus[script];
-            var statusText = status ? "active" : "inactive";
-            console.log(statusText);
-            var scriptDiv = $("<div>").addClass("script-status");
-
-            // Dynamically set the color based on the service status
-            var colorClass = status ? "text-green" : "text-red";
-            scriptDiv.html(
-              `<p class="${colorClass}">${script}: ${statusText}</p>`
+        type: "POST",
+        url: `/prepare/${roomName}`,
+        data: { playerType: playerType },
+        success: function (response) {
+            console.log("Received data:", response);
+            prepareStatus.html(
+                "Prepared! Druk op start game om het spel te starten."
             );
-            //console.log(script);
-            //console.log(statusText);
-            statusContainer.append(scriptDiv);
-          }
 
-          deviceDiv.append(statusContainer);
-          resultsSection.append(deviceDiv);
-        }
-      },
-      error: function () {
-        prepareStatus.html("Error occurred during preparation.");
-      },
+            // Debugging: Output the response.message to the console
+            console.log(response.message);
+
+            resultsSection.empty();
+
+            // Loop through the JSON data and create a neat display
+            for (var device in response.message) {
+                // Filter devices based on the room prefix
+                if (roomName === "The Retriever" && device.startsWith("ret")) {
+                    // Only display devices starting with "ret" for The Retriever
+                    displayDeviceStatus(device, response.message[device]);
+                } else if (roomName !== "The Retriever" && device.startsWith("mlv")) {
+                    // Only display devices starting with "mlv" for other rooms
+                    displayDeviceStatus(device, response.message[device]);
+                }
+            }
+        },
+        error: function () {
+            prepareStatus.html("Error occurred during preparation.");
+        },
     });
-  }
+}
+
+function displayDeviceStatus(device, deviceStatus) {
+    var deviceDiv = $("<div>").addClass("device-status");
+    var header = $("<h3>").text(device);
+    deviceDiv.append(header);
+
+    var statusContainer = $("<div>").addClass("prepare-status-container");
+
+    for (var script in deviceStatus) {
+        var status = deviceStatus[script];
+        var statusText = status ? "active" : "inactive";
+        console.log(statusText);
+        var scriptDiv = $("<div>").addClass("script-status");
+
+        // Dynamically set the color based on the service status
+        var colorClass = status ? "text-green" : "text-red";
+        scriptDiv.html(
+            `<p class="${colorClass}">${script}: ${statusText}</p>`
+        );
+        statusContainer.append(scriptDiv);
+    }
+
+    deviceDiv.append(statusContainer);
+    resultsSection.append(deviceDiv);
+}
   function updateRetrieverStatus() {
     console.log("hi");
     $.get(`/get_game_status/${roomName}`, function (data) {
@@ -1848,7 +1857,6 @@ $(document).ready(function () {
       raspberryPiButton.hide();
       sensorButton.hide();
       sdRenewalButton.hide();
-      statusSection.hide();
       taskButtonContainer.hide();
       resetList.show();
     }
