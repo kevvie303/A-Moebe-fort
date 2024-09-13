@@ -1338,12 +1338,12 @@ def reset_checklist(room):
 
         # Unlock all tasks
         if room == "The Retriever":
-            call_control_maglock_retriever("ball-drop-lock", "unlocked")
-            call_control_maglock_retriever("lab-hatch-lock", "unlocked")
-            call_control_maglock_retriever("shed-door-lock", "unlocked")
-            call_control_maglock_retriever("sliding-door-lock", "unlocked")
-            call_control_maglock_retriever("doghouse-lock", "unlocked")
-            call_control_maglock_retriever("entrance-door-lock", "unlocked")
+            call_control_maglock_retriever("ball-drop-lock", "locked")
+            call_control_maglock_retriever("lab-hatch-lock", "locked")
+            call_control_maglock_retriever("shed-door-lock", "locked")
+            call_control_maglock_retriever("sliding-door-lock", "locked")
+            call_control_maglock_retriever("doghouse-lock", "locked")
+            call_control_maglock_retriever("entrance-door-lock", "locked")
 
         # Emit checklist update event
         socketio.emit('checklist_update', "message", room="all_clients")
