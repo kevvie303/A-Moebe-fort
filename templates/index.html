@@ -8,6 +8,22 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fonts.css')}}">
     <link rel="icon" href="static/img/logo.png" type="image/png">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>    
+    <style>
+        .progress-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+            }
+
+            .progress-bar {
+            width: 20px;
+            height: 20px;
+            margin: 2px;
+            background-color: gray;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body class="landing-page">
 
@@ -34,6 +50,9 @@
                     <p id="{{ room|replace(' ', '-') }}-time-played" class="text-red">loading...</p>
                     <h3>{{ room|capitalize }}</h3>
                     <p id="{{ room|replace(' ', '-') }}-time-left" class="text-green">loading...</p>
+                </div>
+                <div class="progress-container" id="progress-{{ room|replace(' ', '-') }}">
+                    <!-- Progress bars will be added here by JavaScript -->
                 </div>
             </a>
         </article>
@@ -80,7 +99,22 @@
             remainingSeconds.toFixed(0)
         );
   }
-  
+  function updateTaskProgress(room) {
+          $.get(`/get_task_progress/${room}`, function (data) {
+            var totalTasks = data.total;
+            var solvedTasks = data.solved;
+            console.log(totalTasks, solvedTasks);
+            var progressContainer = $("#progress-" + room.replace(/\s+/g, '-'));
+            progressContainer.empty(); // Clear existing bars
+      
+            for (var i = 0; i < totalTasks; i++) {
+              var bar = $('<div>').addClass('progress-bar').css('background-color', i < solvedTasks ? 'green' : 'gray');
+              progressContainer.append(bar);
+            }
+          });
+        }
+        updateTaskProgress("{{ room }}");
+        setInterval(() => updateTaskProgress("{{ room }}"), 1000);
     </script>
     {% endfor %}
 </body>

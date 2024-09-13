@@ -832,7 +832,7 @@ def solve_task(task_name, room):
                     code4 = False
                     code5 = False
                 else:
-                    fade_in_thread = threading.Thread(target=fade_music_in)
+                    fade_in_thread = threading.Thread(target=fade_music_in(room))
                     fade_in_thread.start()
         if code1 and code2 and code3 and code4 and code5:
             print("executed")
@@ -1245,7 +1245,24 @@ def get_tasks(room):
         return jsonify(tasks)
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify([])
+@app.route('/get_task_progress/<room>', methods=['GET'])
+def get_task_progress(room):
+    file_path = os.path.join('json', room, 'tasks.json')
     
+    try:
+        with open(file_path, 'r') as file:
+            tasks = json.load(file)
+        
+        total_tasks = len(tasks)
+        solved_tasks = sum(1 for task in tasks if task['state'] == 'solved')
+        
+        progress = {
+            'total': total_tasks,
+            'solved': solved_tasks
+        }
+        return jsonify(progress)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return jsonify({'total': 0, 'solved': 0})
 @app.route('/play_music', methods=['POST'])
 def play_music():
     data = request.json
