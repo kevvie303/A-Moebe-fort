@@ -591,7 +591,7 @@ def fade_music_out(file, room):
         else:
             time.sleep(0.05)
     if file != "Lounge":
-        publish.single("audio_control/all/play", "prehint.ogg", hostname=broker_ip)
+        publish.single("audio_control/all_retriever/play", "prehint.ogg", hostname=broker_ip)
     return "Volume faded successfully"
 @app.route('/fade_music_out/<room>', methods=['POST'])
 def fade_music_out_hint(room):
@@ -607,7 +607,7 @@ def fade_music_out_hint(room):
         # Wait for a short duration between volume changes
         time.sleep(0.05)  # Adjust the sleep duration as needed
     time.sleep(1)
-    publish.single("audio_control/all/play", "prehint.ogg", hostname=broker_ip)
+    publish.single("audio_control/all_retriever/play", "prehint.ogg", hostname=broker_ip)
     return "Volume faded successfully"
 @app.route('/fade_music_in/<room>', methods=['POST'])
 def fade_music_in(room):
@@ -788,7 +788,7 @@ def solve_task(task_name, room):
                 scheduler.remove_job('birdjob')
                 bird_job = False
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/all/play", "correct-effect.ogg", hostname=broker_ip)
+                publish.single("audio_control/all_retriever/play", "correct-effect.ogg", hostname=broker_ip)
                 time.sleep(1)
                 code5 = True
                 print("3")
