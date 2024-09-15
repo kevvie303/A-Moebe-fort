@@ -752,8 +752,13 @@ $(document).ready(function () {
       // Hide the "Wake" button
       $("#wake-button").hide();
       $(".important-controls").show();
-      // Update the snooze status in the navigation
-      $("#nav-snooze-status").text("Room Awake");
+      $("#nav-snooze-status").text("");
+      if (cachedUserName === "Brian" || cachedUserName === "brian") {
+        $("#reset-list-container").hide();
+      }
+      else {
+        $("#reset-list-container").show();
+      }
     });
   });
   // Check the retriever status from the JSON file
