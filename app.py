@@ -1088,15 +1088,6 @@ def reset_puzzles(room):
         code4 = False
         code5 = False
         publish.single("actuator/control/ret-laser", "0", hostname=broker_ip)
-        with open(f'json/{room}/sensor_data.json', 'r') as file:
-            devices = json.load(file)
-    # Iterate over devices
-        for device in devices:
-            if device["type"] in ["maglock"]:
-                if device["name"] == "laser-1" or device["name"] == "laser-2":
-                    call_control_maglock_retriever(device["name"], "unlocked")
-                else:
-                    call_control_maglock_retriever(device["name"], "locked")
     return "puzzles reset"
 
 # Function to read the retriever status from the JSON file
