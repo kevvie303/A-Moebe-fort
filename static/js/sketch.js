@@ -658,6 +658,7 @@ $(document).ready(function () {
     $("#nav-snooze-status").text("Room Snoozed");
     // Show the "Wake" button
     $("#wake-button").show();
+    $("#wake-button").css("align-self", "center");
     $(".important-controls, #reset-list-container").hide();
   });
   $("#speed-up-button").click(function () {
