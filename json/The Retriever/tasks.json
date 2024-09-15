@@ -22,7 +22,10 @@
     {
         "task": "fence-decrypt",
         "description": "players have decrypted the code in the doghouse using the fence's alphabet. Code: 5038",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "dog-house"
+        ]
     },
     {
         "task": "flowers",
@@ -32,46 +35,81 @@
     {
         "task": "woef-woef",
         "description": "woef woef woef woef",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "tree-lights",
+            "number-feel",
+            "kite-count",
+            "fence-decrypt",
+            "flowers"
+        ]
     },
     {
         "task": "max-vacation",
         "description": "Players have spotted and ordered the vacations in the right order code (6123)",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "woef-woef"
+        ]
     },
     {
         "task": "paw-maze",
         "description": "players have solved the maze",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "woef-woef"
+        ]
     },
     {
         "task": "squeekuence",
         "description": "players have used the squeeky-toy in the correct rhythm",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "max-vacation",
+            "paw-maze"
+        ]
     },
     {
         "task": "laser-game",
         "description": "Players have shined the laser twice in the LDR.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "squeekuence"
+        ]
     },
     {
         "task": "glow-wire",
         "description": "players have solved the wires code (3456)",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "squeekuence"
+        ]
     },
     {
         "task": "mirror-see",
         "description": "players have seen the numbers through the mirrors code (794)",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "squeekuence"
+        ]
     },
     {
         "task": "bone-slide",
         "description": "players have gotten the cyllinders out of the dogtoy. (code 216)",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "squeekuence"
+        ]
     },
     {
         "task": "squid-game",
         "description": "players have moved the 4 squidge to the center of the track. ",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "bone-slide",
+            "mirror-see",
+            "laser-game",
+            "glow-wire"
+        ]
     }
 ]

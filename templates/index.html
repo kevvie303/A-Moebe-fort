@@ -23,6 +23,10 @@
             background-color: gray;
             border-radius: 4px;
         }
+        .game-status {
+        font-style: italic;
+        color: #555;  /* Optional: add some color to distinguish it */
+        }
     </style>
 </head>
 <body class="landing-page">
@@ -54,6 +58,7 @@
                 <div class="progress-container" id="progress-{{ room|replace(' ', '-') }}">
                     <!-- Progress bars will be added here by JavaScript -->
                 </div>
+                <p id="{{ room|replace(' ', '-') }}-status" class="game-status">loading...</p>
             </a>
         </article>
         {% endfor %}
@@ -109,20 +114,40 @@
         );
   }
   function updateTaskProgress(room) {
-          $.get(`/get_task_progress/${room}`, function (data) {
-            var totalTasks = data.total;
-            var solvedTasks = data.solved;
-            var progressContainer = $("#progress-" + room.replace(/\s+/g, '-'));
-            progressContainer.empty(); // Clear existing bars
-      
-            for (var i = 0; i < totalTasks; i++) {
-              var bar = $('<div>').addClass('progress-bar').css('background-color', i < solvedTasks ? 'green' : 'gray');
-              progressContainer.append(bar);
-            }
-          });
+    $.get(`/get_task_progress/${room}`, function (data) {
+      var tasks = data.tasks;
+      var progressContainer = $("#progress-" + room.replace(/\s+/g, '-'));
+      progressContainer.empty(); // Clear existing bars
+
+      // Loop through the tasks and create a progress bar for each task
+      tasks.forEach(function(task) {
+        var bar = $('<div>').addClass('progress-bar');
+        
+        // If the task is solved, make it green, otherwise make it gray
+        if (task.state === 'solved') {
+          bar.css('background-color', 'green');
+        } else {
+          bar.css('background-color', 'gray');
         }
-        updateTaskProgress("{{ room }}");
-        setInterval(() => updateTaskProgress("{{ room }}"), 1000);
+
+        progressContainer.append(bar);
+      });
+    });
+  }
+
+  // Call the task progress update function for each room and set an interval
+  updateTaskProgress("{{ room }}");
+  setInterval(() => updateTaskProgress("{{ room }}"), 1000);
+        
+        function updateGameStatus(room) {
+    $.get(`/get_game_status/${room}`, function (data) {
+      var status = data.status;
+      var roomId = room.replace(/\s+/g, '-');
+      $("#" + roomId + "-status").text(status).css('font-style', 'italic');
+    });
+  }
+  updateGameStatus("{{ room }}");
+  setInterval(() => updateGameStatus("{{ room }}"), 1000);
     </script>
     {% endfor %}
 </body>

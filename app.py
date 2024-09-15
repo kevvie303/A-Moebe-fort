@@ -653,8 +653,24 @@ def get_task_status(room):
     if os.path.exists(file_path):
         try:
             with open(file_path, 'r') as file:
-                file_data = json.load(file)
-            return jsonify(file_data)
+                tasks = json.load(file)
+
+            # Map task states for easy lookup
+            task_states = {task['task']: task['state'] for task in tasks}
+
+            for task in tasks:
+                # Check if task has dependencies
+                if 'depends_on' in task:
+                    dependencies = task['depends_on']
+                    # Check if all dependencies are solved
+                    if all(task_states.get(dep) in ['solved', 'skipped'] for dep in dependencies):
+                        task['blocked'] = False
+                    else:
+                        task['blocked'] = True
+                else:
+                    task['blocked'] = False
+
+            return jsonify(tasks)
         except (FileNotFoundError, json.JSONDecodeError):
             return jsonify([])
     else:
@@ -958,7 +974,7 @@ def stop_sequence():
     send_mqtt_message(stop_message)
     return jsonify({'message': 'Sequence stopped and DMX values reset to 0.', 'status': 'success'})
 @app.route('/skip_task/<task_name>/<room>', methods=['POST'])
-def skip_task(task_name):
+def skip_task(task_name, room):
     global bird_job, code1, code2, code3, code4, code5, sequence, codesCorrect
     file_path = os.path.join('json', room, 'tasks.json')
 
@@ -1244,16 +1260,12 @@ def get_task_progress(room):
         with open(file_path, 'r') as file:
             tasks = json.load(file)
         
-        total_tasks = len(tasks)
-        solved_tasks = sum(1 for task in tasks if task['state'] == 'solved')
-        
         progress = {
-            'total': total_tasks,
-            'solved': solved_tasks
+            'tasks': tasks  # Send the full list of tasks with their states
         }
         return jsonify(progress)
     except (FileNotFoundError, json.JSONDecodeError):
-        return jsonify({'total': 0, 'solved': 0})
+        return jsonify({'tasks': []})
 @app.route('/play_music', methods=['POST'])
 def play_music():
     data = request.json

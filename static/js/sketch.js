@@ -892,8 +892,16 @@ async function fetchTasks() {
     tasks.forEach((task) => {
       // Create a p element for displaying tasks and states
       const taskStatus = document.createElement("p");
+      taskStatus.style.borderBottom = "1px solid lightgray";
       taskStatus.id = task.task;
-      taskStatus.innerHTML = `${task.task}: <strong class="pending">${task.state}</strong>`;
+      taskStatus.innerHTML = `${task.task}: <strong class="${task.state}">${task.state}</strong>`;
+
+      // Apply styles for blocked tasks
+      if (task.blocked) {
+        taskStatus.style.color = "gray";
+        taskStatus.style.fontStyle = "italic";
+        taskStatus.classList.add("blocked-task");
+      }
 
       // Attach a click event to the p element
       taskStatus.addEventListener("click", () => {
@@ -906,6 +914,7 @@ async function fetchTasks() {
     console.error("Error fetching tasks:", error);
   }
 }
+
 
 function openTaskPopup(task) {
   const taskPopup = document.querySelector(".tasks-hidden");
