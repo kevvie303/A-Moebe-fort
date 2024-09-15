@@ -574,7 +574,7 @@ $(document).ready(function () {
         );
         $("#krijgsgevangenis-link .preview #time-left").text(formattedTimeLeft);
       });
-      $.get("/initial_time", function (data) {
+      $.get(`/initial_time/${roomName}`, function (data) {
         initialTime = parseInt(data);
       });
     }
@@ -614,13 +614,13 @@ $(document).ready(function () {
     $("#pause-button").show();
   });
   $("#add-minute-button").click(function () {
-    $.post("/add_minute", function (data) {
+    $.post(`/add_minute/${roomName}`, function (data) {
       console.log(data);
       initialTime += 60;
     }).done(function () {});
   });
   $("#remove-minute-button").click(function () {
-    $.post("/remove_minute", function (data) {
+    $.post(`/remove_minute/${roomName}`, function (data) {
       console.log(data);
       initialTime -= 60;
     }).done(function () {});

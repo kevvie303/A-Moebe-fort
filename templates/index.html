@@ -74,19 +74,28 @@
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     {% for room in escape_rooms %}
     <script>
-      function updateTimer() {
-        $.get(`/timer/value/{{ room }}`, function (data) {
-          var timeLeft = parseInt(data);
-          var timePlayed = 3600 - timeLeft;
+    function updateTimer() {
+    var initialTime = 3600;
+    // First, get the initial time and update initialTime before proceeding
+    $.get(`/initial_time/{{ room }}`, function (initialTimeData) {
+        initialTime = parseInt(initialTimeData); // Update initialTime
+        console.log(initialTime);
+        // Now that initialTime is updated, we can get the current timer value
+        $.get(`/timer/value/{{ room }}`, function (timerData) {
+            var timeLeft = parseInt(timerData);
+            var timePlayed = initialTime - timeLeft;
 
-          var formattedTimeLeft = formatTime(timeLeft);
-          var formattedTimePlayed = formatTime(timePlayed);
-          var roomId = "{{ room }}".replace(/\s+/g, '-'); // Replace spaces with hyphens
+            var formattedTimeLeft = formatTime(timeLeft);
+            var formattedTimePlayed = formatTime(timePlayed);
+
+            var roomId = "{{ room }}".replace(/\s+/g, '-'); // Replace spaces with hyphens
+
+            // Update the time on the page
             $("#" + roomId + "-time-left").text(formattedTimeLeft);
             $("#" + roomId + "-time-played").text(formattedTimePlayed);
-
         });
-      }
+    });
+}
       // Call the timer update function for {{ room }} initially
       setInterval(updateTimer, 1000);
       function formatTime(seconds) {
@@ -103,7 +112,6 @@
           $.get(`/get_task_progress/${room}`, function (data) {
             var totalTasks = data.total;
             var solvedTasks = data.solved;
-            console.log(totalTasks, solvedTasks);
             var progressContainer = $("#progress-" + room.replace(/\s+/g, '-'));
             progressContainer.empty(); // Clear existing bars
       

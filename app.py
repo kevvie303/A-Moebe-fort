@@ -187,7 +187,7 @@ def connect_device():
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 #broker_ip = "192.168.18.66"
 broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.27"
+#broker_ip = "192.168.1.50"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -1640,35 +1640,46 @@ def write_timer_value(value, room):
 def update_timer(room, speed):
     global timer_values, timer_running
     timer_value = timer_values[room]
-
-    while timer_value > 0 and timer_running[room]:
-        timer_value = max(timer_value - speed, 0)
-        timer_values[room] = timer_value
-        write_timer_value(timer_value, room)
+    while timer_values[room] > 0 and timer_running[room]:
+        timer_values[room] = max(timer_values[room] - speed, 0)
+        #timer_values[room] = timer_value
+        write_timer_value(timer_values[room], room)
         socketio.emit('timer_update', room="all_clients")
         time.sleep(1)
-new_init_time = 3600
-@app.route('/add_minute', methods=['POST'])
-def add_minute():
-    global timer_value, new_init_time
-    timer_value += 60
-    new_init_time += 60
-    current_time = read_timer_value()
+new_init_time_retriever = 3600
+new_init_time_moon = 3600
+@app.route('/add_minute/<room>', methods=['POST'])
+def add_minute(room):
+    global new_init_time, timer_values, new_init_time_retriever, new_init_time_moon
+    timer_values[room] += 60
+    if room == "The Retriever":
+        new_init_time_retriever += 60
+    else:
+        new_init_time_moon += 60
+    current_time = read_timer_value(room)
     new_time = current_time + 60
-    write_timer_value(new_time)
+    write_timer_value(new_time, room)
     return "added"
-@app.route('/remove_minute', methods=['POST'])
-def remove_minute():
-    global timer_value, new_init_time
-    timer_value -= 60
-    new_init_time -= 60
-    current_time = read_timer_value()
+@app.route('/remove_minute/<room>', methods=['POST'])
+def remove_minute(room):
+    global new_init_time, timer_values, new_init_time_retriever, new_init_time_moon
+    timer_values[room] -= 60
+    if room == "The Retriever":
+        new_init_time_retriever -= 60
+    else:
+        new_init_time_moon -= 60
+    current_time = read_timer_value(room)
     new_time = current_time - 60
-    write_timer_value(new_time)
+    write_timer_value(new_time, room)
     return "removed"
-@app.route('/initial_time', methods=['GET'])
-def get_initial_time():
-    return str(new_init_time)
+@app.route('/initial_time/<room>', methods=['GET'])
+def get_initial_time(room):
+    global new_init_time_retriever, new_init_time_moon
+    print(room)
+    if room == "The Retriever":
+        return str(new_init_time_retriever)
+    elif room == "Moonlight Village":
+        return str(new_init_time_moon)
 @app.route('/game_data', methods=['GET'])
 def get_game_data():
     file_path = 'json/game_data.json'
