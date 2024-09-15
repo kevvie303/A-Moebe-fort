@@ -1732,14 +1732,15 @@ def start_timer(room):
 
         # Your existing code to start the timer
         update_game_status('playing', room)
-        if bird_job == False:
+        if bird_job == False and room == "The Retriever":
             scheduler.add_job(start_bird_sounds, 'interval', minutes=1, id='birdjob')
             bird_job = True
         start_time = datetime.now()
-        fade_music_out("Lounge", room)
-        time.sleep(1)
-        publish.single("audio_control/ret-top/play", "Ambience.ogg", hostname=broker_ip)
-        fade_music_in(room)
+        if room == "The Retriever":
+            fade_music_out("Lounge", room)
+            time.sleep(1)
+            publish.single("audio_control/ret-top/play", "Ambience.ogg", hostname=broker_ip)
+            fade_music_in(room)
         return 'Timer started'
 @app.route('/timer/stop/<room>', methods=['POST'])
 def stop_timer(room):
