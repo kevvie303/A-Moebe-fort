@@ -186,8 +186,8 @@ def connect_device():
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 #broker_ip = "192.168.18.66"
-broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.50"
+#broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
+broker_ip = "192.168.1.50"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -1623,7 +1623,9 @@ def handle_interrupt(signal, frame):
 TIMER_FILE = 'timer_value.txt'  # File to store the timer value
 timer_values = {}
 timer_thread = None  # Reference to the timer thread
-speed = 1
+speed = {}
+speed["The Retriever"] = 1
+speed["Moonlight Village"] = 1
 timer_running = {}
 timer_threads = {}
 def read_timer_value(room):
@@ -1637,11 +1639,11 @@ def write_timer_value(value, room):
     with open(f'json/{room}/{TIMER_FILE}', 'w') as file:
         file.write(str(value))
 
-def update_timer(room, speed):
-    global timer_values, timer_running
+def update_timer(room):
+    global timer_values, timer_running, speed
     timer_value = timer_values[room]
     while timer_values[room] > 0 and timer_running[room]:
-        timer_values[room] = max(timer_values[room] - speed, 0)
+        timer_values[room] = max(timer_values[room] - speed[room], 0)
         #timer_values[room] = timer_value
         write_timer_value(timer_values[room], room)
         socketio.emit('timer_update', room="all_clients")
@@ -1675,7 +1677,6 @@ def remove_minute(room):
 @app.route('/initial_time/<room>', methods=['GET'])
 def get_initial_time(room):
     global new_init_time_retriever, new_init_time_moon
-    print(room)
     if room == "The Retriever":
         return str(new_init_time_retriever)
     elif room == "Moonlight Village":
@@ -1721,10 +1722,11 @@ def start_timer(room):
 
     # Start a new timer thread for the room if not already running
     if room not in timer_threads or not timer_threads[room].is_alive():
+        speed[room] = 1  # Reset timer speed to 1
         timer_values[room] = 3600  # Reset timer value to 60 minutes
         write_timer_value(timer_values[room], room)
         timer_running[room] = True
-        timer_threads[room] = Thread(target=update_timer, args=(room, speed))
+        timer_threads[room] = Thread(target=update_timer, args=(room,))
         timer_threads[room].daemon = True
         timer_threads[room].start()
 
@@ -1750,6 +1752,7 @@ def stop_timer(room):
         del timer_threads[room]
         reset_task_statuses(room)
         reset_checklist(room)
+        reset_timer_speed(room)
         end_time = datetime.now()
     stop_music(room)
     if start_time is not None:
@@ -1758,27 +1761,27 @@ def stop_timer(room):
 
     return 'Timer stopped'
 
-@app.route('/timer/speed', methods=['POST'])
-def update_timer_speed():
+@app.route('/timer/speed/<room>', methods=['POST'])
+def update_timer_speed(room):
     global speed
     change = float(request.form['change'])  # Get the change in timer speed from the request
-    speed += change
+    speed[room] += change
     return 'Timer speed updated'
 
-@app.route('/timer/reset-speed', methods=['POST'])
-def reset_timer_speed():
+@app.route('/timer/reset-speed/<room>', methods=['POST'])
+def reset_timer_speed(room):
     global speed
-    speed = 1
+    speed[room] = 1
     return 'Timer speed reset'
 
 @app.route('/timer/value/<room>', methods=['GET'])
 def get_timer_value(room):
     return str(read_timer_value(room))
 
-@app.route('/timer/get-speed', methods=['GET'])
-def get_timer_speed():
+@app.route('/timer/get-speed/<room>', methods=['GET'])
+def get_timer_speed(room):
     global speed
-    return str(speed)
+    return str(speed[room])
 
 @app.route('/timer/pause/<room>', methods=['POST'])
 def pause_timer(room):

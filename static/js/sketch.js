@@ -596,7 +596,7 @@ $(document).ready(function () {
   }
 
   function getTimerSpeed() {
-    $.get("/timer/get-speed", function (data) {
+    $.get(`/timer/get-speed/${roomName}`, function (data) {
       speed = parseFloat(data);
       updateSpeedDisplay();
     });
@@ -661,7 +661,7 @@ $(document).ready(function () {
     $(".important-controls, #reset-list-container").hide();
   });
   $("#speed-up-button").click(function () {
-    $.post("/timer/speed", { change: 0.1 }, function (data) {
+    $.post(`/timer/speed/${roomName}`, { change: 0.1 }, function (data) {
       speed += 0.1;
       console.log(data);
       updateSpeedDisplay();
@@ -669,7 +669,7 @@ $(document).ready(function () {
   });
 
   $("#slow-down-button").click(function () {
-    $.post("/timer/speed", { change: -0.1 }, function (data) {
+    $.post(`/timer/speed/${roomName}`, { change: -0.1 }, function (data) {
       speed -= 0.1;
       console.log(data);
       updateSpeedDisplay();
@@ -677,7 +677,7 @@ $(document).ready(function () {
   });
 
   $("#reset-button").click(function () {
-    $.post("/timer/reset-speed", function (data) {
+    $.post(`/timer/reset-speed/${roomName}`, function (data) {
       console.log(data);
       speed = 1;
       updateSpeedDisplay();
