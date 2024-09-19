@@ -1,112 +1,112 @@
 [
     {
         "task": "Medicijnkast-open",
-        "description": "Spelers hebben het kastje boven de wastafel opengemaakt met de sleutel, hierin zit een ketting.",
+        "description": "Spelers kunnen het kastje boven de wastafel open maken met de sleutel die in de buis zit (magnetisch). In het kastje zit een munt en de tekst ‘We begonnen met tellen na dag 100’ plus 3 extra streepjes.",
         "state": "pending"
     },
     {
         "task": "Streepjes-tellen",
-        "description": "In de kamer verstopt staan allemaal streepjes, deze kunnen de mensen tellen. Hieruit komt de code 153 voor de kist. Hierin zit een pakje kaarten en de mal voor de posters.",
+        "description": "In de kamer zijn er allemaal streepjes verstopt. Als deze allemaal zijn geteld kom je uit op 70 streepjes. Als je hier dan de 103 vanuit de medicijnkast bij optelt kom je uit op 173. Dit is de code voor de kist. Hierin zit een pakje kaarten en 3 overalls.",
         "state": "pending"
     },
     {
         "task": "Poster",
-        "description": "Door de mal goed over de poster te leggen kunnen de spelers een bepaalde code aflezen, deze code opent de la.",
+        "description": "Door het filmticket over de poster Slim & Slimmer te leggen kan de tekst 531 lezen. Deze is te gebruiken op het nachtkastje. Hier zit de Pyramide in.",
         "state": "pending"
     },
     {
         "task": "3-objecten",
-        "description": "Als de 3 gevonden objecten op de juiste plek liggen, gaat de geheime deur open.",
+        "description": "Als de 3 gevonden objecten op de juiste plek liggen, gaat de geheime deur onder het bed open.",
         "state": "pending"
     },
     {
         "task": "Sleutel-vissen",
-        "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
+        "description": "Er kan een bos sleutels worden gevist door de tralies heen. Hiervoor moet de buis onder het bed gepakt worden en de haak uit de lade rechtsonder. Met de sleutels kunnen de handboeien (volwassen) en de lade rechts boven los.",
         "state": "pending"
     },
     {
         "task": "Medisch-dossier",
-        "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
+        "description": "Het medisch dossier is voor kinderen het tellen van de juiste potjes. Catosal:6 Novacam:10 Emdofluxin: 2. Dit vormt de code 6102. Volwassenen moeten het medisch dossier combineren met de poster aan de muur en de kalender. Dit vormt ook de code 6102.",
         "state": "pending"
     },
     {
         "task": "Stroomstoring",
-        "description": "Zodra mensen toegang hebben tot de knop voor de camera's, veroorzaken ze een 'stroomstoring', hierdoor vallen de camera's uit en gaat de bovenste la open, en de radio gaat aan.",
+        "description": "Door de knop in te drukken in de lade komt er een stroomstoring. Hierdoor gaan de camera’s uit, de radio aan en de linker onderste lade open.",
         "state": "pending"
     },
     {
         "task": "Radio",
-        "description": "De spelers hebben goed geluisterd naar de radio en een code onderschept, dit zorgt voor toegang tot de 3e ruimte.",
+        "description": "De radio blijft dezelfde code oproepen, 3479. Hiermee kan de deur worden geopend richting de gang.",
         "state": "pending"
     },
     {
         "task": "scan-mendez",
-        "description": "Het linkerhek gaat open zodra de pas gescand is.",
+        "description": "Het linker hek gaat open door het scannen van de pas van Mendez.",
         "state": "pending"
     },
     {
         "task": "Schoenkast",
-        "description": "De schoenen staan op de juiste plek, dit is 1 vd 2 benodigdheden voor de kast.",
+        "description": "Er zijn 3 paar kapotte schoenen te zien. Als deze worden weggehaald zie je er cijfers achter. 485. Hier kan 1 slot van de kluis mee geopend worden.",
         "state": "pending"
     },
     {
         "task": "kapstok-italie",
-        "description": "-",
+        "description": "Als de jassen worden opgehangen aan de juiste haakjes (Ijsland, Italie, Zuid Afrika) dan valt er een sleutel voor de kluis.",
         "state": "pending"
     },
     {
         "task": "kapstok-ijsland",
-        "description": "-",
+        "description": "Als de jassen worden opgehangen aan de juiste haakjes (Ijsland, Italie, Zuid Afrika) dan valt er een sleutel voor de kluis.",
         "state": "pending"
     },
     {
         "task": "kapstok-zuidafrika",
-        "description": "-",
+        "description": "Als de jassen worden opgehangen aan de juiste haakjes (Ijsland, Italie, Zuid Afrika) dan valt er een sleutel voor de kluis.",
         "state": "pending"
     },
     {
         "task": "kapstok-allemaal",
-        "description": "-",
+        "description": "Als de jassen worden opgehangen aan de juiste haakjes (Ijsland, Italie, Zuid Afrika) dan valt er een sleutel voor de kluis.",
         "state": "pending"
     },
     {
         "task": "scan-rosenthal",
-        "description": "-",
+        "description": "Met de pas uit de kluis kan het rechter hek geopend worden.",
         "state": "pending"
     },
     {
         "task": "stoelvoel",
-        "description": "-",
+        "description": "In de poepdozen zijn 2 plaatjes te vinden dat je onder een stoel moet voelen. Dit moet vanaf het stukje tape en dan met de klok mee. Hier voel je 2,4,1,2 gaatjes onder de poten. Hiermee kan een poepdoos geopend worden waar een granaat in ligt.",
         "state": "pending"
     },
     {
         "task": "alarm-knop",
-        "description": "-",
+        "description": "Bij binnenkomst van de poepdozen hoor je iemand in de wc neuriën en even later zingen. Dit is morsecode en moet vertaald worden bij het morseblad in de garderobe. Hier is het woord ‘VRIJ’ uit te halen.",
         "state": "pending"
     },
     {
         "task": "granaat-soratov",
-        "description": "-",
+        "description": "De granaat moet op de juiste plek in de achtergang gezet worden. Saratov moet naar het westen gericht zijn.",
         "state": "pending"
     },
     {
         "task": "granaat-khabarovsk",
-        "description": "-",
+        "description": "De granaat moet op de juiste plek in de achtergang gezet worden. Khabarovsk moet naar het noorden gericht zijn.",
         "state": "pending"
     },
     {
         "task": "granaat-tomsk",
-        "description": "-",
+        "description": "De granaat moet op de juiste plek in de achtergang gezet worden. Tomsk moet naar het oosten gericht zijn.",
         "state": "pending"
     },
     {
         "task": "granaat-allemaal",
-        "description": "-",
+        "description": "De granaten die gevonden zijn moeten op de juiste plek gezet worden in de achtergang. Kijk naar de plaatsnaam en welke kant de stip van de plaatsnaam is. Saratov -> West / Khabarovsk -> Noord / Tomsk -> Oost. Als dit gebeurd is de eindcode te horen.",
         "state": "pending"
     },
     {
         "task": "einddeur-open",
-        "description": "Code Sona",
+        "description": "De eindcode is duidelijk te horen. SONA dient te worden ingevuld op de einddeur.",
         "state": "pending"
     }
 ]
