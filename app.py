@@ -915,7 +915,7 @@ def apply_preset():
             presets = json.load(f)
         preset = presets.get(preset_name)
         if preset:
-            send_dmx_command(preset['pan'], preset['tilt'], preset['colour'], preset['gobo'])
+            send_dmx_command(preset['pan'], preset['tilt'], preset['colour'], preset['gobo'], preset['smoke'])
             return jsonify({'status': 'success', 'message': f'Applied preset: {preset_name}'})
         else:
             return jsonify({'status': 'error', 'message': 'Preset not found.'})

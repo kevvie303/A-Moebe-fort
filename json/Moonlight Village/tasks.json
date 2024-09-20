@@ -40,13 +40,8 @@
         "state": "pending"
     },
     {
-        "task": "switch-pull",
-        "description": "Players have pulled the switch, this opens the door to the right of the cabin.",
-        "state": "pending"
-    },
-    {
-        "task": "tavern-thingy",
-        "description": "Players have solved something above the tavern, opens gravestone?",
+        "task": "climb-door-lamp",
+        "description": "send climb-door-lamp-4 to send the light to the door, solve this task when the players have opened it.",
         "state": "pending"
     },
     {

@@ -3,60 +3,35 @@
         "pan": 200,
         "tilt": 50,
         "colour": 125,
-        "gobo": 176
+        "gobo": 176,
+        "smoke":0
     },
-    "preset2": {
+    "moon-puzzle": {
         "pan": 100,
-        "tilt": 75,
-        "colour": 50,
-        "gobo": 200
-    },
-    "preset3": {
-        "pan": 150,
-        "tilt": 25,
-        "colour": 200,
-        "gobo": 100
-    },
-    "preset4": {
-        "pan": 50,
-        "tilt": 100,
-        "colour": 175,
-        "gobo": 50
-    },
-    "preset5": {
-        "pan": 0,
-        "tilt": 0,
-        "colour": 255,
-        "gobo": 255
-    },
-    "preset6": {
-        "pan": 255,
-        "tilt": 255,
+        "tilt": 180,
         "colour": 0,
-        "gobo": 0
+        "gobo": 0,
+        "smoke":0
     },
-    "preset7": {
-        "pan": 127,
-        "tilt": 127,
-        "colour": 127,
-        "gobo": 127
+    "plant-place": {
+        "pan": 155,
+        "tilt": 40,
+        "colour": 0,
+        "gobo": 0,
+        "smoke":0
     },
-    "preset8": {
-        "pan": 75,
-        "tilt": 150,
-        "colour": 100,
-        "gobo": 50
+    "knocker-solve": {
+        "pan": 160,
+        "tilt": 5,
+        "colour": 0,
+        "gobo": 0,
+        "smoke":0
     },
-    "preset9": {
-        "pan": 200,
-        "tilt": 200,
-        "colour": 50,
-        "gobo": 200
-    },
-    "preset10": {
-        "pan": 180,
-        "tilt": 90,
-        "colour": 90,
-        "gobo": 180
+    "climb-door-lamp": {
+        "pan": 190,
+        "tilt": 10,
+        "colour": 0,
+        "gobo": 0,
+        "smoke":0
     }
 }
