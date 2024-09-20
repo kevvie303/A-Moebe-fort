@@ -235,6 +235,9 @@ def handle_rules(sensor_name, sensor_state, room):
             task_state = check_task_state("moon-place", room)
             if task_state == "pending":
                 solve_task("moon-place", room)
+        if sensor_name == "light_count":
+            if sensor_state == "5":
+                solve_task("lights-on", room)
         if sensor_name == "keypad":
             sensor_state_int = int(sensor_state)
             print(sensor_state)
@@ -694,7 +697,10 @@ def solve_task(task_name, room):
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
         socketio.emit('task_update', room="all_clients")
-        if task_name == "moon-place":
+        if task_name == "lights-on":
+            if game_status == {'status': 'playing'}:
+                publish.single("audio_control/mlv-central/play", "bg-central.ogg", hostname=broker_ip)
+        elif task_name == "moon-place":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("astronomy-door-lock", "locked")
         elif task_name == "paw-maze":

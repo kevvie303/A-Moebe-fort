@@ -29,5 +29,13 @@
         "pi": "mlv-astronomy",
         "state": "Not Triggered",
         "connection_type": "NO"
+    },
+    {
+        "name": "light_count",
+        "type": "Sensor",
+        "pin": 17,
+        "pi": "mlv-corridors",
+        "state": "0",
+        "connection_type": "NO"
     }
 ]
