@@ -699,10 +699,12 @@ def solve_task(task_name, room):
         socketio.emit('task_update', room="all_clients")
         if task_name == "lights-on":
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/mlv-central/play", "bg-central.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/play", "bg_central.ogg", hostname=broker_ip)
+                publish.single("audio_control/raspberrypi/volume", "30 bg_corridor.ogg", hostname=broker_ip)
         elif task_name == "moon-place":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("astronomy-door-lock", "locked")
+                publish.single("audio_control/mlv-central/play", "right door.ogg", hostname=broker_ip)
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
