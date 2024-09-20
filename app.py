@@ -696,7 +696,7 @@ def solve_task(task_name, room):
         socketio.emit('task_update', room="all_clients")
         if task_name == "moon-place":
             if game_status == {'status': 'playing'}:
-                call_control_maglock_moonlight("astronomy-door-lock", "unlocked")
+                call_control_maglock_moonlight("astronomy-door-lock", "locked")
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
