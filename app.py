@@ -696,7 +696,7 @@ def solve_task(task_name, room):
         socketio.emit('task_update', room="all_clients")
         if task_name == "moon-place":
             if game_status == {'status': 'playing'}:
-                call_control_maglock_retriever("astronomy-door-lock", "locked")
+                call_control_maglock_retriever("astronomy-door-lock", "unlocked")
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
@@ -1297,6 +1297,8 @@ def stop_music(room):
         squeak_job = False
     if room == "The Retriever":
         publish.single("audio_control/all_retriever/full_stop", "stop", hostname=broker_ip)
+    else:
+        publish.single("audio_control/all_moonlight/stop", "stop", hostname=broker_ip)
     # Wipe the entire JSON file by overwriting it with an empty list
     file_path = os.path.join(current_dir, 'json', 'file_status.json')
     with open(file_path, 'w') as file:
