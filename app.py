@@ -231,6 +231,10 @@ def handle_rules(sensor_name, sensor_state, room):
                 call_control_maglock_retriever("green-led", "locked")
                 call_control_maglock_retriever("blue-led", "locked")
                 sequence = 0
+        elif check_rule("moon-puzzle", room):
+            task_state = check_task_state("moon-place", room)
+            if task_state == "pending":
+                solve_task("moon-place", room)
         if sensor_name == "keypad":
             sensor_state_int = int(sensor_state)
             print(sensor_state)
@@ -690,7 +694,10 @@ def solve_task(task_name, room):
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
         socketio.emit('task_update', room="all_clients")
-        if task_name == "paw-maze":
+        if task_name == "moon-place":
+            if game_status == {'status': 'playing'}:
+                call_control_maglock_retriever("astronomy-door-lock", "locked")
+        elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
                 squeak_job = True
@@ -1939,6 +1946,9 @@ def prepare_game(room):
     time.sleep(0.1)
     if room == "The Retriever":
         publish.single("audio_control/ret-top/play", "Lounge.ogg", hostname=broker_ip)
+    else:
+        publish.single("audio_control/raspberrypi/play", "bg_corridor.ogg", hostname=broker_ip)
+        publish.single("led/control/mlv-corridors", "unlocked", hostname=broker_ip)
     return jsonify({"message": converted_statuses}), 200
 if romy == False:
     turn_on_api()

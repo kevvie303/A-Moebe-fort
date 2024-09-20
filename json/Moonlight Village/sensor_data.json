@@ -11,7 +11,23 @@
         "type": "maglock",
         "pin": 20,
         "pi": "mlv-astronomy",
-        "state": "initial",
+        "state": "Unlocked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "herbalist-door-lock",
+        "type": "maglock",
+        "pin": 23,
+        "pi": "mlv-herbalist",
+        "state": "Unlocked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "moon-puzzle",
+        "type": "Sensor",
+        "pin": 17,
+        "pi": "mlv-astronomy",
+        "state": "Not Triggered",
         "connection_type": "NO"
     }
 ]
