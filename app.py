@@ -921,7 +921,7 @@ def apply_preset():
             return jsonify({'status': 'error', 'message': 'Preset not found.'})
     else:
         return jsonify({'status': 'error', 'message': 'Presets file not found.'})
-MQTT_TOPIC = 'actuator/control/dmx/raspberrypi'
+MQTT_TOPIC = 'actuator/control/dmx/mlv-central'
 def send_dmx_command(pan, tilt, colour, gobo, smoke):
     """Send DMX command via MQTT."""
     payload = {
