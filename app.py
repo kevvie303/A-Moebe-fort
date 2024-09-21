@@ -708,6 +708,9 @@ def solve_task(task_name, room):
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("astronomy-door-lock", "locked")
                 publish.single("audio_control/mlv-central/play", "right door.ogg", hostname=broker_ip)
+        elif task_name == "knocker-solve":
+            if game_status == {'status': 'playing'}:
+                call_control_maglock_moonlight("tavern-door-lock", "locked")
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
