@@ -45,6 +45,13 @@
         "pi": "mlv-tavern",
         "state": "unsolved",
         "connection_type": "NO"
+    },
+    {
+        "name": "tavern-door-lock",
+        "type": "maglock",
+        "pin": 23,
+        "pi": "mlv-tavern",
+        "state": "Unlocked",
+        "connection_type": "NO"
     }
-    
 ]
