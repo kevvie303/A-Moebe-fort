@@ -238,6 +238,9 @@ def handle_rules(sensor_name, sensor_state, room):
         if sensor_name == "light_count":
             if sensor_state == "5":
                 solve_task("lights-on", room)
+        if sensor_name == "knocker":
+            if sensor_state == "solved":
+                solve_task("knocker-solve", room)
         if sensor_name == "keypad":
             sensor_state_int = int(sensor_state)
             print(sensor_state)
