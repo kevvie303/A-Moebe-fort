@@ -37,5 +37,14 @@
         "pi": "mlv-corridors",
         "state": "0",
         "connection_type": "NO"
+    },
+    {
+        "name": "knocker",
+        "type": "Sensor",
+        "pin": 0,
+        "pi": "mlv-tavern",
+        "state": "unsolved",
+        "connection_type": "NO"
     }
+    
 ]
