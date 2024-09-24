@@ -242,7 +242,7 @@ $(document).ready(function () {
             : "unlocked";
           $.ajax({
             type: "POST",
-            url: "/control_maglock",
+            url: `/control_maglock/${roomName}`,
             data: { maglock: actuator.name, action: action },
             success: function (response) {
               console.log(response);

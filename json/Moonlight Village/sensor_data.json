@@ -1,12 +1,5 @@
 [
     {
-        "name": "keypad",
-        "type": "keypad",
-        "pin": "usb",
-        "pi": "ret-top",
-        "state": "2915"
-    },
-    {
         "name": "astronomy-door-lock",
         "type": "maglock",
         "pin": 20,
@@ -35,7 +28,7 @@
         "type": "Sensor",
         "pin": 17,
         "pi": "mlv-corridors",
-        "state": "0",
+        "state": "5",
         "connection_type": "NO"
     },
     {
@@ -52,6 +45,14 @@
         "pin": 23,
         "pi": "mlv-tavern",
         "state": "Unlocked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "lamp-post-2",
+        "type": "light",
+        "pin": 22,
+        "pi": "mlv-herbalist",
+        "state": "On",
         "connection_type": "NO"
     }
 ]
