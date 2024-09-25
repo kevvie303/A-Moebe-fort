@@ -194,7 +194,8 @@ sensor_states = {}
 # Callback function to process incoming MQTT messages
 
 pi_service_statuses = {}  # New dictionary to store service statuses for each Pi
-
+sequence = ['g', 'g', 'd', 'd', 'e', 'e', 'd', 'c', 'c', 'b', 'b', 'a', 'a', 'g']
+current_sequence = []
 def handle_rules(sensor_name, sensor_state, room):
     global sequence, code1, code2, code3, code4, code5, codesCorrect
     if get_game_status(room) == {'status': 'playing'}:
@@ -241,6 +242,68 @@ def handle_rules(sensor_name, sensor_state, room):
         if sensor_name == "knocker":
             if sensor_state == "solved":
                 solve_task("knocker-solve", room)
+        if sensor_name == "ast-button-9":
+            # Reset the sequence and play twinkle.ogg
+            current_sequence.clear()
+            publish.single("audio_control/mlv-astronomy/play", "twinkle.ogg", hostname=broker_ip)
+            call_control_maglock_moonlight("rem-lamp", "locked")
+            print("Sequence reset. Playing twinkle.ogg.")
+            return  # Exit early since this is a reset action
+
+        if sensor_name.startswith("ast-button"):
+            note = sensor_name.split("-")[-1]  # Extract the note (e.g., '1' corresponds to 'a')
+            note_map = {
+                "1": "a",
+                "2": "b",
+                "3": "c",
+                "4": "d",
+                "5": "e",
+                "6": "f",
+                "7": "g",
+                "8": "g-high"
+            }
+            if note in note_map:
+                note_played = note_map[note]
+                current_sequence.append(note_played)
+                print(f"Note played: {note_played}")
+                
+                # Check if the current sequence is correct so far
+                if current_sequence == sequence[:len(current_sequence)]:
+                    # Check if the full sequence is complete
+                    if len(current_sequence) == len(sequence):
+                        solve_task("planets", room)
+                        print("Planets task solved!")
+                        current_sequence.clear()  # Reset the sequence
+                    else:
+                        print(f"Correct so far: {current_sequence}")
+                else:
+                    current_sequence.clear()
+                    print("Incorrect sequence, resetting.")
+                    call_control_maglock_moonlight("rem-lamp", "locked")
+                    time.sleep(0.5)
+                    call_control_maglock_moonlight("rem-lamp", "unlocked")
+                    time.sleep(0.5)
+                    call_control_maglock_moonlight("rem-lamp", "locked")
+                    time.sleep(0.5)
+                    call_control_maglock_moonlight("rem-lamp", "unlocked")
+                    time.sleep(0.5)
+                    call_control_maglock_moonlight("rem-lamp", "locked")
+        if check_rule("ast-button-1", room):
+            publish.single("audio_control/mlv-astronomy/play", "a.ogg", hostname=broker_ip)
+        if check_rule("ast-button-2", room):
+            publish.single("audio_control/mlv-astronomy/play", "b.ogg", hostname=broker_ip)
+        if check_rule("ast-button-3", room):
+            publish.single("audio_control/mlv-astronomy/play", "c.ogg", hostname=broker_ip)
+        if check_rule("ast-button-4", room):
+            publish.single("audio_control/mlv-astronomy/play", "d.ogg", hostname=broker_ip)
+        if check_rule("ast-button-5", room):
+            publish.single("audio_control/mlv-astronomy/play", "e.ogg", hostname=broker_ip)
+        if check_rule("ast-button-6", room):
+            publish.single("audio_control/mlv-astronomy/play", "f.ogg", hostname=broker_ip)
+        if check_rule("ast-button-7", room):
+            publish.single("audio_control/mlv-astronomy/play", "g.ogg", hostname=broker_ip)
+        if check_rule("ast-button-8", room):
+            publish.single("audio_control/mlv-astronomy/play", "g-high.ogg", hostname=broker_ip)
         if sensor_name == "keypad":
             sensor_state_int = int(sensor_state)
             print(sensor_state)
@@ -711,6 +774,10 @@ def solve_task(task_name, room):
         elif task_name == "knocker-solve":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("tavern-door-lock", "locked")
+        elif task_name == "planets":
+            if game_status == {'status': 'playing'}:
+                call_control_maglock_moonlight("rem-lamp", "unlocked")
+                publish.single("audio_control/mlv-central/play", "planet-solve.ogg", hostname=broker_ip)
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
