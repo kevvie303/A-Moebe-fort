@@ -27,6 +27,6 @@
         "ip_address": "192.168.0.127",
         "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "mlv-astronomy",
-        "services": ["mqtt", "actuator"]
+        "services": ["mqtt", "actuator", "sound"]
     }
 ]
