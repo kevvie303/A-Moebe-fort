@@ -242,13 +242,12 @@ def handle_rules(sensor_name, sensor_state, room):
         if sensor_name == "knocker":
             if sensor_state == "solved":
                 solve_task("knocker-solve", room)
-        if sensor_name == "ast-button-9":
+        if check_rule("ast-button-9", room):
             # Reset the sequence and play twinkle.ogg
             current_sequence.clear()
             publish.single("audio_control/mlv-astronomy/play", "twinkle.ogg", hostname=broker_ip)
             call_control_maglock_moonlight("rem-lamp", "locked")
             print("Sequence reset. Playing twinkle.ogg.")
-            return
         if sensor_name.startswith("ast-button"):
             note = sensor_name.split("-")[-1]  # Extract the note (e.g., '1' corresponds to 'a')
             note_map = {
