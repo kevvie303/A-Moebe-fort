@@ -296,6 +296,7 @@ def handle_rules(sensor_name, sensor_state, room):
             elif note == "twinkle":
                 print("Reset button pressed. Sequence reset.")
                 current_sequence = []
+                call_control_maglock_moonlight("rem-lamp", "locked")
         if sensor_name == "keypad":
             sensor_state_int = int(sensor_state)
             print(sensor_state)
