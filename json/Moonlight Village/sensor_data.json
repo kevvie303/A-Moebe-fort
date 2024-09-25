@@ -28,7 +28,7 @@
         "type": "Sensor",
         "pin": 17,
         "pi": "mlv-corridors",
-        "state": "5",
+        "state": "0",
         "connection_type": "NO"
     },
     {
@@ -52,7 +52,95 @@
         "type": "light",
         "pin": 22,
         "pi": "mlv-herbalist",
+        "state": "Off",
+        "connection_type": "NO"
+    },
+    {
+        "name": "start-lamp",
+        "type": "light",
+        "pin": 19,
+        "pi": "mlv-astronomy",
         "state": "On",
         "connection_type": "NO"
+    },
+    {
+        "name": "rem-lamp",
+        "type": "light",
+        "pin": 16,
+        "pi": "mlv-astronomy",
+        "state": "On",
+        "connection_type": "NO"
+    },
+    {
+        "name": "ast-button-1",
+        "type": "button",
+        "pin": 6,
+        "pi": "mlv-astronomy",
+        "state": "Not Triggered",
+        "connection_type": "NC"
+    },
+    {
+        "name": "ast-button-2",
+        "type": "button",
+        "pin": 5,
+        "pi": "mlv-astronomy",
+        "state": "Not Triggered",
+        "connection_type": "NC"
+    },
+    {
+        "name": "ast-button-3",
+        "type": "button",
+        "pin": 13,
+        "pi": "mlv-astronomy",
+        "state": "Not Triggered",
+        "connection_type": "NC"
+    },
+    {
+        "name": "ast-button-4",
+        "type": "button",
+        "pin": 21,
+        "pi": "mlv-astronomy",
+        "state": "Not Triggered",
+        "connection_type": "NC"
+    },
+    {
+        "name": "ast-button-5",
+        "type": "button",
+        "pin": 27,
+        "pi": "mlv-astronomy",
+        "state": "Not Triggered",
+        "connection_type": "NC"
+    },
+    {
+        "name": "ast-button-6",
+        "type": "button",
+        "pin": 25,
+        "pi": "mlv-astronomy",
+        "state": "Not Triggered",
+        "connection_type": "NC"
+    },
+    {
+        "name": "ast-button-7",
+        "type": "button",
+        "pin": 24,
+        "pi": "mlv-astronomy",
+        "state": "Not Triggered",
+        "connection_type": "NC"
+    },
+    {
+        "name": "ast-button-8",
+        "type": "button",
+        "pin": 4,
+        "pi": "mlv-astronomy",
+        "state": "Not Triggered",
+        "connection_type": "NC"
+    },
+    {
+        "name": "ast-button-9",
+        "type": "button",
+        "pin": 18,
+        "pi": "mlv-astronomy",
+        "state": "Not Triggered",
+        "connection_type": "NC"
     }
 ]
