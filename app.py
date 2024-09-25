@@ -194,10 +194,10 @@ sensor_states = {}
 # Callback function to process incoming MQTT messages
 
 pi_service_statuses = {}  # New dictionary to store service statuses for each Pi
-sequence = ['g', 'g', 'd', 'd', 'e', 'e', 'd', 'c', 'c', 'b', 'b', 'a', 'a', 'g']
+twinkle_sequence = ["g", "g", "d", "d", "e", "e", "d", "c", "c", "b", "b", "a", "a", "g"]
 current_sequence = []
 def handle_rules(sensor_name, sensor_state, room):
-    global sequence, code1, code2, code3, code4, code5, codesCorrect
+    global sequence, code1, code2, code3, code4, code5, codesCorrect, current_sequence, twinkle_sequence
     if get_game_status(room) == {'status': 'playing'}:
         if check_rule("green_house_ir", room) and sequence == 0:
             task_state = check_task_state("tree-lights", room)
@@ -242,41 +242,46 @@ def handle_rules(sensor_name, sensor_state, room):
         if sensor_name == "knocker":
             if sensor_state == "solved":
                 solve_task("knocker-solve", room)
-        if check_rule("ast-button-9", room):
-            # Reset the sequence and play twinkle.ogg
-            current_sequence.clear()
-            publish.single("audio_control/mlv-astronomy/play", "twinkle.ogg", hostname=broker_ip)
-            call_control_maglock_moonlight("rem-lamp", "locked")
-            print("Sequence reset. Playing twinkle.ogg.")
-        if sensor_name.startswith("ast-button"):
-            note = sensor_name.split("-")[-1]  # Extract the note (e.g., '1' corresponds to 'a')
-            note_map = {
-                "1": "a",
-                "2": "b",
-                "3": "c",
-                "4": "d",
-                "5": "e",
-                "6": "f",
-                "7": "g",
-                "8": "g-high"
-            }
-            if note in note_map:
-                note_played = note_map[note]
-                current_sequence.append(note_played)
-                print(f"Note played: {note_played}")
-                
-                # Check if the current sequence is correct so far
-                if current_sequence == sequence[:len(current_sequence)]:
-                    # Check if the full sequence is complete
-                    if len(current_sequence) == len(sequence):
+
+    if get_game_status(room) == {'status': 'playing'}:
+        if sensor_name == "knocker":
+            if sensor_state == "solved":
+                solve_task("knocker-solve", room)
+
+        # Check for ast-button-1 through ast-button-9 and match to notes
+        button_note_map = {
+            "ast-button-1": "a",
+            "ast-button-2": "b",
+            "ast-button-3": "c",
+            "ast-button-4": "d",
+            "ast-button-5": "e",
+            "ast-button-6": "f",
+            "ast-button-7": "g",
+            "ast-button-8": "g-high",
+            "ast-button-9": "twinkle"  # Extra button for resetting
+        }
+
+        if sensor_name in button_note_map:
+            note = button_note_map[sensor_name]
+
+            # Play the corresponding audio for the note
+            publish.single(f"audio_control/mlv-astronomy/play", f"{note}.ogg", hostname=broker_ip)
+
+            # Check if the button press is part of the sequence
+            if note != "twinkle":  # Only check notes, not the reset button
+                current_sequence.append(note)
+
+                # Check if the sequence matches the beginning of twinkle_sequence
+                if current_sequence == twinkle_sequence[:len(current_sequence)]:
+                    if len(current_sequence) == len(twinkle_sequence):
+                        # Sequence complete, solve the task
                         solve_task("planets", room)
-                        print("Planets task solved!")
-                        current_sequence.clear()  # Reset the sequence
-                    else:
-                        print(f"Correct so far: {current_sequence}")
+                        print("Twinkle twinkle sequence completed! Solved planets.")
+                        current_sequence = []  # Reset the sequence after solving
                 else:
-                    current_sequence.clear()
-                    print("Incorrect sequence, resetting.")
+                    # Sequence is incorrect, reset
+                    print("Incorrect sequence. Resetting.")
+                    current_sequence = []
                     call_control_maglock_moonlight("rem-lamp", "locked")
                     time.sleep(0.5)
                     call_control_maglock_moonlight("rem-lamp", "unlocked")
@@ -286,22 +291,11 @@ def handle_rules(sensor_name, sensor_state, room):
                     call_control_maglock_moonlight("rem-lamp", "unlocked")
                     time.sleep(0.5)
                     call_control_maglock_moonlight("rem-lamp", "locked")
-        if check_rule("ast-button-1", room):
-            publish.single("audio_control/mlv-astronomy/play", "a.ogg", hostname=broker_ip)
-        if check_rule("ast-button-2", room):
-            publish.single("audio_control/mlv-astronomy/play", "b.ogg", hostname=broker_ip)
-        if check_rule("ast-button-3", room):
-            publish.single("audio_control/mlv-astronomy/play", "c.ogg", hostname=broker_ip)
-        if check_rule("ast-button-4", room):
-            publish.single("audio_control/mlv-astronomy/play", "d.ogg", hostname=broker_ip)
-        if check_rule("ast-button-5", room):
-            publish.single("audio_control/mlv-astronomy/play", "e.ogg", hostname=broker_ip)
-        if check_rule("ast-button-6", room):
-            publish.single("audio_control/mlv-astronomy/play", "f.ogg", hostname=broker_ip)
-        if check_rule("ast-button-7", room):
-            publish.single("audio_control/mlv-astronomy/play", "g.ogg", hostname=broker_ip)
-        if check_rule("ast-button-8", room):
-            publish.single("audio_control/mlv-astronomy/play", "g-high.ogg", hostname=broker_ip)
+
+            # If the twinkle button is pressed, reset the sequence
+            elif note == "twinkle":
+                print("Reset button pressed. Sequence reset.")
+                current_sequence = []
         if sensor_name == "keypad":
             sensor_state_int = int(sensor_state)
             print(sensor_state)
