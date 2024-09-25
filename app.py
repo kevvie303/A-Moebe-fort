@@ -261,7 +261,7 @@ def handle_rules(sensor_name, sensor_state, room):
             "ast-button-9": "twinkle"  # Extra button for resetting
         }
 
-        if sensor_name in button_note_map:
+        if check_rule(sensor_name) and sensor_name in button_note_map:
             note = button_note_map[sensor_name]
 
             # Play the corresponding audio for the note
