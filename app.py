@@ -248,22 +248,7 @@ def handle_rules(sensor_name, sensor_state, room):
             publish.single("audio_control/mlv-astronomy/play", "twinkle.ogg", hostname=broker_ip)
             call_control_maglock_moonlight("rem-lamp", "locked")
             print("Sequence reset. Playing twinkle.ogg.")
-        if check_rule("ast-button-1", room):
-            publish.single("audio_control/mlv-astronomy/play", "a.ogg", hostname=broker_ip)
-        if check_rule("ast-button-2", room):
-            publish.single("audio_control/mlv-astronomy/play", "b.ogg", hostname=broker_ip)
-        if check_rule("ast-button-3", room):
-            publish.single("audio_control/mlv-astronomy/play", "c.ogg", hostname=broker_ip)
-        if check_rule("ast-button-4", room):
-            publish.single("audio_control/mlv-astronomy/play", "d.ogg", hostname=broker_ip)
-        if check_rule("ast-button-5", room):
-            publish.single("audio_control/mlv-astronomy/play", "e.ogg", hostname=broker_ip)
-        if check_rule("ast-button-6", room):
-            publish.single("audio_control/mlv-astronomy/play", "f.ogg", hostname=broker_ip)
-        if check_rule("ast-button-7", room):
-            publish.single("audio_control/mlv-astronomy/play", "g.ogg", hostname=broker_ip)
-        if check_rule("ast-button-8", room):
-            publish.single("audio_control/mlv-astronomy/play", "g-high.ogg", hostname=broker_ip)
+            return
         if sensor_name.startswith("ast-button"):
             note = sensor_name.split("-")[-1]  # Extract the note (e.g., '1' corresponds to 'a')
             note_map = {
@@ -276,6 +261,22 @@ def handle_rules(sensor_name, sensor_state, room):
                 "7": "g",
                 "8": "g-high"
             }
+            if check_rule("ast-button-1", room):
+                publish.single("audio_control/mlv-astronomy/play", "a.ogg", hostname=broker_ip)
+            if check_rule("ast-button-2", room):
+                publish.single("audio_control/mlv-astronomy/play", "b.ogg", hostname=broker_ip)
+            if check_rule("ast-button-3", room):
+                publish.single("audio_control/mlv-astronomy/play", "c.ogg", hostname=broker_ip)
+            if check_rule("ast-button-4", room):
+                publish.single("audio_control/mlv-astronomy/play", "d.ogg", hostname=broker_ip)
+            if check_rule("ast-button-5", room):
+                publish.single("audio_control/mlv-astronomy/play", "e.ogg", hostname=broker_ip)
+            if check_rule("ast-button-6", room):
+                publish.single("audio_control/mlv-astronomy/play", "f.ogg", hostname=broker_ip)
+            if check_rule("ast-button-7", room):
+                publish.single("audio_control/mlv-astronomy/play", "g.ogg", hostname=broker_ip)
+            if check_rule("ast-button-8", room):
+                publish.single("audio_control/mlv-astronomy/play", "g-high.ogg", hostname=broker_ip)
             if note in note_map:
                 note_played = note_map[note]
                 current_sequence.append(note_played)
