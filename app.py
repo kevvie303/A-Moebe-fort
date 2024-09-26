@@ -1383,8 +1383,8 @@ def control_maglock(room):
     global squeak_job, should_balls_drop, player_type
     maglock = request.form.get('maglock')
     action = request.form.get('action')
-    print(maglock)
-    print(action)
+    #print(maglock)
+    #print(action)
     sensor_data = read_sensor_data2(room)
     for sensor in sensor_data:
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
@@ -1404,15 +1404,15 @@ def control_maglock_route(room):
 
 def call_control_maglock_partial(room, maglock, action):
     global squeak_job, should_balls_drop, player_type
-    print(maglock)
-    print(action)
-    print(room)
+    #print(maglock)
+    #print(action)
+    #print(room)
     sensor_data = read_sensor_data2(room)
     for sensor in sensor_data:
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
             if "green-led" in maglock or "red-led" in maglock or "blue-led" in maglock:
-                print(maglock)
+                #print(maglock)
                 # Reverse the action for this specific case
                 action = 'locked' if action == 'unlocked' else 'unlocked'
             # Publish the MQTT message with the appropriate Pi's name
