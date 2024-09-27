@@ -767,6 +767,7 @@ def solve_task(task_name, room):
         elif task_name == "knocker-solve":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("tavern-door-lock", "locked")
+                publish.single("led/control/mlv-tavern", "unlocked", hostname=broker_ip)
         elif task_name == "planets":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("rem-lamp", "unlocked")
