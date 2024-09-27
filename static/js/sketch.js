@@ -164,13 +164,17 @@ $(document).ready(function () {
     type: "GET",
     url: `/get_sensor_data/${roomName}`, // Replace with the actual endpoint to fetch sensor data
     success: function (sensor_data) {
-      // Filter out items that are not maglocks or lights
+      // Filter out items that are not maglocks, lights, or leds
       var maglocks = sensor_data.filter(function (item) {
         return item.type === "maglock";
       });
 
       var lights = sensor_data.filter(function (item) {
         return item.type === "light";
+      });
+
+      var leds = sensor_data.filter(function (item) {
+        return item.type === "led";
       });
 
       // Render maglocks
@@ -257,18 +261,73 @@ $(document).ready(function () {
         lightControlArticle.append(lockDiv);
       });
 
+      // Render leds
+      var ledControlArticle = $("<article>").addClass("lock-control").hide();
+      leds.forEach(function (actuator) {
+        var lockDiv = $("<div>").addClass("lock");
+        var actuatorName = $("<p>").text(actuator.name);
+        var lockButtons = $("<div>").addClass("lock-buttons");
+
+        var onButton = $("<button>")
+          .addClass("turn-on-button icon")
+          .append(
+            $("<img>")
+              .attr("src", "/static/img/light-on.svg")
+              .attr("alt", "LED On")
+          );
+        var offButton = $("<button>")
+          .addClass("turn-off-button icon")
+          .append(
+            $("<img>")
+              .attr("src", "/static/img/light-off.svg")
+              .attr("alt", "LED Off")
+          );
+        lockButtons.append(onButton, offButton);
+
+        lockButtons.find("button").click(function () {
+          var action = $(this).hasClass("turn-on-button")
+            ? "locked"
+            : "unlocked";
+          $.ajax({
+            type: "POST",
+            url: `/control_maglock/${roomName}`,
+            data: { maglock: actuator.name, action: action },
+            success: function (response) {
+              console.log(response);
+            },
+            error: function (error) {
+              console.log(error);
+            },
+          });
+        });
+
+        lockDiv.append(actuatorName, lockButtons);
+        ledControlArticle.append(lockDiv);
+      });
+
       // Add toggle button for lights
-      var toggleButton = $("<button>")
+      var toggleLightButton = $("<button>")
         .addClass("button-style")
         .text("Toggle Lights")
         .click(function () {
           lightControlArticle.slideToggle();
         });
-      // Append maglocks, toggle button, and lights to the lockControls element
+
+      // Add toggle button for leds
+      var toggleLedButton = $("<button>")
+        .addClass("button-style")
+        .text("Toggle LEDs")
+        .click(function () {
+          ledControlArticle.slideToggle();
+        });
+
+      // Append maglocks, toggle buttons, lights, and leds to the lockControls element
       lockControls.append(
         maglockControlArticle,
-        toggleButton,
-        lightControlArticle
+        toggleLightButton,
+        lightControlArticle,
+        toggleLedButton,
+        ledControlArticle
       );
     },
     error: function (error) {

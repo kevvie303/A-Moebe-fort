@@ -1398,6 +1398,15 @@ def control_maglock(room):
             mqtt_message = f"{sensor['pin']} {action}"
             publish.single(f"actuator/control/{pi_name}", mqtt_message, hostname=broker_ip)
             return "done"
+        elif sensor['name'] == maglock and sensor['type'] == 'led':
+            pi_name = sensor['pi']
+            print(sensor)
+            print(pi_name)
+            if action == 'unlocked':
+                publish.single(f"led/control/{pi_name}", "unlocked", hostname=broker_ip)
+            else:
+                publish.single(f"led/control/{pi_name}", "locked", hostname=broker_ip)
+            return "done"
 @app.route('/control_maglock/<room>', methods=['POST'])
 def control_maglock_route(room):
     return control_maglock(room)

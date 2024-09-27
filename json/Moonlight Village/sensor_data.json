@@ -28,7 +28,7 @@
         "type": "Sensor",
         "pin": 17,
         "pi": "mlv-corridors",
-        "state": "0",
+        "state": "5",
         "connection_type": "NO"
     },
     {
@@ -136,11 +136,51 @@
         "connection_type": "NC"
     },
     {
+        "name": "lamp-post-1",
+        "type": "light",
+        "pin": 12,
+        "pi": "mlv-astronomy",
+        "state": "Off",
+        "connection_type": "NO"
+    },
+    {
+        "name": "blacklight-astronomy",
+        "type": "light",
+        "pin": 1,
+        "pi": "mlv-astronomy",
+        "state": "Off",
+        "connection_type": "NO"
+    },
+    {
         "name": "ast-button-9",
         "type": "button",
-        "pin": 18,
+        "pin": 8,
         "pi": "mlv-astronomy",
         "state": "Not Triggered",
-        "connection_type": "NC"
+        "connection_type": "NO"
+    },
+    {
+        "name": "corridor-led",
+        "type": "led",
+        "pin": 18,
+        "pi": "mlv-corridors",
+        "state": "Off",
+        "connection_type": "NO"
+    },
+    {
+        "name": "tavern-led",
+        "type": "led",
+        "pin": 18,
+        "pi": "mlv-tavern",
+        "state": "Off",
+        "connection_type": "NO"
+    },
+    {
+        "name": "astronomy-led",
+        "type": "led",
+        "pin": 18,
+        "pi": "mlv-astronomy",
+        "state": "Off",
+        "connection_type": "NO"
     }
 ]
