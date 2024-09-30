@@ -763,7 +763,7 @@ def solve_task(task_name, room):
         elif task_name == "moon-place":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("astronomy-door-lock", "locked")
-                publish.single("led/control/mlv-tavern", "unlocked", hostname=broker_ip)
+                publish.single("led/control/mlv-astronomy", "unlocked", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/play", "right door.ogg", hostname=broker_ip)
         elif task_name == "knocker-solve":
             if game_status == {'status': 'playing'}:
