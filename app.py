@@ -763,6 +763,7 @@ def solve_task(task_name, room):
         elif task_name == "moon-place":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("astronomy-door-lock", "locked")
+                publish.single("led/control/mlv-tavern", "unlocked", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/play", "right door.ogg", hostname=broker_ip)
         elif task_name == "knocker-solve":
             if game_status == {'status': 'playing'}:
@@ -771,7 +772,12 @@ def solve_task(task_name, room):
         elif task_name == "planets":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("rem-lamp", "unlocked")
+                call_control_maglock_moonlight("blacklight-astronomy", "unlocked")
+                publish.single("led/control/mlv-tavern", "locked", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/play", "planet-solve.ogg", hostname=broker_ip)
+        elif task_name == "constellations":
+            if game_status == {'status': 'playing'}:
+                call_control_maglock_moonlight("blacklight-astronomy", "locked")
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
