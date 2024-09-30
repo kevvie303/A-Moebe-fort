@@ -773,7 +773,7 @@ def solve_task(task_name, room):
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("rem-lamp", "unlocked")
                 call_control_maglock_moonlight("blacklight-astronomy", "unlocked")
-                publish.single("led/control/mlv-tavern", "locked", hostname=broker_ip)
+                publish.single("led/control/mlv-astronomy", "locked", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/play", "planet-solve.ogg", hostname=broker_ip)
         elif task_name == "constellations":
             if game_status == {'status': 'playing'}:
