@@ -182,5 +182,13 @@
         "pi": "mlv-astronomy",
         "state": "Off",
         "connection_type": "NO"
+    },
+    {
+        "name": "herbalist-led",
+        "type": "led",
+        "pin": 18,
+        "pi": "mlv-herbalist",
+        "state": "Off",
+        "connection_type": "NO"
     }
 ]
