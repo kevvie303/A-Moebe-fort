@@ -242,6 +242,9 @@ def handle_rules(sensor_name, sensor_state, room):
         if sensor_name == "knocker":
             if sensor_state == "solved":
                 solve_task("knocker-solve", room)
+        if sensor_name == "webcam":
+            if sensor_state == "solved":
+                solve_task("camera-puzzle", room)
 
     if get_game_status(room) == {'status': 'playing'}:
         if sensor_name == "knocker":
@@ -778,6 +781,9 @@ def solve_task(task_name, room):
         elif task_name == "constellations":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("blacklight-astronomy", "locked")
+        elif task_name == "camera-puzzle":
+            if game_status == {'status': 'playing'}:
+                print("camera puzzle solved")
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
@@ -1463,7 +1469,8 @@ def reset_checklist(room):
             call_control_maglock_retriever("sliding-door-lock", "locked")
             call_control_maglock_retriever("doghouse-lock", "locked")
             call_control_maglock_retriever("entrance-door-lock", "locked")
-
+        else:
+            publish.single("webcam_control/mlv-herbalist", "unsolved", hostname=broker_ip)
         # Emit checklist update event
         socketio.emit('checklist_update', "message", room="all_clients")
 

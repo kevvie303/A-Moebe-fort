@@ -230,5 +230,13 @@
         "pi": "mlv-tavern",
         "state": "Unlocked",
         "connection_type": "NO"
+    },
+    {
+        "name": "webcam",
+        "type": "Sensor",
+        "pin": -1,
+        "pi": "mlv-herbalist",
+        "state": "unsolved",
+        "connection_type": "NO"
     }
 ]
