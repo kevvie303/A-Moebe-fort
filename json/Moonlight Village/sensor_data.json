@@ -222,5 +222,13 @@
         "pi": "mlv-herbalist",
         "state": "Off",
         "connection_type": "NO"
+    },
+    {
+        "name": "dmx-power",
+        "type": "maglock",
+        "pin": 0,
+        "pi": "mlv-tavern",
+        "state": "Unlocked",
+        "connection_type": "NO"
     }
 ]
