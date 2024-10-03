@@ -1360,8 +1360,15 @@ def get_task_progress(room):
         return jsonify(progress)
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'tasks': []})
-@app.route('/play_music', methods=['POST'])
-def play_music():
+def handle_preset(message_key):
+    if os.path.exists(PRESETS_FILE):
+        with open(PRESETS_FILE, 'r') as f:
+            presets = json.load(f)
+        preset = presets.get(message_key)
+        if preset:
+            send_dmx_command(preset['pan'], preset['tilt'], preset['colour'], preset['gobo'], preset['smoke'])
+@app.route('/play_music/<room>', methods=['POST'])
+def play_music(room):
     data = request.json
     message = data.get('message')
     print(message)
@@ -1370,8 +1377,16 @@ def play_music():
         publish.single("servo_control/ret-middle", "servo2", hostname=broker_ip)
         call_control_maglock_retriever("laser-2", "unlocked")
         call_control_maglock_retriever("laser-1", "locked")
+    elif message == "knocker-solve-1":
+        handle_preset("knocker-solve")
+    elif message == "moon-place-1":
+        handle_preset("moon-place")
+    elif message == "plant-place-1":
+        handle_preset("plant-place")
+    elif room == "The Retriever":
+        publish.single("audio_control/all_retriever/play", message, hostname=broker_ip)
     else:
-        publish.single("audio_control/play", message, hostname=broker_ip)
+        publish.single("audio_control/all_moonlight/play", message, hostname=broker_ip)
     return jsonify({"status": "success"})
 @app.route('/stop_music/<room>', methods=['POST'])
 def stop_music(room):

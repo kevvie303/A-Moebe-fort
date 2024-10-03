@@ -1034,10 +1034,10 @@ function openTaskPopup(task) {
       // AJAX request using jQuery
       $.ajax({
         type: "POST",
-        url: "/play_music",
+        url: `/play_music/${roomName}`,
         contentType: "application/json",
         data: JSON.stringify({
-          message: `/home/pi/Music/${task.task}-${i}.ogg`,
+          message: `${task.task}-${i}.ogg`,
         }),
         success: function (response) {
           console.log("Response from Flask:", response);
