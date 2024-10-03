@@ -1485,7 +1485,7 @@ def reset_checklist(room):
             call_control_maglock_retriever("doghouse-lock", "locked")
             call_control_maglock_retriever("entrance-door-lock", "locked")
         else:
-            publish.single("webcam_control/mlv-herbalist", "unsolved", hostname=broker_ip)
+            publish.single("webcam_control/mlv-webcam", "unsolved", hostname=broker_ip)
         # Emit checklist update event
         socketio.emit('checklist_update', "message", room="all_clients")
 
