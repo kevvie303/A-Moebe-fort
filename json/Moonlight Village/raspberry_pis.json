@@ -15,18 +15,24 @@
         "ip_address": "192.168.0.116",
         "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "mlv-tavern",
-        "services": ["mqtt", "actuator", "knocker"]
+        "services": ["mqtt", "actuator", "knocker", "led"]
     },
     {
         "ip_address": "192.168.0.126",
         "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "mlv-herbalist",
-        "services": ["mqtt", "actuator"]
+        "services": ["mqtt", "actuator", "led"]
     },
     {
         "ip_address": "192.168.0.127",
         "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "mlv-astronomy",
-        "services": ["mqtt", "actuator", "sound"]
+        "services": ["mqtt", "actuator", "sound", "led"]
+    },
+    {
+        "ip_address": "192.168.0.112",
+        "mac_address": "B8:27:EB:88:E9:39",
+        "hostname": "mlv-webcam",
+        "services": ["camera"]
     }
 ]
