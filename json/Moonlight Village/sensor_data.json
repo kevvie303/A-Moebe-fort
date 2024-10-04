@@ -238,5 +238,13 @@
         "pi": "mlv-herbalist",
         "state": "unsolved",
         "connection_type": "NO"
+    },
+    {
+        "name": "humidifier",
+        "type": "maglock",
+        "pin": 1,
+        "pi": "mlv-herbalist",
+        "state": "initial",
+        "connection_type": "NO"
     }
 ]
