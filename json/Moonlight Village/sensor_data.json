@@ -140,7 +140,7 @@
         "type": "light",
         "pin": 12,
         "pi": "mlv-astronomy",
-        "state": "Off",
+        "state": "On",
         "connection_type": "NO"
     },
     {
@@ -172,7 +172,7 @@
         "type": "led",
         "pin": 18,
         "pi": "mlv-tavern",
-        "state": "Off",
+        "state": "Unlocked",
         "connection_type": "NO"
     },
     {
@@ -180,39 +180,7 @@
         "type": "led",
         "pin": 18,
         "pi": "mlv-astronomy",
-        "state": "Off",
-        "connection_type": "NO"
-    },
-    {
-        "name": "humid-1",
-        "type": "maglock",
-        "pin": 24,
-        "pi": "mlv-herbalist",
-        "state": "Unlocked",
-        "connection_type": "NO"
-    },
-    {
-        "name": "humid-2",
-        "type": "maglock",
-        "pin": 25,
-        "pi": "mlv-herbalist",
-        "state": "Unlocked",
-        "connection_type": "NO"
-    },
-    {
-        "name": "humid-3",
-        "type": "maglock",
-        "pin": 5,
-        "pi": "mlv-herbalist",
-        "state": "Unlocked",
-        "connection_type": "NO"
-    },
-    {
-        "name": "humid-4",
-        "type": "maglock",
-        "pin": 6,
-        "pi": "mlv-herbalist",
-        "state": "Unlocked",
+        "state": "Not Triggered",
         "connection_type": "NO"
     },
     {
@@ -228,7 +196,7 @@
         "type": "maglock",
         "pin": 0,
         "pi": "mlv-tavern",
-        "state": "Unlocked",
+        "state": "Locked",
         "connection_type": "NO"
     },
     {
@@ -236,7 +204,7 @@
         "type": "Sensor",
         "pin": -1,
         "pi": "mlv-herbalist",
-        "state": "unsolved",
+        "state": "solved",
         "connection_type": "NO"
     },
     {

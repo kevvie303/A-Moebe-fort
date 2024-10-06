@@ -36,7 +36,7 @@
         "services": ["camera"]
     },
     {
-        "ip_address": "192.168.0.112",
+        "ip_address": "192.168.0.115",
         "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "mlv-plants",
         "services": ["mqtt", "actuator", "led"]
