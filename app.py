@@ -236,6 +236,10 @@ def handle_rules(sensor_name, sensor_state, room):
             task_state = check_task_state("moon-place", room)
             if task_state == "pending":
                 solve_task("moon-place", room)
+        elif check_rule("watersensor", room):
+            task_state = check_task_state("plant-water", room)
+            if task_state == "pending":
+                solve_task("plant-water", room) 
         if sensor_name == "light_count":
             if sensor_state == "5":
                 solve_task("lights-on", room)
@@ -784,6 +788,9 @@ def solve_task(task_name, room):
         elif task_name == "camera-puzzle":
             if game_status == {'status': 'playing'}:
                 print("camera puzzle solved")
+        elif task_name == "plant-water":
+            if game_status == {'status': 'playing'}:
+                call_control_maglock_moonlight("herbalist-door-lock", "locked")
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')

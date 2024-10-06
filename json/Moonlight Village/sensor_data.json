@@ -214,5 +214,29 @@
         "pi": "mlv-herbalist",
         "state": "initial",
         "connection_type": "NO"
+    },
+    {
+        "name": "final-door-lock",
+        "type": "maglock",
+        "pin": 23,
+        "pi": "mlv-plants",
+        "state": "initial",
+        "connection_type": "NO"
+    },
+    {
+        "name": "storage-service-door-lock",
+        "type": "maglock",
+        "pin": 22,
+        "pi": "mlv-plants",
+        "state": "initial",
+        "connection_type": "NO"
+    },
+    {
+        "name": "watersensor",
+        "type": "Sensor",
+        "pin": -1,
+        "pi": "mlv-herbalist",
+        "state": "initial",
+        "connection_type": "NO"
     }
 ]

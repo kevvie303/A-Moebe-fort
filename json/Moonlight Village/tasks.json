@@ -10,7 +10,7 @@
         "state": "pending"
     },
     {
-        "task": "plant-place",
+        "task": "plant-water",
         "description": "Players have placed the plant in the right spot in front of the herbalist building (opens the door).",
         "state": "pending"
     },
