@@ -1058,7 +1058,7 @@ TOPIC_ASTRONOMY = "led/control/mlv-astronomy"
 def sequence_thread():
     global sequence_running
     try:
-        sequence_duration = 0.01  # seconds per step
+        sequence_duration = 0.05  # seconds per step
         steps_between_points = 50  # Adjust this for smoother transitions
         publish.single(TOPIC_TAVERN, "blink_red", hostname=broker_ip)
         publish.single(TOPIC_HERBALIST, "blink_green", hostname=broker_ip)
