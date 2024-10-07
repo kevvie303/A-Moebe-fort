@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, send_from_directory, send_file, after_this_request, flash
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, join_room
+import math
 import json
 import paramiko
+import random
 import atexit
 import platform
 import os
@@ -791,6 +793,11 @@ def solve_task(task_name, room):
         elif task_name == "plant-water":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("herbalist-door-lock", "locked")
+        elif task_name == "sigil-place":
+            if game_status == {'status': 'playing'}:
+                start_sequence()
+                publish.single("audio_control/all_moonlight/full_stop", "stop", hostname=broker_ip)
+                publish.single("audio_control/all_moonlight/play", "tense.ogg", hostname=broker_ip)
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
@@ -1019,7 +1026,7 @@ def send_dmx_command(pan, tilt, colour, gobo, smoke):
     }
     payload_str = json.dumps(payload)
     publish.single(MQTT_TOPIC, payload=payload_str, qos=0, hostname=broker_ip)
-    print(f"Published to {MQTT_TOPIC}: {payload_str}")
+    #print(f"Published to {MQTT_TOPIC}: {payload_str}")
 sequence_running = False
 @app.route('/dmx_control', methods=['GET', 'POST'])
 def dmx_control():
@@ -1039,40 +1046,160 @@ def dmx_control():
     return render_template('dmx_control.html')
 def send_mqtt_message(message):
     publish.single(MQTT_TOPIC, payload=json.dumps(message), qos=1, hostname=broker_ip)
+stop_event = threading.Event()
+def interpolate(start, end, steps):
+    """Helper function to generate smooth transitions."""
+    step_size = (end - start) / steps
+    return [start + step_size * i for i in range(steps)]
+TOPIC_TAVERN = "led/control/mlv-tavern"
+TOPIC_HERBALIST = "led/control/mlv-herbalist"
+TOPIC_ASTRONOMY = "led/control/mlv-astronomy"
 def sequence_thread():
+    global sequence_running
     try:
-        sequence_duration = 0.1  # seconds
-        num_steps = 256  # pan value range
+        sequence_duration = 0.01  # seconds per step
+        steps_between_points = 50  # Adjust this for smoother transitions
+        publish.single(TOPIC_TAVERN, "blink_red", hostname=broker_ip)
+        publish.single(TOPIC_HERBALIST, "blink_green", hostname=broker_ip)
+        publish.single(TOPIC_ASTRONOMY, "blink_green", hostname=broker_ip)
+        # Define patrol points
+        points = [
+            {'pan': 172, 'tilt': 10},  # Point A
+            {'pan': 150, 'tilt': 25},  # Point B
+            {'pan': 165, 'tilt': 40},
+            {'pan': 165, 'tilt': 65},  # Point C
+            {'pan': 182, 'tilt': 75},  # Point D
+            {'pan': 178, 'tilt': 35}, 
+            {'pan': 192, 'tilt': 20}   # Point E
+        ]
+        cycle_count = 0
 
-        for pan_value in range(num_steps):
-            message = {'pan': pan_value, 'tilt': pan_value, 'colour': 12, 'gobo': 0}
-            send_mqtt_message(message)
-            time.sleep(sequence_duration)
+        while not stop_event.is_set():
+            
+            # Go through patrol points and perform DMX movement
+            for i in range(len(points)):
+                # Determine the next point (loop around to the first point)
+                next_point = points[(i + 1) % len(points)]
 
-        print('Sequence completed successfully!')
+                # Interpolate pan and tilt between the current and next points
+                pan_values = interpolate(points[i]['pan'], next_point['pan'], steps_between_points)
+                tilt_values = interpolate(points[i]['tilt'], next_point['tilt'], steps_between_points)
+
+                # Send DMX commands for each step
+                for pan_value, tilt_value in zip(pan_values, tilt_values):
+                    if stop_event.is_set():
+                        break  # Exit if stop event is triggered
+
+                    # Send DMX command (rounding values)
+                    send_dmx_command(round(pan_value), round(tilt_value), colour=12, gobo=0, smoke=0)
+                    time.sleep(sequence_duration)
+
+            cycle_count += 1
+            print('Patrol completed one cycle!')
+
+            # Randomize points every 2 full cycles
+            if cycle_count % 16 == 0:  # Every 16 cycles
+                publish.single(TOPIC_TAVERN, "blink_green", hostname=broker_ip)
+                publish.single(TOPIC_HERBALIST, "blink_red", hostname=broker_ip)
+                publish.single(TOPIC_ASTRONOMY, "blink_red", hostname=broker_ip)
+                points = [
+                    {'pan': 172, 'tilt': 10},  # Point A
+                    {'pan': 150, 'tilt': 25},  # Point B
+                    {'pan': 165, 'tilt': 40},
+                    {'pan': 165, 'tilt': 65},  # Point C
+                    {'pan': 182, 'tilt': 75},  # Point D
+                    {'pan': 178, 'tilt': 35}, 
+                    {'pan': 192, 'tilt': 20}   # Point E
+                ]
+
+            elif cycle_count % 14 == 0:  # Every 14 cycles
+                random.shuffle(points)
+                print('Points randomized! New order:', points)
+
+            elif cycle_count % 12 == 0:  # Every 12 cycles
+                publish.single(TOPIC_TAVERN, "blink_red", hostname=broker_ip)
+                publish.single(TOPIC_HERBALIST, "blink_green", hostname=broker_ip)
+                publish.single(TOPIC_ASTRONOMY, "blink_red", hostname=broker_ip)
+                points = [
+                    {'pan': 172, 'tilt': 10},  # Point A
+                    {'pan': 150, 'tilt': 25},  # Point B
+                    {'pan': 165, 'tilt': 40},
+                    {'pan': 165, 'tilt': 65},  # Point C
+                    {'pan': 182, 'tilt': 75},  # Point D
+                    {'pan': 178, 'tilt': 35}, 
+                    {'pan': 192, 'tilt': 20}   # Point E
+                ]
+
+            elif cycle_count % 10 == 0:  # Every 10 cycles
+                random.shuffle(points)
+                print('Points randomized! New order:', points)
+
+            elif cycle_count % 8 == 0:  # Every 8 cycles
+                publish.single(TOPIC_TAVERN, "blink_red", hostname=broker_ip)
+                publish.single(TOPIC_HERBALIST, "blink_red", hostname=broker_ip)
+                publish.single(TOPIC_ASTRONOMY, "blink_green", hostname=broker_ip)
+                points = [
+                    {'pan': 172, 'tilt': 10},  # Point A
+                    {'pan': 150, 'tilt': 25},  # Point B
+                    {'pan': 165, 'tilt': 40},
+                    {'pan': 165, 'tilt': 65},  # Point C
+                    {'pan': 182, 'tilt': 75},  # Point D
+                    {'pan': 178, 'tilt': 35}, 
+                    {'pan': 192, 'tilt': 20}   # Point E
+                ]
+
+            elif cycle_count % 6 == 0:  # Every 6 cycles
+                random.shuffle(points)
+                print('Points randomized! New order:', points)
+
+            elif cycle_count % 4 == 0:  # Every 4 cycles
+                publish.single(TOPIC_TAVERN, "blink_red", hostname=broker_ip)
+                publish.single(TOPIC_HERBALIST, "blink_green", hostname=broker_ip)
+                publish.single(TOPIC_ASTRONOMY, "blink_green", hostname=broker_ip)
+                points = [
+                    {'pan': 172, 'tilt': 10},  # Point A
+                    {'pan': 150, 'tilt': 25},  # Point B
+                    {'pan': 165, 'tilt': 40},
+                    {'pan': 165, 'tilt': 65},  # Point C
+                    {'pan': 182, 'tilt': 75},  # Point D
+                    {'pan': 178, 'tilt': 35}, 
+                    {'pan': 192, 'tilt': 20}   # Point E
+                ]
+
+            elif cycle_count % 2 == 0:  # Every 2 cycles
+                random.shuffle(points)
+                print('Points randomized! New order:', points)
+        print('Sequence stopped successfully!')
+
     except Exception as e:
-        print(f'Error: {str(e)}')
+        print(f'Error in sequence: {str(e)}')
 @app.route('/start_sequence', methods=['POST'])
 def start_sequence():
-    global sequence_running
+    global sequence_running, stop_event
     if sequence_running:
         return jsonify({'message': 'Sequence already running!', 'status': 'error'})
 
     try:
-        # Start the sequence in a separate thread to avoid blocking
+        # Reset stop_event in case it was set previously
+        stop_event.clear()
         sequence_running = True
+        # Start the sequence in a separate thread
         threading.Thread(target=sequence_thread).start()
-        return jsonify({'message': 'Sequence started successfully!', 'status': 'success'})
+        return jsonify({'message': 'Patrol sequence started successfully!', 'status': 'success'})
     except Exception as e:
         return jsonify({'message': f'Error: {str(e)}', 'status': 'error'})
 
 @app.route('/stop_sequence', methods=['POST'])
 def stop_sequence():
-    global sequence_running
+    global sequence_running, stop_event
+    if not sequence_running:
+        return jsonify({'message': 'No sequence running!', 'status': 'error'})
+
     sequence_running = False
-    # Send a message to stop the sequence (e.g., set values to 0)
-    stop_message = {'pan': 0, 'tilt': 0, 'colour': 0, 'gobo': 0, 'shutter': 0}
-    send_mqtt_message(stop_message)
+    # Set the event to signal the thread to stop
+    stop_event.set()
+    # Reset DMX values to 0
+    send_dmx_command(0, 0, 0, 0, 0)
     return jsonify({'message': 'Sequence stopped and DMX values reset to 0.', 'status': 'success'})
 @app.route('/skip_task/<task_name>/<room>', methods=['POST'])
 def skip_task(task_name, room):
