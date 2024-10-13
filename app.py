@@ -196,7 +196,7 @@ sensor_states = {}
 # Callback function to process incoming MQTT messages
 
 pi_service_statuses = {}  # New dictionary to store service statuses for each Pi
-twinkle_sequence = ["g", "g", "d", "d", "e", "e", "d", "c", "c", "b", "b", "a", "a", "g"]
+twinkle_sequence = ["g", "g", "d", "d", "e", "e", "d"]
 current_sequence = []
 def handle_rules(sensor_name, sensor_state, room):
     global sequence, code1, code2, code3, code4, code5, codesCorrect, current_sequence, twinkle_sequence
@@ -289,6 +289,7 @@ def handle_rules(sensor_name, sensor_state, room):
                         current_sequence = []  # Reset the sequence after solving
                 else:
                     # Sequence is incorrect, reset
+                    
                     print("Incorrect sequence. Resetting.")
                     current_sequence = []
                     call_control_maglock_moonlight("rem-lamp", "locked")
@@ -797,8 +798,8 @@ def solve_task(task_name, room):
             if game_status == {'status': 'playing'}:
                 start_sequence()
                 publish.single("audio_control/all_moonlight/full_stop", "stop", hostname=broker_ip)
-                publish.single("audio_control/all_moonlight/play", "tense.ogg", hostname=broker_ip)
-                publish.single("audio_control/all_moonlight/volume", "100 tense.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-center/play", "tense.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-center/volume", "100 tense.ogg", hostname=broker_ip)
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')

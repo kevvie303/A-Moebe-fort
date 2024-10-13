@@ -201,7 +201,7 @@
     },
     {
         "name": "webcam",
-        "type": "Sensor",
+        "type": "different",
         "pin": -1,
         "pi": "mlv-herbalist",
         "state": "solved",
@@ -233,7 +233,39 @@
     },
     {
         "name": "watersensor",
-        "type": "Sensor",
+        "type": "different",
+        "pin": -1,
+        "pi": "mlv-herbalist",
+        "state": "initial",
+        "connection_type": "NO"
+    },
+    {
+        "name": "flask-rfid-1",
+        "type": "rfid",
+        "pin": -1,
+        "pi": "mlv-herbalist",
+        "state": "initial",
+        "connection_type": "NO"
+    },
+    {
+        "name": "flask-rfid-2",
+        "type": "rfid",
+        "pin": -1,
+        "pi": "mlv-herbalist",
+        "state": "initial",
+        "connection_type": "NO"
+    },
+    {
+        "name": "flask-rfid-3",
+        "type": "rfid",
+        "pin": -1,
+        "pi": "mlv-herbalist",
+        "state": "initial",
+        "connection_type": "NO"
+    },
+    {
+        "name": "flask-rfid-4",
+        "type": "rfid",
         "pin": -1,
         "pi": "mlv-herbalist",
         "state": "initial",
