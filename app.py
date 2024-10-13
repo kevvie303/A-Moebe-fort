@@ -798,8 +798,8 @@ def solve_task(task_name, room):
             if game_status == {'status': 'playing'}:
                 start_sequence()
                 publish.single("audio_control/all_moonlight/full_stop", "stop", hostname=broker_ip)
-                publish.single("audio_control/mlv-center/play", "tense.ogg", hostname=broker_ip)
-                publish.single("audio_control/mlv-center/volume", "100 tense.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/play", "tense.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/volume", "100 tense.ogg", hostname=broker_ip)
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
