@@ -60,7 +60,22 @@
         "state": "pending"
     },
     {
-        "task": "sigil-place",
+        "task": "barrel-place",
+        "description": "Players have found the 3 sigil parts and placed them in the correct spots on the wall throughout the room.",
+        "state": "pending"
+    },
+    {
+        "task": "flask-place",
+        "description": "Players have found the 3 sigil parts and placed them in the correct spots on the wall throughout the room.",
+        "state": "pending"
+    },
+    {
+        "task": "telescope-place",
+        "description": "Players have found the 3 sigil parts and placed them in the correct spots on the wall throughout the room.",
+        "state": "pending"
+    },
+    {
+        "task": "sigil-all",
         "description": "Players have found the 3 sigil parts and placed them in the correct spots on the wall throughout the room.",
         "state": "pending"
     },

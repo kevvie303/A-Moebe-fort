@@ -54,6 +54,7 @@ ip_guard_room = '192.168.50.218'
 ip_corridor = '192.168.50.197'
 ip_cell = '192.168.50.242'
 sequence = 0
+sigil_count = 0
 should_sound_play = True
 should_balls_drop = True
 code1 = False
@@ -238,6 +239,18 @@ def handle_rules(sensor_name, sensor_state, room):
             task_state = check_task_state("moon-place", room)
             if task_state == "pending":
                 solve_task("moon-place", room)
+        elif check_rule("flask-sensor", room):
+            task_state = check_task_state("flask-place", room)
+            if task_state == "pending":
+                solve_task("flask-place", room)
+        elif check_rule("barrel-sensor", room):
+            task_state = check_task_state("barrel-place", room)
+            if task_state == "pending":
+                solve_task("barrel-place", room)
+        elif check_rule("telescope-sensor", room):
+            task_state = check_task_state("telescope-place", room)
+            if task_state == "pending":
+                solve_task("telescope-place", room)
         elif check_rule("watersensor", room):
             task_state = check_task_state("plant-water", room)
             if task_state == "pending":
@@ -251,7 +264,6 @@ def handle_rules(sensor_name, sensor_state, room):
         if sensor_name == "webcam":
             if sensor_state == "solved":
                 solve_task("camera-puzzle", room)
-
     if get_game_status(room) == {'status': 'playing'}:
         if sensor_name == "knocker":
             if sensor_state == "solved":
@@ -754,7 +766,7 @@ def get_task_status(room):
     
 @app.route('/solve_task/<task_name>/<room>', methods=['POST'])
 def solve_task(task_name, room):
-    global start_time, sequence, code1, code2, code3, code4, code5, codesCorrect, squeak_job, bird_job, should_hint_shed_play
+    global start_time, sequence, code1, code2, code3, code4, code5, codesCorrect, squeak_job, bird_job, should_hint_shed_play, sigil_count
     file_path = os.path.join('json', room, 'tasks.json')
     game_status = get_game_status(room)
     try:
@@ -794,7 +806,7 @@ def solve_task(task_name, room):
         elif task_name == "plant-water":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("herbalist-door-lock", "locked")
-        elif task_name == "sigil-place":
+        elif task_name == "sigil-all":
             if game_status == {'status': 'playing'}:
                 start_sequence()
                 publish.single("audio_control/all_moonlight/full_stop", "stop", hostname=broker_ip)
@@ -986,6 +998,22 @@ def solve_task(task_name, room):
             publish.single("audio_control/ret-top/play", "after1code.ogg", hostname=broker_ip)
             time.sleep(4)
             fade_music_in(room)
+        if game_status == {'status': 'playing'}:
+            if task_name == "barrel-place":
+                sigil_count += 1
+                publish.single("led/control/mlv-webcam", "1/3", hostname=broker_ip)
+                if sigil_count == 3:
+                    solve_task("sigil-all", room)
+            if task_name == "flask-place":
+                sigil_count += 1
+                publish.single("led/control/mlv-webcam", "2/3", hostname=broker_ip)
+                if sigil_count == 3:
+                    solve_task("sigil-all", room)
+            if task_name == "telescope-place":
+                sigil_count += 1
+                publish.single("led/control/mlv-webcam", "3/3", hostname=broker_ip)
+                if sigil_count == 3:
+                    solve_task("sigil-all", room)
         with app.app_context():
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
@@ -1275,9 +1303,10 @@ def pend_task(task_name, room):
         return jsonify({'message': 'Error updating task'})
 @app.route('/reset_task_statuses/<room>', methods=['POST'])
 def reset_task_statuses(room):
-    global sequence
+    global sequence, sigil_count
     file_path = os.path.join('json', room, 'tasks.json')
     sequence = 0
+    sigil_count = 0
     update_game_status('awake', room)
     try:
         with open(file_path, 'r') as file:
@@ -2013,7 +2042,7 @@ def start_timer(room):
         return 'Timer started'
 @app.route('/timer/stop/<room>', methods=['POST'])
 def stop_timer(room):
-    global timer_thread, timer_running, kraken1, kraken2, kraken3, kraken4, bird_job, start_time
+    global timer_thread, timer_running, kraken1, kraken2, kraken3, kraken4, bird_job, start_time, sigil_count
     if room in timer_threads and timer_threads[room].is_alive():
         timer_running[room] = False
         print("Stopping timer thread")
