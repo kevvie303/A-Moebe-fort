@@ -192,6 +192,14 @@
         "connection_type": "NO"
     },
     {
+        "name": "ritual-led",
+        "type": "led",
+        "pin": 18,
+        "pi": "mlv-webcam",
+        "state": "Off",
+        "connection_type": "NO"
+    },
+    {
         "name": "dmx-power",
         "type": "maglock",
         "pin": 0,
@@ -269,6 +277,30 @@
         "pin": -1,
         "pi": "mlv-herbalist",
         "state": "initial",
+        "connection_type": "NO"
+    },
+    {
+        "name": "barrel-sensor",
+        "type": "Sensor",
+        "pin": 19,
+        "pi": "mlv-central",
+        "state": "Not Triggered",
+        "connection_type": "NO"
+    },
+    {
+        "name": "telescope-sensor",
+        "type": "Sensor",
+        "pin": 13,
+        "pi": "mlv-central",
+        "state": "Not Triggered",
+        "connection_type": "NO"
+    },
+    {
+        "name": "flask-sensor",
+        "type": "Sensor",
+        "pin": 6,
+        "pi": "mlv-central",
+        "state": "Not Triggered",
         "connection_type": "NO"
     }
 ]
