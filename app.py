@@ -1006,12 +1006,12 @@ def solve_task(task_name, room):
                     solve_task("sigil-all", room)
             if task_name == "flask-place":
                 sigil_count += 1
-                publish.single("led/control/mlv-webcam", "2/3", hostname=broker_ip)
+                publish.single("led/control/mlv-webcam", "1/3", hostname=broker_ip)
                 if sigil_count == 3:
                     solve_task("sigil-all", room)
             if task_name == "telescope-place":
                 sigil_count += 1
-                publish.single("led/control/mlv-webcam", "3/3", hostname=broker_ip)
+                publish.single("led/control/mlv-webcam", "1/3", hostname=broker_ip)
                 if sigil_count == 3:
                     solve_task("sigil-all", room)
         with app.app_context():

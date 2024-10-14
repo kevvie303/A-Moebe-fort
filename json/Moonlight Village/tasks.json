@@ -50,7 +50,7 @@
         "state": "pending"
     },
     {
-        "task": "flask-place",
+        "task": "potions-place",
         "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
         "state": "pending"
     },
