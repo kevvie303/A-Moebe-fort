@@ -808,19 +808,22 @@ def solve_task(task_name, room):
                 call_control_maglock_moonlight("herbalist-door-lock", "locked")
         elif task_name == "sigil-all":
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/mlv-central/play", "sigil-all-first.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/play", "sigal-all-first.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/volume", "100 sigal-all-first.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/volume", "bg_central.ogg", hostname=broker_ip)
                 time.sleep(12)
                 publish.single("audio_control/mlv-central/play", "sigil-all-second.ogg", hostname=broker_ip)
-                time.sleep(13)
+                publish.single("audio_control/mlv-central/volume", "100 sigil-all-second.ogg", hostname=broker_ip)
                 send_dmx_command(0, 0, 0, 0, 255)
+                time.sleep(5)
+                send_dmx_command(0, 0, 0, 0, 0)
+                time.sleep(8)
                 call_control_maglock_moonlight("lamp-post-1", "locked")
                 call_control_maglock_moonlight("lamp-post-2", "locked")
                 publish.single("audio_control/all_moonlight/full_stop", "stop", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/play", "tense.ogg", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/volume", "100 tense.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/volume", "150 tense.ogg", hostname=broker_ip)
                 start_sequence()
-                time.sleep(5)
-                send_dmx_command(0, 0, 0, 0, 0)
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
