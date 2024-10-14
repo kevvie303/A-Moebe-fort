@@ -810,7 +810,7 @@ def solve_task(task_name, room):
             if game_status == {'status': 'playing'}:
                 send_dmx_command(0, 0, 0, 0, 255)
                 time.sleep(5) # time to play a sound that doesnt exist yet
-                send_dmx_command(0, 0, 0, 0, 255)
+                send_dmx_command(0, 0, 0, 0, 0)
                 call_control_maglock_moonlight("lamp-post-1", "locked")
                 call_control_maglock_moonlight("lamp-post-2", "locked")
                 publish.single("audio_control/all_moonlight/full_stop", "stop", hostname=broker_ip)
