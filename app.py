@@ -239,15 +239,15 @@ def handle_rules(sensor_name, sensor_state, room):
             task_state = check_task_state("moon-place", room)
             if task_state == "pending":
                 solve_task("moon-place", room)
-        elif check_rule("flask-sensor", room):
+        if check_rule("flask-sensor", room):
             task_state = check_task_state("flask-place", room)
             if task_state == "pending":
                 solve_task("flask-place", room)
-        elif check_rule("barrel-sensor", room):
+        if check_rule("barrel-sensor", room):
             task_state = check_task_state("barrel-place", room)
             if task_state == "pending":
                 solve_task("barrel-place", room)
-        elif check_rule("telescope-sensor", room):
+        if check_rule("telescope-sensor", room):
             task_state = check_task_state("telescope-place", room)
             if task_state == "pending":
                 solve_task("telescope-place", room)
