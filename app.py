@@ -808,6 +808,9 @@ def solve_task(task_name, room):
                 call_control_maglock_moonlight("herbalist-door-lock", "locked")
         elif task_name == "sigil-all":
             if game_status == {'status': 'playing'}:
+                time.sleep(5) # time to play a sound that doesnt exist yet
+                call_control_maglock_moonlight("lamp-post-1", "locked")
+                call_control_maglock_moonlight("lamp-post-2", "locked")
                 publish.single("audio_control/all_moonlight/full_stop", "stop", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/play", "tense.ogg", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/volume", "100 tense.ogg", hostname=broker_ip)
@@ -2048,6 +2051,7 @@ def stop_timer(room):
         print("Stopping timer thread")
         timer_threads[room].join()
         update_game_status('awake', room)
+        stop_sequence()
         del timer_threads[room]
         reset_task_statuses(room)
         reset_checklist(room)
