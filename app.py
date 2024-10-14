@@ -1395,9 +1395,18 @@ def wake_room(room):
             devices = json.load(file)
 
         # Iterate over devices
-        for device in devices:
-            if device["type"] in ["light"] and device["name"] != "green-led" and device["name"] != "red-led" and device["name"] != "blue-led" and device["name"] != "red-led-keypad" and device["name"] != "green-led-keypad":
-                call_control_maglock_retriever(device["name"], "unlocked")
+        if room == "The Retriever":
+            for device in devices:
+                if device["type"] in ["light"] and device["name"] != "green-led" and device["name"] != "red-led" and device["name"] != "blue-led" and device["name"] != "red-led-keypad" and device["name"] != "green-led-keypad":
+                    call_control_maglock_retriever(device["name"], "unlocked")
+        else:
+            publish.single("led/control/mlv-herbalist", "unlocked", hostname=broker_ip)
+            publish.single("led/control/mlv-tavern", "unlocked", hostname=broker_ip)
+            publish.single("led/control/mlv-astronomy", "unlocked", hostname=broker_ip)
+            publish.single("led/control/mlv-corridors", "unlocked", hostname=broker_ip)
+            publish.single("led/control/mlv-webcam", "unlocked", hostname=broker_ip)
+            call_control_maglock_moonlight("lamp-post-1", "unlocked")
+            call_control_maglock_moonlight("lamp-post-2", "unlocked")
         update_game_status('awake', room)
         return "room awakened"
     except Exception as e:
@@ -1440,11 +1449,21 @@ def snooze_game(room):
             devices = json.load(file)
 
         # Iterate over devices
-        for device in devices:
-            if device["type"] in ["maglock", "light"]:
-                call_control_maglock_retriever(device["name"], "locked")
-            if device["name"] == "laser-1" or device["name"] == "laser-2":
-                call_control_maglock_retriever(device["name"], "unlocked")
+        if room == "The Retriever":
+            for device in devices:
+                if device["type"] in ["maglock", "light"]:
+                    call_control_maglock_retriever(device["name"], "locked")
+                if device["name"] == "laser-1" or device["name"] == "laser-2":
+                    call_control_maglock_retriever(device["name"], "unlocked")
+        else:
+            for device in devices:
+                if device["type"] in ["maglock", "light"]:
+                    call_control_maglock_moonlight(device["name"], "locked")
+            publish.single("led/control/mlv-herbalist", "locked", hostname=broker_ip)
+            publish.single("led/control/mlv-tavern", "locked", hostname=broker_ip)
+            publish.single("led/control/mlv-astronomy", "locked", hostname=broker_ip)
+            publish.single("led/control/mlv-corridors", "locked", hostname=broker_ip)
+            publish.single("led/control/mlv-webcam", "locked", hostname=broker_ip)
         return "Room snoozed"
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
