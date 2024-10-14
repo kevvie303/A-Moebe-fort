@@ -235,7 +235,7 @@ def handle_rules(sensor_name, sensor_state, room):
                 call_control_maglock_retriever("green-led", "locked")
                 call_control_maglock_retriever("blue-led", "locked")
                 sequence = 0
-        elif check_rule("moon-puzzle", room):
+        if check_rule("moon-puzzle", room):
             task_state = check_task_state("moon-place", room)
             if task_state == "pending":
                 solve_task("moon-place", room)
@@ -251,7 +251,7 @@ def handle_rules(sensor_name, sensor_state, room):
             task_state = check_task_state("telescope-place", room)
             if task_state == "pending":
                 solve_task("telescope-place", room)
-        elif check_rule("watersensor", room):
+        if check_rule("watersensor", room):
             task_state = check_task_state("plant-water", room)
             if task_state == "pending":
                 solve_task("plant-water", room) 
