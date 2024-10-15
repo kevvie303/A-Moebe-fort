@@ -50,22 +50,22 @@
         "state": "pending"
     },
     {
-        "task": "green-potion-correct",
+        "task": "green-potion",
         "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
         "state": "pending"
     },
     {
-        "task": "purple-potion-correct",
+        "task": "purple-potion",
         "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
         "state": "pending"
     },
     {
-        "task": "yellow-potion-correct",
+        "task": "yellow-potion",
         "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
         "state": "pending"
     },
     {
-        "task": "pink-potion-correct",
+        "task": "pink-potion",
         "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
         "state": "pending"
     },
@@ -100,7 +100,7 @@
         "state": "pending"
     },
     {
-        "task": "final sequence",
+        "task": "final-sequence",
         "description": "Players need to avoid the red light in the room by hiding in the buildins that stay green, this will last about 3/4 minutes.",
         "state": "pending"
     },
