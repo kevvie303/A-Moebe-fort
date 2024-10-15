@@ -584,7 +584,13 @@ def check_rule(item_name, room):
 
         if item:
             item_type = item.get("type")  # Default to "sensor" if type is not specified
+            item_name = item.get("name", "")
 
+            # Special condition for IR sensors
+            if item_type == "Sensor" and "ir" in item_name.lower():
+                if item["state"] == "Not Triggered":
+                    return True
+            # General conditions for other sensors and devices
             if item_type == "Sensor" and item["state"] == "Triggered":
                 return True
             elif item_type == "light" and item["state"] == "On":
