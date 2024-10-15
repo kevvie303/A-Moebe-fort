@@ -76,6 +76,13 @@ second_potion_solvable = False
 third_potion_solvable = False
 fourth_potion_solvable = False
 potion_count = 0
+last_three_pulled = []  # List to keep track of the last three plants pulled
+valid_combinations = {
+    "green": ["ir-plant-1", "ir-plant-5", "ir-plant-8"],
+    "pink": ["ir-plant-2", "ir-plant-4", "ir-plant-7"],
+    "yellow": ["ir-plant-3", "ir-plant-6", "ir-plant-9"],
+    "purple": ["ir-plant-2", "ir-plant-8", "ir-plant-3"]
+}
 CHECKLIST_FILE = 'checklist_data.json'
 #logging.basicConfig(level=logging.DEBUG)  # Use appropriate log level
 active_ssh_connections = {}
@@ -206,6 +213,7 @@ twinkle_sequence = ["g", "g", "d", "d", "e", "e", "d"]
 current_sequence = []
 def handle_rules(sensor_name, sensor_state, room):
     global sequence, code1, code2, code3, code4, code5, codesCorrect, current_sequence, twinkle_sequence, first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable
+    global last_three_pulled
     if get_game_status(room) == {'status': 'playing'}:
         if check_rule("green_house_ir", room) and sequence == 0:
             task_state = check_task_state("tree-lights", room)
@@ -240,6 +248,8 @@ def handle_rules(sensor_name, sensor_state, room):
                 call_control_maglock_retriever("green-led", "locked")
                 call_control_maglock_retriever("blue-led", "locked")
                 sequence = 0
+        if sensor_name.startswith("ir-plant"):
+            plant_pulled(sensor_name, room)  # Handle plant pull
         if check_rule("moon-puzzle", room):
             task_state = check_task_state("moon-place", room)
             if task_state == "pending":
@@ -273,42 +283,6 @@ def handle_rules(sensor_name, sensor_state, room):
         if sensor_name == "knocker":
             if sensor_state == "solved":
                 solve_task("knocker-solve", room)
-        if check_rule("ir-plant-1", room) and check_rule("ir-plant-5", room) and check_rule("ir-plant-8", room):
-            task_state = check_task_state("green-potion", room)
-            if task_state == "pending":
-                publish.single("led/control/mlv-herbalist", "green", hostname=broker_ip)
-                call_control_maglock_moonlight("humidifier", "unlocked")
-                first_potion_solvable = True
-                second_potion_solvable = False
-                third_potion_solvable = False
-                fourth_potion_solvable = False
-        if check_rule("ir-plant-2", room) and check_rule("ir-plant-4", room) and check_rule("ir-plant-7", room):
-            task_state = check_task_state("pink-potion", room)
-            if task_state == "pending":
-                publish.single("led/control/mlv-herbalist", "pink", hostname=broker_ip)
-                call_control_maglock_moonlight("humidifier", "unlocked")
-                second_potion_solvable = True
-                first_potion_solvable = False
-                third_potion_solvable = False
-                fourth_potion_solvable = False
-        if check_rule("ir-plant-3", room) and check_rule("ir-plant-6", room) and check_rule("ir-plant-9", room):
-            task_state = check_task_state("yellow-potion", room)
-            if task_state == "pending":
-                publish.single("led/control/mlv-herbalist", "yellow", hostname=broker_ip)
-                call_control_maglock_moonlight("humidifier", "unlocked")
-                third_potion_solvable = True
-                first_potion_solvable = False
-                second_potion_solvable = False
-                fourth_potion_solvable = False
-        if check_rule("ir-plant-2", room) and check_rule("ir-plant-8", room) and check_rule("ir-plant-3", room):
-            task_state = check_task_state("purple-potion", room)
-            if task_state == "pending":
-                publish.single("led/control/mlv-herbalist", "purple", hostname=broker_ip)
-                call_control_maglock_moonlight("humidifier", "unlocked")
-                fourth_potion_solvable = True
-                first_potion_solvable = False
-                second_potion_solvable = False
-                third_potion_solvable = False
         if first_potion_solvable and sensor_name == "flask-rfid-1":
             if sensor_state == "584197941325":
                 solve_task("green-potion", room)
@@ -406,6 +380,61 @@ def handle_rules(sensor_name, sensor_state, room):
                     call_control_maglock_retriever("laser-2", "unlocked")
                     call_control_maglock_retriever("laser-1", "locked")
 # Function to handle incoming MQTT messages
+def plant_pulled(plant_name, room):
+    global last_three_pulled
+
+    # Check if the plant is in a "Not Triggered" state (pulled)
+    if check_rule(plant_name, room):
+        # Add the plant to the list of pulled plants
+        last_three_pulled.append(plant_name)
+
+        # Keep only the last three pulled plants
+        if len(last_three_pulled) > 3:
+            last_three_pulled.pop(0)
+
+        # If exactly 3 plants are pulled, check if they match a valid combination
+        if len(last_three_pulled) == 3:
+            check_potion(room)
+
+def check_potion(room):
+    global last_three_pulled, first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable
+
+    # Check if the last three pulled plants match any valid potion combination
+    for color, combination in valid_combinations.items():
+        if sorted(last_three_pulled) == sorted(combination):
+            task_state = check_task_state(f"{color}-potion", room)
+            if task_state == "pending":
+                publish.single(f"led/control/mlv-herbalist", color, hostname=broker_ip)
+                call_control_maglock_moonlight("humidifier", "unlocked")
+                print(f"{color.capitalize()} potion is solvable!")
+
+                # Set the correct solvable potion flag and reset others
+                reset_potion_flags()
+                if color == "green":
+                    first_potion_solvable = True
+                elif color == "pink":
+                    second_potion_solvable = True
+                elif color == "yellow":
+                    third_potion_solvable = True
+                elif color == "purple":
+                    fourth_potion_solvable = True
+            return
+
+    # If no match, reset the pulled plants list
+    #last_three_pulled = []
+    print("Wrong combination, try again.")
+
+def reset_plants():
+    global last_three_pulled
+    last_three_pulled = []
+    # Additional reset logic, if needed
+
+def reset_potion_flags():
+    global first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable
+    first_potion_solvable = False
+    second_potion_solvable = False
+    third_potion_solvable = False
+    fourth_potion_solvable = False
 def on_message(client, userdata, message):
     global sensor_states, pi_service_statuses, code1, code2, code3, code4, code5, codesCorrect, sequence
     
@@ -584,12 +613,13 @@ def check_rule(item_name, room):
 
         if item:
             item_type = item.get("type")  # Default to "sensor" if type is not specified
-            item_name = item.get("name", "")
-
+            item_name = item.get("name")
             # Special condition for IR sensors
             if item_type == "Sensor" and "ir" in item_name.lower():
                 if item["state"] == "Not Triggered":
                     return True
+                else:
+                    return False
             # General conditions for other sensors and devices
             if item_type == "Sensor" and item["state"] == "Triggered":
                 return True
@@ -1413,6 +1443,7 @@ def reset_task_statuses(room):
     else:     
         sigil_count = 0
         potion_count = 0
+        reset_plants()
     update_game_status('awake', room)
     try:
         with open(file_path, 'r') as file:
