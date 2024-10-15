@@ -391,7 +391,9 @@ def plant_pulled(plant_name, room):
         # Keep only the last three pulled plants
         if len(last_three_pulled) > 3:
             last_three_pulled.pop(0)
-
+        TOPIC = f"led/control/mlv-herbalist/plants_pulled"
+        pulled_plants_str = ",".join(last_three_pulled)
+        publish.single(TOPIC, pulled_plants_str, hostname=broker_ip)
         # If exactly 3 plants are pulled, check if they match a valid combination
         if len(last_three_pulled) == 3:
             check_potion(room)
