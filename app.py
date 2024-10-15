@@ -274,7 +274,7 @@ def handle_rules(sensor_name, sensor_state, room):
             if sensor_state == "solved":
                 solve_task("knocker-solve", room)
         if check_rule("ir-plant-1", room) and check_rule("ir-plant-5", room) and check_rule("ir-plant-8", room):
-            task_state = check_task_state("green-potion-correct", room)
+            task_state = check_task_state("green-potion", room)
             if task_state == "pending":
                 publish.single("led/control/mlv-herbalist", "green", hostname=broker_ip)
                 call_control_maglock_moonlight("humidifier", "unlocked")
@@ -283,7 +283,7 @@ def handle_rules(sensor_name, sensor_state, room):
                 third_potion_solvable = False
                 fourth_potion_solvable = False
         if check_rule("ir-plant-2", room) and check_rule("ir-plant-4", room) and check_rule("ir-plant-7", room):
-            task_state = check_task_state("pink-potion-correct", room)
+            task_state = check_task_state("pink-potion", room)
             if task_state == "pending":
                 publish.single("led/control/mlv-herbalist", "pink", hostname=broker_ip)
                 call_control_maglock_moonlight("humidifier", "unlocked")
@@ -292,7 +292,7 @@ def handle_rules(sensor_name, sensor_state, room):
                 third_potion_solvable = False
                 fourth_potion_solvable = False
         if check_rule("ir-plant-3", room) and check_rule("ir-plant-6", room) and check_rule("ir-plant-9", room):
-            task_state = check_task_state("yellow-potion-correct", room)
+            task_state = check_task_state("yellow-potion", room)
             if task_state == "pending":
                 publish.single("led/control/mlv-herbalist", "yellow", hostname=broker_ip)
                 call_control_maglock_moonlight("humidifier", "unlocked")
@@ -301,7 +301,7 @@ def handle_rules(sensor_name, sensor_state, room):
                 second_potion_solvable = False
                 fourth_potion_solvable = False
         if check_rule("ir-plant-2", room) and check_rule("ir-plant-8", room) and check_rule("ir-plant-3", room):
-            task_state = check_task_state("purple-potion-correct", room)
+            task_state = check_task_state("purple-potion", room)
             if task_state == "pending":
                 publish.single("led/control/mlv-herbalist", "purple", hostname=broker_ip)
                 call_control_maglock_moonlight("humidifier", "unlocked")
