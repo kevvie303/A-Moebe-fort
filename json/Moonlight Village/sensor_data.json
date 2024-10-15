@@ -200,6 +200,14 @@
         "connection_type": "NO"
     },
     {
+        "name": "plant-led",
+        "type": "led",
+        "pin": 18,
+        "pi": "mlv-plants",
+        "state": "Off",
+        "connection_type": "NO"
+    },
+    {
         "name": "dmx-power",
         "type": "maglock",
         "pin": 0,
