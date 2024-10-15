@@ -1392,10 +1392,13 @@ def pend_task(task_name, room):
         return jsonify({'message': 'Error updating task'})
 @app.route('/reset_task_statuses/<room>', methods=['POST'])
 def reset_task_statuses(room):
-    global sequence, sigil_count
+    global sequence, sigil_count, potion_count
     file_path = os.path.join('json', room, 'tasks.json')
-    sequence = 0
-    sigil_count = 0
+    if room == "The Retriever":
+        sequence = 0
+    else:     
+        sigil_count = 0
+        potion_count = 0
     update_game_status('awake', room)
     try:
         with open(file_path, 'r') as file:
