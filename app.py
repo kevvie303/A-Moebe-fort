@@ -274,33 +274,41 @@ def handle_rules(sensor_name, sensor_state, room):
             if sensor_state == "solved":
                 solve_task("knocker-solve", room)
         if check_rule("ir-plant-1", room) and check_rule("ir-plant-5", room) and check_rule("ir-plant-8", room):
-            publish.single("led/control/mlv-herbalist", "green", hostname=broker_ip)
-            call_control_maglock_moonlight("humidifier", "unlocked")
-            first_potion_solvable = True
-            second_potion_solvable = False
-            third_potion_solvable = False
-            fourth_potion_solvable = False
+            task_state = check_task_state("green-potion-correct", room)
+            if task_state == "pending":
+                publish.single("led/control/mlv-herbalist", "green", hostname=broker_ip)
+                call_control_maglock_moonlight("humidifier", "unlocked")
+                first_potion_solvable = True
+                second_potion_solvable = False
+                third_potion_solvable = False
+                fourth_potion_solvable = False
         if check_rule("ir-plant-2", room) and check_rule("ir-plant-4", room) and check_rule("ir-plant-7", room):
-            publish.single("led/control/mlv-herbalist", "pink", hostname=broker_ip)
-            call_control_maglock_moonlight("humidifier", "unlocked")
-            second_potion_solvable = True
-            first_potion_solvable = False
-            third_potion_solvable = False
-            fourth_potion_solvable = False
+            task_state = check_task_state("pink-potion-correct", room)
+            if task_state == "pending":
+                publish.single("led/control/mlv-herbalist", "pink", hostname=broker_ip)
+                call_control_maglock_moonlight("humidifier", "unlocked")
+                second_potion_solvable = True
+                first_potion_solvable = False
+                third_potion_solvable = False
+                fourth_potion_solvable = False
         if check_rule("ir-plant-3", room) and check_rule("ir-plant-6", room) and check_rule("ir-plant-9", room):
-            publish.single("led/control/mlv-herbalist", "yellow", hostname=broker_ip)
-            call_control_maglock_moonlight("humidifier", "unlocked")
-            third_potion_solvable = True
-            first_potion_solvable = False
-            second_potion_solvable = False
-            fourth_potion_solvable = False
+            task_state = check_task_state("yellow-potion-correct", room)
+            if task_state == "pending":
+                publish.single("led/control/mlv-herbalist", "yellow", hostname=broker_ip)
+                call_control_maglock_moonlight("humidifier", "unlocked")
+                third_potion_solvable = True
+                first_potion_solvable = False
+                second_potion_solvable = False
+                fourth_potion_solvable = False
         if check_rule("ir-plant-2", room) and check_rule("ir-plant-8", room) and check_rule("ir-plant-3", room):
-            publish.single("led/control/mlv-herbalist", "purple", hostname=broker_ip)
-            call_control_maglock_moonlight("humidifier", "unlocked")
-            fourth_potion_solvable = True
-            first_potion_solvable = False
-            second_potion_solvable = False
-            third_potion_solvable = False
+            task_state = check_task_state("purple-potion-correct", room)
+            if task_state == "pending":
+                publish.single("led/control/mlv-herbalist", "purple", hostname=broker_ip)
+                call_control_maglock_moonlight("humidifier", "unlocked")
+                fourth_potion_solvable = True
+                first_potion_solvable = False
+                second_potion_solvable = False
+                third_potion_solvable = False
         if first_potion_solvable and sensor_name == "flask-rfid-1":
             if sensor_state == "584197941325":
                 solve_task("green-potion", room)
