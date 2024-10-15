@@ -50,7 +50,27 @@
         "state": "pending"
     },
     {
-        "task": "potions-place",
+        "task": "green-potion-correct",
+        "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
+        "state": "pending"
+    },
+    {
+        "task": "purple-potion-correct",
+        "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
+        "state": "pending"
+    },
+    {
+        "task": "yellow-potion-correct",
+        "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
+        "state": "pending"
+    },
+    {
+        "task": "pink-potion-correct",
+        "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
+        "state": "pending"
+    },
+    {
+        "task": "potion-all",
         "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
         "state": "pending"
     },

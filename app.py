@@ -71,6 +71,11 @@ bird_job = False
 squeak_job = False
 should_hint_shed_play = False
 start_time = None
+first_potion_solvable = False
+second_potion_solvable = False
+third_potion_solvable = False
+fourth_potion_solvable = False
+potion_count = 0
 CHECKLIST_FILE = 'checklist_data.json'
 #logging.basicConfig(level=logging.DEBUG)  # Use appropriate log level
 active_ssh_connections = {}
@@ -200,7 +205,7 @@ pi_service_statuses = {}  # New dictionary to store service statuses for each Pi
 twinkle_sequence = ["g", "g", "d", "d", "e", "e", "d"]
 current_sequence = []
 def handle_rules(sensor_name, sensor_state, room):
-    global sequence, code1, code2, code3, code4, code5, codesCorrect, current_sequence, twinkle_sequence
+    global sequence, code1, code2, code3, code4, code5, codesCorrect, current_sequence, twinkle_sequence, first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable
     if get_game_status(room) == {'status': 'playing'}:
         if check_rule("green_house_ir", room) and sequence == 0:
             task_state = check_task_state("tree-lights", room)
@@ -268,7 +273,50 @@ def handle_rules(sensor_name, sensor_state, room):
         if sensor_name == "knocker":
             if sensor_state == "solved":
                 solve_task("knocker-solve", room)
-
+        if check_rule("ir-plant-1", room) and check_rule("ir-plant-5", room) and check_rule("ir-plant-8", room):
+            publish.single("led/control/mlv-herbalist", "green", hostname=broker_ip)
+            call_control_maglock_moonlight("humidifier", "unlocked")
+            first_potion_solvable = True
+            second_potion_solvable = False
+            third_potion_solvable = False
+            fourth_potion_solvable = False
+        if check_rule("ir-plant-2", room) and check_rule("ir-plant-4", room) and check_rule("ir-plant-7", room):
+            publish.single("led/control/mlv-herbalist", "pink", hostname=broker_ip)
+            call_control_maglock_moonlight("humidifier", "unlocked")
+            second_potion_solvable = True
+            first_potion_solvable = False
+            third_potion_solvable = False
+            fourth_potion_solvable = False
+        if check_rule("ir-plant-3", room) and check_rule("ir-plant-6", room) and check_rule("ir-plant-9", room):
+            publish.single("led/control/mlv-herbalist", "yellow", hostname=broker_ip)
+            call_control_maglock_moonlight("humidifier", "unlocked")
+            third_potion_solvable = True
+            first_potion_solvable = False
+            second_potion_solvable = False
+            fourth_potion_solvable = False
+        if check_rule("ir-plant-2", room) and check_rule("ir-plant-8", room) and check_rule("ir-plant-3", room):
+            publish.single("led/control/mlv-herbalist", "purple", hostname=broker_ip)
+            call_control_maglock_moonlight("humidifier", "unlocked")
+            fourth_potion_solvable = True
+            first_potion_solvable = False
+            second_potion_solvable = False
+            third_potion_solvable = False
+        if first_potion_solvable and sensor_name == "flask-rfid-1":
+            if sensor_state == "584197941325":
+                solve_task("green-potion", room)
+                first_potion_solvable = False
+        if second_potion_solvable and sensor_name == "flask-rfid-2":
+            if sensor_state == "584196892797":
+                solve_task("pink-potion", room)
+                second_potion_solvable = False
+        if third_potion_solvable and sensor_name == "flask-rfid-3":
+            if sensor_state == "584196958334":
+                solve_task("yellow-potion", room)
+                third_potion_solvable = False
+        if fourth_potion_solvable and sensor_name == "flask-rfid-4":
+            if sensor_state == "584197875788":
+                solve_task("purple-potion", room)
+                fourth_potion_solvable = False
         # Check for ast-button-1 through ast-button-9 and match to notes
         button_note_map = {
             "ast-button-1": "a",
@@ -767,6 +815,7 @@ def get_task_status(room):
 @app.route('/solve_task/<task_name>/<room>', methods=['POST'])
 def solve_task(task_name, room):
     global start_time, sequence, code1, code2, code3, code4, code5, codesCorrect, squeak_job, bird_job, should_hint_shed_play, sigil_count
+    global first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable, potion_count
     file_path = os.path.join('json', room, 'tasks.json')
     game_status = get_game_status(room)
     try:
@@ -803,6 +852,34 @@ def solve_task(task_name, room):
         elif task_name == "camera-puzzle":
             if game_status == {'status': 'playing'}:
                 print("camera puzzle solved")
+        elif task_name == "green-potion":
+            if game_status == {'status': 'playing'}:
+                publish.single("led/control/mlv-herbalist", "cauldron-off", hostname=broker_ip)
+                potion_count += 1
+                call_control_maglock_moonlight("humidifier", "locked")
+                if potion_count == 4:
+                    solve_task("potion-all", room)
+        elif task_name == "pink-potion":
+            if game_status == {'status': 'playing'}:
+                publish.single("led/control/mlv-herbalist", "cauldron-off", hostname=broker_ip)
+                potion_count += 1
+                call_control_maglock_moonlight("humidifier", "locked")
+                if potion_count == 4:
+                    solve_task("potion-all", room)
+        elif task_name == "yellow-potion":
+            if game_status == {'status': 'playing'}:
+                publish.single("led/control/mlv-herbalist", "cauldron-off", hostname=broker_ip)
+                potion_count += 1
+                call_control_maglock_moonlight("humidifier", "locked")
+                if potion_count == 4:
+                    solve_task("potion-all", room)
+        elif task_name == "purple-potion":
+            if game_status == {'status': 'playing'}:
+                publish.single("led/control/mlv-herbalist", "cauldron-off", hostname=broker_ip)
+                potion_count += 1
+                call_control_maglock_moonlight("humidifier", "locked")
+                if potion_count == 4:
+                    solve_task("potion-all", room)
         elif task_name == "plant-water":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("herbalist-door-lock", "locked")
