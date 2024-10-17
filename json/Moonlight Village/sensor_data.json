@@ -52,7 +52,7 @@
         "type": "light",
         "pin": 22,
         "pi": "mlv-herbalist",
-        "state": "On",
+        "state": "Off",
         "connection_type": "NO"
     },
     {
@@ -140,7 +140,7 @@
         "type": "light",
         "pin": 12,
         "pi": "mlv-astronomy",
-        "state": "On",
+        "state": "Off",
         "connection_type": "NO"
     },
     {
@@ -188,7 +188,7 @@
         "type": "led",
         "pin": 18,
         "pi": "mlv-herbalist",
-        "state": "On",
+        "state": "Off",
         "connection_type": "NO"
     },
     {
@@ -260,7 +260,7 @@
         "type": "rfid",
         "pin": -1,
         "pi": "mlv-herbalist",
-        "state": "0",
+        "state": "584197941325",
         "connection_type": "NO"
     },
     {
@@ -381,6 +381,38 @@
         "pin": 5,
         "pi": "mlv-plants",
         "state": "Triggered",
+        "connection_type": "NO"
+    },
+    {
+        "name": "smoke-power",
+        "type": "maglock",
+        "pin": 14,
+        "pi": "mlv-central",
+        "state": "Unlocked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "gibbs-sensor",
+        "type": "Sensor",
+        "pin": 16,
+        "pi": "mlv-tavern",
+        "state": "Not Triggered",
+        "connection_type": "NO"
+    },
+    {
+        "name": "wolfsbane-lock",
+        "type": "maglock",
+        "pin": 15,
+        "pi": "mlv-central",
+        "state": "Unlocked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "ritual-puzzle-lock",
+        "type": "maglock",
+        "pin": 18,
+        "pi": "mlv-central",
+        "state": "Unlocked",
         "connection_type": "NO"
     }
 ]

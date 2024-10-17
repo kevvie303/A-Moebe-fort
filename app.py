@@ -926,6 +926,9 @@ def solve_task(task_name, room):
                 call_control_maglock_moonlight("humidifier", "locked")
                 if potion_count == 4:
                     solve_task("potion-all", room)
+        elif task_name == "potion-all":
+            if game_status == {'status': 'playing'}:
+                call_control_maglock_moonlight("wolfsbane-lock", "locked")
         elif task_name == "plant-water":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("herbalist-door-lock", "locked")
@@ -941,12 +944,22 @@ def solve_task(task_name, room):
                 send_dmx_command(0, 0, 0, 0, 255)
                 time.sleep(5)
                 send_dmx_command(0, 0, 0, 0, 0)
+                call_control_maglock_moonlight("ritual-puzzle-lock", "locked")
                 call_control_maglock_moonlight("lamp-post-1", "locked")
                 call_control_maglock_moonlight("lamp-post-2", "locked")
                 publish.single("audio_control/all_moonlight/full_stop", "stop", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/play", "tense.ogg", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/volume", "150 tense.ogg", hostname=broker_ip)
                 start_sequence()
+        elif task_name == "final-sequence":
+            if game_status == {'status': 'playing'}:
+                stop_sequence()
+                publish.single("video_control/mlv-tavern/play", "final_sequence.mp4", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/stop", "tense.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/play", "final_sequence.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/volume", "100 final_sequence.ogg", hostname=broker_ip)
+                time.sleep(53)
+                call_control_maglock_moonlight("tavern-door-lock", "locked")
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
@@ -1219,14 +1232,18 @@ def interpolate(start, end, steps):
 TOPIC_TAVERN = "led/control/mlv-tavern"
 TOPIC_HERBALIST = "led/control/mlv-herbalist"
 TOPIC_ASTRONOMY = "led/control/mlv-astronomy"
+TOPIC_PLANTS = "led/control/mlv-plants"
 def sequence_thread():
     global sequence_running
     try:
         sequence_duration = 0.03  # seconds per step
         steps_between_points = 50  # Adjust this for smoother transitions
-        publish.single(TOPIC_TAVERN, "blink_red", hostname=broker_ip)
+        publish.single(TOPIC_TAVERN, "blink_red_climb", hostname=broker_ip)
+        publish.single(TOPIC_TAVERN, "blink_red_tavern", hostname=broker_ip)
         publish.single(TOPIC_HERBALIST, "blink_green", hostname=broker_ip)
         publish.single(TOPIC_ASTRONOMY, "blink_green", hostname=broker_ip)
+        publish.single(TOPIC_PLANTS, "blink_red_plants", hostname=broker_ip)
+        publish.single(TOPIC_PLANTS, "blink_red_corridor", hostname=broker_ip) 
         # Define patrol points
         points = [
             {'pan': 172, 'tilt': 10},  # Point A
@@ -1264,9 +1281,17 @@ def sequence_thread():
 
             # Randomize points every 2 full cycles
             if cycle_count % 16 == 0:  # Every 16 cycles
-                publish.single(TOPIC_TAVERN, "blink_green", hostname=broker_ip)
+                publish.single(TOPIC_TAVERN, "blink_green_tavern", hostname=broker_ip)
+                publish.single(TOPIC_TAVERN, "blink_red_climb", hostname=broker_ip)
                 publish.single(TOPIC_HERBALIST, "blink_red", hostname=broker_ip)
                 publish.single(TOPIC_ASTRONOMY, "blink_red", hostname=broker_ip)
+                publish.single(TOPIC_PLANTS, "blink_red_plants", hostname=broker_ip)
+                publish.single(TOPIC_PLANTS, "blink_red_corridor", hostname=broker_ip)
+                call_control_maglock_moonlight("tavern-door-lock", "unlocked")
+                call_control_maglock_moonlight("herbalist-door-lock", "locked")
+                call_control_maglock_moonlight("astronomy-door-lock", "unlocked")
+                call_control_maglock_moonlight("secret-door-lock", "unlocked")
+                call_control_maglock_moonlight("corridor-door-lock", "unlocked")
                 points = [
                     {'pan': 172, 'tilt': 10},  # Point A
                     {'pan': 150, 'tilt': 25},  # Point B
@@ -1282,9 +1307,12 @@ def sequence_thread():
                 print('Points randomized! New order:', points)
 
             elif cycle_count % 12 == 0:  # Every 12 cycles
-                publish.single(TOPIC_TAVERN, "blink_red", hostname=broker_ip)
+                publish.single(TOPIC_TAVERN, "blink_red_tavern", hostname=broker_ip)
+                publish.single(TOPIC_TAVERN, "blink_red_climb", hostname=broker_ip)
                 publish.single(TOPIC_HERBALIST, "blink_green", hostname=broker_ip)
                 publish.single(TOPIC_ASTRONOMY, "blink_red", hostname=broker_ip)
+                publish.single(TOPIC_PLANTS, "blink_red_plants", hostname=broker_ip)
+                publish.single(TOPIC_PLANTS, "blink_green_corridor", hostname=broker_ip)
                 points = [
                     {'pan': 172, 'tilt': 10},  # Point A
                     {'pan': 150, 'tilt': 25},  # Point B
@@ -1300,9 +1328,12 @@ def sequence_thread():
                 print('Points randomized! New order:', points)
 
             elif cycle_count % 8 == 0:  # Every 8 cycles
-                publish.single(TOPIC_TAVERN, "blink_red", hostname=broker_ip)
+                publish.single(TOPIC_TAVERN, "blink_red_tavern", hostname=broker_ip)
+                publish.single(TOPIC_TAVERN, "blink_red_climb", hostname=broker_ip)
                 publish.single(TOPIC_HERBALIST, "blink_red", hostname=broker_ip)
                 publish.single(TOPIC_ASTRONOMY, "blink_green", hostname=broker_ip)
+                publish.single(TOPIC_PLANTS, "blink_green_plants", hostname=broker_ip)
+                publish.single(TOPIC_PLANTS, "blink_red_corridor", hostname=broker_ip)
                 points = [
                     {'pan': 172, 'tilt': 10},  # Point A
                     {'pan': 150, 'tilt': 25},  # Point B
@@ -1318,9 +1349,12 @@ def sequence_thread():
                 print('Points randomized! New order:', points)
 
             elif cycle_count % 4 == 0:  # Every 4 cycles
-                publish.single(TOPIC_TAVERN, "blink_red", hostname=broker_ip)
-                publish.single(TOPIC_HERBALIST, "blink_green", hostname=broker_ip)
-                publish.single(TOPIC_ASTRONOMY, "blink_green", hostname=broker_ip)
+                publish.single(TOPIC_TAVERN, "blink_green_climb", hostname=broker_ip)
+                publish.single(TOPIC_TAVERN, "blink_red_tavern", hostname=broker_ip)
+                publish.single(TOPIC_HERBALIST, "blink_red", hostname=broker_ip)
+                publish.single(TOPIC_ASTRONOMY, "blink_red", hostname=broker_ip)
+                publish.single(TOPIC_PLANTS, "blink_red_plants", hostname=broker_ip)
+                publish.single(TOPIC_PLANTS, "blink_green_corridor", hostname=broker_ip)
                 points = [
                     {'pan': 172, 'tilt': 10},  # Point A
                     {'pan': 150, 'tilt': 25},  # Point B
@@ -1446,6 +1480,7 @@ def reset_task_statuses(room):
         sigil_count = 0
         potion_count = 0
         reset_plants()
+        publish.single("video_control/mlv-tavern/stop", "stop", hostname=broker_ip)
     update_game_status('awake', room)
     try:
         with open(file_path, 'r') as file:
@@ -2197,6 +2232,8 @@ def start_timer(room):
             time.sleep(1)
             publish.single("audio_control/ret-top/play", "Ambience.ogg", hostname=broker_ip)
             fade_music_in(room)
+        else:
+            publish.single("video_control/mlv-tavern/play", "fireplace.mp4", hostname=broker_ip)
         return 'Timer started'
 @app.route('/timer/stop/<room>', methods=['POST'])
 def stop_timer(room):
