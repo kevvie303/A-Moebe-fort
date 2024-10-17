@@ -758,29 +758,39 @@ def get_played_music_status():
 def fade_music_out(file, room):
     global broker_ip
     print(file)
-    if file == "Lounge":
-        initial_volume = 70
-        final_volume = 0
-    else:
-        initial_volume = 35
-        final_volume = 10
-
-    # Gradually increase the volume
-    current_volume = initial_volume
-    while current_volume > final_volume:
-        current_volume -= 1  # Increase volume by 1 each second
-        payload = f"{int(current_volume)} {file}.ogg"
+    if room == "The Retriever":
         if file == "Lounge":
-            publish.single("audio_control/ret-top/volume", payload, hostname=broker_ip)
+            initial_volume = 70
+            final_volume = 0
         else:
-            publish.single("audio_control/ret-top/volume", payload, hostname=broker_ip)
-        print(current_volume)
-        if file == "alarm":
+            initial_volume = 35
+            final_volume = 10
+
+        # Gradually increase the volume
+        current_volume = initial_volume
+        while current_volume > final_volume:
+            current_volume -= 1  # Increase volume by 1 each second
+            payload = f"{int(current_volume)} {file}.ogg"
+            if file == "Lounge":
+                publish.single("audio_control/ret-top/volume", payload, hostname=broker_ip)
+            else:
+                publish.single("audio_control/ret-top/volume", payload, hostname=broker_ip)
+            print(current_volume)
+            if file == "alarm":
+                time.sleep(0.05)
+            else:
+                time.sleep(0.05)
+        if file != "Lounge":
+            publish.single("audio_control/all_retriever/play", "prehint.ogg", hostname=broker_ip)
+    else:
+        initial_volume = 70
+        final_volume = 5
+        current_volume = initial_volume
+        while current_volume > final_volume:
+            current_volume -= 1
+            payload = f"{int(current_volume)} {file}.ogg"
+            publish.single("audio_control/raspberrypi/volume", payload, hostname=broker_ip)
             time.sleep(0.05)
-        else:
-            time.sleep(0.05)
-    if file != "Lounge":
-        publish.single("audio_control/all_retriever/play", "prehint.ogg", hostname=broker_ip)
     return "Volume faded successfully"
 @app.route('/fade_music_out/<room>', methods=['POST'])
 def fade_music_out_hint(room):
@@ -901,7 +911,7 @@ def solve_task(task_name, room):
         if task_name == "lights-on":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/mlv-central/play", "bg_central.ogg", hostname=broker_ip)
-                publish.single("audio_control/raspberrypi/volume", "5 bg_corridor.ogg", hostname=broker_ip)
+                fade_music_out("bg_corridor", room)
                 call_control_maglock_moonlight("corridor-door-lock", "locked")
         elif task_name == "moon-place":
             if game_status == {'status': 'playing'}:
