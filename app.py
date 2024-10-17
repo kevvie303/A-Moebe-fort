@@ -270,6 +270,10 @@ def handle_rules(sensor_name, sensor_state, room):
             task_state = check_task_state("plant-water", room)
             if task_state == "pending":
                 solve_task("plant-water", room) 
+        if check_rule("gibbs-sensor", room):
+            task_state = check_task_state("gibbs", room)
+            if task_state == "pending":
+                solve_task("gibbs", room)
         if sensor_name == "light_count":
             if sensor_state == "5":
                 solve_task("lights-on", room)
@@ -429,6 +433,9 @@ def check_potion(room):
 def reset_plants():
     global last_three_pulled
     last_three_pulled = []
+    TOPIC = f"led/control/mlv-herbalist/plants_pulled"
+    pulled_plants_str = ",".join(last_three_pulled)
+    publish.single(TOPIC, pulled_plants_str, hostname=broker_ip)
     # Additional reset logic, if needed
 
 def reset_potion_flags():
@@ -877,6 +884,7 @@ def solve_task(task_name, room):
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/mlv-central/play", "bg_central.ogg", hostname=broker_ip)
                 publish.single("audio_control/raspberrypi/volume", "5 bg_corridor.ogg", hostname=broker_ip)
+                call_control_maglock_moonlight("corridor-door-lock", "locked")
         elif task_name == "moon-place":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("astronomy-door-lock", "locked")
@@ -929,6 +937,9 @@ def solve_task(task_name, room):
         elif task_name == "potion-all":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("wolfsbane-lock", "locked")
+        elif task_name == "gibbs":
+            if game_status == {'status': 'playing'}:
+                call_control_maglock_moonlight("secret-door-lock", "locked")
         elif task_name == "plant-water":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("herbalist-door-lock", "locked")
@@ -2220,7 +2231,7 @@ def start_timer(room):
         timer_threads[room] = Thread(target=update_timer, args=(room,))
         timer_threads[room].daemon = True
         timer_threads[room].start()
-
+        socketio.emit('sensor_update', room="all_clients")
         # Your existing code to start the timer
         update_game_status('playing', room)
         if bird_job == False and room == "The Retriever":
@@ -2249,6 +2260,7 @@ def stop_timer(room):
         reset_checklist(room)
         reset_timer_speed(room)
         end_time = datetime.now()
+        socketio.emit('sensor_update', room="all_clients")
     stop_music(room)
     if start_time is not None:
         write_game_data(start_time, end_time)

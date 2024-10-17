@@ -40,16 +40,6 @@
         "state": "pending"
     },
     {
-        "task": "climb-door-lamp",
-        "description": "send climb-door-lamp-4 to send the light to the door, solve this task when the players have opened it.",
-        "state": "pending"
-    },
-    {
-        "task": "book-sequence",
-        "description": "Players have pressed the 4 books in the correct order, this will open the secret hatch to the area behind the herbalist room.",
-        "state": "pending"
-    },
-    {
         "task": "green-potion",
         "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
         "state": "pending"
@@ -75,7 +65,7 @@
         "state": "pending"
     },
     {
-        "task": "camera-puzzle",
+        "task": "rune-puzzle",
         "description": "Players have solved the webcam puzzle, this does something",
         "state": "pending"
     },

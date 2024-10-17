@@ -414,5 +414,21 @@
         "pi": "mlv-central",
         "state": "Unlocked",
         "connection_type": "NO"
+    },
+    {
+        "name": "secret-door-lock",
+        "type": "maglock",
+        "pin": 12,
+        "pi": "mlv-tavern",
+        "state": "Unlocked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "corridor-door-lock",
+        "type": "maglock",
+        "pin": 20,
+        "pi": "mlv-herbalist",
+        "state": "Unlocked",
+        "connection_type": "NO"
     }
 ]
