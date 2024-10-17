@@ -78,7 +78,7 @@ fourth_potion_solvable = False
 potion_count = 0
 last_three_pulled = []  # List to keep track of the last three plants pulled
 valid_combinations = {
-    "green": ["ir-plant-6", "ir-plant-3", "ir-plant-8"],
+    "green": ["ir-plant-5", "ir-plant-3", "ir-plant-8"],
     "pink": ["ir-plant-2", "ir-plant-9", "ir-plant-1"],
     "yellow": ["ir-plant-1", "ir-plant-6", "ir-plant-9"],
     "purple": ["ir-plant-3", "ir-plant-6", "ir-plant-7"]
