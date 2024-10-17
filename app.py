@@ -785,30 +785,48 @@ def fade_music_out(file, room):
 @app.route('/fade_music_out/<room>', methods=['POST'])
 def fade_music_out_hint(room):
         # Gradually reduce the volume from 80 to 40
-    for volume in range(35, 10, -1):
-        # Send the volume command to the Raspberry Pi
-        
-        if check_task_state("squeekuence", room) == "solved":
-            publish.single("audio_control/ret-middle/volume", f"{volume} Background.ogg", hostname=broker_ip)
-        else:
-            publish.single("audio_control/ret-top/volume", f"{volume} Ambience.ogg", hostname=broker_ip)
-        
-        # Wait for a short duration between volume changes
-        time.sleep(0.05)  # Adjust the sleep duration as needed
-    time.sleep(1)
-    publish.single("audio_control/all_retriever/play", "prehint.ogg", hostname=broker_ip)
+    if room == "The Retriever":
+        for volume in range(35, 10, -1):
+            # Send the volume command to the Raspberry Pi
+            
+            if check_task_state("squeekuence", room) == "solved":
+                publish.single("audio_control/ret-middle/volume", f"{volume} Background.ogg", hostname=broker_ip)
+            else:
+                publish.single("audio_control/ret-top/volume", f"{volume} Ambience.ogg", hostname=broker_ip)
+            
+            # Wait for a short duration between volume changes
+            time.sleep(0.05)  # Adjust the sleep duration as needed
+        time.sleep(1)
+    else:
+        for volume in range(70, 10, -1):
+            # Send the volume command to the Raspberry Pi
+                publish.single("audio_control/mlv-central/volume", f"{volume} bg_central.ogg", hostname=broker_ip)
+            # Wait for a short duration between volume changes
+                time.sleep(0.05)
+        time.sleep(1)
+    if room == "The Retriever":
+        publish.single("audio_control/all_retriever/play", "prehint.ogg", hostname=broker_ip)
+    else:
+        publish.single("audio_control/mlv-cenrtal/play", "prehint.ogg", hostname=broker_ip)
     return "Volume faded successfully"
 @app.route('/fade_music_in/<room>', methods=['POST'])
 def fade_music_in(room):
         # Gradually reduce the volume from 80 to 40
-    for volume in range(10, 35, 1):
-        # Send the volume command to the Raspberry Pi
-        if check_task_state("squeekuence", room) == "solved":
-            publish.single("audio_control/ret-middle/volume", f"{volume} Background.ogg", hostname=broker_ip)
-        else:
-            publish.single("audio_control/ret-top/volume", f"{volume} Ambience.ogg", hostname=broker_ip)
-        # Wait for a short duration between volume changes
-        time.sleep(0.05)  # Adjust the sleep duration as needed
+    if room == "The Retriever":
+        for volume in range(10, 35, 1):
+            # Send the volume command to the Raspberry Pi
+            if check_task_state("squeekuence", room) == "solved":
+                publish.single("audio_control/ret-middle/volume", f"{volume} Background.ogg", hostname=broker_ip)
+            else:
+                publish.single("audio_control/ret-top/volume", f"{volume} Ambience.ogg", hostname=broker_ip)
+            # Wait for a short duration between volume changes
+            time.sleep(0.05)  # Adjust the sleep duration as needed
+    else:
+        for volume in range(10, 70, 1):
+            # Send the volume command to the Raspberry Pi
+            publish.single("audio_control/mlv-central/volume", f"{volume} bg_central.ogg", hostname=broker_ip)
+            # Wait for a short duration between volume changes
+            time.sleep(0.05)
     return "Volume faded successfully"
 
 # Route to display the SD Renewal page
