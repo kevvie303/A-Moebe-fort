@@ -254,24 +254,6 @@ def handle_rules(sensor_name, sensor_state, room):
             task_state = check_task_state("moon-place", room)
             if task_state == "pending":
                 solve_task("moon-place", room)
-        if check_rule("flask-sensor", room):
-            time.sleep(1)
-            if check_rule("flask-sensor", room):
-                task_state = check_task_state("flask-place", room)
-                if task_state == "pending":
-                    solve_task("flask-place", room)
-        if check_rule("barrel-sensor", room):
-            time.sleep(1)
-            if check_rule("barrel-sensor", room):
-                task_state = check_task_state("barrel-place", room)
-                if task_state == "pending":
-                    solve_task("barrel-place", room)
-        if check_rule("telescope-sensor", room):
-            time.sleep(1)
-            if check_rule("telescope-sensor", room):
-                task_state = check_task_state("telescope-place", room)
-                if task_state == "pending":
-                    solve_task("telescope-place", room)
         if check_rule("watersensor", room):
             task_state = check_task_state("plant-water", room)
             if task_state == "pending":
