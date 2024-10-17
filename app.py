@@ -808,10 +808,17 @@ def fade_music_out_hint(room):
             time.sleep(0.05)  # Adjust the sleep duration as needed
         time.sleep(1)
     else:
-        for volume in range(70, 10, -1):
-            # Send the volume command to the Raspberry Pi
+        if check_task_state("sigil-all", room) == "solved":
+            for volume in range(150, 10, -1):
+                # Send the volume command to the Raspberry Pi
+                publish.single("audio_control/mlv-central/volume", f"{volume} tense.ogg", hostname=broker_ip)
+                # Wait for a short duration between volume changes
+                time.sleep(0.05)
+        else:
+            for volume in range(70, 10, -1):
+                # Send the volume command to the Raspberry Pi
                 publish.single("audio_control/mlv-central/volume", f"{volume} bg_central.ogg", hostname=broker_ip)
-            # Wait for a short duration between volume changes
+                # Wait for a short duration between volume changes
                 time.sleep(0.05)
         time.sleep(1)
     if room == "The Retriever":
@@ -832,11 +839,18 @@ def fade_music_in(room):
             # Wait for a short duration between volume changes
             time.sleep(0.05)  # Adjust the sleep duration as needed
     else:
-        for volume in range(10, 70, 1):
-            # Send the volume command to the Raspberry Pi
-            publish.single("audio_control/mlv-central/volume", f"{volume} bg_central.ogg", hostname=broker_ip)
-            # Wait for a short duration between volume changes
-            time.sleep(0.05)
+        if check_task_state("sigil-all", room) == "solved":
+            for volume in range(10, 150, 1):
+                # Send the volume command to the Raspberry Pi
+                publish.single("audio_control/mlv-central/volume", f"{volume} tense.ogg", hostname=broker_ip)
+                # Wait for a short duration between volume changes
+                time.sleep(0.05)
+        else:
+            for volume in range(10, 70, 1):
+                # Send the volume command to the Raspberry Pi
+                publish.single("audio_control/mlv-central/volume", f"{volume} bg_central.ogg", hostname=broker_ip)
+                # Wait for a short duration between volume changes
+                time.sleep(0.05)
     return "Volume faded successfully"
 
 # Route to display the SD Renewal page
