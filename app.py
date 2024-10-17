@@ -78,10 +78,10 @@ fourth_potion_solvable = False
 potion_count = 0
 last_three_pulled = []  # List to keep track of the last three plants pulled
 valid_combinations = {
-    "green": ["ir-plant-1", "ir-plant-5", "ir-plant-8"],
-    "pink": ["ir-plant-2", "ir-plant-4", "ir-plant-7"],
-    "yellow": ["ir-plant-3", "ir-plant-6", "ir-plant-9"],
-    "purple": ["ir-plant-2", "ir-plant-8", "ir-plant-3"]
+    "green": ["ir-plant-6", "ir-plant-3", "ir-plant-8"],
+    "pink": ["ir-plant-2", "ir-plant-9", "ir-plant-1"],
+    "yellow": ["ir-plant-1", "ir-plant-6", "ir-plant-9"],
+    "purple": ["ir-plant-3", "ir-plant-6", "ir-plant-7"]
 }
 CHECKLIST_FILE = 'checklist_data.json'
 #logging.basicConfig(level=logging.DEBUG)  # Use appropriate log level
@@ -292,7 +292,7 @@ def handle_rules(sensor_name, sensor_state, room):
                 solve_task("green-potion", room)
                 first_potion_solvable = False
         if second_potion_solvable and sensor_name == "flask-rfid-2":
-            if sensor_state == "584196892797":
+            if sensor_state == "584197875788":
                 solve_task("pink-potion", room)
                 second_potion_solvable = False
         if third_potion_solvable and sensor_name == "flask-rfid-3":
@@ -300,7 +300,7 @@ def handle_rules(sensor_name, sensor_state, room):
                 solve_task("yellow-potion", room)
                 third_potion_solvable = False
         if fourth_potion_solvable and sensor_name == "flask-rfid-4":
-            if sensor_state == "584197875788":
+            if sensor_state == "584196892797":
                 solve_task("purple-potion", room)
                 fourth_potion_solvable = False
         # Check for ast-button-1 through ast-button-9 and match to notes
