@@ -997,6 +997,7 @@ def solve_task(task_name, room):
                 publish.single("audio_control/mlv-central/volume", "100 final_sequence.ogg", hostname=broker_ip)
                 time.sleep(53)
                 call_control_maglock_moonlight("tavern-door-lock", "locked")
+                call_control_maglock_moonlight("final-door-lock", "locked")
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
