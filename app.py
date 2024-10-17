@@ -2271,6 +2271,9 @@ def start_timer(room):
             fade_music_in(room)
         else:
             publish.single("video_control/mlv-tavern/play", "fireplace.mp4", hostname=broker_ip)
+            send_dmx_command(0, 0, 0, 0, 255)
+            time.sleep(9)
+            send_dmx_command(0, 0, 0, 0, 0)
         return 'Timer started'
 @app.route('/timer/stop/<room>', methods=['POST'])
 def stop_timer(room):
@@ -2462,6 +2465,7 @@ def prepare_game(room):
     else:
         publish.single("audio_control/raspberrypi/play", "bg_corridor.ogg", hostname=broker_ip)
         publish.single("led/control/mlv-corridors", "unlocked", hostname=broker_ip)
+        call_control_maglock_moonlight("smoke-power", "unlocked")
     return jsonify({"message": converted_statuses}), 200
 if romy == False:
     turn_on_api()
