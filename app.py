@@ -807,7 +807,7 @@ def fade_music_out_hint(room):
     if room == "The Retriever":
         publish.single("audio_control/all_retriever/play", "prehint.ogg", hostname=broker_ip)
     else:
-        publish.single("audio_control/mlv-cenrtal/play", "prehint.ogg", hostname=broker_ip)
+        publish.single("audio_control/mlv-central/play", "prehint.ogg", hostname=broker_ip)
     return "Volume faded successfully"
 @app.route('/fade_music_in/<room>', methods=['POST'])
 def fade_music_in(room):
