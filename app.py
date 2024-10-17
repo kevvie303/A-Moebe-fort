@@ -889,7 +889,6 @@ def solve_task(task_name, room):
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("astronomy-door-lock", "locked")
                 publish.single("led/control/mlv-astronomy", "unlocked", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/play", "right door.ogg", hostname=broker_ip)
         elif task_name == "knocker-solve":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("tavern-door-lock", "locked")
@@ -899,7 +898,6 @@ def solve_task(task_name, room):
                 call_control_maglock_moonlight("rem-lamp", "unlocked")
                 call_control_maglock_moonlight("blacklight-astronomy", "unlocked")
                 publish.single("led/control/mlv-astronomy", "locked", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/play", "planet-solve.ogg", hostname=broker_ip)
         elif task_name == "constellations":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("blacklight-astronomy", "locked")
