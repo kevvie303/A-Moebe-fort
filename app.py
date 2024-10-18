@@ -284,11 +284,11 @@ def handle_rules(sensor_name, sensor_state, room):
                 solve_task("orange-potion", room)
                 second_potion_solvable = False
         if third_potion_solvable and sensor_name == "flask-rfid-3":
-            if sensor_state == "584196958334":
+            if sensor_state == "584196892797":
                 solve_task("yellow-potion", room)
                 third_potion_solvable = False
         if fourth_potion_solvable and sensor_name == "flask-rfid-4":
-            if sensor_state == "584196892797":
+            if sensor_state == "584196958334":
                 solve_task("purple-potion", room)
                 fourth_potion_solvable = False
         # Check for ast-button-1 through ast-button-9 and match to notes
