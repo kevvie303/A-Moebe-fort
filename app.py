@@ -1666,12 +1666,14 @@ def snooze_game(room):
             for device in devices:
                 if device["type"] in ["maglock", "light"]:
                     call_control_maglock_retriever(device["name"], "locked")
-                if device["name"] == "laser-1" or device["name"] == "laser-2":
+                if device["name"] == "laser-1" or device["name"] == "laser-2" or device["name"] == "top_left_light" or device["name"] == "top_right_light" or device["name"] == "bottom_left_light" or device["name"] == "bottom_right_light":
                     call_control_maglock_retriever(device["name"], "unlocked")
         else:
             for device in devices:
                 if device["type"] in ["maglock", "light"]:
                     call_control_maglock_moonlight(device["name"], "locked")
+                if device["name"] == "rem-lamp":
+                    call_control_maglock_moonlight(device["name"], "unlocked")
             publish.single("led/control/mlv-herbalist", "locked", hostname=broker_ip)
             publish.single("led/control/mlv-tavern", "locked", hostname=broker_ip)
             publish.single("led/control/mlv-astronomy", "locked", hostname=broker_ip)
