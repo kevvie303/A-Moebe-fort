@@ -976,6 +976,7 @@ def solve_task(task_name, room):
                 publish.single("audio_control/mlv-central/play", "sigal-all-first.ogg", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/volume", "100 sigal-all-first.ogg", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/volume", "20 bg_central.ogg", hostname=broker_ip)
+                call_control_maglock_moonlight("dmx-power", "unlocked")
                 time.sleep(12)
                 publish.single("audio_control/mlv-central/play", "sigil-all-second.ogg", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/volume", "100 sigil-all-second.ogg", hostname=broker_ip)
@@ -1766,6 +1767,7 @@ def handle_preset(message_key):
             presets = json.load(f)
         preset = presets.get(message_key)
         if preset:
+            call_control_maglock_moonlight("dmx-power", "unlocked")
             send_dmx_command(preset['pan'], preset['tilt'], preset['colour'], preset['gobo'], preset['smoke'])
 @app.route('/play_music/<room>', methods=['POST'])
 def play_music(room):
