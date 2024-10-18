@@ -79,7 +79,7 @@ potion_count = 0
 last_three_pulled = []  # List to keep track of the last three plants pulled
 valid_combinations = {
     "green": ["ir-plant-5", "ir-plant-3", "ir-plant-8"],
-    "pink": ["ir-plant-2", "ir-plant-9", "ir-plant-1"],
+    "orange": ["ir-plant-2", "ir-plant-9", "ir-plant-1"],
     "yellow": ["ir-plant-1", "ir-plant-6", "ir-plant-9"],
     "purple": ["ir-plant-3", "ir-plant-6", "ir-plant-7"]
 }
@@ -406,7 +406,7 @@ def check_potion(room):
                 # reset_potion_flags()
                 if color == "green":
                     first_potion_solvable = True
-                elif color == "pink":
+                elif color == "orange":
                     second_potion_solvable = True
                 elif color == "yellow":
                     third_potion_solvable = True
