@@ -403,7 +403,7 @@ def check_potion(room):
                 print(f"{color.capitalize()} potion is solvable!")
 
                 # Set the correct solvable potion flag and reset others
-                reset_potion_flags()
+                # reset_potion_flags()
                 if color == "green":
                     first_potion_solvable = True
                 elif color == "pink":
@@ -1520,6 +1520,7 @@ def reset_task_statuses(room):
         sigil_count = 0
         potion_count = 0
         reset_plants()
+        reset_potion_flags()
         publish.single("video_control/mlv-tavern/stop", "stop", hostname=broker_ip)
     update_game_status('awake', room)
     try:
