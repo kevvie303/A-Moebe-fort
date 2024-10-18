@@ -968,6 +968,7 @@ def solve_task(task_name, room):
         elif task_name == "gibbs":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("secret-door-lock", "locked")
+                handle_preset("climb-door-lamp")
         elif task_name == "plant-water":
             if game_status == {'status': 'playing'}:
                 call_control_maglock_moonlight("herbalist-door-lock", "locked")
