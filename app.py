@@ -1779,11 +1779,11 @@ def play_music(room):
         publish.single("servo_control/ret-middle", "servo2", hostname=broker_ip)
         call_control_maglock_retriever("laser-2", "unlocked")
         call_control_maglock_retriever("laser-1", "locked")
-    elif message == "knocker-solve-1":
+    elif message == "knocker-solve-1.ogg":
         handle_preset("knocker-solve")
-    elif message == "moon-place-1":
+    elif message == "moon-place-1.ogg":
         handle_preset("moon-place")
-    elif message == "plant-place-1":
+    elif message == "plant-place-1.ogg":
         handle_preset("plant-place")
     elif room == "The Retriever":
         publish.single("audio_control/all_retriever/play", message, hostname=broker_ip)
