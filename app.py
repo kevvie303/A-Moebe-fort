@@ -281,7 +281,7 @@ def handle_rules(sensor_name, sensor_state, room):
                 first_potion_solvable = False
         if second_potion_solvable and sensor_name == "flask-rfid-2":
             if sensor_state == "584197875788":
-                solve_task("pink-potion", room)
+                solve_task("orange-potion", room)
                 second_potion_solvable = False
         if third_potion_solvable and sensor_name == "flask-rfid-3":
             if sensor_state == "584196958334":
@@ -941,7 +941,7 @@ def solve_task(task_name, room):
                 call_control_maglock_moonlight("humidifier", "locked")
                 if potion_count == 4:
                     solve_task("potion-all", room)
-        elif task_name == "pink-potion":
+        elif task_name == "orange-potion":
             if game_status == {'status': 'playing'}:
                 publish.single("led/control/mlv-herbalist", "cauldron-off", hostname=broker_ip)
                 potion_count += 1
@@ -1000,6 +1000,7 @@ def solve_task(task_name, room):
                 time.sleep(53)
                 call_control_maglock_moonlight("tavern-door-lock", "locked")
                 call_control_maglock_moonlight("final-door-lock", "locked")
+                stop_timer(room)
         elif task_name == "paw-maze":
             if squeak_job == False:
                 scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')

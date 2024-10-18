@@ -55,7 +55,7 @@
         "state": "pending"
     },
     {
-        "task": "pink-potion",
+        "task": "orange-potion",
         "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
         "state": "pending"
     },
@@ -91,12 +91,7 @@
     },
     {
         "task": "final-sequence",
-        "description": "Players need to avoid the red light in the room by hiding in the buildins that stay green, this will last about 3/4 minutes.",
-        "state": "pending"
-    },
-    {
-        "task": "exit",
-        "description": "After the final hiding place (tavern), the players will see a video of a werewolf knocking on their door. After this video, they can exit the room by following the lights.",
+        "description": "This starts the final video and ends the game after the tavern opens.",
         "state": "pending"
     }
 ]
