@@ -408,9 +408,9 @@ def check_potion(room):
                     first_potion_solvable = True
                 elif color == "orange":
                     second_potion_solvable = True
-                elif color == "yellow":
-                    third_potion_solvable = True
                 elif color == "purple":
+                    third_potion_solvable = True
+                elif color == "yellow":
                     fourth_potion_solvable = True
             return
 
