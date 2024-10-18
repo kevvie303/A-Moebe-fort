@@ -1677,6 +1677,7 @@ def snooze_game(room):
             publish.single("led/control/mlv-astronomy", "locked", hostname=broker_ip)
             publish.single("led/control/mlv-corridors", "locked", hostname=broker_ip)
             publish.single("led/control/mlv-webcam", "locked", hostname=broker_ip)
+            publish.single("led/control/mlv-plants", "locked", hostname=broker_ip)
         return "Room snoozed"
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
