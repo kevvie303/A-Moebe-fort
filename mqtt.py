@@ -302,7 +302,7 @@ def on_message(client, userdata, message):
             if check_task_state("granaat-allemaal") == "pending":
                 solve_task("granaat-allemaal")
         if check_rule("camera_button"):
-            if check_task_state("Stroomstoring") == "pending":
+            if check_task_state("Stroomstoring") == "pending" and check_task_state("3-objects") == "solved":
                 solve_task("Stroomstoring")
         if check_rule("ehbo-kist") == False:
             if check_task_state("Medicijnkastje-open") == "pending":

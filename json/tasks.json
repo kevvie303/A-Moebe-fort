@@ -75,11 +75,6 @@
         "state": "pending"
     },
     {
-        "task": "stoelvoel",
-        "description": "In de poepdozen zijn 2 plaatjes te vinden dat je onder een stoel moet voelen. Dit moet vanaf het stukje tape en dan met de klok mee. Hier voel je 2,4,1,2 gaatjes onder de poten. Hiermee kan een poepdoos geopend worden waar een granaat in ligt.",
-        "state": "pending"
-    },
-    {
         "task": "alarm-knop",
         "description": "Bij binnenkomst van de poepdozen hoor je iemand in de wc neuriën en even later zingen. Dit is morsecode en moet vertaald worden bij het morseblad in de garderobe. Hier is het woord ‘VRIJ’ uit te halen.",
         "state": "pending"
