@@ -265,6 +265,9 @@ def handle_rules(sensor_name, sensor_state, room):
         if sensor_name == "light_count":
             if sensor_state == "5":
                 solve_task("lights-on", room)
+        if sensor_name == "entrance-door":
+            if sensor_state == "Not Triggered":
+                call_control_maglock_moonlight("entrance-door-lock", "unlocked")
         if sensor_name == "knocker":
             if sensor_state == "solved":
                 solve_task("knocker-solve", room)
@@ -2283,6 +2286,7 @@ def start_timer(room):
             fade_music_in(room)
         else:
             publish.single("video_control/mlv-tavern/play", "fireplace.mp4", hostname=broker_ip)
+            call_control_maglock_moonlight("entrance-door-lock", "locked")
             send_dmx_command(0, 0, 0, 0, 255)
             time.sleep(9)
             send_dmx_command(0, 0, 0, 0, 0)

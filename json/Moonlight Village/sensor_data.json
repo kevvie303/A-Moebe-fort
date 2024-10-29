@@ -430,5 +430,21 @@
         "pi": "mlv-herbalist",
         "state": "Unlocked",
         "connection_type": "NO"
+    },
+    {
+        "name": "entrance-door-lock",
+        "type": "maglock",
+        "pin": 1,
+        "pi": "mlv-plants",
+        "state": "Unlocked",
+        "connection_type": "NO"
+    },
+    {
+        "name": "entrance-door",
+        "type": "Sensor",
+        "pin": 24,
+        "pi": "mlv-plants",
+        "state": "initial",
+        "connection_type": "NO"
     }
 ]
