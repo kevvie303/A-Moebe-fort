@@ -1074,8 +1074,15 @@ section.control-container section.tasks div#task-list {
 }
 section.control-container section.tasks div#task-list p {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   cursor: pointer;
+}
+section.control-container section.tasks div#task-list p .task-name {
+  flex: 1;
+}
+section.control-container section.tasks div#task-list p .duration {
+  margin-right: 10px;
+  font-size: small;
 }
 section.control-container section.tasks article.task-button-container {
   display: flex;
