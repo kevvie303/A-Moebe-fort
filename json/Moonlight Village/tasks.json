@@ -7,91 +7,147 @@
     {
         "task": "moon-place",
         "description": "Players have placed the 3 moon pieces in the correct place on the astronomy tower (opens the door).",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "lights-on"
+        ]
     },
     {
         "task": "plant-water",
         "description": "Players have placed the plant in the right spot in front of the herbalist building (opens the door).",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "lights-on"
+        ]
     },
     {
         "task": "knocker-solve",
         "description": "Players have repeated the right sequence of knocking on the tavern building (opens the door).",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "lights-on"
+        ]
     },
     {
         "task": "planets",
         "description": "Players have repeated the right sequence of tones with the 8 buttons (turns on blacklight).",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "moon-place"
+        ]
     },
     {
         "task": "constellations",
         "description": "Code 4215 (lock from Retriever)",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "planets"
+        ]
     },
     {
         "task": "tavern-games",
         "description": "Players have figured out the winning sides of the games, this will give them the code to the cabinet on the wall. Code 753",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "knocker-solve"
+        ]
     },
     {
         "task": "gibbs",
         "description": "Players have placed the 4 alcoholic drinks on the right spot above the bar, this will open a hatch which contains a switch.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "tavern-games"
+        ]
     },
     {
         "task": "green-potion",
         "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "plant-water"
+        ]
     },
     {
         "task": "purple-potion",
         "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "plant-water"
+        ]
     },
     {
         "task": "yellow-potion",
         "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "plant-water"
+        ]
     },
     {
         "task": "orange-potion",
         "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "plant-water"
+        ]
     },
     {
         "task": "potion-all",
         "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "plant-water"
+        ]
     },
     {
         "task": "rune-puzzle",
         "description": "Code 8061",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "gibbs"
+        ]
     },
     {
         "task": "barrel-place",
         "description": "Players have found the 3 sigil parts and placed them in the correct spots on the wall throughout the room.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "rune-puzzle"
+        ]
     },
     {
         "task": "flask-place",
         "description": "Players have found the 3 sigil parts and placed them in the correct spots on the wall throughout the room.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "potion-all"
+        ]
     },
     {
         "task": "telescope-place",
         "description": "Players have found the 3 sigil parts and placed them in the correct spots on the wall throughout the room.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "constellations"
+        ]
     },
     {
         "task": "sigil-all",
         "description": "Players have found the 3 sigil parts and placed them in the correct spots on the wall throughout the room.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "barrel-place",
+            "flask-place",
+            "telescope-place"
+        ]
     },
     {
         "task": "final-sequence",
         "description": "This starts the final video and ends the game after the tavern opens.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "sigil-all"
+        ]
     }
 ]
