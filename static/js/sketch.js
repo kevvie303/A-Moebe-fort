@@ -1,115 +1,8 @@
 var cachedUserName = localStorage.getItem("userName");
 var roomName = document.title.trim();
 var initialTime = 3600;
-$(document).ready(function () {
-  $("#add-music-button1").click(function () {
-    // Open a file selection dialog when the button is clicked
-    var fileInput = $('<input type="file" accept=".mp3,.ogg,.wav">');
-    fileInput.on("change", function () {
-      var file = fileInput[0].files[0];
-      // Send the selected file to the server
-      var formData = new FormData();
-      formData.append("file", file);
-      $.ajax({
-        type: "POST",
-        url: "/add_music1",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (response) {
-          console.log(response);
-          //alert('Music added successfully!');
-        },
-        error: function (error) {
-          console.log(error);
-          alert("Failed to add music.");
-        },
-      });
-    });
-    fileInput.click(); // Trigger the file selection dialog
-  });
-});
-$(document).ready(function () {
-  $("#add-music-button2").click(function () {
-    // Open a file selection dialog when the button is clicked
-    var fileInput = $('<input type="file" accept=".mp3,.ogg,.wav">');
-    fileInput.on("change", function () {
-      var file = fileInput[0].files[0];
-      // Send the selected file to the server
-      var formData = new FormData();
-      formData.append("file", file);
-      $.ajax({
-        type: "POST",
-        url: "/add_music2",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (response) {
-          console.log(response);
-          //alert('Music added successfully!');
-        },
-        error: function (error) {
-          console.log(error);
-          alert("Failed to add music.");
-        },
-      });
-    });
-    fileInput.click(); // Trigger the file selection dialog
-  });
-});
 
 $(document).ready(function () {
-  // ...
-
-  $("#select-file-button").click(function () {
-    // Open a new window with the file selection page
-    var fileSelectionWindow = window.open(
-      "/file_selection",
-      "_blank",
-      "height=400,width=400"
-    );
-
-    // Poll for the selected file
-    var pollTimer = setInterval(function () {
-      if (fileSelectionWindow.closed) {
-        clearInterval(pollTimer);
-      } else {
-        try {
-          var selectedFile = fileSelectionWindow.selectedFile;
-          if (selectedFile) {
-            // Send the selected file to the server
-            $.ajax({
-              type: "POST",
-              url: "/play_music",
-              data: { file: selectedFile },
-              success: function (response) {
-                console.log(response);
-              },
-              error: function (error) {
-                console.log(error);
-              },
-            });
-            clearInterval(pollTimer);
-          }
-        } catch (error) {
-          // Ignore any errors when accessing selectedFile property
-        }
-      }
-    }, 1000); // Adjust the interval as needed
-  });
-  $("#pause-music-button").click(function () {
-    // Send a request to the server to stop the music
-    $.ajax({
-      type: "POST",
-      url: "/pause_music",
-      success: function (response) {
-        console.log(response);
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  });
   $("#fade-out-music-button").click(function () {
     // Send a request to the server to stop the music
     $.ajax({
@@ -377,235 +270,6 @@ var toggleButton = $("<button>")
 
 // Append toggle button below h2 inside the section
 $(".lock-status.control").find("h2").after(toggleButton);
-$(document).ready(function () {
-  var maglockStatuses = {}; // Object to store maglock statuses
-
-  function generateMaglockElementId(maglockNumber, maglockURL) {
-    // Replace non-alphanumeric characters in the URL with underscores
-    var sanitizedURL = maglockURL.replace(/[^a-zA-Z0-9]/g, "_");
-    return `maglock${maglockNumber}_${sanitizedURL}_status`;
-  }
-
-  function updateMaglockStatus(maglockNumber, maglockName, maglockURL) {
-    $.ajax({
-      type: "GET",
-      url: `${maglockURL}/maglock/status/${maglockNumber}`,
-      success: function (response) {
-        var maglockStatus = response.status;
-        var maglockStatusText =
-          maglockStatus === "locked" ? "Locked" : "Unlocked";
-
-        // Create a unique identifier for this maglock
-        var maglockElementId = generateMaglockElementId(
-          maglockNumber,
-          maglockURL
-        );
-
-        // Check if the maglockStatus for this maglock is already stored
-        if (maglockStatuses[maglockElementId] === undefined) {
-          // If not, create a new element
-          var newMaglockStatusElement = $("<p>").html(
-            `${maglockName}: <strong>${maglockStatusText}</strong>`
-          );
-          newMaglockStatusElement.attr("id", maglockElementId);
-          $("#maglock-status-container").append(newMaglockStatusElement);
-        } else {
-          // If yes, update the existing element
-          var maglockStatusElement = $(`#${maglockElementId}`);
-          maglockStatusElement.html(
-            `${maglockName}: <strong>${maglockStatusText}</strong>`
-          );
-        }
-
-        // Store the updated maglock status in the object
-        maglockStatuses[maglockElementId] = maglockStatusText;
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
-
-  function updateAllMaglockStatuses(maglockURL) {
-    $.ajax({
-      type: "GET",
-      url: `${maglockURL}/maglock/list`,
-      success: function (response) {
-        var maglocks = response.maglocks;
-
-        for (var i = 0; i < maglocks.length; i++) {
-          var maglock = maglocks[i];
-          updateMaglockStatus(maglock.number, maglock.name, maglockURL);
-        }
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
-
-  // Initial update for maglocks from the URL where you list them
-  //updateAllMaglockStatuses("http://192.168.0.104:5000");
-  //updateAllMaglockStatuses("http://192.168.0.114:5001");
-
-  // Update maglock statuses periodically
-  /*setInterval(function () {
-    updateAllMaglockStatuses("http://192.168.0.104:5000");
-    updateAllMaglockStatuses("http://192.168.0.114:5001");
-  }, 500); // Update every 2 seconds*/
-});
-
-$(document).ready(function () {
-  // Create an object to store the latest sensor statuses
-  var latestSensorStatuses = {};
-
-  // Function to update sensor status
-  function updateSensorStatus(sensorNumber, sensorName, sensorURL) {
-    $.ajax({
-      type: "GET",
-      url: `${sensorURL}/sensor/status/${sensorNumber}`,
-      success: function (response) {
-        var sensorStatus = response.status;
-
-        // Check if the status has changed
-        if (latestSensorStatuses[sensorNumber] !== sensorStatus) {
-          // Store the latest sensor status in the object
-          latestSensorStatuses[sensorNumber] = sensorStatus;
-
-          // Create or update the sensor status element
-          var sensorStatusElement = $(`#sensor${sensorNumber}-status`);
-          if (sensorStatusElement.length) {
-            sensorStatusElement.html(
-              sensorName + ": <strong>" + sensorStatus + "</strong>"
-            );
-          } else {
-            var newSensorStatusElement = $("<p>").html(
-              sensorName + ": <strong>" + sensorStatus + "</strong>"
-            );
-            newSensorStatusElement.attr("id", `sensor${sensorNumber}-status`);
-            $("#sensor-status-container").append(newSensorStatusElement);
-          }
-        }
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
-
-  // Function to update all sensor statuses
-  function updateAllSensorStatuses(sensorURL) {
-    $.ajax({
-      type: "GET",
-      url: `${sensorURL}/sensor/list`,
-      success: function (response) {
-        var sensors = response.sensors;
-
-        for (var sensorNumber in sensors) {
-          var sensorName = sensors[sensorNumber];
-          updateSensorStatus(sensorNumber, sensorName, sensorURL);
-        }
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
-  function updateLastKeypadCode(sensorURL) {
-    $.ajax({
-      type: "GET",
-      url: `${sensorURL}/keypad/pressed_keys`,
-      success: function (response) {
-        var pressedKeysArrays = response.pressed_keys_arrays;
-        if (pressedKeysArrays.length > 0) {
-          // Get the last-used code from the array
-          var lastUsedCodeArray =
-            pressedKeysArrays[pressedKeysArrays.length - 1];
-          var lastUsedCode = lastUsedCodeArray.join(""); // Combine keys into a single code
-          $("#keypad-shed-code strong").text(lastUsedCode);
-        }
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
-
-  // Initial update for normal sensors from the first URL
-  //updateAllSensorStatuses("http://192.168.0.104:5000");
-  //updateLastKeypadCode("http://192.168.0.104:5000");
-  // Initial update for IR sensors from the second URL
-  //updateAllSensorStatuses("http://192.168.0.105:5001");
-
-  // Function to update IR sensor status
-  function updateIRSensorStatus(sensorNumber, sensorName, sensorURL) {
-    $.ajax({
-      type: "GET",
-      url: `${sensorURL}/ir-sensor/status/${sensorNumber}`,
-      success: function (response) {
-        var irSensorStatus = response.status;
-
-        // Check if the status has changed
-        if (latestSensorStatuses[sensorNumber] !== irSensorStatus) {
-          // Create or update the IR sensor status element
-          var irSensorStatusElement = $(`#ir-sensor${sensorNumber}-status`);
-          if (irSensorStatusElement.length) {
-            irSensorStatusElement.html(
-              sensorName + ": <strong>" + irSensorStatus + "</strong>"
-            );
-          } else {
-            var newIrSensorStatusElement = $("<p>").html(
-              sensorName + ": <strong>" + irSensorStatus + "</strong>"
-            );
-            newIrSensorStatusElement.attr(
-              "id",
-              `ir-sensor${sensorNumber}-status`
-            );
-            $("#ir-sensor-status-container").append(newIrSensorStatusElement);
-          }
-        }
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
-
-  // Function to update all IR sensor statuses
-  function updateAllIRSensorStatuses(sensorURL) {
-    $.ajax({
-      type: "GET",
-      url: `${sensorURL}/ir-sensor/list`,
-      success: function (response) {
-        var irSensors = response.sensors;
-
-        for (var i = 0; i < irSensors.length; i++) {
-          var sensor = irSensors[i];
-          updateIRSensorStatus(sensor.number, sensor.name, sensorURL);
-        }
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
-
-  // Initial update for IR sensors from the second URL
-  //updateAllIRSensorStatuses("http://192.168.0.114:5001");
-
-  // Update normal sensor statuses periodically
-  /* setInterval(function () {
-    updateAllSensorStatuses("http://192.168.0.104:5000");
-    updateAllSensorStatuses("http://192.168.0.105:5001");
-    updateLastKeypadCode("http://192.168.0.104:5000");
-  }, 500);
-
-  // Update IR sensor statuses periodically
-  setInterval(function () {
-    updateAllIRSensorStatuses("http://192.168.0.114:5001");
-  }, 500);*/
-});
-
 $(document).ready(function () {
   var intervalId;
   var speed = 2;
@@ -1359,7 +1023,6 @@ $(document).ready(function () {
   var prepareButton = $("#prepare-game-button");
   var playerTypeModal = $("#playerTypeModal");
   var prepareGameModalButton = $("#prepare-game-modal-button");
-  var updateStatusInterval = setInterval(updateRetrieverStatus, 1000);
   var updatePlayStatus;
   var updateWakeStatus;
   var prepareResult = $("#prepare-result");
@@ -1395,7 +1058,6 @@ $(document).ready(function () {
     prepareResult.show();
     $(".tasks, .lock-status, .pin-info, #reset-list-container").hide();
     prepareStatus.html("Preparing...");
-    clearInterval(updateStatusInterval);
     updatePlayStatus = setInterval(updatePlayingStatus, 1000);
 
     // Use the playerType variable in your preparation logic
@@ -1569,6 +1231,43 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchSensorData();
     // ... (other event listeners) ...
   });
+  socket.on("game_status_update", (data) => {
+    var prepareButton = $("#prepare-game-button");
+    $.get(`/get_game_status/${roomName}`, function (data) {
+      if (data.status === "prepared") {
+        prepareButton.hide();
+        performPreparation(); // Trigger the preparation function
+      }
+      else if (data.status === "playing") {
+        clearInterval(updatePlayStatus);
+        prepareButton.hide();
+        $(".tasks, .locks, .lock-status, .pin-info").show();
+        $("#prepare-result, #reset-list-container").hide();
+      }
+      else if (data.status === "snoozed") {
+        $("#nav-snooze-status").text("Room Snoozed");
+        $("#wake-button").show();
+        $("#wake-button").css("align-self", "center");
+        $(".important-controls, #reset-list-container").hide();
+      }
+      else if (data.status === "awake") {
+        prepareButton.show();
+        fetchAndDisplayChecklist(roomName);
+        $("#prepare-game-button").show();
+        $("#prepare-result, #wake-button").hide();
+        $("#wake-button").hide();
+        $(".important-controls").show();
+        $("#nav-snooze-status").text("");
+        if (cachedUserName === "Brian" || cachedUserName === "brian") {
+          $("#reset-list-container").hide();
+        }
+        else {
+          $("#reset-list-container").show();
+        }
+      }
+    });
+  });
+  
 
   // Function to update the checklist UI
   $("#reset-checklist").click(function () {

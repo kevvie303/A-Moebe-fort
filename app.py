@@ -637,18 +637,18 @@ def check_rule(item_name, room):
     except Exception as e:
         print(f"Error reading JSON file: {e}")
         return False
-client = mqtt.Client()
+# client = mqtt.Client()
 
-    # Set the callback function for incoming MQTT messages
-client.on_message = on_message
+#     # Set the callback function for incoming MQTT messages
+# client.on_message = on_message
 
-    # Connect to the MQTT broker
-client.connect(broker_ip, 1883)
+#     # Connect to the MQTT broker
+# client.connect(broker_ip, 1883)
 
-    # Subscribe to all topics under the specified prefix
-client.subscribe(prefix_to_subscribe + "#")  # Subscribe to all topics under the prefix
-# Function to execute the delete-locks.py script
-client.loop_start()
+#     # Subscribe to all topics under the specified prefix
+# client.subscribe(prefix_to_subscribe + "#")  # Subscribe to all topics under the prefix
+# # Function to execute the delete-locks.py script
+# client.loop_start()
 
 @app.route('/trigger', methods=['POST'])
 def trigger():
@@ -1610,7 +1610,7 @@ def wake_room(room):
     try:
         with open(f'json/{room}/sensor_data.json', 'r') as file:
             devices = json.load(file)
-
+        socketio.emit('game_status_update', room="all_clients")
         # Iterate over devices
         if room == "The Retriever":
             for device in devices:
@@ -1628,6 +1628,7 @@ def wake_room(room):
         return "room awakened"
     except Exception as e:
         update_game_status('awake', room)
+        socketio.emit('game_status_update', room="all_clients")
         return jsonify({'success': False, 'error': str(e)})
 @app.route('/control_light/<room>', methods=['POST'])
 def control_light(room):
@@ -1664,7 +1665,7 @@ def snooze_game(room):
         # Load device information from sensor_data.json
         with open(f'json/{room}/sensor_data.json', 'r') as file:
             devices = json.load(file)
-
+        socketio.emit('game_status_update', room="all_clients")
         # Iterate over devices
         if room == "The Retriever":
             for device in devices:
@@ -1900,6 +1901,7 @@ def reset_checklist(room):
         socketio.emit('checklist_update', "message", room="all_clients")
 
     except Exception as e:
+        socketio.emit('checklist_update', "message", room="all_clients")
         print(f"Error resetting checklist: {str(e)}")
     return jsonify({'success': True, 'message': 'Checklist reset successfully'})
 @app.route('/add_sensor/<room>', methods=['GET', 'POST'])
