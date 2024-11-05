@@ -95,10 +95,25 @@ section.control-container {
       gap: 5px;
       list-style-type: none;
       text-align: left;
+  
       p {
         display: flex;
-        justify-content: space-between;
+        align-items: center; // Center items vertically
         cursor: pointer;
+  
+        // Task name should take all available space
+        .task-name {
+          flex: 1; // Allow task name to take all available space
+        }
+  
+        .duration {
+          margin-right: 10px; // Space between duration and state
+          font-size: small; // Adjust font size if needed
+        }
+  
+        strong {
+          // State remains on the far right
+        }
       }
     }
     article.task-button-container {

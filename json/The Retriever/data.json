@@ -1,0 +1,46 @@
+[
+    {
+        "id": "3bc96df9-e8d4-400a-8157-9ebb866f22af",
+        "room": "The Retriever",
+        "start_time": "2024-11-03T16:12:57.076901",
+        "tasks": {
+            "tree-lights": {
+                "state": "solved",
+                "timestamp": "2024-11-03T16:13:11.255519"
+            }
+        }
+    },
+    {
+        "id": "3978363d-2160-43e6-bf45-af85b5e418e0",
+        "room": "The Retriever",
+        "start_time": "2024-11-05T17:22:45.546037",
+        "tasks": {
+            "tree-lights": {
+                "state": "solved",
+                "timestamp": "2024-11-05T17:22:51.374152"
+            },
+            "dog-house": {
+                "state": "solved",
+                "timestamp": "2024-11-05T17:22:57.255223"
+            },
+            "fence-decrypt": {
+                "state": "solved",
+                "timestamp": "2024-11-05T17:23:03.861404"
+            },
+            "flowers": {
+                "state": "solved",
+                "timestamp": "2024-11-05T17:24:30.318804"
+            },
+            "kite-count": {
+                "state": "solved",
+                "timestamp": "2024-11-05T17:24:59.682818"
+            }
+        }
+    },
+    {
+        "id": "22e1f247-0478-4473-a67d-09b9e0f39f45",
+        "room": "The Retriever",
+        "start_time": "2024-11-05T17:25:13.147741",
+        "tasks": {}
+    }
+]

@@ -26,6 +26,7 @@ from datetime import datetime, date
 from youtube_downloader import download_video, convert_to_ogg
 from html_creator import create_html_file, create_room_folder
 from functools import partial
+import uuid
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -202,7 +203,7 @@ def connect_device():
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 #broker_ip = "192.168.18.66"
 broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.50"
+#broker_ip = "192.168.1.20"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -872,30 +873,52 @@ def get_file_status():
     
 @app.route('/get_task_status/<room>', methods=['GET'])
 def get_task_status(room):
-    file_path = os.path.join('json', room, 'tasks.json')
-    if os.path.exists(file_path):
-        try:
-            with open(file_path, 'r') as file:
-                tasks = json.load(file)
+    tasks_file_path = os.path.join('json', room, 'tasks.json')
+    games_file_path = os.path.join('json', room, 'data.json')
 
-            # Map task states for easy lookup
-            task_states = {task['task']: task['state'] for task in tasks}
+    if os.path.exists(tasks_file_path) and os.path.exists(games_file_path):
+        try:
+            with open(tasks_file_path, 'r') as tasks_file:
+                tasks = json.load(tasks_file)
+
+            with open(games_file_path, 'r') as games_file:
+                games = json.load(games_file)
+
+            current_game = games[-1] if games else None
+
+            if current_game is None:
+                return jsonify(tasks)
+
+            start_time = datetime.fromisoformat(current_game['start_time'])
+            task_states = current_game['tasks']
 
             for task in tasks:
-                # Check if task has dependencies
+                task_name = task['task']
+                task['duration'] = None  
+                task['state'] = task.get('state', 'pending')
+
+                # Set duration if the task was solved in the current game
+                if task_name in task_states and task_states[task_name]['state'] == 'solved':
+                    solved_time = datetime.fromisoformat(task_states[task_name]['timestamp'])
+                    duration = solved_time - start_time
+                    minutes, seconds = divmod(duration.total_seconds(), 60)
+                    task['duration'] = f"{int(minutes)}:{int(seconds):02d}"
+
+                # Determine if the task is blocked based on its dependencies in tasks.json
                 if 'depends_on' in task:
                     dependencies = task['depends_on']
-                    # Check if all dependencies are solved
-                    if all(task_states.get(dep) in ['solved', 'skipped'] for dep in dependencies):
-                        task['blocked'] = False
-                    else:
-                        task['blocked'] = True
+                    task['blocked'] = not all(
+                        next((t['state'] for t in tasks if t['task'] == dep), 'pending') in ['solved', 'skipped']
+                        for dep in dependencies
+                    )
                 else:
                     task['blocked'] = False
 
             return jsonify(tasks)
+
         except (FileNotFoundError, json.JSONDecodeError):
             return jsonify([])
+
     else:
         return jsonify([])
     
@@ -903,8 +926,26 @@ def get_task_status(room):
 def solve_task(task_name, room):
     global start_time, sequence, code1, code2, code3, code4, code5, codesCorrect, squeak_job, bird_job, should_hint_shed_play, sigil_count
     global first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable, potion_count
+    global new_init_time, timer_values, new_init_time_retriever, new_init_time_moon
     file_path = os.path.join('json', room, 'tasks.json')
+    data_file_path = os.path.join('json', room, 'data.json')
     game_status = get_game_status(room)
+    game_data = get_game_data(room)
+
+    # Retrieve the latest game entry
+    if game_data:
+        current_game = game_data[-1]  # Assuming the last game is the current one
+        if "tasks" not in current_game:
+            current_game["tasks"] = {}
+
+        # Mark task as solved with a timestamp
+        current_game["tasks"][task_name] = {
+            "state": "solved",
+            "timestamp": datetime.now().isoformat()
+        }
+
+        # Save the updated game data back to data.json
+        save_game_data(room, game_data)
     try:
         with open(file_path, 'r+') as file:
             tasks = json.load(file)
@@ -2259,10 +2300,41 @@ def write_game_data(start_time, end_time):
     # Write the updated list back to the file
     with open(file_path, 'w') as json_file:
         json.dump(existing_data, json_file, indent=2)
+def get_game_data(room):
+    # Path to the data.json file
+    data_file_path = os.path.join('json', room, 'data.json')
+    # Ensure data.json exists with an empty array if it doesn't
+    if not os.path.exists(data_file_path):
+        with open(data_file_path, 'w') as file:
+            json.dump([], file)  # Initialize with an empty list
+    # Load existing game data
+    with open(data_file_path, 'r') as file:
+        game_data = json.load(file)
+    # Ensure the file content is a list
+    if not isinstance(game_data, list):
+        game_data = []
+    return game_data
+
+def save_game_data(room, game_data):
+    data_file_path = os.path.join('json', room, 'data.json')
+    with open(data_file_path, 'w') as file:
+        json.dump(game_data, file, indent=4)
 @app.route('/timer/start/<room>', methods=['POST'])
 def start_timer(room):
     global timer_value, speed, timer_running, timer_thread, start_time, bird_job
-
+    game_id = str(uuid.uuid4())
+    # Create new game entry
+    new_game = {
+        "id": game_id,
+        "room": room,
+        "start_time": datetime.now().isoformat(),
+        "tasks": {}
+    }
+    # Load existing game data and append the new game
+    game_data = get_game_data(room)
+    game_data.append(new_game)  # Append new game to list
+    save_game_data(room, game_data)
+    socketio.emit('reset_task_durations', room="all_clients")
     # Start a new timer thread for the room if not already running
     if room not in timer_threads or not timer_threads[room].is_alive():
         speed[room] = 1  # Reset timer speed to 1
