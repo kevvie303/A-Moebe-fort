@@ -202,8 +202,8 @@ def connect_device():
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 #broker_ip = "192.168.18.66"
-#broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
-broker_ip = "192.168.1.20"
+broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
+#broker_ip = "192.168.1.20"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -897,15 +897,20 @@ def get_task_status(room):
                 task['duration'] = None  
                 task['state'] = task.get('state', 'pending')
 
+                # Set duration if the task was solved in the current game
                 if task_name in task_states and task_states[task_name]['state'] == 'solved':
                     solved_time = datetime.fromisoformat(task_states[task_name]['timestamp'])
                     duration = solved_time - start_time
                     minutes, seconds = divmod(duration.total_seconds(), 60)
                     task['duration'] = f"{int(minutes)}:{int(seconds):02d}"
 
+                # Determine if the task is blocked based on its dependencies in tasks.json
                 if 'depends_on' in task:
                     dependencies = task['depends_on']
-                    task['blocked'] = not all(task_states.get(dep, {}).get('state') in ['solved', 'skipped'] for dep in dependencies)
+                    task['blocked'] = not all(
+                        next((t['state'] for t in tasks if t['task'] == dep), 'pending') in ['solved', 'skipped']
+                        for dep in dependencies
+                    )
                 else:
                     task['blocked'] = False
 
@@ -2329,6 +2334,7 @@ def start_timer(room):
     game_data = get_game_data(room)
     game_data.append(new_game)  # Append new game to list
     save_game_data(room, game_data)
+    socketio.emit('reset_task_durations', room="all_clients")
     # Start a new timer thread for the room if not already running
     if room not in timer_threads or not timer_threads[room].is_alive():
         speed[room] = 1  # Reset timer speed to 1

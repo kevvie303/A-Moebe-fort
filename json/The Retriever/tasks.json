@@ -2,7 +2,7 @@
     {
         "task": "tree-lights",
         "description": "Players have thrown the balls in the treehouses in the correct order",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "number-feel",

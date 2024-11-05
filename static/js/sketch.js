@@ -1574,7 +1574,16 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchSensorData();
     // ... (other event listeners) ...
   });
-
+  socket.on('reset_task_durations', function() {
+    // Logic to reset task durations on the UI
+    const taskElements = document.querySelectorAll('#task-list p'); // Select all task elements
+    taskElements.forEach(taskElement => {
+        const durationSpan = taskElement.querySelector('.duration'); // Select the duration span
+        if (durationSpan) {
+            durationSpan.innerText = ''; // Clear the duration text
+        }
+    });
+});
   // Function to update the checklist UI
   $("#reset-checklist").click(function () {
     // Send a request to the server to stop the music
