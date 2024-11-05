@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Data View</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .button-container {
+            margin: 20px 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+            margin: 0 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        button:focus {
+            outline: none;
+        }
+        #data-output {
+            margin-bottom: 20px;
+        }
+        #task-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        #task-table th, #task-table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        #task-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #task-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        #task-table tr:hover {
+            background-color: #ddd;
+        }
+        #fastest-tasks, #slowest-tasks {
+            margin: 10px 0;
+            list-style-type: none;
+            padding: 0;
+        }
+        #fastest-tasks li, #slowest-tasks li {
+            background: #e7f3fe;
+            padding: 8px;
+            margin: 5px 0;
+            border-left: 5px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Task Completion Data</h1>
+        <div class="button-container">
+            <button id="moonlight-button" onclick="loadData('Moonlight Village')">Moonlight Village</button>
+            <button id="retriever-button" onclick="loadData('The Retriever')">The Retriever</button>
+        </div>
+        <div id="data-output">
+            <h2>Task Durations</h2>
+            <table id="task-table">
+                <tr>
+                    <th>Task</th>
+                    <th>Fastest Time</th>
+                    <th>Slowest Time</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/data_view.js') }}"></script>
+</body>
+</html>

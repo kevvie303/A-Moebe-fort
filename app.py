@@ -202,8 +202,8 @@ def connect_device():
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 #broker_ip = "192.168.18.66"
-broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.20"
+#broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
+broker_ip = "192.168.1.20"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -1601,6 +1601,7 @@ def reset_prepare(room):
         return jsonify({'message': 'Task statuses reset successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error resetting task statuses'})
+
 @app.route('/convert', methods=['POST'])
 def convert():
     youtube_url = request.form['youtubeURL']
@@ -1730,6 +1731,19 @@ def snooze_game(room):
         return "Room snoozed"
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
+@app.route('/data')
+def data():
+    return render_template('data_view.html')
+
+@app.route('/data/<room>')
+def get_data(room):
+    try:
+        with open(f'json/{room}/data.json', 'r') as file:
+            data = json.load(file)
+            print(data)
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 @app.route('/add_task/<room>', methods=['POST'])
 def add_task(room):
     file_path = os.path.join('json', room, 'tasks.json')
