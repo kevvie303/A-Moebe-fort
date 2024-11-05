@@ -946,8 +946,8 @@ def solve_task(task_name, room):
 
         # Save the updated game data back to data.json
         save_game_data(room, game_data)
-
-        #audio_folder = "en/" if language[room] == "en" else ""
+        language = current_game.get("language", "nl")  # Default to Dutch if not found
+        sound_prefix = "en/" if language == "eng" else ""
     try:
         with open(file_path, 'r+') as file:
             tasks = json.load(file)
@@ -1021,13 +1021,13 @@ def solve_task(task_name, room):
                 call_control_maglock_moonlight("herbalist-door-lock", "locked")
         elif task_name == "sigil-all":
             if game_status == {'status': 'playing'}:
-                publish.single("audio_control/mlv-central/play", "sigal-all-first.ogg", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/volume", "100 sigal-all-first.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/play", f"{sound_prefix}sigal-all-first.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/volume", f"100 {sound_prefix}sigal-all-first.ogg", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/volume", "20 bg_central.ogg", hostname=broker_ip)
                 call_control_maglock_moonlight("dmx-power", "unlocked")
                 time.sleep(12)
-                publish.single("audio_control/mlv-central/play", "sigil-all-second.ogg", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/volume", "100 sigil-all-second.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/play", f"{sound_prefix}sigil-all-second.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/volume", f"100 {sound_prefix}sigil-all-second.ogg", hostname=broker_ip)
                 time.sleep(13)
                 send_dmx_command(0, 0, 0, 0, 255)
                 time.sleep(5)
@@ -1062,7 +1062,7 @@ def solve_task(task_name, room):
                 if bird_job == True:
                     scheduler.remove_job('birdjob')
                     bird_job = False
-                publish.single("audio_control/ret-top/play", "hok.ogg", hostname=broker_ip)
+                publish.single("audio_control/ret-top/play", f"{sound_prefix}hok.ogg", hostname=broker_ip)
                 call_control_maglock_retriever("doghouse-lock", "locked")
         elif task_name == "squeekuence":
             if game_status == {'status': 'playing'}:
@@ -1083,7 +1083,7 @@ def solve_task(task_name, room):
             time.sleep(1)
             fade_music_out("Ambience", room)
             time.sleep(2)
-            publish.single("audio_control/ret-top/play", "bloemen.ogg", hostname=broker_ip)
+            publish.single("audio_control/ret-top/play", f"{sound_prefix}bloemen.ogg", hostname=broker_ip)
             call_control_maglock_retriever("green-led-keypad", "locked")
             time.sleep(10)
             if codesCorrect == 3 or codesCorrect == 4:
@@ -1100,7 +1100,7 @@ def solve_task(task_name, room):
             time.sleep(1)
             fade_music_out("Ambience", room)
             time.sleep(2)
-            publish.single("audio_control/ret-top/play", "vlieger.ogg", hostname=broker_ip)
+            publish.single("audio_control/ret-top/play", f"{sound_prefix}vlieger.ogg", hostname=broker_ip)
             call_control_maglock_retriever("green-led-keypad", "locked")
             time.sleep(5)
             if codesCorrect == 3 or codesCorrect == 4:
@@ -1117,7 +1117,7 @@ def solve_task(task_name, room):
             time.sleep(1)
             fade_music_out("Ambience", room)
             time.sleep(2)
-            publish.single("audio_control/ret-top/play", "plantenbak.ogg", hostname=broker_ip)
+            publish.single("audio_control/ret-top/play", f"{sound_prefix}plantenbak.ogg", hostname=broker_ip)
             call_control_maglock_retriever("green-led-keypad", "locked")
             time.sleep(5)
             if codesCorrect == 3 or codesCorrect == 4:
@@ -1134,7 +1134,7 @@ def solve_task(task_name, room):
             time.sleep(1)
             fade_music_out("Ambience", room)
             time.sleep(2)
-            publish.single("audio_control/ret-top/play", "hek.ogg", hostname=broker_ip)
+            publish.single("audio_control/ret-top/play", f"{sound_prefix}hek.ogg", hostname=broker_ip)
             call_control_maglock_retriever("green-led-keypad", "locked")
             time.sleep(5)
             if codesCorrect == 3 or codesCorrect == 4:
@@ -1151,7 +1151,7 @@ def solve_task(task_name, room):
                 call_control_maglock_retriever("top_right_light", "unlocked")
                 call_control_maglock_retriever("bottom_left_light", "unlocked")
                 call_control_maglock_retriever("bottom_right_light", "unlocked")
-                publish.single("audio_control/ret-middle/play", "gelukt.ogg", hostname=broker_ip)
+                publish.single("audio_control/ret-middle/play", f"{sound_prefix}gelukt.ogg", hostname=broker_ip)
                 time.sleep(3)
                 call_control_maglock_retriever("sliding-door-lock", "locked")
                 time.sleep(6)
@@ -1193,12 +1193,12 @@ def solve_task(task_name, room):
                 call_control_maglock_retriever("blue-led", "locked")
                 sequence = 0
                 time.sleep(1)
-                publish.single("audio_control/ret-top/play", "boom.ogg", hostname=broker_ip)
+                publish.single("audio_control/ret-top/play", f"{sound_prefix}boom.ogg", hostname=broker_ip)
                 time.sleep(7)
                 if code1 and code2 and code3 and code4 and code5:
                     print("executed")
                     time.sleep(7)
-                    publish.single("audio_control/ret-top/play", "schuur_open.ogg", hostname=broker_ip)
+                    publish.single("audio_control/ret-top/play", f"{sound_prefix}schuur_open.ogg", hostname=broker_ip)
                     time.sleep(5)
                     fade_music_in(room)
                     call_control_maglock_retriever("shed-door-lock", "locked")
@@ -1213,7 +1213,7 @@ def solve_task(task_name, room):
         if code1 and code2 and code3 and code4 and code5:
             print("executed")
             time.sleep(2)
-            publish.single("audio_control/ret-top/play", "schuur_open.ogg", hostname=broker_ip)
+            publish.single("audio_control/ret-top/play", f"{sound_prefix}schuur_open.ogg", hostname=broker_ip)
             time.sleep(5)
             fade_music_in(room)
             call_control_maglock_retriever("shed-door-lock", "locked")
@@ -1226,14 +1226,14 @@ def solve_task(task_name, room):
             print("TRIGGERED")
             codesCorrect += 1
             time.sleep(2)
-            publish.single("audio_control/ret-top/play", "goed_bezig.ogg", hostname=broker_ip)
+            publish.single("audio_control/ret-top/play", f"{sound_prefix}goed_bezig.ogg", hostname=broker_ip)
             time.sleep(6)
             fade_music_in(room)
         if codesCorrect == 1 and should_hint_shed_play == True:
             should_hint_shed_play = False
             print("TRIGGERED")
             time.sleep(2)
-            publish.single("audio_control/ret-top/play", "after1code.ogg", hostname=broker_ip)
+            publish.single("audio_control/ret-top/play", f"{sound_prefix}after1code.ogg", hostname=broker_ip)
             time.sleep(4)
             fade_music_in(room)
         if game_status == {'status': 'playing'}:
@@ -2323,14 +2323,15 @@ def save_game_data(room, game_data):
         json.dump(game_data, file, indent=4)
 @app.route('/timer/start/<room>', methods=['POST'])
 def start_timer(room):
-    global timer_value, speed, timer_running, timer_thread, start_time, bird_job
+    global timer_value, speed, timer_running, timer_thread, start_time, bird_job, language
     game_id = str(uuid.uuid4())
     # Create new game entry
     new_game = {
         "id": game_id,
         "room": room,
         "start_time": datetime.now().isoformat(),
-        "tasks": {}
+        "tasks": {},
+        "language": language.get(room, 'nl')
     }
     # Load existing game data and append the new game
     game_data = get_game_data(room)
@@ -2545,10 +2546,11 @@ def prepare_game(room):
     preparedValue = converted_statuses
     for pi, status_dict in pi_service_statuses.items():
         converted_statuses[pi] = {service: status == "active" for service, status in status_dict.items()}
+    if not isinstance(language, dict):
+        language = {}
+    
     language[room] = request.form.get('language')
-    print(f"Language for {room}: {language[room]}")
-    # Return the converted service statuses
-    print(converted_statuses)
+
     update_game_status("prepared", room)
     time.sleep(0.1)
     if room == "The Retriever":
