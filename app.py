@@ -947,7 +947,7 @@ def solve_task(task_name, room):
         # Save the updated game data back to data.json
         save_game_data(room, game_data)
 
-        audio_folder = "en/" if language[room] == "en" else ""
+        #audio_folder = "en/" if language[room] == "en" else ""
     try:
         with open(file_path, 'r+') as file:
             tasks = json.load(file)
