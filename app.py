@@ -45,7 +45,7 @@ romy = True
 room = None
 last_keypad_code = None
 aborted = False
-player_type = None
+language = {}
 fade_duration = 3  # Fade-out duration in seconds
 fade_interval = 0.1  # Interval between volume adjustments in seconds
 fade_steps = int(fade_duration / fade_interval)  # Number of fade steps
@@ -214,7 +214,7 @@ twinkle_sequence = ["g", "g", "d", "d", "e", "e", "d"]
 current_sequence = []
 def handle_rules(sensor_name, sensor_state, room):
     global sequence, code1, code2, code3, code4, code5, codesCorrect, current_sequence, twinkle_sequence, first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable
-    global last_three_pulled
+    global last_three_pulled, language
     if get_game_status(room) == {'status': 'playing'}:
         if check_rule("green_house_ir", room) and sequence == 0:
             task_state = check_task_state("tree-lights", room)
@@ -926,7 +926,7 @@ def get_task_status(room):
 def solve_task(task_name, room):
     global start_time, sequence, code1, code2, code3, code4, code5, codesCorrect, squeak_job, bird_job, should_hint_shed_play, sigil_count
     global first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable, potion_count
-    global new_init_time, timer_values, new_init_time_retriever, new_init_time_moon
+    global new_init_time, timer_values, new_init_time_retriever, new_init_time_moon, language
     file_path = os.path.join('json', room, 'tasks.json')
     data_file_path = os.path.join('json', room, 'data.json')
     game_status = get_game_status(room)
@@ -946,6 +946,8 @@ def solve_task(task_name, room):
 
         # Save the updated game data back to data.json
         save_game_data(room, game_data)
+
+        audio_folder = "en/" if language[room] == "en" else ""
     try:
         with open(file_path, 'r+') as file:
             tasks = json.load(file)
@@ -2512,7 +2514,7 @@ pi_service_statuses = {}
 preparedValue = {}
 @app.route('/prepare/<room>', methods=['POST'])
 def prepare_game(room):
-    global client, pi_service_statuses, player_type, preparedValue, should_hint_shed_play, new_init_time
+    global client, pi_service_statuses, language, preparedValue, should_hint_shed_play, new_init_time
     new_init_time = 3600
     if room == "The Retriever":
         should_hint_shed_play = True
@@ -2543,7 +2545,8 @@ def prepare_game(room):
     preparedValue = converted_statuses
     for pi, status_dict in pi_service_statuses.items():
         converted_statuses[pi] = {service: status == "active" for service, status in status_dict.items()}
-    player_type = request.form.get('playerType')
+    language[room] = request.form.get('language')
+    print(f"Language for {room}: {language[room]}")
     # Return the converted service statuses
     print(converted_statuses)
     update_game_status("prepared", room)

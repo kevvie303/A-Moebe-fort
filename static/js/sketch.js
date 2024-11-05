@@ -1383,7 +1383,7 @@ $(document).ready(function () {
 
   // Handle the "Prepare game" button inside the modal
   prepareGameModalButton.on("click", function () {
-    var selectedPlayerType = $("#player-type").val();
+    var selectedPlayerType = $("#language").val();
     playerTypeModal.hide(); // Close the modal
 
     // Only proceed with preparation if a player type is selected
@@ -1407,7 +1407,7 @@ $(document).ready(function () {
     $.ajax({
         type: "POST",
         url: `/prepare/${roomName}`,
-        data: { playerType: playerType },
+        data: { language: playerType },
         success: function (response) {
             console.log("Received data:", response);
             prepareStatus.html(
