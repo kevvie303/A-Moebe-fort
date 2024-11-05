@@ -202,8 +202,8 @@ def connect_device():
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 #broker_ip = "192.168.18.66"
-#broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
-broker_ip = "192.168.1.20"
+broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
+#broker_ip = "192.168.1.20"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
