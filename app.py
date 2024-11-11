@@ -231,7 +231,7 @@ button_note_map = {
 }
 def handle_rules(sensor_name, sensor_state, room):
     global sequence, code1, code2, code3, code4, code5, codesCorrect, current_sequence, twinkle_sequence, first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable
-    global last_three_pulled, language
+    global last_three_pulled, language, lockout_end_time, last_button_press_time, debounce_time
     if get_game_status(room) == {'status': 'playing'}:
         if check_rule("green_house_ir", room) and sequence == 0:
             task_state = check_task_state("tree-lights", room)
