@@ -22,7 +22,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 from networkscanner import NetworkScanner
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from youtube_downloader import download_video, convert_to_ogg
 from html_creator import create_html_file, create_room_folder
 from functools import partial
@@ -212,6 +212,23 @@ sensor_states = {}
 pi_service_statuses = {}  # New dictionary to store service statuses for each Pi
 twinkle_sequence = ["g", "g", "d", "d", "e", "e", "d"]
 current_sequence = []
+# Initialize lockout and debounce times
+lockout_end_time = datetime.min  # Start with an expired time so it doesn't block initially
+debounce_time = 0.5  # 0.5-second delay between button presses
+
+# Store the timestamp of the last button press to enforce debounce
+last_button_press_time = datetime.min
+button_note_map = {
+    "ast-button-1": "a",
+    "ast-button-2": "b",
+    "ast-button-3": "c",
+    "ast-button-4": "d",
+    "ast-button-5": "e",
+    "ast-button-6": "f",
+    "ast-button-7": "g",
+    "ast-button-8": "g-high",
+    "ast-button-9": "twinkle"  # Extra button for resetting
+}
 def handle_rules(sensor_name, sensor_state, room):
     global sequence, code1, code2, code3, code4, code5, codesCorrect, current_sequence, twinkle_sequence, first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable
     global last_three_pulled, language
@@ -295,20 +312,16 @@ def handle_rules(sensor_name, sensor_state, room):
             if sensor_state == "584196958334":
                 solve_task("yellow-potion", room)
                 fourth_potion_solvable = False
-        # Check for ast-button-1 through ast-button-9 and match to notes
-        button_note_map = {
-            "ast-button-1": "a",
-            "ast-button-2": "b",
-            "ast-button-3": "c",
-            "ast-button-4": "d",
-            "ast-button-5": "e",
-            "ast-button-6": "f",
-            "ast-button-7": "g",
-            "ast-button-8": "g-high",
-            "ast-button-9": "twinkle"  # Extra button for resetting
-        }
+    if check_rule(sensor_name, room) and sensor_name in button_note_map:
+        current_time = datetime.now()
+        if current_time < lockout_end_time:
+            print("Twinkle lockout in effect. Buttons disabled.")
+        elif (current_time - last_button_press_time).total_seconds() < debounce_time:
+            print("Debounce in effect. Please wait.")
+        else:
+            # Record the last button press time for debounce enforcement
+            last_button_press_time = current_time
 
-        if check_rule(sensor_name, room) and sensor_name in button_note_map:
             note = button_note_map[sensor_name]
 
             # Play the corresponding audio for the note
@@ -327,7 +340,6 @@ def handle_rules(sensor_name, sensor_state, room):
                         current_sequence = []  # Reset the sequence after solving
                 else:
                     # Sequence is incorrect, reset
-                    
                     print("Incorrect sequence. Resetting.")
                     current_sequence = []
                     call_control_maglock_moonlight("rem-lamp", "locked")
@@ -340,11 +352,12 @@ def handle_rules(sensor_name, sensor_state, room):
                     time.sleep(0.5)
                     call_control_maglock_moonlight("rem-lamp", "locked")
 
-            # If the twinkle button is pressed, reset the sequence
+            # If the twinkle button is pressed, reset the sequence and start a lockout
             elif note == "twinkle":
                 print("Reset button pressed. Sequence reset.")
                 current_sequence = []
                 call_control_maglock_moonlight("rem-lamp", "locked")
+                lockout_end_time = current_time + timedelta(seconds=15)  # Set 15-second lockout
         if sensor_name == "keypad":
             sensor_state_int = int(sensor_state)
             print(sensor_state)
