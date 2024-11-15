@@ -2385,10 +2385,6 @@ def start_timer(room):
             fade_music_out("Lounge", room)
             time.sleep(1)
             publish.single("audio_control/ret-top/play", "Ambience.ogg", hostname=broker_ip)
-            if language == "eng":
-                publish.single("actuator/control/ret-laser", "en", hostname=broker_ip)
-            elif language == "nl":
-                publish.single("actuator/control/ret-laser", "nl", hostname=broker_ip)
             fade_music_in(room)
         else:
             publish.single("video_control/mlv-tavern/play", "fireplace.mp4", hostname=broker_ip)
@@ -2546,7 +2542,7 @@ pi_service_statuses = {}
 preparedValue = {}
 @app.route('/prepare/<room>', methods=['POST'])
 def prepare_game(room):
-    global client, pi_service_statuses, language, preparedValue, should_hint_shed_play, new_init_time
+    global client, pi_service_statuses, language, preparedValue, should_hint_shed_play, new_init_time, language
     new_init_time = 3600
     if room == "The Retriever":
         should_hint_shed_play = True
@@ -2586,6 +2582,10 @@ def prepare_game(room):
     time.sleep(0.1)
     if room == "The Retriever":
         publish.single("audio_control/ret-top/play", "Lounge.ogg", hostname=broker_ip)
+        if language[room] == "eng":
+            publish.single("actuator/control/ret-laser", "en", hostname=broker_ip)
+        elif language[room] == "nl":
+            publish.single("actuator/control/ret-laser", "nl", hostname=broker_ip)
     else:
         publish.single("audio_control/raspberrypi/play", "bg_corridor.ogg", hostname=broker_ip)
         publish.single("led/control/mlv-corridors", "unlocked", hostname=broker_ip)
