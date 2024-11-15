@@ -2385,6 +2385,10 @@ def start_timer(room):
             fade_music_out("Lounge", room)
             time.sleep(1)
             publish.single("audio_control/ret-top/play", "Ambience.ogg", hostname=broker_ip)
+            if language == "en":
+                publish.single("actuator/control/ret-laser", "en", hostname=broker_ip)
+            elif language == "nl":
+                publish.single("actuator/control/ret-laser", "nl", hostname=broker_ip)
             fade_music_in(room)
         else:
             publish.single("video_control/mlv-tavern/play", "fireplace.mp4", hostname=broker_ip)
