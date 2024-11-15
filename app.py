@@ -333,6 +333,9 @@ def handle_rules(sensor_name, sensor_state, room):
 
                 # Check if the sequence matches the beginning of twinkle_sequence
                 if current_sequence == twinkle_sequence[:len(current_sequence)]:
+                    call_control_maglock_moonlight("rem-lamp", "unlocked")
+                    time.sleep(0.5)
+                    call_control_maglock_moonlight("rem-lamp", "locked")
                     if len(current_sequence) == len(twinkle_sequence):
                         # Sequence complete, solve the task
                         solve_task("planets", room)
@@ -356,8 +359,9 @@ def handle_rules(sensor_name, sensor_state, room):
             elif note == "twinkle":
                 print("Reset button pressed. Sequence reset.")
                 current_sequence = []
-                call_control_maglock_moonlight("rem-lamp", "locked")
                 lockout_end_time = current_time + timedelta(seconds=15)  # Set 15-second lockout
+                time.sleep(15)
+                call_control_maglock_moonlight("rem-lamp", "locked")
         if sensor_name == "keypad":
             sensor_state_int = int(sensor_state)
             print(sensor_state)
