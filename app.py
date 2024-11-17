@@ -1243,16 +1243,19 @@ def solve_task(task_name, room):
             if task_name == "barrel-place":
                 sigil_count += 1
                 publish.single("led/control/mlv-webcam", "1/3", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/play", "howl.ogg", hostname=broker_ip)
                 if sigil_count == 3:
                     solve_task("sigil-all", room)
             if task_name == "flask-place":
                 sigil_count += 1
                 publish.single("led/control/mlv-webcam", "1/3", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/play", "howl.ogg", hostname=broker_ip)
                 if sigil_count == 3:
                     solve_task("sigil-all", room)
             if task_name == "telescope-place":
                 sigil_count += 1
                 publish.single("led/control/mlv-webcam", "1/3", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/play", "howl.ogg", hostname=broker_ip)
                 if sigil_count == 3:
                     solve_task("sigil-all", room)
         with app.app_context():
