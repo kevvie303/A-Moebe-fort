@@ -1744,11 +1744,13 @@ def remove_minute():
     return "removed"
 @app.route('/timer/stop', methods=['POST'])
 def stop_timer():
-    global timer_thread, timer_running, timer_value, kraken1, kraken2, kraken3, kraken4, bird_job, start_time
+    global timer_thread, timer_running, timer_value, kraken1, kraken2, kraken3, kraken4, bird_job, start_time, pi_service_statuses, preparedValue, end_time
     update_game_status('awake')
     #pi2.exec_command("raspi-gpio set 4 op dl \n raspi-gpio set 7 op dl \n raspi-gpio set 8 op dl \n raspi-gpio set 1 op dl")
     reset_task_statuses()
     stop_music()
+    pi_service_statuses = {}
+    preparedValue = {}
     end_time = datetime.now()
     if start_time is not None:
         write_game_data(start_time, end_time)
