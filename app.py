@@ -833,6 +833,8 @@ def fade_music_out_hint(room):
         time.sleep(1)
     if room == "The Retriever":
         publish.single("audio_control/all_retriever/play", "prehint.ogg", hostname=broker_ip)
+        if check_task_state("squeekuence", room) == "solved":
+            publish.single("audio_control/all_retriever/volume", "30 prehint.ogg", hostname=broker_ip)
     else:
         publish.single("audio_control/mlv-central/play", "prehint.ogg", hostname=broker_ip)
     return "Volume faded successfully"
