@@ -311,6 +311,8 @@ def handle_rules(sensor_name, sensor_state, room):
             note = button_note_map[sensor_name]
 
             # Play the corresponding audio for the note
+            if note!= "twinkle":
+                publish.single(f"audio_control/mlv-central/stop", f"{note}.ogg", hostname=broker_ip)
             publish.single(f"audio_control/mlv-central/play", f"{note}.ogg", hostname=broker_ip)
             publish.single(f"audio_control/mlv-central/volume", f"520 {note}.ogg", hostname=broker_ip)
             # Check if the button press is part of the sequence
