@@ -1842,6 +1842,7 @@ def handle_preset(message_key):
             send_dmx_command(preset['pan'], preset['tilt'], preset['colour'], preset['gobo'], preset['smoke'])
 @app.route('/play_music/<room>', methods=['POST'])
 def play_music(room):
+    global first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable
     data = request.json
     message = data.get('message')
     print(message)
@@ -1856,6 +1857,22 @@ def play_music(room):
         handle_preset("moon-place")
     elif message == "plant-place-1.ogg":
         handle_preset("plant-place")
+    elif message == "green-potion-1.ogg":
+        first_potion_solvable = True
+        publish.single(f"led/control/mlv-herbalist", "green", hostname=broker_ip)
+        call_control_maglock_moonlight("humidifier", "unlocked")
+    elif message == "orange-potion-1.ogg":
+        second_potion_solvable = True
+        publish.single(f"led/control/mlv-herbalist", "orange", hostname=broker_ip)
+        call_control_maglock_moonlight("humidifier", "unlocked")
+    elif message == "purple-potion-1.ogg":
+        third_potion_solvable = True
+        publish.single(f"led/control/mlv-herbalist", "purple", hostname=broker_ip)
+        call_control_maglock_moonlight("humidifier", "unlocked")
+    elif message == "yellow-potion-1.ogg":
+        fourth_potion_solvable = True
+        publish.single(f"led/control/mlv-herbalist", "yellow", hostname=broker_ip)
+        call_control_maglock_moonlight("humidifier", "unlocked")
     elif room == "The Retriever":
         publish.single("audio_control/all_retriever/play", message, hostname=broker_ip)
     else:
