@@ -1050,6 +1050,8 @@ def solve_task(task_name, room):
                 publish.single("audio_control/mlv-central/play", "final_sequence.ogg", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/volume", "100 final_sequence.ogg", hostname=broker_ip)
                 time.sleep(53)
+                publish.single("audio_control/mlv-central/play", f"{sound_prefix}thanks.ogg", hostname=broker_ip)
+                time.sleep(13)
                 call_control_maglock_moonlight("tavern-door-lock", "locked")
                 call_control_maglock_moonlight("final-door-lock", "locked")
                 stop_timer(room)
