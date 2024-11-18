@@ -1162,6 +1162,7 @@ def solve_task(task_name, room):
                     call_control_maglock_retriever("ball-drop-lock", "locked")
                 publish.single("audio_control/ret-middle/stop", "Background.ogg", hostname=broker_ip)
                 publish.single("audio_control/ret-middle/play", "Dogsout.ogg", hostname=broker_ip)
+                publish.singlew("audio_control/ret-middle/volume", "25 Dogsout.ogg", hostname=broker_ip)   
         elif task_name == "tree-lights":
             if bird_job == True:
                 scheduler.remove_job('birdjob')
