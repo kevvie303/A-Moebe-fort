@@ -6,7 +6,7 @@
         "services": ["mqtt", "lights_out", "actuator", "led"]
     },
     {
-        "ip_address": "192.168.0.128",
+        "ip_address": "192.168.0.125",
         "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "mlv-central",
         "services": ["mqtt", "sound", "actuator", "dmx"]
