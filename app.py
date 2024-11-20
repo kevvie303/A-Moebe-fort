@@ -2565,7 +2565,7 @@ def wait_for_statuses(pi_config, timeout=5):
         print("Timeout waiting for service statuses.")
 pi_service_statuses = {}
 preparedValue = {}
-timeout_duration = 10
+timeout_duration = 3
 @app.route('/prepare/<room>', methods=['POST'])
 def prepare_game(room):
     global client, pi_service_statuses, language, preparedValue, should_hint_shed_play, new_init_time
