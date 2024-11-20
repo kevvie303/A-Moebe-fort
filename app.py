@@ -2552,6 +2552,14 @@ def get_required_services():
     with open('json/raspberry_pis.json', 'r') as file:
         data = json.load(file)
     return {entry["hostname"]: entry.get("services", []) for entry in data}
+def wait_for_statuses(pi_config, timeout=5):
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        if all(pi['hostname'] in pi_service_statuses for pi in pi_config):
+            break
+        time.sleep(0.5)
+    else:
+        print("Timeout waiting for service statuses.")
 pi_service_statuses = {}
 preparedValue = {}
 @app.route('/prepare/<room>', methods=['POST'])
@@ -2581,7 +2589,7 @@ def prepare_game(room):
             print(services)
             print(hostname)
             client.publish(f"request_service_statuses/{hostname}", json.dumps({"services": services}))
-    time.sleep(0.7)
+    wait_for_statuses(pi_config)
     # Convert the service statuses to True if active, False if inactive
     converted_statuses = {}
     preparedValue = converted_statuses
