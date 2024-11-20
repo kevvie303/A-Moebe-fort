@@ -1400,6 +1400,7 @@ $(document).ready(function () {
     prepareResult.show();
     $(".tasks, .lock-status, .pin-info, #reset-list-container").hide();
     prepareStatus.html("Preparing...");
+    resultsSection.empty();
     clearInterval(updateStatusInterval);
     updatePlayStatus = setInterval(updatePlayingStatus, 1000);
 
