@@ -1326,6 +1326,7 @@ $(document).ready(function () {
     prepareButton.hide();
     prepareResult.show();
     $(".tasks, .lock-status, .pin-info, #reset-list-container").hide();
+    resultsSection.empty();
     prepareStatus.html("Preparing...");
     clearInterval(updateStatusInterval);
     updatePlayStatus = setInterval(updatePlayingStatus, 1000);
@@ -1343,8 +1344,6 @@ $(document).ready(function () {
 
         // Debugging: Output the response.message to the console
         console.log(response.message);
-
-        resultsSection.empty();
         // Loop through the JSON data and create a neat display
         for (var device in response.message) {
           var deviceStatus = response.message[device];
