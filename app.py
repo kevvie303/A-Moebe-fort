@@ -1895,6 +1895,9 @@ def get_required_services():
     return {entry["hostname"]: entry.get("services", []) for entry in data}
 pi_service_statuses = {}
 preparedValue = {}
+SSH_USERNAME = os.getenv("SSH_USERNAME")
+SSH_PASSWORD = os.getenv("SSH_PASSWORD")
+timeout_duration = 10  # Timeout duration in seconds
 @app.route('/prepare', methods=['POST'])
 def prepare_game():
     global client, pi_service_statuses, player_type, preparedValue, new_init_time
@@ -1911,17 +1914,40 @@ def prepare_game():
 
     # Loop over each Raspberry Pi and request service statuses
     
+    threads = []
+    
+    # Loop over each Raspberry Pi and request service statuses asynchronously
     for pi in pi_config:
         if "services" in pi and pi["hostname"].startswith(prefix):
             hostname = pi["hostname"]
             services = pi["services"]
-            print(services)
-            print(hostname)
-            client.publish(f"request_service_statuses/{hostname}", json.dumps({"services": services}))
-    time.sleep(0.7)
-    # Convert the service statuses to True if active, False if inactive
+            ip_address = pi["ip_address"]
+            print(f"Requesting service statuses for {hostname} ({services})")
+
+            # Health check before requesting statuses
+            if not check_service_status(ip_address):
+                print(f"Service on {hostname} is not responding. Restarting service.")
+                restart_service(ip_address)
+                if not check_service_status(ip_address):
+                    print(f"Service on {hostname} failed to restart. Marking all services as inactive.")
+                    pi_service_statuses[hostname] = {service: "inactive" for service in pi["services"]}
+                    continue  # Skip further processing for this Pi
+            
+            # Start a new thread to request service statuses for each Raspberry Pi
+            thread = threading.Thread(target=request_service_status, args=(hostname, services, ip_address))
+            threads.append(thread)
+            thread.start()
+
+    # Wait for all threads to complete, handle timeouts
+    for thread in threads:
+        thread.join(timeout=timeout_duration)
+
+    # Check if any Raspberry Pi did not return within the timeout period
+    for pi in pi_config:
+        if pi["hostname"] not in pi_service_statuses:
+            print(f"Timeout: No response from {pi['hostname']}. Marking all services as inactive.")
+            pi_service_statuses[pi["hostname"]] = {service: "inactive" for service in pi["services"]}
     converted_statuses = {}
-    preparedValue = converted_statuses
     for pi, status_dict in pi_service_statuses.items():
         converted_statuses[pi] = {service: status == "active" for service, status in status_dict.items()}
     player_type = request.form.get('playerType')
@@ -1929,6 +1955,58 @@ def prepare_game():
     print(converted_statuses)
     update_game_status("prepared")
     return jsonify({"message": converted_statuses}), 200
+def check_service_status(ip_address):
+    """ Function to check if the service_status service is active on the Raspberry Pi """
+    try:
+        result = subprocess.run(
+            ['sshpass', '-p', SSH_PASSWORD, 'ssh', '-o', 'StrictHostKeyChecking=no', f'{SSH_USERNAME}@{ip_address}', 
+             'systemctl', 'is-active', '--quiet', 'service_status.service'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+        # If the service is active, it will return 0
+        return result.returncode == 0
+    except Exception as e:
+        print(f"Error checking service status for {ip_address}: {e}")
+        return False
+
+def restart_service(ip_address):
+    """ Function to restart the service_status service on the Raspberry Pi """
+    try:
+        subprocess.run(
+            ['sshpass', '-p', SSH_PASSWORD, 'ssh', '-o', 'StrictHostKeyChecking=no', f'{SSH_USERNAME}@{ip_address}', 
+             'sudo', 'systemctl', 'restart', 'service_status.service'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+        print(f"Service on {ip_address} has been restarted.")
+    except Exception as e:
+        print(f"Error restarting service for {ip_address}: {e}")
+
+def request_service_status(hostname, services, ip_address):
+    """ Function to request the status of services from the Raspberry Pi """
+    try:
+        # Query service statuses via SSH and update pi_service_statuses
+        service_status = {}
+        for service in services:
+            result = subprocess.run(
+                ['sshpass', '-p', SSH_PASSWORD, 'ssh', '-o', 'StrictHostKeyChecking=no', f'{SSH_USERNAME}@{ip_address}', 
+                 'systemctl', 'is-active', '--quiet', service],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+            service_status[service] = "active" if result.returncode == 0 else "inactive"
+        pi_service_statuses[hostname] = service_status
+    except Exception as e:
+        print(f"Error requesting service status for {hostname}: {e}")
+
+@app.route('/service_status', methods=['POST'])
+def service_status_update():
+    """ Endpoint to receive service status updates from Raspberry Pis """
+    data = request.get_json()
+    hostname = data['hostname']
+    service_statuses = data['status']
+
+    # Update global pi_service_statuses with the new status
+    pi_service_statuses[hostname] = service_statuses
+    return jsonify({"message": "Status updated successfully!"}), 200
 if romy == False:
     turn_on_api()
     start_scripts()
