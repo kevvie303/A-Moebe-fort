@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, send_from_directory, send_file, after_this_request, flash
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, join_room
+import socket
 import math
 import json
 import paramiko
@@ -87,6 +88,8 @@ valid_combinations = {
 CHECKLIST_FILE = 'checklist_data.json'
 #logging.basicConfig(level=logging.DEBUG)  # Use appropriate log level
 active_ssh_connections = {}
+SSH_USERNAME = os.getenv("SSH_USERNAME")
+SSH_PASSWORD = os.getenv("SSH_PASSWORD")
 CORS(app)
 scheduler = BackgroundScheduler()
 scheduler.start()
@@ -202,8 +205,8 @@ def connect_device():
 
     return redirect(url_for('pow'))  # Redirect to a confirmation page or main page
 #broker_ip = "192.168.18.66"
-broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.20"
+#broker_ip = "192.168.0.103"  # IP address of the broker Raspberry Pi
+broker_ip = "100.100.182.106"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -2527,21 +2530,21 @@ def get_pi_status():
 
     # Render the template fragment and return as JSON
     return jsonify(render_template('status_table_fragment.html', pi_statuses=pi_statuses))
-def check_service_status(ip_address, service_name):
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(ip_address, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-    stdin, stdout, stderr = ssh.exec_command(f'systemctl is-active {service_name}')
-    status = stdout.read().decode().strip() == 'active'
-    ssh.close()
-    return status
+# def check_service_status(ip_address, service_name):
+#     ssh = paramiko.SSHClient()
+#     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+#     ssh.connect(ip_address, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+#     stdin, stdout, stderr = ssh.exec_command(f'systemctl is-active {service_name}')
+#     status = stdout.read().decode().strip() == 'active'
+#     ssh.close()
+#     return status
 
-def restart_service(ip_address, service_name):
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(ip_address, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
-    ssh.exec_command(f'sudo systemctl restart {service_name}')
-    ssh.close()
+# def restart_service(ip_address, service_name):
+#     ssh = paramiko.SSHClient()
+#     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+#     ssh.connect(ip_address, username=os.getenv("SSH_USERNAME"), password=os.getenv("SSH_PASSWORD"))
+#     ssh.exec_command(f'sudo systemctl restart {service_name}')
+#     ssh.close()
 
 def get_raspberry_pis_with_prefix(prefix, scanner):
     pi_devices = scanner.scan_for_raspberrypi()
@@ -2554,46 +2557,85 @@ def get_required_services():
     return {entry["hostname"]: entry.get("services", []) for entry in data}
 pi_service_statuses = {}
 preparedValue = {}
+timeout_duration = 10
 @app.route('/prepare/<room>', methods=['POST'])
 def prepare_game(room):
-    global client, pi_service_statuses, language, preparedValue, should_hint_shed_play, new_init_time, language
+    global client, pi_service_statuses, language, preparedValue, should_hint_shed_play, new_init_time
+
+    # Set initial preparation time
     new_init_time = 3600
+
+    # Define prefix based on room
     if room == "The Retriever":
         should_hint_shed_play = True
         prefix = "ret"
     else:
         prefix = "mlv"
-    print(prefix)
+
+    print(f"Preparing {room} with prefix {prefix}")
+
+    # Check if the room is already prepared
     if get_game_status(room) == {'status': 'prepared'}:
         return jsonify({"message": preparedValue}), 200
+
     reset_prepare(room)
-    # Assuming you have logic for preparing the game
+
     # Load Raspberry Pi configuration from JSON file
     with open(f'json/{room}/raspberry_pis.json', 'r') as file:
         pi_config = json.load(file)
 
-    # Loop over each Raspberry Pi and request service statuses
+    # Create a list to hold threads for parallel execution
+    threads = []
     
+    # Loop over each Raspberry Pi and request service statuses asynchronously
     for pi in pi_config:
         if "services" in pi and pi["hostname"].startswith(prefix):
             hostname = pi["hostname"]
             services = pi["services"]
-            print(services)
-            print(hostname)
-            client.publish(f"request_service_statuses/{hostname}", json.dumps({"services": services}))
+            print(f"Requesting service statuses for {hostname} ({services})")
+            
+            # Health check before requesting statuses
+            if not check_service_status(hostname):
+                print(f"Service on {hostname} is not responding. Restarting service.")
+                restart_service(hostname)
+                if not check_service_status(hostname):
+                    print(f"Service on {hostname} failed to restart. Marking all services as inactive.")
+                    pi_service_statuses[hostname] = {service: "inactive" for service in pi["services"]}
+                    continue  # Skip further processing for this Pi
+            
+            # Start a new thread to request service statuses for each Raspberry Pi
+            thread = threading.Thread(target=request_service_status, args=(hostname, services))
+            threads.append(thread)
+            thread.start()
     time.sleep(0.7)
-    # Convert the service statuses to True if active, False if inactive
+    # Wait for all threads to complete, handle timeouts
+    for thread in threads:
+        thread.join(timeout=timeout_duration)
+
+    # Check if any Raspberry Pi did not return within the timeout period
+    for pi in pi_config:
+        if pi["hostname"] not in pi_service_statuses:
+            print(f"Timeout: No response from {pi['hostname']}. Marking all services as inactive.")
+            pi_service_statuses[pi["hostname"]] = {service: "inactive" for service in pi["services"]}
+
+    # Convert service statuses to True/False based on "active"/"inactive"
     converted_statuses = {}
-    preparedValue = converted_statuses
     for pi, status_dict in pi_service_statuses.items():
         converted_statuses[pi] = {service: status == "active" for service, status in status_dict.items()}
+
+    # Store the prepared status
+    preparedValue = converted_statuses
+
+    # Set language preferences
     if not isinstance(language, dict):
         language = {}
-    
     language[room] = request.form.get('language')
 
+    # Update game status to "prepared"
     update_game_status("prepared", room)
     time.sleep(0.1)
+
+    # Perform actions based on the room type
     if room == "The Retriever":
         publish.single("audio_control/ret-top/play", "Lounge.ogg", hostname=broker_ip)
         if language[room] == "eng":
@@ -2604,7 +2646,78 @@ def prepare_game(room):
         publish.single("audio_control/raspberrypi/play", "bg_corridor.ogg", hostname=broker_ip)
         publish.single("led/control/mlv-corridors", "unlocked", hostname=broker_ip)
         call_control_maglock_moonlight("smoke-power", "unlocked")
+
     return jsonify({"message": converted_statuses}), 200
+
+def resolve_ip_from_hostname(hostname):
+    """ Resolve the IP address of the given hostname """
+    try:
+        ip_address = socket.gethostbyname(hostname)
+        return ip_address
+    except socket.gaierror as e:
+        print(f"Error resolving IP address for {hostname}: {e}")
+        return None
+
+def check_service_status(hostname):
+    """ Function to check if the service_status service is active on the Raspberry Pi """
+    ip_address = resolve_ip_from_hostname(hostname)
+    if not ip_address:
+        return False
+
+    try:
+        # Establish SSH connection using paramiko
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  # Automatically accept unknown host keys
+        ssh.connect(ip_address, username=SSH_USERNAME, password=SSH_PASSWORD)
+        
+        # Run the systemctl command to check service status
+        stdin, stdout, stderr = ssh.exec_command('systemctl is-active service_status.service')
+        service_status = stdout.read().decode().strip()
+        ssh.close()
+        
+        # Return True if the service is active
+        return service_status == "active"
+    except Exception as e:
+        print(f"Error checking service status for {hostname} ({ip_address}): {e}")
+        return False
+
+def restart_service(hostname):
+    """ Function to restart the service_status service on the Raspberry Pi """
+    ip_address = resolve_ip_from_hostname(hostname)
+    if not ip_address:
+        return
+
+    try:
+        # Establish SSH connection using paramiko
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  # Automatically accept unknown host keys
+        ssh.connect(ip_address, username=SSH_USERNAME, password=SSH_PASSWORD)
+        
+        # Run the systemctl command to restart the service
+        ssh.exec_command('sudo systemctl restart service_status.service')
+        ssh.close()
+        
+        print(f"Service on {hostname} ({ip_address}) has been restarted.")
+    except Exception as e:
+        print(f"Error restarting service for {hostname} ({ip_address}): {e}")
+
+def request_service_status(hostname, services):
+    """ Function to request the service status for a given Raspberry Pi """
+    try:
+        client.publish(f"request_service_statuses/{hostname}", json.dumps({"services": services}))
+    except Exception as e:
+        print(f"Error publishing request to {hostname}: {e}")
+
+@app.route('/service_status', methods=['POST'])
+def service_status_update():
+    """ Endpoint to receive service status updates from Raspberry Pis """
+    data = request.get_json()
+    hostname = data['hostname']
+    service_statuses = data['status']
+
+    # Update global pi_service_statuses with the new status
+    pi_service_statuses[hostname] = service_statuses
+    return jsonify({"message": "Status updated successfully!"}), 200
 if romy == False:
     turn_on_api()
     start_scripts()
