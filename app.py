@@ -197,7 +197,7 @@ def remove_existing_ogg():
         if file.endswith(".ogg"):
             os.remove(file)
 broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
-#broker_ip = "192.168.1.27"
+#broker_ip = "100.103.58.104"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -812,16 +812,27 @@ def get_file_status():
     
 @app.route('/get_task_status', methods=['GET'])
 def get_task_status():
-    file_path = os.path.join(current_dir, 'json', 'tasks.json')
+    global player_type
+    file_path = os.path.join(current_dir, 'json', 'tasks.json')  # Adjusted for example
+
     if os.path.exists(file_path):
         try:
             with open(file_path, 'r') as file:
                 file_data = json.load(file)
+
+            if player_type == "kids":
+                filtered_tasks = []
+                for task in file_data:
+                    filtered_tasks.append(task)
+                    if task['task'] == "kapstok-allemaal":
+                        break
+                return jsonify(filtered_tasks)
+
             return jsonify(file_data)
         except (FileNotFoundError, json.JSONDecodeError):
-            return jsonify([])
+            return jsonify([]), 500
     else:
-        return jsonify([])
+        return jsonify([]), 404
     
 @app.route('/solve_task/<task_name>', methods=['POST'])
 def solve_task(task_name):
@@ -1155,11 +1166,22 @@ def edit_task():
     
 @app.route('/get_tasks', methods=['GET'])
 def get_tasks():
+    global player_type
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
     
     try:
         with open(file_path, 'r') as file:
             tasks = json.load(file)
+        
+        # Filter tasks for adults to include only up to "kapstok-allemaal"
+        if player_type == "kids":
+            allowed_tasks = [
+                "Medicijnkast-open", "Streepjes-tellen", "Poster", "3-objecten", "Sleutel-vissen",
+                "Medisch-dossier", "Stroomstoring", "Radio", "scan-mendez", "Schoenkast",
+                "kapstok-italie", "kapstok-ijsland", "kapstok-zuidafrika", "kapstok-allemaal"
+            ]
+            tasks = [task for task in tasks if task["task"] in allowed_tasks]
+        
         return jsonify(tasks)
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify([])
@@ -1951,6 +1973,7 @@ def prepare_game():
     for pi, status_dict in pi_service_statuses.items():
         converted_statuses[pi] = {service: status == "active" for service, status in status_dict.items()}
     player_type = request.form.get('playerType')
+    print(player_type)
     # Return the converted service statuses
     print(converted_statuses)
     update_game_status("prepared")
