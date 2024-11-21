@@ -1,7 +1,7 @@
 [
     {
         "task": "Medicijnkast-open",
-        "description": "Spelers kunnen het kastje boven de wastafel open maken met de sleutel die in de buis zit (magnetisch). In het kastje zit een munt en de tekst ‘We begonnen met tellen na dag 100’ plus 3 extra streepjes.",
+        "description": "Spelers kunnen het kastje boven de wastafel open maken met de sleutel die in de buis zit (magnetisch). In het kastje zit een munt en de tekst \u00e2\u20ac\u02dcWe begonnen met tellen na dag 100\u00e2\u20ac\u2122 plus 3 extra streepjes.",
         "state": "pending"
     },
     {
@@ -17,91 +17,152 @@
     {
         "task": "3-objecten",
         "description": "Als de 3 gevonden objecten op de juiste plek liggen, gaat de geheime deur onder het bed open.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "Medicijnkast-open",
+            "Streepjes-tellen",
+            "Poster"
+        ]
     },
     {
         "task": "Sleutel-vissen",
         "description": "Er kan een bos sleutels worden gevist door de tralies heen. Hiervoor moet de buis onder het bed gepakt worden en de haak uit de lade rechtsonder. Met de sleutels kunnen de handboeien (volwassen) en de lade rechts boven los.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "3-objecten"
+        ]
     },
     {
         "task": "Medisch-dossier",
         "description": "Het medisch dossier is voor kinderen het tellen van de juiste potjes. Catosal:6 Novacam:10 Emdofluxin: 2. Dit vormt de code 6102. Volwassenen moeten het medisch dossier combineren met de poster aan de muur en de kalender. Dit vormt ook de code 6102.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "3-objecten"
+        ]
     },
     {
         "task": "Stroomstoring",
-        "description": "Door de knop in te drukken in de lade komt er een stroomstoring. Hierdoor gaan de camera’s uit, de radio aan en de linker onderste lade open.",
-        "state": "pending"
+        "description": "Door de knop in te drukken in de lade komt er een stroomstoring. Hierdoor gaan de camera\u00e2\u20ac\u2122s uit, de radio aan en de linker onderste lade open.",
+        "state": "pending",
+        "depends_on": [
+            "Sleutel-vissen",
+            "Medisch-dossier"
+        ]
     },
     {
         "task": "Radio",
         "description": "De radio blijft dezelfde code oproepen, 3479. Hiermee kan de deur worden geopend richting de gang.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "Stroomstoring"
+        ]
     },
     {
         "task": "scan-mendez",
         "description": "Het linker hek gaat open door het scannen van de pas van Mendez.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "Radio"
+        ]
     },
     {
         "task": "Schoenkast",
         "description": "Er zijn 3 paar kapotte schoenen te zien. Als deze worden weggehaald zie je er cijfers achter. 485. Hier kan 1 slot van de kluis mee geopend worden.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "scan-mendez"
+        ]
     },
     {
         "task": "kapstok-italie",
         "description": "Als de jassen worden opgehangen aan de juiste haakjes (Ijsland, Italie, Zuid Afrika) dan valt er een sleutel voor de kluis.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "scan-mendez"
+        ]
     },
     {
         "task": "kapstok-ijsland",
         "description": "Als de jassen worden opgehangen aan de juiste haakjes (Ijsland, Italie, Zuid Afrika) dan valt er een sleutel voor de kluis.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "scan-mendez"
+        ]
     },
     {
         "task": "kapstok-zuidafrika",
         "description": "Als de jassen worden opgehangen aan de juiste haakjes (Ijsland, Italie, Zuid Afrika) dan valt er een sleutel voor de kluis.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "scan-mendez"
+        ]
     },
     {
         "task": "kapstok-allemaal",
         "description": "Als de jassen worden opgehangen aan de juiste haakjes (Ijsland, Italie, Zuid Afrika) dan valt er een sleutel voor de kluis.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "kapstok-italie",
+            "kapstok-ijsland",
+            "kapstok-zuidafrika"
+        ]
     },
     {
         "task": "scan-rosenthal",
         "description": "Met de pas uit de kluis kan het rechter hek geopend worden.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "kapstok-allemaal"
+        ]
     },
     {
         "task": "alarm-knop",
-        "description": "Bij binnenkomst van de poepdozen hoor je iemand in de wc neuriën en even later zingen. Dit is morsecode en moet vertaald worden bij het morseblad in de garderobe. Hier is het woord ‘VRIJ’ uit te halen.",
-        "state": "pending"
+        "description": "Bij binnenkomst van de poepdozen hoor je iemand in de wc neuri\u00c3\u00abn en even later zingen. Dit is morsecode en moet vertaald worden bij het morseblad in de garderobe. Hier is het woord \u00e2\u20ac\u02dcVRIJ\u00e2\u20ac\u2122 uit te halen.",
+        "state": "pending",
+        "depends_on": [
+            "scan-rosenthal"
+        ]
     },
     {
         "task": "granaat-soratov",
         "description": "De granaat moet op de juiste plek in de achtergang gezet worden. Saratov moet naar het westen gericht zijn.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "alarm-knop"
+        ]
     },
     {
         "task": "granaat-khabarovsk",
         "description": "De granaat moet op de juiste plek in de achtergang gezet worden. Khabarovsk moet naar het noorden gericht zijn.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "alarm-knop"
+        ]
     },
     {
         "task": "granaat-tomsk",
         "description": "De granaat moet op de juiste plek in de achtergang gezet worden. Tomsk moet naar het oosten gericht zijn.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "alarm-knop"
+        ]
     },
     {
         "task": "granaat-allemaal",
         "description": "De granaten die gevonden zijn moeten op de juiste plek gezet worden in de achtergang. Kijk naar de plaatsnaam en welke kant de stip van de plaatsnaam is. Saratov -> West / Khabarovsk -> Noord / Tomsk -> Oost. Als dit gebeurd is de eindcode te horen.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "granaat-soratov",
+            "granaat-khabarovsk",
+            "granaat-tomsk"
+        ]
     },
     {
         "task": "einddeur-open",
         "description": "De eindcode is duidelijk te horen. SONA dient te worden ingevuld op de einddeur.",
-        "state": "pending"
+        "state": "pending",
+        "depends_on": [
+            "granaat-allemaal"
+        ]
     }
 ]

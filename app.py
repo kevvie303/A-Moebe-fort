@@ -196,8 +196,8 @@ def remove_existing_ogg():
     for file in os.listdir("."):
         if file.endswith(".ogg"):
             os.remove(file)
-broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
-#broker_ip = "100.103.58.104"
+#broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
+broker_ip = "100.103.58.104"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -813,26 +813,42 @@ def get_file_status():
 @app.route('/get_task_status', methods=['GET'])
 def get_task_status():
     global player_type
-    file_path = os.path.join(current_dir, 'json', 'tasks.json')  # Adjusted for example
-
+    file_path = os.path.join(current_dir, 'json', 'tasks.json')
+    last_task_for_kids = "kapstok-allemaal"
+    
     if os.path.exists(file_path):
         try:
             with open(file_path, 'r') as file:
-                file_data = json.load(file)
+                tasks = json.load(file)
 
-            if player_type == "kids":
+            # Map task states for easy lookup
+            task_states = {task['task']: task['state'] for task in tasks}
+
+            for task in tasks:
+                # Check if task has dependencies
+                if 'depends_on' in task:
+                    dependencies = task['depends_on']
+                    # Check if all dependencies are solved
+                    if all(task_states.get(dep) in ['solved', 'skipped'] for dep in dependencies):
+                        task['blocked'] = False
+                    else:
+                        task['blocked'] = True
+                else:
+                    task['blocked'] = False
+
+            # Dynamically filter tasks for kids
+            if player_type == 'kids':
                 filtered_tasks = []
-                for task in file_data:
+                for task in tasks:
                     filtered_tasks.append(task)
-                    if task['task'] == "kapstok-allemaal":
+                    if task['task'] == last_task_for_kids:
                         break
-                return jsonify(filtered_tasks)
-
-            return jsonify(file_data)
+                tasks = filtered_tasks
+            return jsonify(tasks)
         except (FileNotFoundError, json.JSONDecodeError):
-            return jsonify([]), 500
+            return jsonify([])
     else:
-        return jsonify([]), 404
+        return jsonify([])
     
 @app.route('/solve_task/<task_name>', methods=['POST'])
 def solve_task(task_name):
