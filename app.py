@@ -21,6 +21,7 @@ import paho.mqtt.publish as publish
 from networkscanner import NetworkScanner
 from datetime import datetime, date
 from youtube_downloader import download_video, convert_to_ogg
+import uuid
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -196,8 +197,8 @@ def remove_existing_ogg():
     for file in os.listdir("."):
         if file.endswith(".ogg"):
             os.remove(file)
-broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
-#broker_ip = "100.103.58.104"
+#broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
+broker_ip = "100.103.58.104"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
 prefix_to_subscribe = "state_data/"
 sensor_states = {}
@@ -813,48 +814,84 @@ def get_file_status():
 @app.route('/get_task_status', methods=['GET'])
 def get_task_status():
     global player_type
-    file_path = os.path.join(current_dir, 'json', 'tasks.json')
-    last_task_for_kids = "kapstok-allemaal"
-    
-    if os.path.exists(file_path):
+    tasks_file_path = os.path.join(current_dir, 'json', 'tasks.json')
+    games_file_path = os.path.join(current_dir, 'json', 'data.json')
+
+    if os.path.exists(tasks_file_path) and os.path.exists(games_file_path):
         try:
-            with open(file_path, 'r') as file:
-                tasks = json.load(file)
+            with open(tasks_file_path, 'r') as tasks_file:
+                tasks = json.load(tasks_file)
 
-            # Map task states for easy lookup
-            task_states = {task['task']: task['state'] for task in tasks}
+            with open(games_file_path, 'r') as games_file:
+                games = json.load(games_file)
 
+            current_game = games[-1] if games else None
+
+            if current_game is None:
+                return jsonify(tasks)
+
+            start_time = datetime.fromisoformat(current_game['start_time'])
+            task_states = current_game['tasks']
+
+            filtered_tasks = []
             for task in tasks:
-                # Check if task has dependencies
+                task_name = task['task']
+                task['duration'] = None  
+                task['state'] = task.get('state', 'pending')
+
+                # Set duration if the task was solved in the current game
+                if task_name in task_states and task_states[task_name]['state'] == 'solved':
+                    solved_time = datetime.fromisoformat(task_states[task_name]['timestamp'])
+                    duration = solved_time - start_time
+                    minutes, seconds = divmod(duration.total_seconds(), 60)
+                    task['duration'] = f"{int(minutes)}:{int(seconds):02d}"
+
+                # Determine if the task is blocked based on its dependencies in tasks.json
                 if 'depends_on' in task:
                     dependencies = task['depends_on']
-                    # Check if all dependencies are solved
-                    if all(task_states.get(dep) in ['solved', 'skipped'] for dep in dependencies):
-                        task['blocked'] = False
-                    else:
-                        task['blocked'] = True
+                    task['blocked'] = not all(
+                        next((t['state'] for t in tasks if t['task'] == dep), 'pending') in ['solved', 'skipped']
+                        for dep in dependencies
+                    )
                 else:
                     task['blocked'] = False
 
-            # Dynamically filter tasks for kids
-            if player_type == 'kids':
-                filtered_tasks = []
-                for task in tasks:
-                    filtered_tasks.append(task)
-                    if task['task'] == last_task_for_kids:
-                        break
-                tasks = filtered_tasks
-            return jsonify(tasks)
+                # Add task to the filtered list based on the player type
+                filtered_tasks.append(task)
+                
+                if player_type == 'kids' and task_name == 'kapstok-allemaal':
+                    break
+
+            return jsonify(filtered_tasks)
+
         except (FileNotFoundError, json.JSONDecodeError):
             return jsonify([])
+
     else:
         return jsonify([])
+
     
 @app.route('/solve_task/<task_name>', methods=['POST'])
 def solve_task(task_name):
     global start_time, alarmfaded
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
     game_status = get_game_status()
+    game_data = get_solved_data()
+
+    # Retrieve the latest game entry
+    if game_data:
+        current_game = game_data[-1]  # Assuming the last game is the current one
+        if "tasks" not in current_game:
+            current_game["tasks"] = {}
+
+        # Mark task as solved with a timestamp
+        current_game["tasks"][task_name] = {
+            "state": "solved",
+            "timestamp": datetime.now().isoformat()
+        }
+
+        # Save the updated game data back to data.json
+        save_game_data(game_data)
     try:
         with open(file_path, 'r+') as file:
             tasks = json.load(file)
@@ -935,6 +972,24 @@ def solve_task(task_name):
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error updating task'})
+def save_game_data(game_data):
+    data_file_path = os.path.join(current_dir, 'json', 'data.json')
+    with open(data_file_path, 'w') as file:
+        json.dump(game_data, file, indent=4)
+def get_solved_data():
+    # Path to the data.json file
+    data_file_path = os.path.join(current_dir, 'json', 'data.json')
+    # Ensure data.json exists with an empty array if it doesn't
+    if not os.path.exists(data_file_path):
+        with open(data_file_path, 'w') as file:
+            json.dump([], file)  # Initialize with an empty list
+    # Load existing game data
+    with open(data_file_path, 'r') as file:
+        game_data = json.load(file)
+    # Ensure the file content is a list
+    if not isinstance(game_data, list):
+        game_data = []
+    return game_data
 @app.route('/skip_task/<task_name>', methods=['POST'])
 def skip_task(task_name):
     global bird_job, code1, code2, code3, code4, code5, sequence, codesCorrect
@@ -1748,6 +1803,18 @@ new_init_time = 3600
 def start_timer():
     global timer_thread, timer_value, speed, timer_running, bird_job, start_time, alarmfaded
     alarmfaded = False
+    game_id = str(uuid.uuid4())
+    # Create new game entry
+    new_game = {
+        "id": game_id,
+        "start_time": datetime.now().isoformat(),
+        "tasks": {},
+    }
+    # Load existing game data and append the new game
+    game_data = get_solved_data()
+    game_data.append(new_game)  # Append new game to list
+    save_game_data(game_data)
+    socketio.emit('reset_task_durations', room="all_clients")
     update_game_status('playing')
     start_time = datetime.now()
     if timer_thread is None or not timer_thread.is_alive():

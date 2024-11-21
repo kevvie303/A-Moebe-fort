@@ -71,6 +71,22 @@ def solve_task(task_name):
     global start_time
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
     game_status = get_game_status()
+    game_data = get_solved_data()
+
+    # Retrieve the latest game entry
+    if game_data:
+        current_game = game_data[-1]  # Assuming the last game is the current one
+        if "tasks" not in current_game:
+            current_game["tasks"] = {}
+
+        # Mark task as solved with a timestamp
+        current_game["tasks"][task_name] = {
+            "state": "solved",
+            "timestamp": datetime.now().isoformat()
+        }
+
+        # Save the updated game data back to data.json
+        save_game_data(game_data)
     try:
         with open(file_path, 'r+') as file:
             tasks = json.load(file)
@@ -145,6 +161,24 @@ def solve_task(task_name):
         return 'Task updated successfully'
     except (FileNotFoundError, json.JSONDecodeError):
         return 'Error updating task'
+def save_game_data(game_data):
+    data_file_path = os.path.join(current_dir, 'json', 'data.json')
+    with open(data_file_path, 'w') as file:
+        json.dump(game_data, file, indent=4)
+def get_solved_data():
+    # Path to the data.json file
+    data_file_path = os.path.join(current_dir, 'json', 'data.json')
+    # Ensure data.json exists with an empty array if it doesn't
+    if not os.path.exists(data_file_path):
+        with open(data_file_path, 'w') as file:
+            json.dump([], file)  # Initialize with an empty list
+    # Load existing game data
+    with open(data_file_path, 'r') as file:
+        game_data = json.load(file)
+    # Ensure the file content is a list
+    if not isinstance(game_data, list):
+        game_data = []
+    return game_data
 def pend_task(task_name):
     file_path = os.path.join(current_dir, 'json', 'tasks.json')
 

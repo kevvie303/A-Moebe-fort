@@ -1,0 +1,45 @@
+[
+    {
+        "id": "2481b78b-e8e4-461a-9da4-dbc136779e2e",
+        "start_time": "2024-11-21T12:45:38.289914",
+        "tasks": {
+            "Medicijnkast-open": {
+                "state": "solved",
+                "timestamp": "2024-11-21T12:45:39.737341"
+            },
+            "Streepjes-tellen": {
+                "state": "solved",
+                "timestamp": "2024-11-21T12:45:47.293190"
+            }
+        }
+    },
+    {
+        "id": "3c271342-1b7e-48a5-8bcc-07c341d55872",
+        "start_time": "2024-11-21T12:50:18.857625",
+        "tasks": {
+            "Medicijnkast-open": {
+                "state": "solved",
+                "timestamp": "2024-11-21T12:50:20.929175"
+            }
+        }
+    },
+    {
+        "id": "989bad9d-6efd-4192-8726-a30a564900f4",
+        "start_time": "2024-11-21T12:53:51.115382",
+        "tasks": {
+            "Medicijnkast-open": {
+                "state": "solved",
+                "timestamp": "2024-11-21T12:53:52.830420"
+            },
+            "Streepjes-tellen": {
+                "state": "solved",
+                "timestamp": "2024-11-21T12:53:54.556439"
+            }
+        }
+    },
+    {
+        "id": "464a7924-6658-453a-bd8c-c10f3d9d38a3",
+        "start_time": "2024-11-21T12:54:09.381845",
+        "tasks": {}
+    }
+]

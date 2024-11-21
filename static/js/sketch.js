@@ -908,7 +908,11 @@ async function fetchTasks() {
       const taskStatus = document.createElement("p");
       taskStatus.style.borderBottom = "1px solid lightgray";
       taskStatus.id = task.task;
-      taskStatus.innerHTML = `${task.task}: <strong class="${task.state}">${task.state}</strong>`;
+      taskStatus.innerHTML = `
+      <span class="task-name">${task.task}</span>
+      <span class="duration">${task.duration ? `(${task.duration})` : ''}</span>
+      <strong class="${task.state}">${task.state}</strong>
+    `;
 
       // Apply styles for blocked tasks
       if (task.blocked) {
@@ -1488,6 +1492,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update your checklist UI based on the received data
     fetchSensorData();
   });
+  socket.on('reset_task_durations', function() {
+    // Logic to reset task durations on the UI
+    const taskElements = document.querySelectorAll('#task-list p'); // Select all task elements
+    taskElements.forEach(taskElement => {
+        const durationSpan = taskElement.querySelector('.duration'); // Select the duration span
+        if (durationSpan) {
+            durationSpan.innerText = ''; // Clear the duration text
+        }
+    });
+});
   // ... (other event listeners) ...
 
   // Function to update the checklist UI
