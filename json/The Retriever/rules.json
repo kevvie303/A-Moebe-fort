@@ -1,0 +1,34 @@
+[
+    {
+        "sensor_name": "green_house_ir",
+        "sensor_state": "Triggered",
+        "action": "call_control_maglock",
+        "maglock": "green-led",
+        "state": "unlocked"
+    },
+    {
+        "sensor_name": "red_house_ir",
+        "sensor_state": "Triggered",
+        "action": "call_control_maglock",
+        "maglock": "red-led",
+        "state": "unlocked"
+    },
+    {
+        "sensor_name": "blue_house_ir",
+        "sensor_state": "Triggered",
+        "action": "solve_task",
+        "task_name": "tree-lights"
+    },
+    {
+        "sensor_name": "laser",
+        "sensor_state": "100",
+        "action": "solve_task",
+        "task_name": "laser-game"
+    },
+    {
+        "sensor_name": "keypad",
+        "sensor_state": "1528",
+        "action": "solve_task",
+        "task_name": "flowers"
+    }
+]

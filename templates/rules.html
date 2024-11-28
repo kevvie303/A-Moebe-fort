@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Rule Cards with Subcards</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        .rules-container {
+            margin-top: 20px;
+        }
+        .rule-card {
+            background: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .rule-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .rule-card-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .rule-card-header button {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .rule-card-header button:hover {
+            background: #c82333;
+        }
+        .section-title {
+            margin: 10px 0;
+            font-weight: bold;
+            color: #343a40;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn {
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #fff;
+        }
+        .btn-green {
+            background-color: #28a745;
+        }
+        .btn-orange {
+            background-color: #fd7e14;
+        }
+        .btn-blue {
+            background-color: #007bff;
+        }
+        .btn-gray {
+            background-color: #6c757d;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .add-rule-btn {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .add-rule-btn:hover {
+            background: #0056b3;
+        }
+        .sub-card {
+            border: 1px solid #dee2e6;
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+        }
+        .delete-sub-card {
+            float: right;
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .delete-sub-card:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rule Editor</h1>
+    <div id="room-name" style="display: none;">{{ room }}</div>
+    <button class="add-rule-btn" id="add-rule-btn">Add New Rule</button>
+    <button id="save-rules-btn" class="add-rule-btn" style="background-color: #28a745; margin-top: 20px;">
+        Save Rules!
+    </button>    
+    <div class="rules-container" id="rules-container"></div>
+</body>
+<script src="{{ url_for('static', filename='js/rules.js') }}"></script>
+</html>

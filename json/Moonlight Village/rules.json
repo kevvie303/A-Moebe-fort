@@ -1,0 +1,77 @@
+[
+    {
+        "id": 9403,
+        "sensor_name": "# Rule undefined",
+        "constraints": [
+            {
+                "sensor": "ast-button-1",
+                "state": "Triggered"
+            },
+            {
+                "sensor": "lights-on",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "astronomy-door-lock",
+                "state": "Unlocked"
+            },
+            {
+                "delay": "10"
+            },
+            {
+                "task": "telescope-place",
+                "status": "solved"
+            },
+            {
+                "play_sound": "skidoosh",
+                "volume": "10"
+            },
+            {
+                "sensor": "watersensor",
+                "increment": "1"
+            }
+        ]
+    },
+    {
+        "id": 9404,
+        "sensor_name": "# Rule undefined",
+        "constraints": [
+            {
+                "sensor": "ast-button-7",
+                "state": "Triggered"
+            },
+            {
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "task": "lights-on",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 9408,
+        "sensor_name": "# Rule 9408",
+        "constraints": [
+            {
+                "sensor": "astronomy-door-lock",
+                "state": "Locked"
+            }
+        ],
+        "actions": [
+            {
+                "play_sound": "ww",
+                "volume": "22"
+            }
+        ]
+    }
+]

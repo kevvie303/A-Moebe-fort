@@ -215,171 +215,33 @@ sensor_states = {}
 pi_service_statuses = {}  # New dictionary to store service statuses for each Pi
 twinkle_sequence = ["g", "g", "d", "d", "e", "e", "d"]
 current_sequence = []
+
+def load_rules(room):
+    try:
+        with open(f'json/{room}/rules.json', 'r') as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
 def handle_rules(sensor_name, sensor_state, room):
+    rules = load_rules(room)
+    for rule in rules:
+        pass
+        #if rule['sensor_name'] == sensor_name and rule['sensor_state'] == sensor_state:
+            #execute_rule(rule, room)
+
+def execute_rule(rule, room):
     global sequence, code1, code2, code3, code4, code5, codesCorrect, current_sequence, twinkle_sequence, first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable
     global last_three_pulled, language, lockout_end_time, last_button_press_time, debounce_time
-    if get_game_status(room) == {'status': 'playing'}:
-        if check_rule("green_house_ir", room) and sequence == 0:
-            task_state = check_task_state("tree-lights", room)
-            if task_state == "pending":
-                call_control_maglock_retriever("green-led", "unlocked")
-                print("1")
-                sequence = 1
-        if check_rule("red_house_ir", room) and sequence == 1:
-            task_state = check_task_state("tree-lights", room)
-            if task_state == "pending":
-                call_control_maglock_retriever("red-led", "unlocked")
-                print("2")
-                sequence = 2
-        elif check_rule("red_house_ir", room) and sequence <= 0:
-            task_state = check_task_state("tree-lights", room)
-            if task_state == "pending":
-                call_control_maglock_retriever("red-led", "unlocked")
-                time.sleep(0.5)
-                call_control_maglock_retriever("green-led", "locked")
-                call_control_maglock_retriever("red-led", "locked")
-                sequence = 0
-        if check_rule("blue_house_ir", room) and sequence == 2:
-            task_state = check_task_state("tree-lights", room)
-            if task_state == "pending":
-                solve_task("tree-lights", room)
-        elif check_rule("blue_house_ir", room) and sequence != 2:
-            task_state = check_task_state("tree-lights", room)
-            if task_state == "pending":
-                call_control_maglock_retriever("green-led", "unlocked")
-                time.sleep(0.5)
-                call_control_maglock_retriever("red-led", "locked")
-                call_control_maglock_retriever("green-led", "locked")
-                call_control_maglock_retriever("blue-led", "locked")
-                sequence = 0
-        if sensor_name.startswith("ir-plant"):
-            plant_pulled(sensor_name, room)  # Handle plant pull
-        if check_rule("moon-puzzle", room):
-            task_state = check_task_state("moon-place", room)
-            if task_state == "pending":
-                solve_task("moon-place", room)
-        if check_rule("watersensor", room):
-            task_state = check_task_state("plant-water", room)
-            if task_state == "pending":
-                solve_task("plant-water", room) 
-        if check_rule("gibbs-sensor", room):
-            task_state = check_task_state("gibbs", room)
-            if task_state == "pending":
-                solve_task("gibbs", room)
-        if sensor_name == "light_count":
-            if sensor_state == "5":
-                solve_task("lights-on", room)
-        if sensor_name == "entrance-door":
-            if sensor_state == "Not Triggered":
-                call_control_maglock_moonlight("entrance-door-lock", "unlocked")
-        if sensor_name == "knocker":
-            if sensor_state == "solved":
-                solve_task("knocker-solve", room)
-        if sensor_name == "webcam":
-            if sensor_state == "solved":
-                solve_task("camera-puzzle", room)
-    if get_game_status(room) == {'status': 'playing'}:
-        if sensor_name == "knocker":
-            if sensor_state == "solved":
-                solve_task("knocker-solve", room)
-        if first_potion_solvable and sensor_name == "flask-rfid-1":
-            if sensor_state == "584197941325":
-                solve_task("green-potion", room)
-                first_potion_solvable = False
-        if second_potion_solvable and sensor_name == "flask-rfid-2":
-            if sensor_state == "584197875788":
-                solve_task("orange-potion", room)
-                second_potion_solvable = False
-        if third_potion_solvable and sensor_name == "flask-rfid-3":
-            if sensor_state == "584196892797":
-                solve_task("purple-potion", room)
-                third_potion_solvable = False
-        if fourth_potion_solvable and sensor_name == "flask-rfid-4":
-            if sensor_state == "584196958334":
-                solve_task("yellow-potion", room)
-                fourth_potion_solvable = False
-        button_note_map = {
-            "ast-button-1": "a",
-            "ast-button-2": "b",
-            "ast-button-3": "c",
-            "ast-button-4": "d",
-            "ast-button-5": "e",
-            "ast-button-6": "f",
-            "ast-button-7": "g",
-            "ast-button-8": "g-high",
-            "ast-button-9": "twinkle"  # Extra button for resetting
-        }
 
-        if check_rule(sensor_name, room) and sensor_name in button_note_map:
-            note = button_note_map[sensor_name]
+    # Add logic to execute the rule based on its type and actions
+    # Example:
+    if rule['action'] == 'solve_task':
+        solve_task(rule['task_name'], room)
+    elif rule['action'] == 'call_control_maglock':
+        call_control_maglock_partial(room, rule['maglock'], rule['state'])
+    # Add more actions as needed
 
-            # Play the corresponding audio for the note
-            if note!= "twinkle":
-                publish.single(f"audio_control/mlv-central/stop", f"{note}.ogg", hostname=broker_ip)
-            publish.single(f"audio_control/mlv-central/play", f"{note}.ogg", hostname=broker_ip)
-            publish.single(f"audio_control/mlv-central/volume", f"520 {note}.ogg", hostname=broker_ip)
-            # Check if the button press is part of the sequence
-            if note != "twinkle":  # Only check notes, not the reset button
-                current_sequence.append(note)
-
-                # Check if the sequence matches the beginning of twinkle_sequence
-                if current_sequence == twinkle_sequence[:len(current_sequence)]:
-                    if len(current_sequence) == len(twinkle_sequence):
-                        # Sequence complete, solve the task
-                        solve_task("planets", room)
-                        print("Twinkle twinkle sequence completed! Solved planets.")
-                        current_sequence = []  # Reset the sequence after solving
-                else:
-                    # Sequence is incorrect, reset
-                    
-                    print("Incorrect sequence. Resetting.")
-                    current_sequence = []
-                    call_control_maglock_moonlight("rem-lamp", "locked")
-                    time.sleep(0.5)
-                    call_control_maglock_moonlight("rem-lamp", "unlocked")
-                    time.sleep(0.5)
-                    call_control_maglock_moonlight("rem-lamp", "locked")
-                    time.sleep(0.5)
-                    call_control_maglock_moonlight("rem-lamp", "unlocked")
-                    time.sleep(0.5)
-                    call_control_maglock_moonlight("rem-lamp", "locked")
-
-            # If the twinkle button is pressed, reset the sequence
-            elif note == "twinkle":
-                print("Reset button pressed. Sequence reset.")
-                current_sequence = []
-                call_control_maglock_moonlight("rem-lamp", "locked")
-        if sensor_name == "keypad":
-            sensor_state_int = int(sensor_state)
-            print(sensor_state)
-            if sensor_state == "1528" and not code1:
-                code1 = True
-                solve_task("flowers", room)
-            elif (sensor_state == "7867" or sensor_state == "8978") and not code2:
-                code2 = True
-                solve_task("kite-count", room)
-            elif sensor_state == "0128" and not code3:
-                code3 = True
-                solve_task("number-feel", room)
-            elif sensor_state == "5038" and not code4:
-                code4 = True
-                solve_task("fence-decrypt", room)
-            else:
-                call_control_maglock_retriever("red-led-keypad", "unlocked")
-                time.sleep(1)
-                call_control_maglock_retriever("red-led-keypad", "locked")
-            if sensor_name == "laser":
-                print(sensor_state)
-                if sensor_state == "100":
-                    solve_task("laser-game")
-                    publish.single("servo_control/ret-middle", "servo1", hostname=broker_ip)
-                    call_control_maglock_retriever("laser-1", "unlocked")
-                    call_control_maglock_retriever("laser-2", "unlocked")
-                if sensor_state == "50":
-                    publish.single("servo_control/ret-middle", "servo2", hostname=broker_ip)
-                    call_control_maglock_retriever("laser-2", "unlocked")
-                    call_control_maglock_retriever("laser-1", "locked")
-# Function to handle incoming MQTT messages
 def plant_pulled(plant_name, room):
     global last_three_pulled
 
@@ -1415,7 +1277,7 @@ def sequence_thread():
                 publish.single(TOPIC_HERBALIST, "blink_green", hostname=broker_ip)
                 publish.single(TOPIC_ASTRONOMY, "blink_red", hostname=broker_ip)
                 publish.single(TOPIC_PLANTS, "blink_red_plants", hostname=broker_ip)
-                publish.single(TOPIC_PLANTS, "blink_green_corridor", hostname=broker_ip)
+                publish.single(TOPIC_PLANTS, "blink_red_corridor", hostname=broker_ip)
                 points = [
                     {'pan': 172, 'tilt': 10},  # Point A
                     {'pan': 150, 'tilt': 25},  # Point B
@@ -1814,17 +1676,7 @@ def edit_task():
         return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error updating task'})
-    
-@app.route('/get_tasks/<room>', methods=['GET'])
-def get_tasks(room):
-    file_path = os.path.join('json', room, 'tasks.json')
-    
-    try:
-        with open(file_path, 'r') as file:
-            tasks = json.load(file)
-        return jsonify(tasks)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return jsonify([])
+
 @app.route('/get_task_progress/<room>', methods=['GET'])
 def get_task_progress(room):
     file_path = os.path.join('json', room, 'tasks.json')
@@ -1914,7 +1766,7 @@ def control_maglock(room):
     for sensor in sensor_data:
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
-            if "green-led" in maglock or "red-led" in maglock or "blue-led" in maglock:
+            if "green-led" in maglock or "red-led" in maglock or "blue-led":
                 print(maglock)
                 # Reverse the action for this specific case
                 action = 'locked' if action == 'unlocked' else 'unlocked'
@@ -1945,7 +1797,7 @@ def call_control_maglock_partial(room, maglock, action):
     for sensor in sensor_data:
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
-            if "green-led" in maglock or "red-led" in maglock or "blue-led" in maglock:
+            if "green-led" in maglock or "red-led" in maglock or "blue-led":
                 #print(maglock)
                 # Reverse the action for this specific case
                 action = 'locked' if action == 'unlocked' else 'unlocked'
@@ -2732,6 +2584,100 @@ def index():
 @app.route('/rooms/<room>')
 def room(room):
     return render_template(f'rooms/{room}.html')
+
+@app.route('/get_rules/<room>', methods=['GET'])
+def get_rules(room):
+    try:
+        with open(f'json/{room}/rules.json', 'r') as file:
+            rules = json.load(file)
+            #print(rules)
+        return jsonify(rules)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return jsonify([])
+
+@app.route('/add_rule/<room>', methods=['POST'])
+def add_rule(room):
+    new_rule = request.get_json()
+    try:
+        with open(f'json/{room}/rules.json', 'r') as file:
+            rules = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        rules = []
+
+    rules.append(new_rule)
+
+    with open(f'json/{room}/rules.json', 'w') as file:
+        json.dump(rules, file, indent=4)
+
+    return jsonify({'message': 'Rule added successfully'})
+
+@app.route('/update_rule/<room>', methods=['POST'])
+def update_rule(room):
+    print("Updating rule")
+    if request.is_json:
+        updated_rule = request.get_json()
+        try:
+            with open(f'json/{room}/rules.json', 'w') as file:
+                rules = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return jsonify({'message': 'Error updating rule'})
+
+        for rule in rules:
+            if rule['sensor_name'] == updated_rule['sensor_name'] and rule['sensor_state'] == updated_rule['sensor_state']:
+                rule.update(updated_rule)
+                break
+
+        with open(f'json/{room}/rules.json', 'w') as file:
+            json.dump(rules, file, indent=4)
+
+        return jsonify({'message': 'Rule updated successfully'})
+    else:
+        return jsonify({'message': 'Unsupported Media Type'}), 415
+
+@app.route('/delete_rule/<room>', methods=['POST'])
+def delete_rule(room):
+    rule_to_delete = request.get_json()
+    try:
+        with open(f'json/{room}/rules.json', 'r') as file:
+            rules = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return jsonify({'message': 'Error deleting rule'})
+
+    rules = [rule for rule in rules if not (rule['sensor_name'] == rule_to_delete['sensor_name'] and rule['sensor_state'] == rule_to_delete['sensor_state'])]
+
+    with open(f'json/{room}/rules.json', 'w') as file:
+        json.dump(rules, file, indent=4)
+
+    return jsonify({'message': 'Rule deleted successfully'})
+@app.route('/rules/<room>')
+def manage_rules(room):
+    return render_template('rules.html', room=room)
+
+@app.route('/get_sensors/<room>', methods=['GET'])
+def get_sensors(room):
+    try:
+        with open(f'json/{room}/sensor_data.json', 'r') as file:
+            sensors = json.load(file)
+        return jsonify(sensors)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return jsonify([])
+
+@app.route('/get_tasks/<room>', methods=['GET'])
+def get_tasks(room):
+    try:
+        with open(f'json/{room}/tasks.json', 'r') as file:
+            tasks = json.load(file)
+        return jsonify(tasks)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return jsonify([])
+@app.route('/save_rules/<room>', methods=['POST'])
+def save_rules(room):
+    data = request.get_json()
+    room_dir = os.path.join('json', room)
+    os.makedirs(room_dir, exist_ok=True)
+    with open(os.path.join(room_dir, 'rules.json'), 'w') as f:
+        json.dump(data, f, indent=4)
+    return jsonify({"message": "Rules saved successfully!"})
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, handle_interrupt)
     socketio.run(app, host='0.0.0.0', port=80, allow_unsafe_werkzeug=True)
