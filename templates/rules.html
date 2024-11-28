@@ -108,11 +108,31 @@
         .delete-sub-card:hover {
             background: #c82333;
         }
+        .rule-card-header h3 {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+
+        .rule-card-header.collapsed h3 {
+            color: #888;
+            font-style: italic;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
     <h1>Rule Editor</h1>
     <div id="room-name" style="display: none;">{{ room }}</div>
+    <input type="text" id="search-input" class="search-input" placeholder="Search rules...">
     <button class="add-rule-btn" id="add-rule-btn">Add New Rule</button>
     <button id="save-rules-btn" class="add-rule-btn" style="background-color: #28a745; margin-top: 20px;">
         Save Rules!

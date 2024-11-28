@@ -66,20 +66,89 @@ $(document).ready(function () {
             ruleCard.remove();
         });
 
+        function generatePreview() {
+            // Generate a human-readable preview for constraints
+            const constraintsPreview = ruleCard
+                .find(".constraints-container .sub-card")
+                .map(function () {
+                    const subCard = $(this);
+                    if (subCard.text().includes("When this state")) {
+                        return `<span style="background-color: #28a745; color: #fff; padding: 2px 4px; border-radius: 4px;">${subCard.find(".sensor-select").val()} is ${subCard.find(".state-select").val()}</span>`;
+                    } else if (subCard.text().includes("When this task")) {
+                        const task = subCard.find("select").val();
+                        const states = subCard
+                            .find("input[type=checkbox]:checked")
+                            .map(function () {
+                                return $(this).val();
+                            })
+                            .get()
+                            .join(", ");
+                        return `<span style="background-color: #fd7e14; color: #fff; padding: 2px 4px; border-radius: 4px;">${task} is ${states}</span>`;
+                    } else if (subCard.text().includes("Max executions per game")) {
+                        return `<span style="background-color: #6c757d; color: #fff; padding: 2px 4px; border-radius: 4px;">Max executions: ${subCard.find("input[type=number]").val()}</span>`;
+                    }
+                    return "";
+                })
+                .get()
+                .join(" AND ");
+
+            // Generate a human-readable preview for actions
+            const actionsPreview = ruleCard
+                .find(".actions-container .sub-card")
+                .map(function () {
+                    const subCard = $(this);
+                    if (subCard.text().includes("Set state")) {
+                        return `<span style="background-color: #28a745; color: #fff; padding: 2px 4px; border-radius: 4px;">Set ${subCard.find(".sensor-select").val()} to ${subCard.find(".state-select").val()}</span>`;
+                    } else if (subCard.text().includes("Set task")) {
+                        return `<span style="background-color: #fd7e14; color: #fff; padding: 2px 4px; border-radius: 4px;">Set task ${subCard.find("select").val()} to ${subCard.find("select:last").val()}</span>`;
+                    } else if (subCard.text().includes("Play sound")) {
+                        return `<span style="background-color: #007bff; color: #fff; padding: 2px 4px; border-radius: 4px;">Play ${subCard.find("input[type=text]").val()} at volume ${subCard.find("input[type=number]").val()}</span>`;
+                    } else if (subCard.text().includes("Wait for")) {
+                        return `<span style="background-color: #6c757d; color: #fff; padding: 2px 4px; border-radius: 4px;">Wait ${subCard.find("input[type=number]").val()} seconds</span>`;
+                    } else if (subCard.text().includes("Increase value of this state")) {
+                        return `<span style="background-color: #6c757d; color: #fff; padding: 2px 4px; border-radius: 4px;">Increase ${subCard.find(".sensor-select").val()} by ${subCard.find("input[type=number]").val()}</span>`;
+                    }
+                    return "";
+                })
+                .get()
+                .join(" AND ");
+
+            // Update the header with a concise preview
+            ruleCard.find(".rule-card-header h3").html(`# Rule ${ruleId} - When ${constraintsPreview}, do ${actionsPreview}`);
+        }
+
         ruleCard.find(".rule-card-header").click(function () {
             const body = ruleCard.find(".rule-card-body");
             body.toggle();
+
             if (body.is(":visible")) {
                 $(this).find("h3").text(`# Rule ${ruleId}`);
             } else {
-                const constraintsPreview = rule.constraints.map(c => `${c.sensor} ${c.state || c.states.join(", ")}`).join(" + ");
-                const actionsPreview = rule.actions.map(a => `${a.sensor || a.task} ${a.state || a.status || a.play_sound}`).join(" and ");
-                $(this).find("h3").text(`# Rule ${ruleId} - When ${constraintsPreview}, do ${actionsPreview}`);
+                generatePreview();
             }
         });
 
+        // Collapse the rule card by default and generate preview
+        ruleCard.find(".rule-card-body").hide();
+        generatePreview();
+
         $("#rules-container").append(ruleCard);
     }
+
+    function filterRules() {
+        const searchTerm = $("#search-input").val().toLowerCase();
+        $(".rule-card").each(function () {
+            const ruleCard = $(this);
+            const ruleText = ruleCard.text().toLowerCase();
+            if (ruleText.includes(searchTerm)) {
+                ruleCard.show();
+            } else {
+                ruleCard.hide();
+            }
+        });
+    }
+
+    $("#search-input").on("input", filterRules);
 
     function createSubCard(type, sensors = [], tasks = [], data = null) {
         let subCardContent = "";

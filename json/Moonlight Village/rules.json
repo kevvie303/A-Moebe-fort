@@ -1,7 +1,7 @@
 [
     {
         "id": 9403,
-        "sensor_name": "# Rule undefined",
+        "sensor_name": "# Rule 9403 - When ast-button-1 is Triggered AND lights-on is solved AND Max executions: 1, do Set astronomy-door-lock to Unlocked AND Wait 10 seconds AND Set task telescope-place to solved AND Play skidoosh at volume 10 AND Increase watersensor by 1",
         "constraints": [
             {
                 "sensor": "ast-button-1",
@@ -41,7 +41,7 @@
     },
     {
         "id": 9404,
-        "sensor_name": "# Rule undefined",
+        "sensor_name": "# Rule 9404",
         "constraints": [
             {
                 "sensor": "ast-button-7",
@@ -73,5 +73,16 @@
                 "volume": "22"
             }
         ]
+    },
+    {
+        "id": 4425,
+        "sensor_name": "# New Rule",
+        "constraints": [
+            {
+                "sensor": "lights-on",
+                "states": []
+            }
+        ],
+        "actions": []
     }
 ]
