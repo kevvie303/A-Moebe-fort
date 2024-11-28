@@ -1,450 +1,461 @@
 [
     {
-        "name": "astronomy-door-lock",
-        "type": "maglock",
-        "pin": 20,
-        "pi": "mlv-astronomy",
-        "state": "Unlocked",
-        "connection_type": "NO"
-    },
-    {
-        "name": "herbalist-door-lock",
-        "type": "maglock",
-        "pin": 23,
-        "pi": "mlv-herbalist",
-        "state": "Unlocked",
-        "connection_type": "NO"
-    },
-    {
-        "name": "moon-puzzle",
-        "type": "Sensor",
-        "pin": 17,
-        "pi": "mlv-astronomy",
-        "state": "Not Triggered",
-        "connection_type": "NO"
-    },
-    {
-        "name": "light_count",
-        "type": "Sensor",
-        "pin": 17,
-        "pi": "mlv-corridors",
-        "state": "0",
-        "connection_type": "NO"
-    },
-    {
-        "name": "knocker",
-        "type": "Sensor",
-        "pin": 0,
-        "pi": "mlv-tavern",
-        "state": "unsolved",
-        "connection_type": "NO"
-    },
-    {
-        "name": "tavern-door-lock",
-        "type": "maglock",
-        "pin": 23,
-        "pi": "mlv-tavern",
-        "state": "Unlocked",
-        "connection_type": "NO"
-    },
-    {
         "name": "lamp-post-2",
         "type": "light",
-        "pin": 22,
+        "allowed_values": "on, off",
         "pi": "mlv-herbalist",
-        "state": "Off",
-        "connection_type": "NO"
+        "pin": "22",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "start-lamp",
         "type": "light",
-        "pin": 19,
+        "allowed_values": "on, off",
         "pi": "mlv-astronomy",
-        "state": "On",
-        "connection_type": "NO"
+        "pin": "19",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "rem-lamp",
         "type": "light",
-        "pin": 16,
+        "allowed_values": "on, off",
         "pi": "mlv-astronomy",
-        "state": "On",
-        "connection_type": "NO"
-    },
-    {
-        "name": "ast-button-1",
-        "type": "button",
-        "pin": 6,
-        "pi": "mlv-astronomy",
-        "state": "Not Triggered",
-        "connection_type": "NC"
-    },
-    {
-        "name": "ast-button-2",
-        "type": "button",
-        "pin": 5,
-        "pi": "mlv-astronomy",
-        "state": "Not Triggered",
-        "connection_type": "NC"
-    },
-    {
-        "name": "ast-button-3",
-        "type": "button",
-        "pin": 13,
-        "pi": "mlv-astronomy",
-        "state": "Not Triggered",
-        "connection_type": "NC"
-    },
-    {
-        "name": "ast-button-4",
-        "type": "button",
-        "pin": 21,
-        "pi": "mlv-astronomy",
-        "state": "Not Triggered",
-        "connection_type": "NC"
-    },
-    {
-        "name": "ast-button-5",
-        "type": "button",
-        "pin": 27,
-        "pi": "mlv-astronomy",
-        "state": "Not Triggered",
-        "connection_type": "NC"
-    },
-    {
-        "name": "ast-button-6",
-        "type": "button",
-        "pin": 25,
-        "pi": "mlv-astronomy",
-        "state": "Not Triggered",
-        "connection_type": "NC"
-    },
-    {
-        "name": "ast-button-7",
-        "type": "button",
-        "pin": 24,
-        "pi": "mlv-astronomy",
-        "state": "Not Triggered",
-        "connection_type": "NC"
-    },
-    {
-        "name": "ast-button-8",
-        "type": "button",
-        "pin": 4,
-        "pi": "mlv-astronomy",
-        "state": "Not Triggered",
-        "connection_type": "NC"
+        "pin": "16",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "lamp-post-1",
         "type": "light",
-        "pin": 12,
+        "allowed_values": "on, off",
         "pi": "mlv-astronomy",
-        "state": "Off",
-        "connection_type": "NO"
+        "pin": "12",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "blacklight-astronomy",
         "type": "light",
-        "pin": 1,
+        "allowed_values": "on, off",
         "pi": "mlv-astronomy",
-        "state": "Off",
-        "connection_type": "NO"
+        "pin": "1",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
-        "name": "ast-button-9",
-        "type": "button",
-        "pin": 8,
-        "pi": "mlv-astronomy",
-        "state": "Not Triggered",
-        "connection_type": "NO"
+        "name": "new-light",
+        "type": "light",
+        "allowed_values": "on, off",
+        "pi": "mlv-herbalist",
+        "pin": "10",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
-        "name": "corridor-led",
-        "type": "led",
-        "pin": 18,
+        "name": "moon-puzzle",
+        "type": "Sensor",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "mlv-astronomy",
+        "pin": "17",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "light_count",
+        "type": "Sensor",
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-corridors",
-        "state": "Off",
-        "connection_type": "NO"
+        "pin": "17",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
-        "name": "tavern-led",
-        "type": "led",
-        "pin": 18,
+        "name": "knocker",
+        "type": "Sensor",
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-tavern",
-        "state": "Unlocked",
-        "connection_type": "NO"
-    },
-    {
-        "name": "astronomy-led",
-        "type": "led",
-        "pin": 18,
-        "pi": "mlv-astronomy",
-        "state": "Not Triggered",
-        "connection_type": "NO"
-    },
-    {
-        "name": "herbalist-led",
-        "type": "led",
-        "pin": 18,
-        "pi": "mlv-herbalist",
-        "state": "Off",
-        "connection_type": "NO"
-    },
-    {
-        "name": "ritual-led",
-        "type": "led",
-        "pin": 18,
-        "pi": "mlv-webcam",
-        "state": "Off",
-        "connection_type": "NO"
-    },
-    {
-        "name": "plant-led",
-        "type": "led",
-        "pin": 18,
-        "pi": "mlv-plants",
-        "state": "Off",
-        "connection_type": "NO"
-    },
-    {
-        "name": "dmx-power",
-        "type": "maglock",
-        "pin": 0,
-        "pi": "mlv-tavern",
-        "state": "Unlocked",
-        "connection_type": "NO"
-    },
-    {
-        "name": "webcam",
-        "type": "different",
-        "pin": -1,
-        "pi": "mlv-herbalist",
-        "state": "solved",
-        "connection_type": "NO"
-    },
-    {
-        "name": "humidifier",
-        "type": "maglock",
-        "pin": 1,
-        "pi": "mlv-herbalist",
-        "state": "Unlocked",
-        "connection_type": "NO"
-    },
-    {
-        "name": "final-door-lock",
-        "type": "maglock",
-        "pin": 23,
-        "pi": "mlv-plants",
-        "state": "initial",
-        "connection_type": "NO"
-    },
-    {
-        "name": "storage-service-door-lock",
-        "type": "maglock",
-        "pin": 22,
-        "pi": "mlv-plants",
-        "state": "initial",
-        "connection_type": "NO"
-    },
-    {
-        "name": "watersensor",
-        "type": "different",
-        "pin": -1,
-        "pi": "mlv-herbalist",
-        "state": "Not Triggered",
-        "connection_type": "NO"
-    },
-    {
-        "name": "flask-rfid-1",
-        "type": "rfid",
-        "pin": -1,
-        "pi": "mlv-herbalist",
-        "state": "584197941325",
-        "connection_type": "NO"
-    },
-    {
-        "name": "flask-rfid-2",
-        "type": "rfid",
-        "pin": -1,
-        "pi": "mlv-herbalist",
-        "state": "0",
-        "connection_type": "NO"
-    },
-    {
-        "name": "flask-rfid-3",
-        "type": "rfid",
-        "pin": -1,
-        "pi": "mlv-herbalist",
-        "state": "0",
-        "connection_type": "NO"
-    },
-    {
-        "name": "flask-rfid-4",
-        "type": "rfid",
-        "pin": -1,
-        "pi": "mlv-herbalist",
-        "state": "0",
-        "connection_type": "NO"
+        "pin": "0",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "barrel-sensor",
         "type": "Sensor",
-        "pin": 19,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-central",
-        "state": "Not Triggered",
-        "connection_type": "NO"
+        "pin": "19",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "telescope-sensor",
         "type": "Sensor",
-        "pin": 13,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-central",
-        "state": "Not Triggered",
-        "connection_type": "NO"
+        "pin": "13",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "flask-sensor",
         "type": "Sensor",
-        "pin": 6,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-central",
-        "state": "Not Triggered",
-        "connection_type": "NO"
+        "pin": "6",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "ir-plant-5",
         "type": "Sensor",
-        "pin": 4,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
-        "state": "Triggered",
-        "connection_type": "NO"
+        "pin": "4",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "ir-plant-6",
         "type": "Sensor",
-        "pin": 27,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
-        "state": "Triggered",
-        "connection_type": "NO"
+        "pin": "27",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "ir-plant-4",
         "type": "Sensor",
-        "pin": 21,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
-        "state": "Triggered",
-        "connection_type": "NO"
+        "pin": "21",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "ir-plant-3",
         "type": "Sensor",
-        "pin": 13,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
-        "state": "Triggered",
-        "connection_type": "NO"
+        "pin": "13",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "ir-plant-2",
         "type": "Sensor",
-        "pin": 26,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
-        "state": "Triggered",
-        "connection_type": "NO"
+        "pin": "26",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "ir-plant-1",
         "type": "Sensor",
-        "pin": 19,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
-        "state": "Triggered",
-        "connection_type": "NO"
+        "pin": "19",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "ir-plant-9",
         "type": "Sensor",
-        "pin": 16,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
-        "state": "Triggered",
-        "connection_type": "NO"
+        "pin": "16",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "ir-plant-8",
         "type": "Sensor",
-        "pin": 6,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
-        "state": "Triggered",
-        "connection_type": "NO"
+        "pin": "6",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "ir-plant-7",
         "type": "Sensor",
-        "pin": 5,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
-        "state": "Triggered",
-        "connection_type": "NO"
-    },
-    {
-        "name": "smoke-power",
-        "type": "maglock",
-        "pin": 14,
-        "pi": "mlv-central",
-        "state": "Unlocked",
-        "connection_type": "NO"
+        "pin": "5",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "gibbs-sensor",
         "type": "Sensor",
-        "pin": 16,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-tavern",
-        "state": "Not Triggered",
-        "connection_type": "NO"
-    },
-    {
-        "name": "wolfsbane-lock",
-        "type": "maglock",
-        "pin": 15,
-        "pi": "mlv-central",
-        "state": "Unlocked",
-        "connection_type": "NO"
-    },
-    {
-        "name": "ritual-puzzle-lock",
-        "type": "maglock",
-        "pin": 18,
-        "pi": "mlv-central",
-        "state": "Unlocked",
-        "connection_type": "NO"
-    },
-    {
-        "name": "secret-door-lock",
-        "type": "maglock",
-        "pin": 12,
-        "pi": "mlv-tavern",
-        "state": "Unlocked",
-        "connection_type": "NO"
-    },
-    {
-        "name": "corridor-door-lock",
-        "type": "maglock",
-        "pin": 20,
-        "pi": "mlv-herbalist",
-        "state": "Unlocked",
-        "connection_type": "NO"
-    },
-    {
-        "name": "entrance-door-lock",
-        "type": "maglock",
-        "pin": 1,
-        "pi": "mlv-plants",
-        "state": "Unlocked",
-        "connection_type": "NO"
+        "pin": "16",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "entrance-door",
         "type": "Sensor",
-        "pin": 24,
+        "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
-        "state": "initial",
-        "connection_type": "NO"
+        "pin": "24",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "astronomy-door-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "mlv-astronomy",
+        "pin": "20",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "herbalist-door-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "mlv-herbalist",
+        "pin": "23",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "tavern-door-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "mlv-tavern",
+        "pin": "23",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "dmx-power",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "mlv-tavern",
+        "pin": "0",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "humidifier",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "mlv-herbalist",
+        "pin": "1",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "final-door-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "mlv-plants",
+        "pin": "23",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "storage-service-door-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "mlv-plants",
+        "pin": "22",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "smoke-power",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "mlv-central",
+        "pin": "14",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "wolfsbane-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "mlv-central",
+        "pin": "15",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "ritual-puzzle-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "mlv-central",
+        "pin": "18",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "secret-door-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "mlv-tavern",
+        "pin": "12",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "corridor-door-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "mlv-herbalist",
+        "pin": "20",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "entrance-door-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "mlv-plants",
+        "pin": "1",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "ast-button-1",
+        "type": "button",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "mlv-astronomy",
+        "pin": "6",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "ast-button-2",
+        "type": "button",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "mlv-astronomy",
+        "pin": "5",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "ast-button-3",
+        "type": "button",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "mlv-astronomy",
+        "pin": "13",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "ast-button-4",
+        "type": "button",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "mlv-astronomy",
+        "pin": "21",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "ast-button-5",
+        "type": "button",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "mlv-astronomy",
+        "pin": "27",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "ast-button-6",
+        "type": "button",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "mlv-astronomy",
+        "pin": "25",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "ast-button-7",
+        "type": "button",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "mlv-astronomy",
+        "pin": "24",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "ast-button-8",
+        "type": "button",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "mlv-astronomy",
+        "pin": "4",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "ast-button-9",
+        "type": "button",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "mlv-astronomy",
+        "pin": "8",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "flask-rfid-1",
+        "type": "rfid",
+        "allowed_values": "584197941325, 0",
+        "pi": "mlv-herbalist",
+        "pin": "-1",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "flask-rfid-2",
+        "type": "rfid",
+        "allowed_values": "Detected, Not Detected",
+        "pi": "mlv-herbalist",
+        "pin": "-1",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "flask-rfid-3",
+        "type": "rfid",
+        "allowed_values": "Detected, Not Detected",
+        "pi": "mlv-herbalist",
+        "pin": "-1",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "flask-rfid-4",
+        "type": "rfid",
+        "allowed_values": "Detected, Not Detected",
+        "pi": "mlv-herbalist",
+        "pin": "-1",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "webcam",
+        "type": "different",
+        "allowed_values": "Active, Inactive",
+        "pi": "mlv-herbalist",
+        "pin": "-1",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "watersensor",
+        "type": "different",
+        "allowed_values": "Active, Inactive",
+        "pi": "mlv-herbalist",
+        "pin": "-1",
+        "connection_type": "NC",
+        "state": "init"
     }
 ]

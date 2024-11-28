@@ -5,139 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Rule Cards with Subcards</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f8f9fa;
-        }
-        .rules-container {
-            margin-top: 20px;
-        }
-        .rule-card {
-            background: #fff;
-            border: 1px solid #ced4da;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .rule-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .rule-card-header h3 {
-            margin: 0;
-            font-size: 18px;
-        }
-        .rule-card-header button {
-            background: #dc3545;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-        .rule-card-header button:hover {
-            background: #c82333;
-        }
-        .section-title {
-            margin: 10px 0;
-            font-weight: bold;
-            color: #343a40;
-        }
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .btn {
-            border: none;
-            border-radius: 4px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 14px;
-            color: #fff;
-        }
-        .btn-green {
-            background-color: #28a745;
-        }
-        .btn-orange {
-            background-color: #fd7e14;
-        }
-        .btn-blue {
-            background-color: #007bff;
-        }
-        .btn-gray {
-            background-color: #6c757d;
-        }
-        .btn:hover {
-            opacity: 0.9;
-        }
-        .add-rule-btn {
-            background: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .add-rule-btn:hover {
-            background: #0056b3;
-        }
-        .sub-card {
-            border: 1px solid #dee2e6;
-            background: #f8f9fa;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 6px;
-        }
-        .delete-sub-card {
-            float: right;
-            background: #dc3545;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            padding: 2px 8px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        .delete-sub-card:hover {
-            background: #c82333;
-        }
-        .rule-card-header h3 {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-            margin: 0;
-        }
-
-        .rule-card-header.collapsed h3 {
-            color: #888;
-            font-style: italic;
-        }
-        .search-input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles-rules.css') }}">
 </head>
 <body>
     <h1>Rule Editor</h1>
     <div id="room-name" style="display: none;">{{ room }}</div>
+    <div class="toggle-container">
+        <button class="toggle-button active" data-target="rules">Edit Rules</button>
+        <button class="toggle-button" data-target="states">Edit States</button>
+    </div>
     <input type="text" id="search-input" class="search-input" placeholder="Search rules...">
     <button class="add-rule-btn" id="add-rule-btn">Add New Rule</button>
     <button id="save-rules-btn" class="add-rule-btn" style="background-color: #28a745; margin-top: 20px;">
         Save Rules!
     </button>    
     <div class="rules-container" id="rules-container"></div>
+    <div id="states" class="section-container">
+        <!-- Lights Section -->
+        <div class="state-section" id="light">
+            <h2>Lights</h2>
+            <button class="add-state-btn" data-section="light">Add State</button>
+            <div class="state-list"></div>
+        </div>
+
+        <!-- Sensors Section -->
+        <div class="state-section" id="Sensor">
+            <h2>Sensors</h2>
+            <button class="add-state-btn" data-section="Sensor">Add State</button>
+            <div class="state-list"></div>
+        </div>
+
+        <!-- Maglocks Section -->
+        <div class="state-section" id="maglock">
+            <h2>Maglocks</h2>
+            <button class="add-state-btn" data-section="maglock">Add State</button>
+            <div class="state-list"></div>
+        </div>
+
+        <!-- Buttons Section -->
+        <div class="state-section" id="button">
+            <h2>Buttons</h2>
+            <button class="add-state-btn" data-section="button">Add State</button>
+            <div class="state-list"></div>
+        </div>
+
+        <!-- Logic Section -->
+        <div class="state-section" id="logic">
+            <h2>Logic</h2>
+            <button class="add-state-btn" data-section="logic">Add State</button>
+            <div class="state-list"></div>
+        </div>
+
+        <!-- RFID Section -->
+        <div class="state-section" id="rfid">
+            <h2>RFID</h2>
+            <button class="add-state-btn" data-section="rfid">Add State</button>
+            <div class="state-list"></div>
+        </div>
+
+        <!-- Different Section -->
+        <div class="state-section" id="different">
+            <h2>Different</h2>
+            <button class="add-state-btn" data-section="different">Add State</button>
+            <div class="state-list"></div>
+        </div>
+
+        <button id="save-states-btn" class="add-rule-btn" style="background-color: #28a745; margin-top: 20px;">
+            Save States!
+        </button>
+    </div>
 </body>
 <script src="{{ url_for('static', filename='js/rules.js') }}"></script>
 </html>

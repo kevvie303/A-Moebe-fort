@@ -227,8 +227,6 @@ def handle_rules(sensor_name, sensor_state, room):
     rules = load_rules(room)
     for rule in rules:
         pass
-        #if rule['sensor_name'] == sensor_name and rule['sensor_state'] == sensor_state:
-            #execute_rule(rule, room)
 
 def execute_rule(rule, room):
     global sequence, code1, code2, code3, code4, code5, codesCorrect, current_sequence, twinkle_sequence, first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable
@@ -367,7 +365,7 @@ def lock_route():
         # Update the checklist status
         update_checklist(roomName, task, is_checked)
         socketio.emit('checklist_update', {'task': task, 'isChecked': is_checked}, room="all_clients")
-        print(f"Locking action executed successfully for task: {task}, isChecked: {is_checked}")
+        print(f"Locking action executed successfully for task: {task, is_checked}")
         return jsonify({'success': True, 'message': 'Locking action executed successfully'})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
@@ -2678,6 +2676,23 @@ def save_rules(room):
     with open(os.path.join(room_dir, 'rules.json'), 'w') as f:
         json.dump(data, f, indent=4)
     return jsonify({"message": "Rules saved successfully!"})
+@app.route('/save_states/<room>', methods=['POST'])
+def save_states(room):
+    data = request.get_json()
+    room_dir = os.path.join('json', room)
+    os.makedirs(room_dir, exist_ok=True)
+    with open(os.path.join(room_dir, 'sensor_data.json'), 'w') as f:
+        json.dump(data, f, indent=4)
+    return jsonify({"message": "States saved successfully!"})
+@app.route('/get_raspberry_pis/<room>', methods=['GET'])
+def get_raspberry_pis(room):
+    try:
+        with open(f'json/{room}/raspberry_pis.json', 'r') as file:
+            pis = json.load(file)
+        return jsonify(pis)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return jsonify([])
+
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, handle_interrupt)
     socketio.run(app, host='0.0.0.0', port=80, allow_unsafe_werkzeug=True)

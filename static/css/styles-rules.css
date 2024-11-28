@@ -1,0 +1,230 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f8f9fa;
+}
+.rules-container {
+    margin-top: 20px;
+}
+.rule-card {
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.rule-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.rule-card-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+.rule-card-header button {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.rule-card-header button:hover {
+    background: #c82333;
+}
+.section-title {
+    margin: 10px 0;
+    font-weight: bold;
+    color: #343a40;
+}
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.btn {
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #fff;
+}
+.btn-green {
+    background-color: #28a745;
+}
+.btn-orange {
+    background-color: #fd7e14;
+}
+.btn-blue {
+    background-color: #007bff;
+}
+.btn-gray {
+    background-color: #6c757d;
+}
+.btn:hover {
+    opacity: 0.9;
+}
+.add-rule-btn {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.add-rule-btn:hover {
+    background: #0056b3;
+}
+.sub-card {
+    border: 1px solid #dee2e6;
+    background: #f8f9fa;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 6px;
+}
+.delete-sub-card {
+    float: right;
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.delete-sub-card:hover {
+    background: #c82333;
+}
+.rule-card-header h3 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.rule-card-header.collapsed h3 {
+    color: #888;
+    font-style: italic;
+}
+.search-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 16px;
+}
+h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+.toggle-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+.toggle-button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+.toggle-button.active {
+    background-color: #007bff;
+    color: white;
+}
+.section-container {
+    display: none;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 800px;
+}
+.section-container.active {
+    display: block;
+}
+.state-section {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.state-section h2 {
+    margin: 0 0 10px;
+    font-size: 20px;
+}
+.state-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+.state-card {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.state-card-header {
+    cursor: pointer;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+.state-card-body {
+    padding: 10px;
+    display: none; /* Start collapsed */
+}
+.state-card h3 {
+    margin: 0;
+    font-size: 16px;
+}
+.state-card label {
+    display: block;
+    margin-top: 10px;
+}
+.state-card input {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+.remove-state-btn {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.remove-state-btn:hover {
+    background-color: #c82333;
+}
+.state-card input {
+    margin-bottom: 10px;
+    padding: 8px;
+    font-size: 14px;
+}
+.state-card button {
+    padding: 8px 15px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+.add-state-btn {
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
