@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Rule Cards with Subcards</title>
+    <!-- Include jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- Include jQuery and jQuery UI JavaScript -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <!-- Include Dragula CSS and JavaScript -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles-rules.css') }}">
 </head>
 <body>
@@ -21,6 +28,9 @@
     </button>    
     <div class="rules-container" id="rules-container"></div>
     <div id="states" class="section-container">
+        <button id="save-states-btn" class="add-rule-btn" style="background-color: #28a745; margin-top: 20px;">
+            Save States!
+        </button>
         <!-- Lights Section -->
         <div class="state-section" id="light">
             <h2>Lights</h2>
@@ -69,10 +79,6 @@
             <button class="add-state-btn" data-section="different">Add State</button>
             <div class="state-list"></div>
         </div>
-
-        <button id="save-states-btn" class="add-rule-btn" style="background-color: #28a745; margin-top: 20px;">
-            Save States!
-        </button>
     </div>
 </body>
 <script src="{{ url_for('static', filename='js/rules.js') }}"></script>

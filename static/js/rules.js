@@ -286,9 +286,22 @@ $(document).ready(function () {
             `;
         }
 
-        return $(`<div class="sub-card">${subCardContent}<button class="delete-sub-card">Delete</button></div>`)
+        return $(`<div class="sub-card">
+                    ${subCardContent}
+                    <button class="move-up">↑</button>
+                    <button class="move-down">↓</button>
+                    <button class="delete-sub-card">Delete</button>
+                </div>`)
             .on("click", ".delete-sub-card", function () {
                 $(this).parent().remove();
+            })
+            .on("click", ".move-up", function () {
+                const subCard = $(this).parent();
+                subCard.insertBefore(subCard.prev());
+            })
+            .on("click", ".move-down", function () {
+                const subCard = $(this).parent();
+                subCard.insertAfter(subCard.next());
             });
     }
 

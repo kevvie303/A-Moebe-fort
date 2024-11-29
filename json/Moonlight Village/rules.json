@@ -1,14 +1,29 @@
 [
     {
-        "id": 9403,
-        "sensor_name": "# Rule 9403 - When ast-button-1 is Triggered AND lights-on is solved AND Max executions: 1, do Set astronomy-door-lock to Unlocked AND Wait 10 seconds AND Set task telescope-place to solved AND Play skidoosh at volume 10 AND Increase watersensor by 1",
+        "id": 3263,
+        "sensor_name": "# Rule 3263",
         "constraints": [
             {
-                "sensor": "ast-button-1",
+                "sensor": "moon-puzzle",
                 "state": "Triggered"
             },
             {
-                "sensor": "lights-on",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "task": "moon-place",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 2491,
+        "sensor_name": "# Rule 2491 - When moon-place is solved AND Max executions: 1, do Set astronomy-door-lock to Locked",
+        "constraints": [
+            {
+                "sensor": "moon-place",
                 "states": [
                     "solved"
                 ]
@@ -20,69 +35,8 @@
         "actions": [
             {
                 "sensor": "astronomy-door-lock",
-                "state": "Unlocked"
-            },
-            {
-                "delay": "10"
-            },
-            {
-                "task": "telescope-place",
-                "status": "solved"
-            },
-            {
-                "play_sound": "skidoosh",
-                "volume": "10"
-            },
-            {
-                "sensor": "watersensor",
-                "increment": "1"
-            }
-        ]
-    },
-    {
-        "id": 9404,
-        "sensor_name": "# Rule 9404",
-        "constraints": [
-            {
-                "sensor": "ast-button-7",
-                "state": "Triggered"
-            },
-            {
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "task": "lights-on",
-                "status": "solved"
-            }
-        ]
-    },
-    {
-        "id": 9408,
-        "sensor_name": "# Rule 9408",
-        "constraints": [
-            {
-                "sensor": "astronomy-door-lock",
                 "state": "Locked"
             }
-        ],
-        "actions": [
-            {
-                "play_sound": "ww",
-                "volume": "22"
-            }
         ]
-    },
-    {
-        "id": 4425,
-        "sensor_name": "# New Rule",
-        "constraints": [
-            {
-                "sensor": "lights-on",
-                "states": []
-            }
-        ],
-        "actions": []
     }
 ]
