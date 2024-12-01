@@ -18,10 +18,12 @@
     <div class="sidebar">
         <button class="toggle-button active" data-target="rules">Edit Rules</button>
         <button class="toggle-button" data-target="states">Edit States</button>
+        <button class="toggle-button" data-target="pis">Edit Pi's</button>
         <button id="back-to-room-btn">Back to Room</button>
         <button id="media-control-btn">Media Control</button>
         <button id="save-rules-btn" class="btn-green">Save Rules</button>
         <button id="save-states-btn" class="btn-green" style="display: none;">Save States</button>
+        <button id="save-pis-btn" class="btn-green" style="display: none;">Save Pi's</button>
     </div>
 
     <div class="content">
@@ -80,11 +82,32 @@
                 <div class="state-list"></div>
             </div>
         </div>
+
+        <div id="pis" class="section-container">
+            <h2>Edit Pi's</h2>
+            <div id="pi-list"></div>
+            <button id="save-pis-btn" class="btn-green">Save Pi's</button>
+        </div>
+    </div>
+
+    <div id="sound-popup" class="popup">
+        <div class="popup-content">
+            <span class="close">&times;</span>
+            <h2>Select Sound</h2>
+            <div id="sound-list"></div>
+            <label for="volume">Volume:</label>
+            <input type="number" id="volume" min="0" max="100" value="50">
+            <h3>Select Pi's:</h3>
+            <div id="pi-list"></div>
+            <button id="apply-sound-btn">Apply</button>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/rules.js') }}"></script>
     <script>
         $(document).ready(function () {
+            const availableServices = ["mqtt", "lights_out", "actuator", "led", "sound", "dmx", "camera", "rfid", "knocker"];
+
             $('#back-to-room-btn').click(function () {
                 window.location.href = '/rooms/{{ room }}';
             });
@@ -103,14 +126,119 @@
                     $('#add-rule-btn').show();
                     $('#save-rules-btn').show();
                     $('#save-states-btn').hide();
+                    $('#save-pis-btn').hide();
+                    $('#pis').hide();
                     $('#states').hide();
-                } else {
+                } else if (target === 'states') {
                     $('#rules-container').hide();
                     $('#search-input').hide();
                     $('#add-rule-btn').hide();
                     $('#save-rules-btn').hide();
                     $('#save-states-btn').show();
+                    $('#save-pis-btn').hide();
+                    $('#pis').hide();
                     $('#states').show();
+                } else if (target === 'pis') {
+                    $('#rules-container').hide();
+                    $('#search-input').hide();
+                    $('#add-rule-btn').hide();
+                    $('#save-rules-btn').hide();
+                    $('#save-states-btn').hide();
+                    $('#save-pis-btn').show();
+                    $('#pis').show();
+                    $('#states').hide();
+                    loadPis();
+                }
+            });
+
+            function loadPis() {
+                $.get(`/get_raspberry_pis/{{ room }}`, function (pis) {
+                    const piList = $('#pi-list');
+                    piList.empty();
+                    pis.forEach(pi => {
+                        const piCard = $(`
+                            <div class="pi-card">
+                                <h3>${pi.hostname}</h3>
+                                <p>IP Address: ${pi.ip_address}</p>
+                                <label for="services-${pi.hostname}">Services:</label>
+                                <div id="services-${pi.hostname}" class="services-list">
+                                    ${availableServices.map(service => `
+                                        <label>
+                                            <input type="checkbox" value="${service}" ${pi.services.includes(service) ? 'checked' : ''}>
+                                            ${service}
+                                        </label>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `);
+                        piList.append(piCard);
+                    });
+                });
+            }
+
+            $('#save-pis-btn').click(function () {
+                const pis = [];
+                $('#pi-list .pi-card').each(function () {
+                    const hostname = $(this).find('h3').text();
+                    const ip_address = $(this).find('p').text().replace('IP Address: ', '');
+                    const services = $(this).find('.services-list input:checked').map(function () {
+                        return $(this).val();
+                    }).get();
+                    pis.push({ hostname, ip_address, services });
+                });
+
+                $.ajax({
+                    url: `/save_raspberry_pis/{{ room }}`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(pis),
+                    success: function () {
+                        alert('Pi\'s saved successfully!');
+                    },
+                    error: function () {
+                        alert('Failed to save Pi\'s.');
+                    }
+                });
+            });
+
+            function loadSounds() {
+                $.get('/get_sounds', function (sounds) {
+                    const soundList = $('#sound-list');
+                    soundList.empty();
+                    sounds.forEach(sound => {
+                        const soundButton = $(`<button class="sound-button">${sound}</button>`);
+                        soundButton.click(function () {
+                            $('#selected-sound').val(sound);
+                        });
+                        soundList.append(soundButton);
+                    });
+                });
+            }
+
+            $('.add-action[data-type="play-sound"]').click(function () {
+                $('#sound-popup').show();
+                loadSounds();
+                loadPis();
+            });
+
+            $('#apply-sound-btn').click(function () {
+                const selectedSound = $('#selected-sound').val();
+                const volume = $('#volume').val();
+                const selectedPis = $('#pi-list input:checked').map(function () {
+                    return $(this).val();
+                }).get();
+                // Handle the selected sound, volume, and Pis
+                // ... your code to handle the selected sound, volume, and Pis ...
+                $('#sound-popup').hide();
+            });
+
+            $('.close').click(function () {
+                $('#sound-popup').hide();
+            });
+
+            $(window).click(function (event) {
+                if (event.target.id === 'sound-popup') {
+                    $('#sound-popup').hide();
                 }
             });
         });

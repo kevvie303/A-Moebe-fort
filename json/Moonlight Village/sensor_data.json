@@ -212,8 +212,8 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-astronomy",
         "pin": "20",
-        "connection_type": "NO",
-        "state": "init"
+        "connection_type": "NC",
+        "state": "Locked"
     },
     {
         "name": "herbalist-door-lock",

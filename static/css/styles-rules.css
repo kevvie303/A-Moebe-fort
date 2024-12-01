@@ -452,3 +452,122 @@ h1 {
         font-size: 14px;
     }
 }
+
+.pi-card {
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.pi-card:hover {
+    transform: scale(1.02);
+}
+
+.pi-card h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #007bff;
+}
+
+.pi-card p {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.services-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.services-list label {
+    display: flex;
+    align-items: center;
+    background: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.services-list label:hover {
+    background-color: #e9ecef;
+}
+
+.services-list input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+#save-pis-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#save-pis-btn:hover {
+    background-color: #218838;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.popup-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sound-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.sound-button:hover {
+    background-color: #0056b3;
+}

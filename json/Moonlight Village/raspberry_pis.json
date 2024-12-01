@@ -1,44 +1,68 @@
 [
     {
-        "ip_address": "192.168.0.111",
-        "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "mlv-corridors",
-        "services": ["mqtt", "lights_out", "actuator", "led"]
+        "ip_address": "192.168.0.111",
+        "services": [
+            "mqtt",
+            "lights_out",
+            "actuator",
+            "led"
+        ]
     },
     {
-        "ip_address": "192.168.0.125",
-        "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "mlv-central",
-        "services": ["mqtt", "sound", "actuator", "dmx"]
+        "ip_address": "192.168.0.125",
+        "services": [
+            "mqtt",
+            "actuator",
+            "sound",
+            "dmx"
+        ]
     },
     {
-        "ip_address": "192.168.0.116",
-        "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "mlv-tavern",
-        "services": ["mqtt", "actuator", "knocker", "led"]
+        "ip_address": "192.168.0.116",
+        "services": [
+            "mqtt",
+            "actuator",
+            "led",
+            "knocker"
+        ]
     },
     {
-        "ip_address": "192.168.0.126",
-        "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "mlv-herbalist",
-        "services": ["mqtt", "actuator", "led"]
+        "ip_address": "192.168.0.126",
+        "services": [
+            "mqtt",
+            "actuator",
+            "led",
+            "rfid"
+        ]
     },
     {
-        "ip_address": "192.168.0.127",
-        "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "mlv-astronomy",
-        "services": ["mqtt", "actuator", "sound", "led"]
+        "ip_address": "192.168.0.127",
+        "services": [
+            "mqtt",
+            "actuator",
+            "led",
+            "sound"
+        ]
     },
     {
-        "ip_address": "192.168.0.112",
-        "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "mlv-webcam",
-        "services": ["camera"]
+        "ip_address": "192.168.0.112",
+        "services": [
+            "camera"
+        ]
     },
     {
-        "ip_address": "192.168.0.115",
-        "mac_address": "B8:27:EB:88:E9:39",
         "hostname": "mlv-plants",
-        "services": ["mqtt", "actuator", "led"]
+        "ip_address": "192.168.0.115",
+        "services": [
+            "mqtt",
+            "actuator",
+            "led"
+        ]
     }
 ]

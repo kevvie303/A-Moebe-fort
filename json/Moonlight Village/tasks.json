@@ -7,7 +7,7 @@
     {
         "task": "moon-place",
         "description": "Players have placed the 3 moon pieces in the correct place on the astronomy tower (opens the door).",
-        "state": "pending",
+        "state": "solved",
         "depends_on": [
             "lights-on"
         ]

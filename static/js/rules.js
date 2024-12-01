@@ -246,15 +246,17 @@ $(document).ready(function () {
         } else if (type === "play-sound") {
             subCardContent = `
                 Play sound
-                <input type="text" placeholder="Enter sound file" value="${data ? data.play_sound : ''}">
-                with volume
-                <input type="number" placeholder="Enter volume" value="${data ? data.volume : ''}">
+                <input type="text" id="selected-sound" placeholder="Select sound..." readonly value="${data ? data.play_sound : ''}">
+                <button type="button" class="select-sound-btn">Select Sound</button>
+                <label for="volume">Volume:</label>
+                <input type="number" id="volume" min="0" max="100" value="${data ? data.volume : 50}">
+                <h3>Select Pi's:</h3>
+                <div id="pi-list"></div>
             `;
         } else if (type === "set-delay") {
             subCardContent = `
-                Wait for
-                <input type="number" placeholder="Enter seconds" value="${data ? data.delay : ''}">
-                seconds
+                <label>Delay (seconds):</label>
+                <input type="number" class="delay-input" value="${data ? data.delay : 0}">
             `;
         } else if (type === "add-to-state") {
             subCardContent = `
@@ -286,23 +288,73 @@ $(document).ready(function () {
             `;
         }
 
-        return $(`<div class="sub-card">
-                    ${subCardContent}
-                    <button class="move-up">↑</button>
-                    <button class="move-down">↓</button>
-                    <button class="delete-sub-card">Delete</button>
-                </div>`)
-            .on("click", ".delete-sub-card", function () {
-                $(this).parent().remove();
-            })
-            .on("click", ".move-up", function () {
-                const subCard = $(this).parent();
-                subCard.insertBefore(subCard.prev());
-            })
-            .on("click", ".move-down", function () {
-                const subCard = $(this).parent();
-                subCard.insertAfter(subCard.next());
+        const subCard = $(`<div class="sub-card">
+            ${subCardContent}
+            <button class="move-up">↑</button>
+            <button class="move-down">↓</button>
+            <button class="delete-sub-card">Delete</button>
+        </div>`);
+
+        subCard.find('.select-sound-btn').click(function () {  
+            $('#sound-popup').show();
+            loadSounds();
+        });
+
+        subCard.find('.delete-sub-card').click(function () {
+            subCard.remove();
+        });
+
+        subCard.find('.move-up').click(function () {
+            const currentCard = $(this).closest('.sub-card');
+            currentCard.prev('.sub-card').before(currentCard);
+        });
+
+        subCard.find('.move-down').click(function () {
+            const currentCard = $(this).closest('.sub-card');
+            currentCard.next('.sub-card').after(currentCard);
+        });
+
+        if (type === "play-sound" && data) {
+            loadPis().then(() => {
+                data.pi.forEach(pi => {
+                    subCard.find(`#pi-list input[value="${pi}"]`).prop('checked', true);
+                });
             });
+        }
+
+        return subCard;
+    }
+
+    function loadSounds() {
+        $.get('/get_sounds', function (sounds) {
+            const soundList = $('#sound-list');
+            soundList.empty();
+            sounds.forEach(sound => {
+                const soundButton = $(`<button class="sound-button">${sound}</button>`);
+                soundButton.click(function () {
+                    $('#selected-sound').val(sound);
+                    $('#sound-popup').hide();
+                });
+                soundList.append(soundButton);
+            });
+        });
+    }
+
+    function loadPis() {
+        console.log("Calling loadPis()");
+        return $.get(`/get_raspberry_pis/${roomName}`, function (pis) {
+            console.log("Received Pis:", pis);
+            const piList = $('#pi-list');
+            piList.empty();
+            pis.forEach(pi => {
+                if (pi.services.includes('sound')) {
+                    const piCheckbox = $(`<label><input type="checkbox" value="${pi.hostname}"> ${pi.hostname}</label>`);
+                    piList.append(piCheckbox);
+                }
+            });
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.error("Failed to load Pis:", textStatus, errorThrown);
+        });
     }
 
     function getStateOptions(sensor) {
@@ -358,8 +410,11 @@ $(document).ready(function () {
                     action.task = subCard.find("select").val();
                     action.status = subCard.find("select:last").val();
                 } else if (subCard.text().includes("Play sound")) {
-                    action.play_sound = subCard.find("input[type=text]").val();
-                    action.volume = subCard.find("input[type=number]").val();
+                    action.play_sound = subCard.find("#selected-sound").val();
+                    action.volume = subCard.find("#volume").val();
+                    action.pi = subCard.find("#pi-list input:checked").map(function () {
+                        return $(this).val();
+                    }).get();
                 } else if (subCard.text().includes("Wait for")) {
                     action.delay = subCard.find("input[type=number]").val();
                 } else if (subCard.text().includes("Increase value of this state")) {
@@ -643,4 +698,9 @@ $(document).ready(function () {
     }
 
     $("#save-states-btn").click(saveStates);
+
+    // Ensure loadPis() is called when the add-sound button is pressed
+    $(document).on("click", ".add-action[data-type='play-sound']", function () {
+        loadPis();
+    });
 });

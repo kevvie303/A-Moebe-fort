@@ -233,15 +233,29 @@ def handle_rules(sensor_name, sensor_state, room):
             for constraint in rule['constraints']
         )
         if constraints_met:
-            execute_rule(rule, room)
+            threading.Thread(target=execute_rule, args=(rule, room)).start()  # Run execute_rule in a separate thread
 
 def execute_rule(rule, room):
-    for action in rule['actions']:
+    def execute_next_action(index):
+        if index >= len(rule['actions']):
+            return
+
+        action = rule['actions'][index]
         if 'sensor' in action and 'state' in action:
             call_control_maglock_partial(room, action['sensor'], action['state'])
+            execute_next_action(index + 1)
         elif 'task' in action and 'status' in action:
             solve_task(action['task'], room)
-        # Add more actions as needed
+            execute_next_action(index + 1)
+        elif 'delay' in action:
+            time.sleep(int(action['delay']))
+            execute_next_action(index + 1)
+        elif 'play_sound' in action and 'volume' in action:
+            for pi in action['pi']:
+                publish.single(f"audio_control/{pi}/play", f"{action['volume']} {action['play_sound']}", hostname=broker_ip)
+            execute_next_action(index + 1)
+
+    execute_next_action(0)
 
 def plant_pulled(plant_name, room):
     global last_three_pulled
@@ -1402,41 +1416,12 @@ def handle_preset(message_key):
             send_dmx_command(preset['pan'], preset['tilt'], preset['colour'], preset['gobo'], preset['smoke'])
 @app.route('/play_music/<room>', methods=['POST'])
 def play_music(room):
-    global first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable
     data = request.json
     message = data.get('message')
-    print(message)
-    if message == "laser-game-1":
-        publish.single("actuator/control/ret-laser", "50", hostname=broker_ip)
-        publish.single("servo_control/ret-middle", "servo2", hostname=broker_ip)
-        call_control_maglock_retriever("laser-2", "unlocked")
-        call_control_maglock_retriever("laser-1", "locked")
-    elif message == "knocker-solve-1.ogg":
-        handle_preset("knocker-solve")
-    elif message == "moon-place-1.ogg":
-        handle_preset("moon-place")
-    elif message == "plant-place-1.ogg":
-        handle_preset("plant-place")
-    elif message == "green-potion-1.ogg":
-        first_potion_solvable = True
-        publish.single(f"led/control/mlv-herbalist", "green", hostname=broker_ip)
-        call_control_maglock_moonlight("humidifier", "unlocked")
-    elif message == "orange-potion-1.ogg":
-        second_potion_solvable = True
-        publish.single(f"led/control/mlv-herbalist", "orange", hostname=broker_ip)
-        call_control_maglock_moonlight("humidifier", "unlocked")
-    elif message == "purple-potion-1.ogg":
-        third_potion_solvable = True
-        publish.single(f"led/control/mlv-herbalist", "purple", hostname=broker_ip)
-        call_control_maglock_moonlight("humidifier", "unlocked")
-    elif message == "yellow-potion-1.ogg":
-        fourth_potion_solvable = True
-        publish.single(f"led/control/mlv-herbalist", "yellow", hostname=broker_ip)
-        call_control_maglock_moonlight("humidifier", "unlocked")
-    elif room == "The Retriever":
-        publish.single("audio_control/all_retriever/play", message, hostname=broker_ip)
-    else:
-        publish.single("audio_control/all_moonlight/play", message, hostname=broker_ip)
+    volume = data.get('volume', 50)
+    selected_pis = data.get('selected_pis', [])
+    for pi in selected_pis:
+        publish.single(f"audio_control/{pi}/play", f"{volume} {message}", hostname=broker_ip)
     return jsonify({"status": "success"})
 @app.route('/stop_music/<room>', methods=['POST'])
 def stop_music(room):
@@ -2391,6 +2376,20 @@ def get_raspberry_pis(room):
         return jsonify(pis)
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify([])
+@app.route('/save_raspberry_pis/<room>', methods=['POST'])
+def save_raspberry_pis(room):
+    data = request.get_json()
+    room_dir = os.path.join('json', room)
+    os.makedirs(room_dir, exist_ok=True)
+    with open(os.path.join(room_dir, 'raspberry_pis.json'), 'w') as f:
+        json.dump(data, f, indent=4)
+    return jsonify({"message": "Raspberry Pis saved successfully!"})
+
+@app.route('/get_sounds', methods=['GET'])
+def get_sounds():
+    sound_folder = os.path.join(app.static_folder, 'Music')
+    sounds = [f for f in os.listdir(sound_folder) if f.endswith('.ogg')]
+    return jsonify(sounds)
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, handle_interrupt)

@@ -1,7 +1,7 @@
 [
     {
         "id": 3263,
-        "sensor_name": "# Rule 3263 - When moon-puzzle is Triggered AND Max executions: 1 AND lights-on is solved, do Set task moon-place to solved",
+        "sensor_name": "# Rule 3263",
         "constraints": [
             {
                 "sensor": "moon-puzzle",
@@ -43,6 +43,21 @@
             {
                 "sensor": "astronomy-door-lock",
                 "state": "Unlocked"
+            },
+            {
+                "delay": "5"
+            },
+            {
+                "play_sound": "test.ogg",
+                "volume": "50",
+                "pi": [
+                    "mlv-central",
+                    "mlv-astronomy"
+                ]
+            },
+            {
+                "sensor": "astronomy-door-lock",
+                "state": "Locked"
             }
         ]
     }
