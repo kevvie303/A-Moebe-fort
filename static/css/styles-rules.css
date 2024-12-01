@@ -296,3 +296,159 @@ h1 {
 .move-up:hover, .move-down:hover {
     background: #0056b3;
 }
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+    z-index: 1000;
+}
+
+.navbar button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.navbar button:hover {
+    background-color: #003f7f;
+}
+
+.section-container {
+    margin-top: 60px; /* Add margin to avoid overlap with navbar */
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 200px;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    z-index: 1000;
+}
+
+.sidebar button {
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 10px 0;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    text-align: center;
+}
+
+.sidebar .toggle-button {
+    background-color: #0056b3; /* Blue for available buttons */
+}
+
+.sidebar .toggle-button.active {
+    background-color: #6c757d; /* Gray for selected buttons */
+}
+
+.sidebar #media-control-btn {
+    background-color: #0056b3; /* Blue for media control button */
+}
+
+.sidebar #back-to-room-btn {
+    background-color: #fd7e14; /* Orange for back to room button */
+}
+
+.sidebar .btn-green {
+    background-color: #28a745; /* Green for save buttons */
+}
+
+.sidebar button:hover {
+    opacity: 0.9;
+}
+
+.content {
+    margin-left: 220px; /* Adjust this value to match the sidebar width */
+    padding: 20px;
+}
+
+.section-container {
+    margin-top: 20px; /* Adjust this value to avoid overlap with the sidebar */
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .sidebar button {
+        margin: 5px;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 10px;
+    }
+
+    .section-container {
+        margin-top: 10px;
+    }
+
+    .rule-card, .state-card {
+        margin-bottom: 10px;
+    }
+
+    .rule-card-header, .state-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .rule-card-header h3, .state-card-header h3 {
+        font-size: 16px;
+    }
+
+    .rule-card-body, .state-card-body {
+        padding: 10px;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .add-rule-btn, .add-state-btn {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+    }
+}

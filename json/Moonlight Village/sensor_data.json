@@ -212,7 +212,7 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-astronomy",
         "pin": "20",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {

@@ -191,7 +191,7 @@ $(document).ready(function () {
             subCardContent = `
                 When this task
                 <select>
-                    ${tasks.map(task => `<option value="${task.task}" ${data && data.sensor === task.task ? 'selected' : ''}>${task.task}</option>`).join('')}
+                    ${tasks.map(task => `<option value="${task.task}" ${data && data.task === task.task ? 'selected' : ''}>${task.task}</option>`).join('')}
                 </select>
                 has been
                 <label><input type="checkbox" value="solved" ${data && data.states.includes('solved') ? 'checked' : ''}> Solved</label>
@@ -273,13 +273,13 @@ $(document).ready(function () {
         } else if (type === "state-config") {
             subCardContent = `
                 <label for="pi">Pi</label>
-                <input type="text" id="pi" placeholder="Enter Pi name" value="${data ? data.pi : ''}" />
+                <input type="text" id="pi" placeholder="Enter Pi name" value="${data ? data.pi : ''}" ${data && data.type === 'logic' ? 'disabled' : ''} />
 
                 <label for="pin">Pin</label>
-                <input type="number" id="pin" placeholder="Enter pin number" value="${data ? data.pin : ''}" />
+                <input type="number" id="pin" placeholder="Enter pin number" value="${data ? data.pin : ''}" ${data && data.type === 'logic' ? 'disabled' : ''} />
 
                 <label for="connection-type">Connection Type</label>
-                <select id="connection-type">
+                <select id="connection-type" ${data && data.type === 'logic' ? 'disabled' : ''}>
                     <option value="NC" ${data && data.connectionType === 'NC' ? 'selected' : ''}>NC</option>
                     <option value="NO" ${data && data.connectionType === 'NO' ? 'selected' : ''}>NO</option>
                 </select>
@@ -324,18 +324,18 @@ $(document).ready(function () {
             const ruleCard = $(this);
             const constraints = [];
             const actions = [];
-    
+        
             // Extract constraints
             ruleCard.find(".constraints-container .sub-card").each(function () {
                 const subCard = $(this);
                 const constraint = {};
-    
+            
                 if (subCard.text().includes("When this state")) {
                     constraint.sensor = subCard.find(".sensor-select").val();
                     constraint.state = subCard.find(".state-select").val();
                 } else if (subCard.find("select").length) {
                     // For task-completed constraint
-                    constraint.sensor = subCard.find("select").val();
+                    constraint.task = subCard.find("select").val();
                     constraint.states = [];
                     subCard.find("input[type=checkbox]:checked").each(function () {
                         constraint.states.push($(this).val());
@@ -345,12 +345,12 @@ $(document).ready(function () {
                 }
                 constraints.push(constraint);
             });
-    
+        
             // Extract actions
             ruleCard.find(".actions-container .sub-card").each(function () {
                 const subCard = $(this);
                 const action = {};
-    
+            
                 if (subCard.text().includes("Set state")) {
                     action.sensor = subCard.find(".sensor-select").val();
                     action.state = subCard.find(".state-select").val();
@@ -366,10 +366,10 @@ $(document).ready(function () {
                     action.sensor = subCard.find(".sensor-select").val();
                     action.increment = subCard.find("input[type=number]").val();
                 }
-    
+            
                 actions.push(action);
             });
-    
+        
             // Build rule object
             rules.push({
                 id: ruleCard.data('rule-id'),
@@ -422,7 +422,7 @@ $(document).ready(function () {
     function getConstraintType(constraint) {
         if (constraint.sensor && constraint.state) {
             return "state-equals";
-        } else if (constraint.sensor && constraint.states) {
+        } else if (constraint.task && constraint.states) {
             return "task-completed";
         } else if (constraint.max_executions) {
             return "max-executions";
@@ -509,7 +509,7 @@ $(document).ready(function () {
         const section = $(this).data('section');
         const allowedValues = defaultValues[section] || '';
         fetchAvailablePis().done(function(pis) {
-            const piOptions = pis.map(pi => `<option value="${pi.hostname}">${pi.hostname}</option>`).join('');
+            const piOptions = section !== 'logic' ? pis.map(pi => `<option value="${pi.hostname}">${pi.hostname}</option>`).join('') : '';
             const stateCard = `
                 <div class="state-card">
                     <div class="state-card-header">
@@ -525,6 +525,7 @@ $(document).ready(function () {
                         <label for="allowed-values">Allowed Values</label>
                         <input type="text" id="allowed-values" value="${allowedValues}" />
 
+                        ${section !== 'logic' ? `
                         <label for="pi">Pi</label>
                         <select id="pi">${piOptions}</select>
 
@@ -536,6 +537,7 @@ $(document).ready(function () {
                             <option value="NC">NC</option>
                             <option value="NO">NO</option>
                         </select>
+                        ` : ''}
 
                         <button class="remove-state-btn">Remove</button>
                     </div>
@@ -576,24 +578,24 @@ $(document).ready(function () {
                         </div>
                         <div class="state-card-body">
                             <label for="name">State Name</label>
-                            <input type="text" id="name" value="${sensor.name}" readonly />
+                            <input type="text" id="name" value="${sensor.name}" />
 
                             <label for="type">State Type</label>
-                            <input type="text" id="type" value="${section}" readonly />
+                            <input type="text" id="type" value="${section}" />
 
                             <label for="allowed-values">Allowed Values</label>
                             <input type="text" id="allowed-values" value="${sensor.allowed_values || defaultValues[section] || ''}" />
 
                             <label for="pi">Pi</label>
-                            <input type="text" id="pi" value="${sensor.pi}" readonly />
+                            <input type="text" id="pi" value="${sensor.pi}" />
 
                             <label for="pin">Pin</label>
-                            <input type="number" id="pin" value="${sensor.pin}" readonly />
+                            <input type="number" id="pin" value="${sensor.pin}" />
 
                             <label for="connection-type">Connection Type</label>
-                            <select id="connection-type" disabled>
-                                <option value="NC" ${sensor.connectionType === 'NC' ? 'selected' : ''}>NC</option>
-                                <option value="NO" ${sensor.connectionType === 'NO' ? 'selected' : ''}>NO</option>
+                            <select id="connection-type">
+                                <option value="NC" ${sensor.connection_type === 'NC' ? 'selected' : ''}>NC</option>
+                                <option value="NO" ${sensor.connection_type === 'NO' ? 'selected' : ''}>NO</option>
                             </select>
 
                             <button class="remove-state-btn">Remove</button>

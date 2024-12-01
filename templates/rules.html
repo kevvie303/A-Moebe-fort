@@ -15,71 +15,105 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles-rules.css') }}">
 </head>
 <body>
-    <h1>Rule Editor</h1>
-    <div id="room-name" style="display: none;">{{ room }}</div>
-    <div class="toggle-container">
+    <div class="sidebar">
         <button class="toggle-button active" data-target="rules">Edit Rules</button>
         <button class="toggle-button" data-target="states">Edit States</button>
+        <button id="back-to-room-btn">Back to Room</button>
+        <button id="media-control-btn">Media Control</button>
+        <button id="save-rules-btn" class="btn-green">Save Rules</button>
+        <button id="save-states-btn" class="btn-green" style="display: none;">Save States</button>
     </div>
-    <input type="text" id="search-input" class="search-input" placeholder="Search rules...">
-    <button class="add-rule-btn" id="add-rule-btn">Add New Rule</button>
-    <button id="save-rules-btn" class="add-rule-btn" style="background-color: #28a745; margin-top: 20px;">
-        Save Rules!
-    </button>    
-    <div class="rules-container" id="rules-container"></div>
-    <div id="states" class="section-container">
-        <button id="save-states-btn" class="add-rule-btn" style="background-color: #28a745; margin-top: 20px;">
-            Save States!
-        </button>
-        <!-- Lights Section -->
-        <div class="state-section" id="light">
-            <h2>Lights</h2>
-            <button class="add-state-btn" data-section="light">Add State</button>
-            <div class="state-list"></div>
-        </div>
 
-        <!-- Sensors Section -->
-        <div class="state-section" id="Sensor">
-            <h2>Sensors</h2>
-            <button class="add-state-btn" data-section="Sensor">Add State</button>
-            <div class="state-list"></div>
-        </div>
+    <div class="content">
+        <h1>Rule Editor</h1>
+        <div id="room-name" style="display: none;">{{ room }}</div>
+        <input type="text" id="search-input" class="search-input" placeholder="Search rules...">
+        <button id="add-rule-btn" class="add-rule-btn">Add New Rule</button>
+        <div class="rules-container" id="rules-container"></div>
+        <div id="states" class="section-container">
+            <!-- Lights Section -->
+            <div class="state-section" id="light">
+                <h2>Lights</h2>
+                <button class="add-state-btn" data-section="light">Add State</button>
+                <div class="state-list"></div>
+            </div>
 
-        <!-- Maglocks Section -->
-        <div class="state-section" id="maglock">
-            <h2>Maglocks</h2>
-            <button class="add-state-btn" data-section="maglock">Add State</button>
-            <div class="state-list"></div>
-        </div>
+            <!-- Sensors Section -->
+            <div class="state-section" id="Sensor">
+                <h2>Sensors</h2>
+                <button class="add-state-btn" data-section="Sensor">Add State</button>
+                <div class="state-list"></div>
+            </div>
 
-        <!-- Buttons Section -->
-        <div class="state-section" id="button">
-            <h2>Buttons</h2>
-            <button class="add-state-btn" data-section="button">Add State</button>
-            <div class="state-list"></div>
-        </div>
+            <!-- Maglocks Section -->
+            <div class="state-section" id="maglock">
+                <h2>Maglocks</h2>
+                <button class="add-state-btn" data-section="maglock">Add State</button>
+                <div class="state-list"></div>
+            </div>
 
-        <!-- Logic Section -->
-        <div class="state-section" id="logic">
-            <h2>Logic</h2>
-            <button class="add-state-btn" data-section="logic">Add State</button>
-            <div class="state-list"></div>
-        </div>
+            <!-- Buttons Section -->
+            <div class="state-section" id="button">
+                <h2>Buttons</h2>
+                <button class="add-state-btn" data-section="button">Add State</button>
+                <div class="state-list"></div>
+            </div>
 
-        <!-- RFID Section -->
-        <div class="state-section" id="rfid">
-            <h2>RFID</h2>
-            <button class="add-state-btn" data-section="rfid">Add State</button>
-            <div class="state-list"></div>
-        </div>
+            <!-- Logic Section -->
+            <div class="state-section" id="logic">
+                <h2>Logic</h2>
+                <button class="add-state-btn" data-section="logic">Add State</button>
+                <div class="state-list"></div>
+            </div>
 
-        <!-- Different Section -->
-        <div class="state-section" id="different">
-            <h2>Different</h2>
-            <button class="add-state-btn" data-section="different">Add State</button>
-            <div class="state-list"></div>
+            <!-- RFID Section -->
+            <div class="state-section" id="rfid">
+                <h2>RFID</h2>
+                <button class="add-state-btn" data-section="rfid">Add State</button>
+                <div class="state-list"></div>
+            </div>
+
+            <!-- Different Section -->
+            <div class="state-section" id="different">
+                <h2>Different</h2>
+                <button class="add-state-btn" data-section="different">Add State</button>
+                <div class="state-list"></div>
+            </div>
         </div>
     </div>
+
+    <script src="{{ url_for('static', filename='js/rules.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#back-to-room-btn').click(function () {
+                window.location.href = '/rooms/{{ room }}';
+            });
+
+            $('#media-control-btn').click(function () {
+                window.location.href = '/media_control';
+            });
+
+            $('.toggle-button').click(function() {
+                $('.toggle-button').removeClass('active');
+                $(this).addClass('active');
+                const target = $(this).data('target');
+                if (target === 'rules') {
+                    $('#rules-container').show();
+                    $('#search-input').show();
+                    $('#add-rule-btn').show();
+                    $('#save-rules-btn').show();
+                    $('#save-states-btn').hide();
+                    $('#states').hide();
+                } else {
+                    $('#rules-container').hide();
+                    $('#search-input').hide();
+                    $('#add-rule-btn').hide();
+                    $('#save-rules-btn').hide();
+                    $('#save-states-btn').show();
+                    $('#states').show();
+                }
+            });
+        });
+    </script>
 </body>
-<script src="{{ url_for('static', filename='js/rules.js') }}"></script>
 </html>

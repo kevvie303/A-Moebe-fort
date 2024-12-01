@@ -226,19 +226,22 @@ def load_rules(room):
 def handle_rules(sensor_name, sensor_state, room):
     rules = load_rules(room)
     for rule in rules:
-        pass
+        constraints_met = all(
+            (constraint.get('sensor') == sensor_name and constraint.get('state') == sensor_state) or
+            (constraint.get('task') == sensor_name and sensor_state in constraint.get('states', [])) or
+            (constraint.get('max_executions') and int(constraint['max_executions']) > 0)
+            for constraint in rule['constraints']
+        )
+        if constraints_met:
+            execute_rule(rule, room)
 
 def execute_rule(rule, room):
-    global sequence, code1, code2, code3, code4, code5, codesCorrect, current_sequence, twinkle_sequence, first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable
-    global last_three_pulled, language, lockout_end_time, last_button_press_time, debounce_time
-
-    # Add logic to execute the rule based on its type and actions
-    # Example:
-    if rule['action'] == 'solve_task':
-        solve_task(rule['task_name'], room)
-    elif rule['action'] == 'call_control_maglock':
-        call_control_maglock_partial(room, rule['maglock'], rule['state'])
-    # Add more actions as needed
+    for action in rule['actions']:
+        if 'sensor' in action and 'state' in action:
+            call_control_maglock_partial(room, action['sensor'], action['state'])
+        elif 'task' in action and 'status' in action:
+            solve_task(action['task'], room)
+        # Add more actions as needed
 
 def plant_pulled(plant_name, room):
     global last_three_pulled
@@ -722,8 +725,6 @@ def sd_renewal():
 current_dir = os.path.abspath(os.path.dirname(__file__))
 
 
-
-
 @app.route('/get_file_status', methods=['GET'])
 def get_file_status():
     file_path = os.path.join(current_dir, 'json', 'file_status.json')
@@ -795,6 +796,7 @@ def solve_task(task_name, room):
     global new_init_time, timer_values, new_init_time_retriever, new_init_time_moon, language
     file_path = os.path.join('json', room, 'tasks.json')
     data_file_path = os.path.join('json', room, 'data.json')
+    rules_path = os.path.join('json', room, 'rules.json')
     game_status = get_game_status(room)
     game_data = get_game_data(room)
 
@@ -823,308 +825,9 @@ def solve_task(task_name, room):
         with open(file_path, 'w') as file:
             json.dump(tasks, file, indent=4)
         socketio.emit('task_update', room="all_clients")
-        if task_name == "lights-on":
-            if game_status == {'status': 'playing'}:
-                publish.single("audio_control/mlv-central/play", "bg_central.ogg", hostname=broker_ip)
-                fade_music_out("bg_corridor", room)
-                call_control_maglock_moonlight("corridor-door-lock", "locked")
-        elif task_name == "moon-place":
-            if game_status == {'status': 'playing'}:
-                call_control_maglock_moonlight("astronomy-door-lock", "locked")
-                publish.single("led/control/mlv-astronomy", "unlocked", hostname=broker_ip)
-        elif task_name == "knocker-solve":
-            if game_status == {'status': 'playing'}:
-                call_control_maglock_moonlight("tavern-door-lock", "locked")
-                publish.single("led/control/mlv-tavern", "unlocked", hostname=broker_ip)
-        elif task_name == "planets":
-            if game_status == {'status': 'playing'}:
-                call_control_maglock_moonlight("rem-lamp", "unlocked")
-                call_control_maglock_moonlight("blacklight-astronomy", "unlocked")
-                publish.single("led/control/mlv-astronomy", "locked", hostname=broker_ip)
-        elif task_name == "constellations":
-            if game_status == {'status': 'playing'}:
-                call_control_maglock_moonlight("blacklight-astronomy", "locked")
-        elif task_name == "camera-puzzle":
-            if game_status == {'status': 'playing'}:
-                print("camera puzzle solved")
-        elif task_name == "green-potion":
-            if game_status == {'status': 'playing'}:
-                publish.single("led/control/mlv-herbalist", "cauldron-off", hostname=broker_ip)
-                potion_count += 1
-                call_control_maglock_moonlight("humidifier", "locked")
-                if potion_count == 4:
-                    solve_task("potion-all", room)
-        elif task_name == "orange-potion":
-            if game_status == {'status': 'playing'}:
-                publish.single("led/control/mlv-herbalist", "cauldron-off", hostname=broker_ip)
-                potion_count += 1
-                call_control_maglock_moonlight("humidifier", "locked")
-                if potion_count == 4:
-                    solve_task("potion-all", room)
-        elif task_name == "yellow-potion":
-            if game_status == {'status': 'playing'}:
-                publish.single("led/control/mlv-herbalist", "cauldron-off", hostname=broker_ip)
-                potion_count += 1
-                call_control_maglock_moonlight("humidifier", "locked")
-                if potion_count == 4:
-                    solve_task("potion-all", room)
-        elif task_name == "purple-potion":
-            if game_status == {'status': 'playing'}:
-                publish.single("led/control/mlv-herbalist", "cauldron-off", hostname=broker_ip)
-                potion_count += 1
-                call_control_maglock_moonlight("humidifier", "locked")
-                if potion_count == 4:
-                    solve_task("potion-all", room)
-        elif task_name == "potion-all":
-            if game_status == {'status': 'playing'}:
-                call_control_maglock_moonlight("wolfsbane-lock", "locked")
-        elif task_name == "gibbs":
-            if game_status == {'status': 'playing'}:
-                call_control_maglock_moonlight("secret-door-lock", "locked")
-                handle_preset("climb-door-lamp")
-        elif task_name == "plant-water":
-            if game_status == {'status': 'playing'}:
-                call_control_maglock_moonlight("herbalist-door-lock", "locked")
-        elif task_name == "sigil-all":
-            if game_status == {'status': 'playing'}:
-                publish.single("audio_control/mlv-central/play", f"{sound_prefix}sigal-all-first.ogg", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/volume", f"100 {sound_prefix}sigal-all-first.ogg", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/volume", "20 bg_central.ogg", hostname=broker_ip)
-                call_control_maglock_moonlight("dmx-power", "unlocked")
-                time.sleep(12)
-                publish.single("audio_control/mlv-central/play", f"{sound_prefix}sigil-all-second.ogg", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/volume", f"100 {sound_prefix}sigil-all-second.ogg", hostname=broker_ip)
-                time.sleep(13)
-                send_dmx_command(0, 0, 0, 0, 255)
-                time.sleep(5)
-                send_dmx_command(0, 0, 0, 0, 0)
-                call_control_maglock_moonlight("ritual-puzzle-lock", "locked")
-                call_control_maglock_moonlight("lamp-post-1", "locked")
-                call_control_maglock_moonlight("lamp-post-2", "locked")
-                publish.single("audio_control/all_moonlight/full_stop", "stop", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/play", "tense.ogg", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/volume", "150 tense.ogg", hostname=broker_ip)
-                start_sequence()
-        elif task_name == "final-sequence":
-            if game_status == {'status': 'playing'}:
-                stop_sequence()
-                publish.single("video_control/mlv-tavern/play", "final_sequence.mp4", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/stop", "tense.ogg", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/play", "final_sequence.ogg", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/volume", "100 final_sequence.ogg", hostname=broker_ip)
-                time.sleep(53)
-                publish.single("audio_control/mlv-central/play", f"{sound_prefix}thanks.ogg", hostname=broker_ip)
-                time.sleep(13)
-                call_control_maglock_moonlight("tavern-door-lock", "locked")
-                call_control_maglock_moonlight("final-door-lock", "locked")
-                stop_timer(room)
-        elif task_name == "paw-maze":
-            if squeak_job == False:
-                scheduler.add_job(start_squeak, 'interval', seconds=30, id='squeakjob')
-                squeak_job = True
-            publish.single("audio_control/ret-top/play", "squeek.ogg", hostname=broker_ip)
-        elif task_name == "laser-game":
-            publish.single("actuator/control/ret-laser", "100", hostname=broker_ip)
-        elif task_name == "woef-woef":
-            if game_status == {'status': 'playing'}:
-                if bird_job == True:
-                    scheduler.remove_job('birdjob')
-                    bird_job = False
-                publish.single("audio_control/ret-top/play", f"{sound_prefix}hok.ogg", hostname=broker_ip)
-                call_control_maglock_retriever("doghouse-lock", "locked")
-        elif task_name == "squeekuence":
-            if game_status == {'status': 'playing'}:
-                call_control_maglock_retriever("lab-hatch-lock", "locked")
-                call_control_maglock_retriever("laser-2", "locked")
-                time.sleep(4)
-                publish.single("audio_control/ret-middle/play", "Background.ogg", hostname=broker_ip)
-                fade_music_in(room)
-                publish.single("audio_control/ret-top/volume", "3 Ambience.ogg", hostname=broker_ip)
-            if squeak_job == True:
-                scheduler.remove_job('squeakjob')
-                squeak_job = False
-        elif task_name == "flowers":
-            code1 = True
-            codesCorrect += 1
-            call_control_maglock_retriever("green-led-keypad", "locked")
-            publish.single("audio_control/ret-top/play", "correct-effect.ogg", hostname=broker_ip)
-            time.sleep(1)
-            fade_music_out("Ambience", room)
-            time.sleep(2)
-            publish.single("audio_control/ret-top/play", f"{sound_prefix}bloemen.ogg", hostname=broker_ip)
-            call_control_maglock_retriever("green-led-keypad", "locked")
-            time.sleep(10)
-            if codesCorrect == 3 or codesCorrect == 4:
-                fade_music_in(room)
-            elif codesCorrect == 2 or codesCorrect == 1:
-                print(codesCorrect)
-            elif code5 == False:
-                fade_music_in(room)
-        elif task_name == "kite-count":
-            code2 = True
-            codesCorrect += 1
-            call_control_maglock_retriever("green-led-keypad", "unlocked")
-            publish.single("audio_control/ret-top/play", "correct-effect.ogg", hostname=broker_ip)
-            time.sleep(1)
-            fade_music_out("Ambience", room)
-            time.sleep(2)
-            publish.single("audio_control/ret-top/play", f"{sound_prefix}vlieger.ogg", hostname=broker_ip)
-            call_control_maglock_retriever("green-led-keypad", "locked")
-            time.sleep(5)
-            if codesCorrect == 3 or codesCorrect == 4:
-                fade_music_in(room)
-            elif codesCorrect == 2 or codesCorrect == 1:
-                print(codesCorrect)
-            elif code5 == False:
-                fade_music_in(room)
-        elif task_name == "number-feel":
-            code3 = True
-            codesCorrect += 1
-            call_control_maglock_retriever("green-led-keypad", "unlocked")
-            publish.single("audio_control/ret-top/play", "correct-effect.ogg", hostname=broker_ip)
-            time.sleep(1)
-            fade_music_out("Ambience", room)
-            time.sleep(2)
-            publish.single("audio_control/ret-top/play", f"{sound_prefix}plantenbak.ogg", hostname=broker_ip)
-            call_control_maglock_retriever("green-led-keypad", "locked")
-            time.sleep(5)
-            if codesCorrect == 3 or codesCorrect == 4:
-                fade_music_in(room)
-            elif codesCorrect == 2 or codesCorrect == 1:
-                print(codesCorrect)
-            elif code5 == False:
-                fade_music_in(room)
-        elif task_name == "fence-decrypt":
-            code4 = True
-            codesCorrect += 1
-            call_control_maglock_retriever("green-led-keypad", "unlocked")
-            publish.single("audio_control/ret-top/play", "correct-effect.ogg", hostname=broker_ip)
-            time.sleep(1)
-            fade_music_out("Ambience", room)
-            time.sleep(2)
-            publish.single("audio_control/ret-top/play", f"{sound_prefix}hek.ogg", hostname=broker_ip)
-            call_control_maglock_retriever("green-led-keypad", "locked")
-            time.sleep(5)
-            if codesCorrect == 3 or codesCorrect == 4:
-                fade_music_in(room)
-            elif codesCorrect == 2 or codesCorrect == 1:
-                print(codesCorrect)
-            elif code5 == False:
-                fade_music_in(room)
-        elif task_name == "sinus-game":
-            print("nothing yet")
-        elif task_name == "squid-game":
-            if game_status == {'status': 'playing'}:
-                call_control_maglock_retriever("top_left_light", "unlocked")
-                call_control_maglock_retriever("top_right_light", "unlocked")
-                call_control_maglock_retriever("bottom_left_light", "unlocked")
-                call_control_maglock_retriever("bottom_right_light", "unlocked")
-                publish.single("audio_control/ret-middle/play", f"{sound_prefix}gelukt.ogg", hostname=broker_ip)
-                publish.single("audio_control/ret-middle/volume", f"5 {sound_prefix}gelukt.ogg", hostname=broker_ip)
-                time.sleep(3)
-                call_control_maglock_retriever("sliding-door-lock", "locked")
-                time.sleep(6)
-                if should_balls_drop == True:
-                    call_control_maglock_retriever("ball-drop-lock", "locked")
-                publish.single("audio_control/ret-middle/stop", "Background.ogg", hostname=broker_ip)
-                publish.single("audio_control/ret-middle/play", "Dogsout.ogg", hostname=broker_ip)
-                publish.single("audio_control/ret-middle/volume", "5 Dogsout.ogg", hostname=broker_ip)   
-        elif task_name == "tree-lights":
-            if bird_job == True:
-                scheduler.remove_job('birdjob')
-                bird_job = False
-            if game_status == {'status': 'playing'}:
-                publish.single("audio_control/all_retriever/play", "correct-effect.ogg", hostname=broker_ip)
-                time.sleep(1)
-                code5 = True
-                print("3")
-                call_control_maglock_retriever("blue-led", "unlocked")
-                fade_out_thread = threading.Thread(target=fade_music_out("Ambience", room))
-                fade_out_thread.start()
-                time.sleep(1)
-                call_control_maglock_retriever("blue-led", "locked")
-                call_control_maglock_retriever("green-led", "locked")
-                call_control_maglock_retriever("red-led", "locked")
-                time.sleep(1)
-                call_control_maglock_retriever("green-led", "unlocked")
-                call_control_maglock_retriever("red-led", "unlocked")
-                call_control_maglock_retriever("blue-led", "unlocked")
-                time.sleep(1)
-                call_control_maglock_retriever("green-led", "locked")
-                call_control_maglock_retriever("red-led", "locked")
-                call_control_maglock_retriever("blue-led", "locked")
-                time.sleep(1)
-                call_control_maglock_retriever("green-led", "unlocked")
-                call_control_maglock_retriever("red-led", "unlocked")
-                call_control_maglock_retriever("blue-led", "unlocked")
-                time.sleep(1)
-                call_control_maglock_retriever("green-led", "locked")
-                call_control_maglock_retriever("red-led", "locked")
-                call_control_maglock_retriever("blue-led", "locked")
-                sequence = 0
-                time.sleep(1)
-                publish.single("audio_control/ret-top/play", f"{sound_prefix}boom.ogg", hostname=broker_ip)
-                time.sleep(7)
-                if code1 and code2 and code3 and code4 and code5:
-                    print("executed")
-                    time.sleep(7)
-                    publish.single("audio_control/ret-top/play", f"{sound_prefix}schuur_open.ogg", hostname=broker_ip)
-                    time.sleep(5)
-                    fade_music_in(room)
-                    call_control_maglock_retriever("shed-door-lock", "locked")
-                    code1 = False
-                    code2 = False
-                    code3 = False
-                    code4 = False
-                    code5 = False
-                else:
-                    fade_in_thread = threading.Thread(target=fade_music_in(room))
-                    fade_in_thread.start()
-        if code1 and code2 and code3 and code4 and code5:
-            print("executed")
-            time.sleep(2)
-            publish.single("audio_control/ret-top/play", f"{sound_prefix}schuur_open.ogg", hostname=broker_ip)
-            time.sleep(5)
-            fade_music_in(room)
-            call_control_maglock_retriever("shed-door-lock", "locked")
-            code1 = False
-            code2 = False
-            code3 = False
-            code4 = False
-            code5 = False
-        if codesCorrect == 2:
-            print("TRIGGERED")
-            codesCorrect += 1
-            time.sleep(2)
-            publish.single("audio_control/ret-top/play", f"{sound_prefix}goed_bezig.ogg", hostname=broker_ip)
-            time.sleep(6)
-            fade_music_in(room)
-        if codesCorrect == 1 and should_hint_shed_play == True:
-            should_hint_shed_play = False
-            print("TRIGGERED")
-            time.sleep(2)
-            publish.single("audio_control/ret-top/play", f"{sound_prefix}after1code.ogg", hostname=broker_ip)
-            time.sleep(4)
-            fade_music_in(room)
-        if game_status == {'status': 'playing'}:
-            if task_name == "barrel-place":
-                sigil_count += 1
-                publish.single("led/control/mlv-webcam", "1/3", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/play", "howl.ogg", hostname=broker_ip)
-                if sigil_count == 3:
-                    solve_task("sigil-all", room)
-            if task_name == "flask-place":
-                sigil_count += 1
-                publish.single("led/control/mlv-webcam", "1/3", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/play", "howl.ogg", hostname=broker_ip)
-                if sigil_count == 3:
-                    solve_task("sigil-all", room)
-            if task_name == "telescope-place":
-                sigil_count += 1
-                publish.single("led/control/mlv-webcam", "1/3", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/play", "howl.ogg", hostname=broker_ip)
-                if sigil_count == 3:
-                    solve_task("sigil-all", room)
+
+        # Handle rules for the solved task
+        handle_rules(task_name, "solved", room)
         with app.app_context():
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
@@ -1764,9 +1467,9 @@ def control_maglock(room):
     for sensor in sensor_data:
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
-            if "green-led" in maglock or "red-led" in maglock or "blue-led":
-                print(maglock)
-                # Reverse the action for this specific case
+            connection_type = sensor.get('connection_type', 'NO')  # Default to NO if not specified
+            if connection_type == 'NC':
+                # Reverse the action for NC connection type
                 action = 'locked' if action == 'unlocked' else 'unlocked'
             # Publish the MQTT message with the appropriate Pi's name
             mqtt_message = f"{sensor['pin']} {action}"
@@ -1788,18 +1491,14 @@ def control_maglock_route(room):
 
 def call_control_maglock_partial(room, maglock, action):
     global squeak_job, should_balls_drop, player_type
-    #print(maglock)
-    #print(action)
-    #print(room)
     sensor_data = read_sensor_data2(room)
     for sensor in sensor_data:
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
-            if "green-led" in maglock or "red-led" in maglock or "blue-led":
-                #print(maglock)
-                # Reverse the action for this specific case
+            connection_type = sensor.get('connection_type', 'NO')  # Default to NO if not specified
+            if connection_type == 'NC':
+                # Reverse the action for NC connection type
                 action = 'locked' if action == 'unlocked' else 'unlocked'
-            # Publish the MQTT message with the appropriate Pi's name
             mqtt_message = f"{sensor['pin']} {action}"
             publish.single(f"actuator/control/{pi_name}", mqtt_message, hostname=broker_ip)
             return "done"

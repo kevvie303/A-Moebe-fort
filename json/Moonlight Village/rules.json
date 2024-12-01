@@ -1,7 +1,7 @@
 [
     {
         "id": 3263,
-        "sensor_name": "# Rule 3263",
+        "sensor_name": "# Rule 3263 - When moon-puzzle is Triggered AND Max executions: 1 AND lights-on is solved, do Set task moon-place to solved",
         "constraints": [
             {
                 "sensor": "moon-puzzle",
@@ -9,6 +9,12 @@
             },
             {
                 "max_executions": "1"
+            },
+            {
+                "task": "lights-on",
+                "states": [
+                    "solved"
+                ]
             }
         ],
         "actions": [
@@ -20,22 +26,23 @@
     },
     {
         "id": 2491,
-        "sensor_name": "# Rule 2491 - When moon-place is solved AND Max executions: 1, do Set astronomy-door-lock to Locked",
+        "sensor_name": "# Rule 2491",
         "constraints": [
             {
-                "sensor": "moon-place",
-                "states": [
-                    "solved"
-                ]
+                "max_executions": "1"
             },
             {
-                "max_executions": "1"
+                "task": "moon-place",
+                "states": [
+                    "solved",
+                    "skipped"
+                ]
             }
         ],
         "actions": [
             {
                 "sensor": "astronomy-door-lock",
-                "state": "Locked"
+                "state": "Unlocked"
             }
         ]
     }
