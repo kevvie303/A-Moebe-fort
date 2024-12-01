@@ -1483,7 +1483,7 @@ def call_control_maglock_partial(room, maglock, action):
             connection_type = sensor.get('connection_type', 'NO')  # Default to NO if not specified
             if connection_type == 'NC':
                 # Reverse the action for NC connection type
-                action = 'locked' if action == 'unlocked' else 'unlocked'
+                action = 'locked' if action == 'Unlocked' else 'unlocked'
             mqtt_message = f"{sensor['pin']} {action}"
             publish.single(f"actuator/control/{pi_name}", mqtt_message, hostname=broker_ip)
             return "done"

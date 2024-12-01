@@ -8,8 +8,8 @@ $(document).ready(function () {
         Sensor: ["Triggered", "Not Triggered"],
         light: ["On", "Off"],
         button: ["Triggered", "Not Triggered"],
-        rfid: ["Detected", "Not Detected"],
-        different: ["Active", "Inactive"],
+        rfid: [""],
+        different: [""],
     };
 
     function generateRandomId() {
