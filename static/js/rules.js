@@ -442,28 +442,30 @@ $(document).ready(function () {
         $("#rules-container .rule-card").each(function () {
             const ruleCard = $(this);
             const constraints = [];
-            const actions = [];
-        
-            // Extract constraints
+    
             ruleCard.find(".constraints-container .sub-card").each(function () {
                 const subCard = $(this);
                 const constraint = {};
-            
+    
+                // Handle "not" constraints separately
                 if (subCard.hasClass("not-constraint")) {
                     constraint.type = "not";
                     constraint.nestedConstraints = [];
                     subCard.find(".nested-constraints .sub-card").each(function () {
                         const nestedCard = $(this);
-                        const nestedConstraint = {
+                        constraint.nestedConstraints.push({
                             sensor: nestedCard.find(".sensor-select").val(),
                             state: nestedCard.find(".state-select").val(),
-                        };
-                        constraint.nestedConstraints.push(nestedConstraint);
+                        });
                     });
-                } else if (subCard.text().includes("When this state")) {
-                    constraint.type = "state-equals";
-                    constraint.sensor = subCard.find(".sensor-select").val();
-                    constraint.state = subCard.find(".state-select").val();
+                    constraints.push(constraint); // Add only the "not" constraint
+                } else if (!subCard.closest(".nested-constraints").length) {
+                    // Add other constraints only if they are not inside a "not" block
+                    if (subCard.text().includes("When this state")) {
+                        constraint.type = "state-equals";
+                        constraint.sensor = subCard.find(".sensor-select").val();
+                        constraint.state = subCard.find(".state-select").val();
+    
                 } else if (subCard.text().includes("When this task")) {
                     constraint.type = "task-completed";
                     constraint.task = subCard.find("select").val();
@@ -475,8 +477,9 @@ $(document).ready(function () {
                     constraint.max_executions = subCard.find("input[type=number]").val();
                 }
                 constraints.push(constraint);
-            });
-        
+            }
+        });
+        const actions = [];
             // Extract actions
             ruleCard.find(".actions-container .sub-card").each(function () {
                 const subCard = $(this);

@@ -7,6 +7,15 @@
                 "type": "state-equals",
                 "sensor": "moon-puzzle",
                 "state": "Triggered"
+            },
+            {
+                "type": "not",
+                "nestedConstraints": [
+                    {
+                        "sensor": "start-lamp",
+                        "state": "on"
+                    }
+                ]
             }
         ],
         "actions": [
