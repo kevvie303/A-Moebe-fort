@@ -4,17 +4,9 @@
         "sensor_name": "# Rule 3263",
         "constraints": [
             {
+                "type": "state-equals",
                 "sensor": "moon-puzzle",
                 "state": "Triggered"
-            },
-            {
-                "max_executions": "1"
-            },
-            {
-                "task": "lights-on",
-                "states": [
-                    "solved"
-                ]
             }
         ],
         "actions": [
@@ -29,27 +21,24 @@
         "sensor_name": "# Rule 2491",
         "constraints": [
             {
-                "max_executions": "1"
-            },
-            {
+                "type": "task-completed",
                 "task": "moon-place",
                 "states": [
-                    "solved",
-                    "skipped"
+                    "solved"
                 ]
             }
         ],
         "actions": [
             {
                 "sensor": "astronomy-door-lock",
-                "state": "Unlocked"
+                "state": "unlocked"
             },
             {
                 "delay": "5"
             },
             {
                 "play_sound": "test.ogg",
-                "volume": "50",
+                "volume": "70",
                 "pi": [
                     "mlv-central",
                     "mlv-astronomy"
@@ -57,7 +46,24 @@
             },
             {
                 "sensor": "astronomy-door-lock",
-                "state": "Locked"
+                "state": "locked"
+            }
+        ]
+    },
+    {
+        "id": 2825,
+        "sensor_name": "# Rule 2825 - When entrance-door-lock is locked, do Set task lights-on to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "entrance-door-lock",
+                "state": "locked"
+            }
+        ],
+        "actions": [
+            {
+                "task": "lights-on",
+                "status": "solved"
             }
         ]
     }

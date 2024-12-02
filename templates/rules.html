@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles-rules.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles-dropdowns.css') }}">
 </head>
 <body>
     <div class="sidebar">
@@ -95,11 +96,6 @@
             <span class="close">&times;</span>
             <h2>Select Sound</h2>
             <div id="sound-list"></div>
-            <label for="volume">Volume:</label>
-            <input type="number" id="volume" min="0" max="100" value="50">
-            <h3>Select Pi's:</h3>
-            <div id="pi-list"></div>
-            <button id="apply-sound-btn">Apply</button>
         </div>
     </div>
 
@@ -115,43 +111,42 @@
             $('#media-control-btn').click(function () {
                 window.location.href = '/media_control';
             });
-
             $('.toggle-button').click(function() {
-                $('.toggle-button').removeClass('active');
-                $(this).addClass('active');
-                const target = $(this).data('target');
-                if (target === 'rules') {
-                    $('#rules-container').show();
-                    $('#search-input').show();
-                    $('#add-rule-btn').show();
-                    $('#save-rules-btn').show();
-                    $('#save-states-btn').hide();
-                    $('#save-pis-btn').hide();
-                    $('#pis').hide();
-                    $('#states').hide();
-                } else if (target === 'states') {
-                    $('#rules-container').hide();
-                    $('#search-input').hide();
-                    $('#add-rule-btn').hide();
-                    $('#save-rules-btn').hide();
-                    $('#save-states-btn').show();
-                    $('#save-pis-btn').hide();
-                    $('#pis').hide();
-                    $('#states').show();
-                } else if (target === 'pis') {
-                    $('#rules-container').hide();
-                    $('#search-input').hide();
-                    $('#add-rule-btn').hide();
-                    $('#save-rules-btn').hide();
-                    $('#save-states-btn').hide();
-                    $('#save-pis-btn').show();
-                    $('#pis').show();
-                    $('#states').hide();
-                    loadPis();
-                }
-            });
+            $('.toggle-button').removeClass('active');
+            $(this).addClass('active');
+            const target = $(this).data('target');
+            if (target === 'rules') {
+                $('#rules-container').show();
+                $('#search-input').show();
+                $('#add-rule-btn').show();
+                $('#save-rules-btn').show();
+                $('#save-states-btn').hide();
+                $('#save-pis-btn').hide();
+                $('#pis').hide();
+                $('#states').hide();
+            } else if (target === 'states') {
+                $('#rules-container').hide();
+                $('#search-input').hide();
+                $('#add-rule-btn').hide();
+                $('#save-rules-btn').hide();
+                $('#save-states-btn').show();
+                $('#save-pis-btn').hide();
+                $('#pis').hide();
+                $('#states').show();
+            } else if (target === 'pis') {
+                $('#rules-container').hide();
+                $('#search-input').hide();
+                $('#add-rule-btn').hide();
+                $('#save-rules-btn').hide();
+                $('#save-states-btn').hide();
+                $('#save-pis-btn').show();
+                $('#pis').show();
+                $('#states').hide();
+                loadRaspberries();
+            }
+        });
 
-            function loadPis() {
+            function loadRaspberries() {
                 $.get(`/get_raspberry_pis/{{ room }}`, function (pis) {
                     const piList = $('#pi-list');
                     piList.empty();
@@ -218,7 +213,7 @@
             $('.add-action[data-type="play-sound"]').click(function () {
                 $('#sound-popup').show();
                 loadSounds();
-                loadPis();
+                loadRaspberries();
             });
 
             $('#apply-sound-btn').click(function () {

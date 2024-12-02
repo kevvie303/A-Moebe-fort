@@ -177,7 +177,7 @@
         "pi": "ret-tree",
         "pin": "14",
         "connection_type": "NC",
-        "state": "init"
+        "state": "Triggered"
     },
     {
         "name": "red_house_ir",

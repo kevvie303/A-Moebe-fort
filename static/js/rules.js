@@ -1,17 +1,6 @@
 $(document).ready(function () {
     const roomName = $("#room-name").text().trim();
     let ruleIdCounter = 1;
-
-    // Define state options by sensor type
-    const stateOptionsByType = {
-        maglock: ["Locked", "Unlocked"],
-        Sensor: ["Triggered", "Not Triggered"],
-        light: ["On", "Off"],
-        button: ["Triggered", "Not Triggered"],
-        rfid: [""],
-        different: [""],
-    };
-
     function generateRandomId() {
         return Math.floor(1000 + Math.random() * 9000).toString();
     }
@@ -51,16 +40,53 @@ $(document).ready(function () {
             </div>
         `);
         ruleCard.attr('data-rule-id', ruleId);
-
         if (rule) {
             // Populate rule card with existing rule data
             ruleCard.find(".rule-card-header h3").text(`# Rule ${ruleId}`);
             rule.constraints.forEach(constraint => {
                 const subCard = createSubCard(constraint.type, constraint.sensors, constraint.tasks, constraint);
+                
+                // Explicitly set the state select options and selected value
+                if (constraint.type === "state-equals" || constraint.type === "set-state") {
+                    const sensorSelect = subCard.find(".sensor-select");
+                    const stateSelect = subCard.find(".state-select");
+                    
+                    // Get the sensor's allowed values
+                    const selectedSensor = sensorSelect.val();
+                    const sensorOption = sensorSelect.find(`option[value="${selectedSensor}"]`);
+                    const allowedValues = sensorOption.data("allowed-values") || '';
+                    
+                    // Populate state options
+                    const states = allowedValues ? allowedValues.split(', ') : [];
+                    stateSelect.html(states.map(state => 
+                        `<option value="${state}" ${state === constraint.state ? 'selected' : ''}>${state}</option>`
+                    ).join(''));
+                }
+                
                 ruleCard.find(".constraints-container").append(subCard);
             });
+            
+            // Similar modification for actions
             rule.actions.forEach(action => {
                 const subCard = createSubCard(action.type, action.sensors, action.tasks, action);
+                
+                // Explicitly set the state select options and selected value for set-state actions
+                if (action.type === "set-state") {
+                    const sensorSelect = subCard.find(".sensor-select");
+                    const stateSelect = subCard.find(".state-select");
+                    
+                    // Get the sensor's allowed values
+                    const selectedSensor = sensorSelect.val();
+                    const sensorOption = sensorSelect.find(`option[value="${selectedSensor}"]`);
+                    const allowedValues = sensorOption.data("allowed-values") || '';
+                    
+                    // Populate state options
+                    const states = allowedValues ? allowedValues.split(', ') : [];
+                    stateSelect.html(states.map(state => 
+                        `<option value="${state}" ${state === action.state ? 'selected' : ''}>${state}</option>`
+                    ).join(''));
+                }
+                
                 ruleCard.find(".actions-container").append(subCard);
             });
         }
@@ -184,36 +210,39 @@ $(document).ready(function () {
         if (type === "state-equals" || type === "set-state") {
             const actionText = type === "state-equals" ? "When this state" : "Set state";
             const equalsText = type === "state-equals" ? "equals" : "to";
+            
+            // Group sensors by type
+            const groupedSensors = sensors.reduce((acc, sensor) => {
+                if (!acc[sensor.type]) acc[sensor.type] = [];
+                acc[sensor.type].push(sensor);
+                return acc;
+            }, {});
+
+            // Populate sensor options with headers
+            const sensorOptions = Object.keys(groupedSensors).map(type => `
+                <optgroup label="${type.charAt(0).toUpperCase() + type.slice(1)}">
+                    ${groupedSensors[type].map(sensor => `
+                        <option value="${sensor.name}" data-type="${sensor.type}" data-allowed-values="${sensor.allowed_values || ''}" ${data && data.sensor === sensor.name ? 'selected' : ''}>${sensor.name}</option>
+                    `).join('')}
+                </optgroup>
+            `).join('');
+
+            // Determine initial state options
+            const initialStateOptions = data && sensors.find(sensor => sensor.name === data.sensor) 
+                ? getStateOptions(sensors.find(sensor => sensor.name === data.sensor)) 
+                : '';
+
             subCardContent = `
                 ${actionText}
                 <select class="sensor-select">
-                    ${sensors.map(sensor => `<option value="${sensor.name}" data-type="${sensor.type}" data-allowed-values="${sensor.allowed_values || ''}" ${data && data.sensor === sensor.name ? 'selected' : ''}>${sensor.name}</option>`).join('')}
+                    <option value="" disabled selected>Select sensor</option>
+                    ${sensorOptions}
                 </select>
                 ${equalsText}
                 <select class="state-select">
-                    ${data && sensors.find(sensor => sensor.name === data.sensor) ? getStateOptions(sensors.find(sensor => sensor.name === data.sensor)) : ''}
+                    <option value="" disabled selected>Select state</option>
+                    ${initialStateOptions}
                 </select>
-            `;
-            // Dynamically fill the state options based on the selected sensor type
-            subCardContent += `
-                <script>
-                    $(document).ready(function() {
-                        $(".sensor-select").last().change(function() {
-                            const sensorType = $(this).find(":selected").data("type");
-                            const allowedValues = $(this).find(":selected").data("allowed-values");
-                            const stateOptions = ${JSON.stringify(stateOptionsByType)};
-                            const states = allowedValues ? allowedValues.split(', ') : (stateOptions[sensorType] || []);
-                            let optionsHtml = '';
-                            states.forEach(state => {
-                                optionsHtml += \`<option value="\${state}">\${state}</option>\`;
-                            });
-                            $(this).siblings(".state-select").html(optionsHtml);
-                        });
-        
-                        // Trigger change event to populate states on initial load
-                        $(".sensor-select").last().trigger("change");
-                    });
-                </script>
             `;
         } else if (type === "task-completed") {
             subCardContent = `
@@ -270,7 +299,6 @@ $(document).ready(function () {
                         $(".sensor-select").last().change(function() {
                             const sensorType = $(this).find(":selected").data("type");
                             const allowedValues = $(this).find(":selected").data("allowed-values");
-                            const stateOptions = ${JSON.stringify(stateOptionsByType)};
                             const states = allowedValues ? allowedValues.split(', ') : (stateOptions[sensorType] || []);
                             let optionsHtml = '';
                             states.forEach(state => {
@@ -311,7 +339,29 @@ $(document).ready(function () {
             <button class="move-down">↓</button>
             <button class="delete-sub-card">Delete</button>
         </div>`);
-
+        subCard.find('.sensor-select').on('change', function() {
+            const selectedOption = $(this).find(':selected');
+            const sensorType = selectedOption.data('type');
+            const allowedValues = selectedOption.data('allowed-values');
+            
+            // Get state options
+            let states = [];
+            if (allowedValues) {
+                states = allowedValues.split(', ');
+            }
+            
+            // Populate state select
+            const stateSelect = $(this).siblings('.state-select');
+            stateSelect.empty();
+            states.forEach(state => {
+                stateSelect.append(`<option value="${state}">${state}</option>`);
+            });
+            
+            // If there was a previously selected state, try to maintain it
+            if (data && data.state && states.includes(data.state)) {
+                stateSelect.val(data.state);
+            }
+        });
         subCard.find('.select-sound-btn').click(function () {  
             $('#sound-popup').show();
             loadSounds();
@@ -373,11 +423,11 @@ $(document).ready(function () {
             console.error("Failed to load Pis:", textStatus, errorThrown);
         });
     }
-
-    function getStateOptions(sensor) {
+    function getStateOptions(sensor, selectedValue = null) {
         const allowedValues = sensor.allowed_values ? sensor.allowed_values.split(', ') : [];
-        const stateOptions = stateOptionsByType[sensor.type] || [];
-        return allowedValues.length > 0 ? allowedValues.map(state => `<option value="${state}">${state}</option>`).join('') : stateOptions.map(state => `<option value="${state}">${state}</option>`).join('');
+        return allowedValues.map(state => 
+            `<option value="${state}" ${state === selectedValue ? 'selected' : ''}>${state}</option>`
+        ).join('');
     }
 
     function fetchSensorsAndTasks() {
@@ -411,8 +461,18 @@ $(document).ready(function () {
                         constraint.nestedConstraints.push(nestedConstraint);
                     });
                 } else if (subCard.text().includes("When this state")) {
+                    constraint.type = "state-equals";
                     constraint.sensor = subCard.find(".sensor-select").val();
                     constraint.state = subCard.find(".state-select").val();
+                } else if (subCard.text().includes("When this task")) {
+                    constraint.type = "task-completed";
+                    constraint.task = subCard.find("select").val();
+                    constraint.states = subCard.find("input[type=checkbox]:checked").map(function () {
+                        return $(this).val();
+                    }).get();
+                } else if (subCard.text().includes("Max executions per game")) {
+                    constraint.type = "max-executions";
+                    constraint.max_executions = subCard.find("input[type=number]").val();
                 }
                 constraints.push(constraint);
             });
@@ -541,185 +601,177 @@ $(document).ready(function () {
 
     // Load existing rules on page load
     loadRules();
-
-    // Toggle between Rules and States
-    $('.toggle-button').click(function() {
-        $('.toggle-button').removeClass('active');
-        $(this).addClass('active');
-        const target = $(this).data('target');
-        if (target === 'rules') {
-            $('#rules-container').show();
-            $('#search-input').show();
-            $('#add-rule-btn').show();
-            $('#save-rules-btn').show();
-            $('#states').hide();
-        } else {
-            $('#rules-container').hide();
-            $('#search-input').hide();
-            $('#add-rule-btn').hide();
-            $('#save-rules-btn').hide();
-            $('#states').show();
+    
+        // Default allowed values for each section
+        const defaultValues = {
+            light: 'on, off',
+            Sensor: 'Triggered, Not Triggered',
+            maglock: 'locked, unlocked',
+            button: 'Triggered, Not Triggered',
+            logic: '',
+            rfid: 'Detected, Not Detected',
+            different: 'Active, Inactive',
+        };
+    
+        // Fetch available Pis from raspberry_pis.json
+        function fetchAvailablePis() {
+            return $.get(`/get_raspberry_pis/${roomName}`);
         }
-    });
-
-    // Default allowed values for each section
-    const defaultValues = {
-        light: 'on, off',
-        Sensor: 'Triggered, Not Triggered',
-        maglock: 'locked, unlocked',
-        button: 'Triggered, Not Triggered',
-        logic: '',
-        rfid: 'Detected, Not Detected',
-        different: 'Active, Inactive',
-    };
-
-    // Fetch available Pis from raspberry_pis.json
-    function fetchAvailablePis() {
-        return $.get(`/get_raspberry_pis/${roomName}`);
-    }
-
-    // Add State functionality
-    $('.add-state-btn').click(function() {
-        const section = $(this).data('section');
-        const allowedValues = defaultValues[section] || '';
-        fetchAvailablePis().done(function(pis) {
-            const piOptions = section !== 'logic' ? pis.map(pi => `<option value="${pi.hostname}">${pi.hostname}</option>`).join('') : '';
-            const stateCard = `
-                <div class="state-card">
-                    <div class="state-card-header">
-                        <h3>${section} State</h3>
-                    </div>
-                    <div class="state-card-body">
-                        <label for="name">State Name</label>
-                        <input type="text" id="name" placeholder="Enter state name" />
-
-                        <label for="type">State Type</label>
-                        <input type="text" id="type" value="${section}" readonly />
-
-                        <label for="allowed-values">Allowed Values</label>
-                        <input type="text" id="allowed-values" value="${allowedValues}" />
-
-                        ${section !== 'logic' ? `
-                        <label for="pi">Pi</label>
-                        <select id="pi">${piOptions}</select>
-
-                        <label for="pin">Pin</label>
-                        <input type="number" id="pin" placeholder="Enter pin number" />
-
-                        <label for="connection-type">Connection Type</label>
-                        <select id="connection-type">
-                            <option value="NC">NC</option>
-                            <option value="NO">NO</option>
-                        </select>
-                        ` : ''}
-
-                        <button class="remove-state-btn">Remove</button>
-                    </div>
-                </div>
-            `;
-            $('#' + section + ' .state-list').append(stateCard);
-            $('.state-card-body').hide();
-        });
-    });
-
-    // Remove State functionality
-    $(document).on('click', '.remove-state-btn', function() {
-        $(this).closest('.state-card').remove();
-    });
-
-    // Toggle state card body visibility
-    $(document).on('click', '.state-card-header', function() {
-        const body = $(this).siblings('.state-card-body');
-        body.toggle();
-    });
-
-    // Initialize with rules section visible
-    $('#rules-container').show();
-    $('#states').hide();
-
-    // Populate state editor with existing states
-    function populateStates() {
-        $.get(`/get_sensors/${roomName}`, function (sensors) {
-            sensors.forEach(sensor => {
-                let section = sensor.type;
-                if (sensor.type === "different" || sensor.type === "rfid") {
-                    section = sensor.type;
-                }
+    
+        // Add State functionality
+        $('.add-state-btn').click(function() {
+            const section = $(this).data('section');
+            const allowedValues = defaultValues[section] || '';
+            fetchAvailablePis().done(function(pis) {
+                const piOptions = section !== 'logic' ? pis.map(pi => `<option value="${pi.hostname}">${pi.hostname}</option>`).join('') : '';
                 const stateCard = `
                     <div class="state-card">
                         <div class="state-card-header">
-                            <h3>${sensor.name}</h3>
+                            <h3>${section} State</h3>
                         </div>
                         <div class="state-card-body">
                             <label for="name">State Name</label>
-                            <input type="text" id="name" value="${sensor.name}" />
-
+                            <input type="text" id="name" placeholder="Enter state name" />
+    
                             <label for="type">State Type</label>
-                            <input type="text" id="type" value="${section}" />
-
+                            <input type="text" id="type" value="${section}" readonly />
+    
                             <label for="allowed-values">Allowed Values</label>
-                            <input type="text" id="allowed-values" value="${sensor.allowed_values || defaultValues[section] || ''}" />
-
+                            <input type="text" id="allowed-values" value="${allowedValues}" />
+    
+                            ${section !== 'logic' ? `
                             <label for="pi">Pi</label>
-                            <input type="text" id="pi" value="${sensor.pi}" />
-
+                            <select id="pi">${piOptions}</select>
+    
                             <label for="pin">Pin</label>
-                            <input type="number" id="pin" value="${sensor.pin}" />
-
+                            <input type="number" id="pin" placeholder="Enter pin number" />
+    
                             <label for="connection-type">Connection Type</label>
                             <select id="connection-type">
-                                <option value="NC" ${sensor.connection_type === 'NC' ? 'selected' : ''}>NC</option>
-                                <option value="NO" ${sensor.connection_type === 'NO' ? 'selected' : ''}>NO</option>
+                                <option value="NC">NC</option>
+                                <option value="NO">NO</option>
                             </select>
-
+                            ` : ''}
+    
                             <button class="remove-state-btn">Remove</button>
                         </div>
                     </div>
                 `;
                 $('#' + section + ' .state-list').append(stateCard);
+                $('.state-card-body').hide();
             });
-            $('.state-card-body').hide();
         });
-    }
-
-    // Call populateStates on page load
-    populateStates();
-
-    // Save states functionality
-    function saveStates() {
-        const states = [];
-        $(".state-card").each(function () {
-            const stateCard = $(this);
-            const state = {
-                name: stateCard.find("#name").val(),
-                type: stateCard.find("#type").val(),
-                allowed_values: stateCard.find("#allowed-values").val(),
-                pi: stateCard.find("#pi").val(),
-                pin: stateCard.find("#pin").val(),
-                connection_type: stateCard.find("#connection-type").val(),
-                state: "init"
-            };
-            states.push(state);
+    
+        // Remove State functionality
+        $(document).on('click', '.remove-state-btn', function() {
+            $(this).closest('.state-card').remove();
         });
-
-        $.ajax({
-            url: `/save_states/${roomName}`,
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(states),
-            success: function () {
-                alert("States saved successfully!");
-            },
-            error: function () {
-                alert("Failed to save states.");
-            },
+    
+        // Toggle state card body visibility
+        $(document).on('click', '.state-card-header', function() {
+            const body = $(this).siblings('.state-card-body');
+            body.toggle();
         });
-    }
-
-    $("#save-states-btn").click(saveStates);
-
-    // Ensure loadPis() is called when the add-sound button is pressed
-    $(document).on("click", ".add-action[data-type='play-sound']", function () {
-        loadPis();
-    });
+    
+        // Initialize with rules section visible
+        $('#rules-container').show();
+        $('#states').hide();
+    
+        // Populate state editor with existing states
+        function populateStates() {
+            $.get(`/get_sensors/${roomName}`, function (sensors) {
+                sensors.forEach(sensor => {
+                    let section = sensor.type;
+                    if (sensor.type === "different" || sensor.type === "rfid") {
+                        section = sensor.type;
+                    }
+                    const stateCard = `
+                        <div class="state-card">
+                            <div class="state-card-header">
+                                <h3>${sensor.name}</h3>
+                            </div>
+                            <div class="state-card-body">
+                                <label for="name">State Name</label>
+                                <input type="text" id="name" value="${sensor.name}" />
+    
+                                <label for="type">State Type</label>
+                                <input type="text" id="type" value="${section}" />
+    
+                                <label for="allowed-values">Allowed Values</label>
+                                <input type="text" id="allowed-values" value="${sensor.allowed_values || defaultValues[section] || ''}" />
+    
+                                <label for="pi">Pi</label>
+                                <input type="text" id="pi" value="${sensor.pi}" />
+    
+                                <label for="pin">Pin</label>
+                                <input type="number" id="pin" value="${sensor.pin}" />
+    
+                                <label for="connection-type">Connection Type</label>
+                                <select id="connection-type">
+                                    <option value="NC" ${sensor.connection_type === 'NC' ? 'selected' : ''}>NC</option>
+                                    <option value="NO" ${sensor.connection_type === 'NO' ? 'selected' : ''}>NO</option>
+                                </select>
+    
+                                <button class="remove-state-btn">Remove</button>
+                            </div>
+                        </div>
+                    `;
+                    $('#' + section + ' .state-list').append(stateCard);
+                });
+                $('.state-card-body').hide();
+            });
+        }
+    
+        // Call populateStates on page load
+        populateStates();
+    
+        // Save states functionality
+        function saveStates() {
+            const states = [];
+            $(".state-card").each(function () {
+                const stateCard = $(this);
+                const state = {
+                    name: stateCard.find("#name").val(),
+                    type: stateCard.find("#type").val(),
+                    allowed_values: stateCard.find("#allowed-values").val(),
+                    pi: stateCard.find("#pi").val(),
+                    pin: stateCard.find("#pin").val(),
+                    connection_type: stateCard.find("#connection-type").val(),
+                    state: "init"
+                };
+                states.push(state);
+            });
+    
+            $.ajax({
+                url: `/save_states/${roomName}`,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(states),
+                success: function () {
+                    alert("States saved successfully!");
+                },
+                error: function () {
+                    alert("Failed to save states.");
+                },
+            });
+        }
+    
+        $("#save-states-btn").click(saveStates);
+    
+        // Ensure loadPis() is called when the add-sound button is pressed
+        $(document).on("click", ".add-action[data-type='play-sound']", function () {
+            loadPis();
+        });
+});
+$(document).on('change', '.sensor-select', function() {
+    const sensorOption = $(this).find(':selected');
+    const allowedValues = sensorOption.data('allowed-values') || '';
+    const stateSelect = $(this).siblings('.state-select');
+    
+    const states = allowedValues ? allowedValues.split(', ') : [];
+    const optionsHtml = states.map(state => 
+        `<option value="${state}">${state}</option>`
+    ).join('');
+    
+    stateSelect.html(optionsHtml);
 });

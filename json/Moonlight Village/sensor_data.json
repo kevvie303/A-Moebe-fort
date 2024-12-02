@@ -198,7 +198,7 @@
         "state": "init"
     },
     {
-        "name": "entraNOe-door",
+        "name": "entrance-door",
         "type": "Sensor",
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
@@ -213,7 +213,7 @@
         "pi": "mlv-astronomy",
         "pin": "20",
         "connection_type": "NO",
-        "state": "Unlocked"
+        "state": "Locked"
     },
     {
         "name": "herbalist-door-lock",

@@ -225,6 +225,7 @@ def load_rules(room):
 
 def handle_rules(sensor_name, sensor_state, room):
     rules = load_rules(room)
+    print(rules)
     for rule in rules:
         constraints_met = all(
             (constraint.get('sensor') == sensor_name and constraint.get('state') == sensor_state) or
@@ -1477,13 +1478,14 @@ def control_maglock_route(room):
 def call_control_maglock_partial(room, maglock, action):
     global squeak_job, should_balls_drop, player_type
     sensor_data = read_sensor_data2(room)
+    print(sensor_data)
     for sensor in sensor_data:
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
             connection_type = sensor.get('connection_type', 'NO')  # Default to NO if not specified
             if connection_type == 'NO':
                 # Reverse the action for NC connection type
-                action = 'locked' if action == 'Unlocked' else 'unlocked'
+                action = 'locked' if action == 'unlocked' else 'unlocked'
             mqtt_message = f"{sensor['pin']} {action}"
             publish.single(f"actuator/control/{pi_name}", mqtt_message, hostname=broker_ip)
             return "done"
