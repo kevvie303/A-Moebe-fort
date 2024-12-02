@@ -32,6 +32,7 @@ $(document).ready(function () {
                             <button class="btn btn-orange add-constraint" data-type="task-completed">+ Completed</button>
                             <button class="btn btn-blue add-constraint" data-type="task-solvable">+ Solvable</button>
                             <button class="btn btn-gray add-constraint" data-type="max-executions">+ Max Executions</button>
+                            <button class="btn btn-red add-constraint" data-type="not">+ Not</button>
                         </div>
                         <div class="constraints-container"></div>
                     </div>
@@ -105,7 +106,7 @@ $(document).ready(function () {
                         return `<span style="background-color: #fd7e14; color: #fff; padding: 2px 4px; border-radius: 4px;">Set task ${subCard.find("select").val()} to ${subCard.find("select:last").val()}</span>`;
                     } else if (subCard.text().includes("Play sound")) {
                         return `<span style="background-color: #007bff; color: #fff; padding: 2px 4px; border-radius: 4px;">Play ${subCard.find("input[type=text]").val()} at volume ${subCard.find("input[type=number]").val()}</span>`;
-                    } else if (subCard.text().includes("Wait for")) {
+                    } else if (subCard.text().includes("Delay")) {
                         return `<span style="background-color: #6c757d; color: #fff; padding: 2px 4px; border-radius: 4px;">Wait ${subCard.find("input[type=number]").val()} seconds</span>`;
                     } else if (subCard.text().includes("Increase value of this state")) {
                         return `<span style="background-color: #6c757d; color: #fff; padding: 2px 4px; border-radius: 4px;">Increase ${subCard.find(".sensor-select").val()} by ${subCard.find("input[type=number]").val()}</span>`;
@@ -154,14 +155,41 @@ $(document).ready(function () {
 
     function createSubCard(type, sensors = [], tasks = [], data = null) {
         let subCardContent = "";
-
-        if (type === "state-equals") {
+        if (type === "not") {
             subCardContent = `
-                When this state
+                <h4>None of these constraints should be met:</h4>
+                <div class="nested-constraints"></div>
+                <button class="btn btn-green add-nested-constraint">+ Equals</button>
+            `;
+        
+            const subCard = $(`<div class="sub-card not-constraint">
+                ${subCardContent}
+                <button class="delete-sub-card">Delete</button>
+            </div>`);
+        
+            subCard.find(".add-nested-constraint").click(function () {
+                fetchSensorsAndTasks().done(function (sensors, tasks) {
+                    const nestedCard = createSubCard("state-equals", sensors[0], tasks[0]); // Default to "state-equals"
+                    subCard.find(".nested-constraints").append(nestedCard);
+                });
+            });
+        
+            subCard.find(".delete-sub-card").click(function () {
+                subCard.remove();
+            });
+        
+            return subCard;
+        }
+        
+        if (type === "state-equals" || type === "set-state") {
+            const actionText = type === "state-equals" ? "When this state" : "Set state";
+            const equalsText = type === "state-equals" ? "equals" : "to";
+            subCardContent = `
+                ${actionText}
                 <select class="sensor-select">
                     ${sensors.map(sensor => `<option value="${sensor.name}" data-type="${sensor.type}" data-allowed-values="${sensor.allowed_values || ''}" ${data && data.sensor === sensor.name ? 'selected' : ''}>${sensor.name}</option>`).join('')}
                 </select>
-                equals
+                ${equalsText}
                 <select class="state-select">
                     ${data && sensors.find(sensor => sensor.name === data.sensor) ? getStateOptions(sensors.find(sensor => sensor.name === data.sensor)) : ''}
                 </select>
@@ -198,38 +226,6 @@ $(document).ready(function () {
                 <label><input type="checkbox" value="skipped" ${data && data.states.includes('skipped') ? 'checked' : ''}> Skipped</label>
                 <label><input type="checkbox" value="auto-solved" ${data && data.states.includes('auto-solved') ? 'checked' : ''}> Auto-solved</label>
             `;
-        } else if (type === "set-state") {
-            // For set-state action, create dropdowns for both sensor and state
-            subCardContent = `
-                Set state
-                <select class="sensor-select">
-                    ${sensors.map(sensor => `<option value="${sensor.name}" data-type="${sensor.type}" ${data && data.sensor === sensor.name ? 'selected' : ''}>${sensor.name}</option>`).join('')}
-                </select>
-                to
-                <select class="state-select">
-                    ${data && sensors.find(sensor => sensor.name === data.sensor) ? stateOptionsByType[sensors.find(sensor => sensor.name === data.sensor).type].map(state => `<option value="${state}" ${data.state === state ? 'selected' : ''}>${state}</option>`).join('') : ''}
-                </select>
-            `;
-            // Dynamically fill the state options based on the selected sensor type
-            subCardContent += `
-                <script>
-                    $(document).ready(function() {
-                        $(".sensor-select").last().change(function() {
-                            const sensorType = $(this).find(":selected").data("type");
-                            const stateOptions = ${JSON.stringify(stateOptionsByType)};
-                            const states = stateOptions[sensorType] || [];
-                            let optionsHtml = '';
-                            states.forEach(state => {
-                                optionsHtml += \`<option value="\${state}">\${state}</option>\`;
-                            });
-                            $(this).siblings(".state-select").html(optionsHtml);
-                        });
-
-                        // Trigger change event to populate states on initial load
-                        $(".sensor-select").last().trigger("change");
-                    });
-                </script>
-            `;
         } else if (type === "set-task-status") {
             subCardContent = `
                 Set task
@@ -262,10 +258,31 @@ $(document).ready(function () {
             subCardContent = `
                 Increase value of this state
                 <select class="sensor-select">
-                    ${sensors.filter(sensor => sensor.type === "different").map(sensor => `<option value="${sensor.name}" data-type="${sensor.type}" ${data && data.sensor === sensor.name ? 'selected' : ''}>${sensor.name}</option>`).join('')}
+                    ${sensors.map(sensor => `<option value="${sensor.name}" data-type="${sensor.type}" data-allowed-values="${sensor.allowed_values || ''}" ${data && data.sensor === sensor.name ? 'selected' : ''}>${sensor.name}</option>`).join('')}
                 </select>
                 by number
                 <input type="number" placeholder="Enter number" value="${data ? data.increment : ''}">
+            `;
+            // Dynamically fill the state options based on the selected sensor type
+            subCardContent += `
+                <script>
+                    $(document).ready(function() {
+                        $(".sensor-select").last().change(function() {
+                            const sensorType = $(this).find(":selected").data("type");
+                            const allowedValues = $(this).find(":selected").data("allowed-values");
+                            const stateOptions = ${JSON.stringify(stateOptionsByType)};
+                            const states = allowedValues ? allowedValues.split(', ') : (stateOptions[sensorType] || []);
+                            let optionsHtml = '';
+                            states.forEach(state => {
+                                optionsHtml += \`<option value="\${state}">\${state}</option>\`;
+                            });
+                            $(this).siblings(".state-select").html(optionsHtml);
+                        });
+        
+                        // Trigger change event to populate states on initial load
+                        $(".sensor-select").last().trigger("change");
+                    });
+                </script>
             `;
         } else if (type === "max-executions") {
             subCardContent = `
@@ -382,18 +399,20 @@ $(document).ready(function () {
                 const subCard = $(this);
                 const constraint = {};
             
-                if (subCard.text().includes("When this state")) {
+                if (subCard.hasClass("not-constraint")) {
+                    constraint.type = "not";
+                    constraint.nestedConstraints = [];
+                    subCard.find(".nested-constraints .sub-card").each(function () {
+                        const nestedCard = $(this);
+                        const nestedConstraint = {
+                            sensor: nestedCard.find(".sensor-select").val(),
+                            state: nestedCard.find(".state-select").val(),
+                        };
+                        constraint.nestedConstraints.push(nestedConstraint);
+                    });
+                } else if (subCard.text().includes("When this state")) {
                     constraint.sensor = subCard.find(".sensor-select").val();
                     constraint.state = subCard.find(".state-select").val();
-                } else if (subCard.find("select").length) {
-                    // For task-completed constraint
-                    constraint.task = subCard.find("select").val();
-                    constraint.states = [];
-                    subCard.find("input[type=checkbox]:checked").each(function () {
-                        constraint.states.push($(this).val());
-                    });
-                } else if (subCard.text().includes("Max executions per game")) {
-                    constraint.max_executions = subCard.find("input[type=number]").val();
                 }
                 constraints.push(constraint);
             });
@@ -415,7 +434,7 @@ $(document).ready(function () {
                     action.pi = subCard.find("#pi-list input:checked").map(function () {
                         return $(this).val();
                     }).get();
-                } else if (subCard.text().includes("Wait for")) {
+                } else if (subCard.text().includes("Delay")) {
                     action.delay = subCard.find("input[type=number]").val();
                 } else if (subCard.text().includes("Increase value of this state")) {
                     action.sensor = subCard.find(".sensor-select").val();

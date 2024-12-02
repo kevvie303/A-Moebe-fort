@@ -63,6 +63,10 @@ body {
 }
 .btn-green {
     background-color: #28a745;
+    color: #fff;
+}
+.btn-green:hover {
+    background-color: #218838;
 }
 .btn-orange {
     background-color: #fd7e14;
@@ -570,4 +574,19 @@ h1 {
 
 .sound-button:hover {
     background-color: #0056b3;
+}
+
+.btn-red {
+    background-color: #dc3545;
+    color: #fff;
+}
+.btn-red:hover {
+    background-color: #c82333;
+}
+.btn-green {
+    background-color: #28a745;
+    color: #fff;
+}
+.btn-green:hover {
+    background-color: #218838;
 }

@@ -198,8 +198,8 @@ $(document).ready(function () {
 
         lockButtons.find("button").click(function () {
           var action = $(this).hasClass("turn-on-button")
-            ? "locked"
-            : "unlocked";
+            ? "unlocked"
+            : "locked";
           $.ajax({
             type: "POST",
             url: `/control_maglock/${roomName}`,
@@ -242,8 +242,8 @@ $(document).ready(function () {
 
         lockButtons.find("button").click(function () {
           var action = $(this).hasClass("turn-on-button")
-            ? "locked"
-            : "unlocked";
+            ? "unlocked"
+            : "locked";
           $.ajax({
             type: "POST",
             url: `/control_maglock/${roomName}`,
@@ -286,8 +286,8 @@ $(document).ready(function () {
 
         lockButtons.find("button").click(function () {
           var action = $(this).hasClass("turn-on-button")
-            ? "locked"
-            : "unlocked";
+            ? "unlocked"
+            : "locked";
           $.ajax({
             type: "POST",
             url: `/control_maglock/${roomName}`,

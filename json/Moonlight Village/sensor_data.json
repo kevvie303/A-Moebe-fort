@@ -5,7 +5,7 @@
         "allowed_values": "on, off",
         "pi": "mlv-herbalist",
         "pin": "22",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -14,7 +14,7 @@
         "allowed_values": "on, off",
         "pi": "mlv-astronomy",
         "pin": "19",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -23,7 +23,7 @@
         "allowed_values": "on, off",
         "pi": "mlv-astronomy",
         "pin": "16",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -32,7 +32,7 @@
         "allowed_values": "on, off",
         "pi": "mlv-astronomy",
         "pin": "12",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -41,7 +41,7 @@
         "allowed_values": "on, off",
         "pi": "mlv-astronomy",
         "pin": "1",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -50,7 +50,7 @@
         "allowed_values": "on, off",
         "pi": "mlv-herbalist",
         "pin": "10",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -59,7 +59,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-astronomy",
         "pin": "17",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -68,7 +68,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-corridors",
         "pin": "17",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -77,7 +77,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-tavern",
         "pin": "0",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -86,7 +86,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-central",
         "pin": "19",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -95,7 +95,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-central",
         "pin": "13",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -104,7 +104,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-central",
         "pin": "6",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -113,7 +113,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
         "pin": "4",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -122,7 +122,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
         "pin": "27",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -131,7 +131,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
         "pin": "21",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -140,7 +140,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
         "pin": "13",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -149,7 +149,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
         "pin": "26",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -158,7 +158,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
         "pin": "19",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -167,7 +167,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
         "pin": "16",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -176,7 +176,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
         "pin": "6",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -185,7 +185,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
         "pin": "5",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -194,16 +194,16 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-tavern",
         "pin": "16",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
-        "name": "entrance-door",
+        "name": "entraNOe-door",
         "type": "Sensor",
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-plants",
         "pin": "24",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -212,8 +212,8 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-astronomy",
         "pin": "20",
-        "connection_type": "NC",
-        "state": "Locked"
+        "connection_type": "NO",
+        "state": "Unlocked"
     },
     {
         "name": "herbalist-door-lock",
@@ -221,7 +221,7 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-herbalist",
         "pin": "23",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -230,7 +230,7 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-tavern",
         "pin": "23",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -239,7 +239,7 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-tavern",
         "pin": "0",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -248,7 +248,7 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-herbalist",
         "pin": "1",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -257,7 +257,7 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-plants",
         "pin": "23",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -266,7 +266,7 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-plants",
         "pin": "22",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -275,7 +275,7 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-central",
         "pin": "14",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -284,7 +284,7 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-central",
         "pin": "15",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -293,7 +293,7 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-central",
         "pin": "18",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -302,7 +302,7 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-tavern",
         "pin": "12",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -311,7 +311,7 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-herbalist",
         "pin": "20",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -320,7 +320,7 @@
         "allowed_values": "locked, unlocked",
         "pi": "mlv-plants",
         "pin": "1",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -329,7 +329,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-astronomy",
         "pin": "6",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -338,7 +338,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-astronomy",
         "pin": "5",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -347,7 +347,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-astronomy",
         "pin": "13",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -356,7 +356,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-astronomy",
         "pin": "21",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -365,7 +365,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-astronomy",
         "pin": "27",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -374,7 +374,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-astronomy",
         "pin": "25",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -383,7 +383,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-astronomy",
         "pin": "24",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -392,7 +392,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-astronomy",
         "pin": "4",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -401,7 +401,7 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-astronomy",
         "pin": "8",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -410,7 +410,7 @@
         "allowed_values": "584197941325, 0",
         "pi": "mlv-herbalist",
         "pin": "-1",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -419,7 +419,7 @@
         "allowed_values": "Detected, Not Detected",
         "pi": "mlv-herbalist",
         "pin": "-1",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -428,7 +428,7 @@
         "allowed_values": "Detected, Not Detected",
         "pi": "mlv-herbalist",
         "pin": "-1",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -437,7 +437,7 @@
         "allowed_values": "Detected, Not Detected",
         "pi": "mlv-herbalist",
         "pin": "-1",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -446,7 +446,7 @@
         "allowed_values": "Active, Inactive",
         "pi": "mlv-herbalist",
         "pin": "-1",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     },
     {
@@ -455,7 +455,7 @@
         "allowed_values": "Active, Inactive",
         "pi": "mlv-herbalist",
         "pin": "-1",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "state": "init"
     }
 ]

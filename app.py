@@ -1453,7 +1453,7 @@ def control_maglock(room):
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
             connection_type = sensor.get('connection_type', 'NO')  # Default to NO if not specified
-            if connection_type == 'NC':
+            if connection_type == 'NO':
                 # Reverse the action for NC connection type
                 action = 'locked' if action == 'unlocked' else 'unlocked'
             # Publish the MQTT message with the appropriate Pi's name
@@ -1481,7 +1481,7 @@ def call_control_maglock_partial(room, maglock, action):
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
             connection_type = sensor.get('connection_type', 'NO')  # Default to NO if not specified
-            if connection_type == 'NC':
+            if connection_type == 'NO':
                 # Reverse the action for NC connection type
                 action = 'locked' if action == 'Unlocked' else 'unlocked'
             mqtt_message = f"{sensor['pin']} {action}"

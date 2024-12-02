@@ -1,34 +1,144 @@
 [
     {
-        "sensor_name": "green_house_ir",
-        "sensor_state": "Triggered",
-        "action": "call_control_maglock",
-        "maglock": "green-led",
-        "state": "unlocked"
+        "id": 2311,
+        "sensor_name": "# Rule 2311 - When green_house_ir is Triggered AND sequence_tree is 0, do Set green-led to on AND Set sequence_tree to 0",
+        "constraints": [
+            {
+                "sensor": "green_house_ir",
+                "state": "Triggered"
+            },
+            {
+                "sensor": "sequence_tree",
+                "state": "0"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "green-led",
+                "state": "on"
+            },
+            {
+                "sensor": "sequence_tree",
+                "state": "0"
+            }
+        ]
     },
     {
-        "sensor_name": "red_house_ir",
-        "sensor_state": "Triggered",
-        "action": "call_control_maglock",
-        "maglock": "red-led",
-        "state": "unlocked"
+        "id": 2312,
+        "sensor_name": "# Rule 2312 - When red_house_ir is Triggered AND sequence_tree is 0, do Set red-led to on AND Set sequence_tree to 0",
+        "constraints": [
+            {
+                "sensor": "red_house_ir",
+                "state": "Triggered"
+            },
+            {
+                "sensor": "sequence_tree",
+                "state": "0"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "red-led",
+                "state": "on"
+            },
+            {
+                "sensor": "sequence_tree",
+                "state": "0"
+            }
+        ]
     },
     {
-        "sensor_name": "blue_house_ir",
-        "sensor_state": "Triggered",
-        "action": "solve_task",
-        "task_name": "tree-lights"
+        "id": 2313,
+        "sensor_name": "# Rule 2313 - When red_house_ir is Triggered AND sequence_tree is 0, do Set red-led to on AND Wait 0.5 seconds AND Set green-led to on AND Set red-led to on AND Set sequence_tree to 0",
+        "constraints": [
+            {
+                "sensor": "red_house_ir",
+                "state": "Triggered"
+            },
+            {
+                "sensor": "sequence_tree",
+                "state": "0"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "red-led",
+                "state": "on"
+            },
+            {
+                "delay": "0.5"
+            },
+            {
+                "sensor": "green-led",
+                "state": "on"
+            },
+            {
+                "sensor": "red-led",
+                "state": "on"
+            },
+            {
+                "sensor": "sequence_tree",
+                "state": "0"
+            }
+        ]
     },
     {
-        "sensor_name": "laser",
-        "sensor_state": "100",
-        "action": "solve_task",
-        "task_name": "laser-game"
+        "id": 2314,
+        "sensor_name": "# Rule 2314 - When blue_house_ir is Triggered AND sequence_tree is 0, do Set task tree-lights to solved",
+        "constraints": [
+            {
+                "sensor": "blue_house_ir",
+                "state": "Triggered"
+            },
+            {
+                "sensor": "sequence_tree",
+                "state": "0"
+            }
+        ],
+        "actions": [
+            {
+                "task": "tree-lights",
+                "status": "solved"
+            }
+        ]
     },
     {
-        "sensor_name": "keypad",
-        "sensor_state": "1528",
-        "action": "solve_task",
-        "task_name": "flowers"
+        "id": 2315,
+        "sensor_name": "# Rule 2315 - When blue_house_ir is Triggered AND sequence_tree is 0, do Set green-led to on AND Wait 0.5 seconds AND Set red-led to on AND Set green-led to on AND Set blue-led to on AND Set sequence_tree to 0",
+        "constraints": [
+            {
+                "sensor": "blue_house_ir",
+                "state": "Triggered"
+            },
+            {
+                "sensor": "sequence_tree",
+                "state": "0"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "green-led",
+                "state": "on"
+            },
+            {
+                "delay": "0.5"
+            },
+            {
+                "sensor": "red-led",
+                "state": "on"
+            },
+            {
+                "sensor": "green-led",
+                "state": "on"
+            },
+            {
+                "sensor": "blue-led",
+                "state": "on"
+            },
+            {
+                "sensor": "sequence_tree",
+                "state": "0"
+            }
+        ]
     }
 ]

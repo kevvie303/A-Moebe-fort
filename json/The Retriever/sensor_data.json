@@ -1,228 +1,281 @@
 [
     {
-        "name": "laser",
-        "type": "laser",
-        "pin": "26",
-        "pi": "ret-laser",
-        "state": "0"
-    },
-    {
-        "name": "keypad",
-        "type": "keypad",
-        "pin": "usb",
-        "pi": "ret-top",
-        "state": "1528"
-    },
-    {
-        "name": "blue_house_ir",
-        "type": "Sensor",
-        "pin": 18,
-        "pi": "ret-tree",
-        "state": "Not Triggered"
-    },
-    {
-        "name": "green_house_ir",
-        "type": "Sensor",
-        "pin": 14,
-        "pi": "ret-tree",
-        "state": "Not Triggered"
-    },
-    {
-        "name": "red_house_ir",
-        "type": "Sensor",
-        "pin": 20,
-        "pi": "ret-tree",
-        "state": "Not Triggered"
-    },
-    {
         "name": "light-1-garden",
         "type": "light",
-        "pin": 1,
+        "allowed_values": "on, off",
         "pi": "ret-tree",
-        "state": "On"
+        "pin": "1",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "light-2-garden",
         "type": "light",
-        "pin": 7,
+        "allowed_values": "on, off",
         "pi": "ret-tree",
-        "state": "On"
+        "pin": "7",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "light-3-garden",
         "type": "light",
-        "pin": 12,
+        "allowed_values": "on, off",
         "pi": "ret-tree",
-        "state": "On"
+        "pin": "12",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "light-4-garden",
         "type": "light",
-        "pin": 8,
+        "allowed_values": "on, off",
         "pi": "ret-tree",
-        "state": "On"
+        "pin": "8",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "light-1-shed",
         "type": "light",
-        "pin": 15,
+        "allowed_values": "on, off",
         "pi": "ret-top",
-        "state": "On"
+        "pin": "15",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "light-1-alley",
         "type": "light",
-        "pin": 25,
+        "allowed_values": "on, off",
         "pi": "ret-top",
-        "state": "On"
+        "pin": "25",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "blacklight",
         "type": "light",
-        "pin": 17,
+        "allowed_values": "on, off",
         "pi": "ret-top",
-        "state": "On"
+        "pin": "17",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "portal-light",
         "type": "light",
-        "pin": 10,
+        "allowed_values": "on, off",
         "pi": "ret-top",
-        "state": "On"
-    },
-    {
-        "name": "maze-sensor",
-        "type": "Sensor",
-        "pin": 18,
-        "pi": "ret-middle",
-        "state": "Not Triggered"
+        "pin": "10",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "top_left_light",
         "type": "light",
-        "pin": 4,
+        "allowed_values": "on, off",
         "pi": "ret-middle",
-        "state": "On"
+        "pin": "4",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "top_right_light",
         "type": "light",
-        "pin": 7,
+        "allowed_values": "on, off",
         "pi": "ret-middle",
-        "state": "On"
+        "pin": "7",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "bottom_right_light",
         "type": "light",
-        "pin": 8,
+        "allowed_values": "on, off",
         "pi": "ret-middle",
-        "state": "On"
-    },
-    {
-        "name": "entrance-door-lock",
-        "type": "maglock",
-        "pin": 25,
-        "pi": "ret-tree",
-        "state": "Unlocked"
-    },
-    {
-        "name": "doghouse-lock",
-        "type": "maglock",
-        "pin": 4,
-        "pi": "ret-tree",
-        "state": "Unlocked"
-    },
-    {
-        "name": "shed-door-lock",
-        "type": "maglock",
-        "pin": 16,
-        "pi": "ret-tree",
-        "state": "Unlocked"
-    },
-    {
-        "name": "lab-hatch-lock",
-        "type": "maglock",
-        "pin": 20,
-        "pi": "ret-top",
-        "state": "Unlocked"
-    },
-    {
-        "name": "sliding-door-lock",
-        "type": "maglock",
-        "pin": 16,
-        "pi": "ret-top",
-        "state": "Unlocked"
-    },
-    {
-        "name": "ball-drop-lock",
-        "type": "maglock",
-        "pin": 6,
-        "pi": "ret-top",
-        "state": "Unlocked"
-    },
-    {
-        "name": "exit-door-lock",
-        "type": "maglock",
-        "pin": 21,
-        "pi": "ret-top",
-        "state": "Unlocked"
+        "pin": "8",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "bottom_left_light",
         "type": "light",
-        "pin": 1,
+        "allowed_values": "on, off",
         "pi": "ret-middle",
-        "state": "On"
+        "pin": "1",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "green-led",
         "type": "light",
-        "pin": 15,
+        "allowed_values": "on, off",
         "pi": "ret-tree",
-        "state": "On"
+        "pin": "15",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "red-led",
         "type": "light",
-        "pin": 21,
+        "allowed_values": "on, off",
         "pi": "ret-tree",
-        "state": "On"
+        "pin": "21",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "blue-led",
         "type": "light",
-        "pin": 23,
+        "allowed_values": "on, off",
         "pi": "ret-tree",
-        "state": "On"
+        "pin": "23",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "green-led-keypad",
         "type": "light",
-        "pin": 1,
+        "allowed_values": "on, off",
         "pi": "ret-top",
-        "state": "On"
+        "pin": "1",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "red-led-keypad",
         "type": "light",
-        "pin": 12,
+        "allowed_values": "on, off",
         "pi": "ret-top",
-        "state": "On"
-    },
-    {
-        "name": "laser-1",
-        "type": "maglock",
-        "pin": 6,
-        "pi": "ret-middle",
-        "state": "Locked",
-        "connection_type": "NO"
+        "pin": "12",
+        "connection_type": "NC",
+        "state": "init"
     },
     {
         "name": "laser-2",
         "type": "light",
-        "pin": 10,
+        "allowed_values": "on, off",
         "pi": "ret-middle",
-        "state": "On",
-        "connection_type": "NO"
+        "pin": "10",
+        "connection_type": "NO",
+        "state": "init"
+    },
+    {
+        "name": "blue_house_ir",
+        "type": "Sensor",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "ret-tree",
+        "pin": "18",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "green_house_ir",
+        "type": "Sensor",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "ret-tree",
+        "pin": "14",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "red_house_ir",
+        "type": "Sensor",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "ret-tree",
+        "pin": "20",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "maze-sensor",
+        "type": "Sensor",
+        "allowed_values": "Triggered, Not Triggered",
+        "pi": "ret-middle",
+        "pin": "18",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "entrance-door-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "ret-tree",
+        "pin": "25",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "doghouse-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "ret-tree",
+        "pin": "4",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "shed-door-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "ret-tree",
+        "pin": "16",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "lab-hatch-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "ret-top",
+        "pin": "20",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "sliding-door-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "ret-top",
+        "pin": "16",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "ball-drop-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "ret-top",
+        "pin": "6",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "exit-door-lock",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "ret-top",
+        "pin": "21",
+        "connection_type": "NC",
+        "state": "init"
+    },
+    {
+        "name": "laser-1",
+        "type": "maglock",
+        "allowed_values": "locked, unlocked",
+        "pi": "ret-middle",
+        "pin": "6",
+        "connection_type": "NO",
+        "state": "init"
+    },
+    {
+        "name": "sequence_tree",
+        "type": "logic",
+        "allowed_values": "0, 1, 2",
+        "pi": "undefined",
+        "pin": "",
+        "connection_type": "NC",
+        "state": "init"
     }
 ]
