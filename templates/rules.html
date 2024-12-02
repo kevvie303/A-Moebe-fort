@@ -14,6 +14,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles-rules.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles-dropdowns.css') }}">
+    <style>
+        .pi-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
+        }
+        .services-list label {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <div class="sidebar">
@@ -86,7 +97,7 @@
 
         <div id="pis" class="section-container">
             <h2>Edit Pi's</h2>
-            <div id="pi-list"></div>
+            <div id="raspberry-list"></div>
             <button id="save-pis-btn" class="btn-green">Save Pi's</button>
         </div>
     </div>
@@ -148,32 +159,52 @@
 
             function loadRaspberries() {
                 $.get(`/get_raspberry_pis/{{ room }}`, function (pis) {
-                    const piList = $('#pi-list');
+                    const piList = $('#raspberry-list');
                     piList.empty();
                     pis.forEach(pi => {
-                        const piCard = $(`
-                            <div class="pi-card">
-                                <h3>${pi.hostname}</h3>
-                                <p>IP Address: ${pi.ip_address}</p>
-                                <label for="services-${pi.hostname}">Services:</label>
-                                <div id="services-${pi.hostname}" class="services-list">
-                                    ${availableServices.map(service => `
-                                        <label>
-                                            <input type="checkbox" value="${service}" ${pi.services.includes(service) ? 'checked' : ''}>
-                                            ${service}
-                                        </label>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        `);
+                        const piCard = document.createElement('div');
+                        piCard.className = 'pi-card';
+
+                        const hostname = document.createElement('h3');
+                        hostname.textContent = pi.hostname;
+                        piCard.appendChild(hostname);
+
+                        const ipAddress = document.createElement('p');
+                        ipAddress.textContent = `IP Address: ${pi.ip_address}`;
+                        piCard.appendChild(ipAddress);
+
+                        const servicesLabel = document.createElement('label');
+                        servicesLabel.textContent = 'Services:';
+                        piCard.appendChild(servicesLabel);
+
+                        const servicesList = document.createElement('div');
+                        servicesList.className = 'services-list';
+                        servicesList.id = `services-${pi.hostname}`;
+
+                        availableServices.forEach(service => {
+                            const label = document.createElement('label');
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.value = service;
+                            if (pi.services.includes(service)) {
+                                checkbox.checked = true;
+                            }
+                            label.appendChild(checkbox);
+                            label.appendChild(document.createTextNode(service));
+                            servicesList.appendChild(label);
+                        });
+
+                        piCard.appendChild(servicesList);
                         piList.append(piCard);
                     });
+                }).fail(function() {
+                    console.log('Failed to fetch Raspberry Pi data.');
                 });
             }
 
             $('#save-pis-btn').click(function () {
                 const pis = [];
-                $('#pi-list .pi-card').each(function () {
+                $('#raspberry-list .pi-card').each(function () {
                     const hostname = $(this).find('h3').text();
                     const ip_address = $(this).find('p').text().replace('IP Address: ', '');
                     const services = $(this).find('.services-list input:checked').map(function () {
@@ -219,7 +250,7 @@
             $('#apply-sound-btn').click(function () {
                 const selectedSound = $('#selected-sound').val();
                 const volume = $('#volume').val();
-                const selectedPis = $('#pi-list input:checked').map(function () {
+                const selectedPis = $('#raspberry-list input:checked').map(function () {
                     return $(this).val();
                 }).get();
                 // Handle the selected sound, volume, and Pis
