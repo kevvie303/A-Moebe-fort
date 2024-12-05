@@ -408,7 +408,7 @@
         "name": "sequence_tree",
         "type": "logic",
         "allowed_values": "0, 1, 2",
-        "state": "init"
+        "state": "2"
     },
     {
         "name": "flask-rfid-1",

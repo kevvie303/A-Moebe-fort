@@ -292,6 +292,25 @@ def handle_rules(sensor_name, sensor_state, room):
         if constraints_met:
             threading.Thread(target=execute_rule, args=(rule, room)).start()  # Run execute_rule in a separate thread
 
+def update_sensor_state(room, sensor_name, increment_value):
+    try:
+        with open(f'json/{room}/sensor_data.json', 'r') as file:
+            sensor_data = json.load(file)
+        for sensor in sensor_data:
+            if sensor['name'] == sensor_name:
+                try:
+                    current_state = sensor['state']
+                    if current_state == "init":
+                        current_state = 0
+                    sensor['state'] = str(int(current_state) + increment_value)
+                except ValueError:
+                    print(f"Error: Sensor state for {sensor_name} is not an integer and cannot be incremented.")
+                    return
+        with open(f'json/{room}/sensor_data.json', 'w') as file:
+            json.dump(sensor_data, file, indent=4)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error updating sensor state for {sensor_name}: {e}")
+
 def execute_rule(rule, room):
     def execute_next_action(index):
         if index >= len(rule['actions']):
@@ -310,6 +329,9 @@ def execute_rule(rule, room):
         elif 'play_sound' in action and 'volume' in action:
             for pi in action['pi']:
                 publish.single(f"audio_control/{pi}/play", f"{action['volume']} {action['play_sound']}", hostname=broker_ip)
+            execute_next_action(index + 1)
+        elif 'increment' in action:
+            update_sensor_state(room, action['sensor'], int(action['increment']))
             execute_next_action(index + 1)
 
     execute_next_action(0)

@@ -69,6 +69,10 @@
             {
                 "sensor": "astronomy-door-lock",
                 "state": "locked"
+            },
+            {
+                "sensor": "sequence_tree",
+                "increment": "1"
             }
         ]
     },
