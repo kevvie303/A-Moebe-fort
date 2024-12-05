@@ -117,29 +117,38 @@ $(document).ready(function () {
 
         function generatePreview() {
             // Generate a human-readable preview for constraints
-            const constraintsPreview = ruleCard
+            const constraintsPreviewArray = ruleCard
                 .find(".constraints-container .sub-card")
                 .map(function () {
                     const subCard = $(this);
-                    if (subCard.text().includes("When this state")) {
-                        return `<span style="background-color: #28a745; color: #fff; padding: 2px 4px; border-radius: 4px;">${subCard.find(".sensor-select").val()} is ${subCard.find(".state-select").val()}</span>`;
-                    } else if (subCard.text().includes("When this task")) {
-                        const task = subCard.find("select").val();
-                        const states = subCard
-                            .find("input[type=checkbox]:checked")
-                            .map(function () {
-                                return $(this).val();
-                            })
-                            .get()
-                            .join(", ");
-                        return `<span style="background-color: #fd7e14; color: #fff; padding: 2px 4px; border-radius: 4px;">${task} is ${states}</span>`;
-                    } else if (subCard.text().includes("Max executions per game")) {
-                        return `<span style="background-color: #6c757d; color: #fff; padding: 2px 4px; border-radius: 4px;">Max executions: ${subCard.find("input[type=number]").val()}</span>`;
+                    if (subCard.hasClass("not-constraint")) {
+                        const nestedConstraintsPreview = subCard.find(".nested-constraints .sub-card").map(function () {
+                            const nestedSubCard = $(this);
+                            return `<span style="background-color: #dc3545; color: #fff; padding: 2px 4px; border-radius: 4px;">${nestedSubCard.find(".sensor-select").val()} is ${nestedSubCard.find(".state-select").val()}</span>`;
+                        }).get().join(" AND ");
+                        return `<span style="background-color: #dc3545; color: #fff; padding: 2px 4px; border-radius: 4px;">NOT (${nestedConstraintsPreview})</span>`;
+                    } else if (subCard.closest(".nested-constraints").length === 0) {
+                        if (subCard.text().includes("When this state")) {
+                            return `<span style="background-color: #28a745; color: #fff; padding: 2px 4px; border-radius: 4px;">${subCard.find(".sensor-select").val()} is ${subCard.find(".state-select").val()}</span>`;
+                        } else if (subCard.text().includes("When this task")) {
+                            const task = subCard.find("select").val();
+                            const states = subCard
+                                .find("input[type=checkbox]:checked")
+                                .map(function () {
+                                    return $(this).val();
+                                })
+                                .get()
+                                .join(", ");
+                            return `<span style="background-color: #fd7e14; color: #fff; padding: 2px 4px; border-radius: 4px;">${task} is ${states}</span>`;
+                        } else if (subCard.text().includes("Max executions per game")) {
+                            return `<span style="background-color: #6c757d; color: #fff; padding: 2px 4px; border-radius: 4px;">Max executions: ${subCard.find("input[type=number]").val()}</span>`;
+                        }
                     }
                     return "";
                 })
-                .get()
-                .join(" AND ");
+                .get();
+
+            const constraintsPreview = constraintsPreviewArray.filter(Boolean).join(" AND ");
 
             // Generate a human-readable preview for actions
             const actionsPreview = ruleCard
@@ -201,6 +210,7 @@ $(document).ready(function () {
 
     function createSubCard(type, sensors = [], tasks = [], data = null) {
         let subCardContent = "";
+        let subCardClass = type; // Add this line to set the class based on type
         if (type === "not") {
             subCardContent = `
                 <h4>None of these constraints should be met:</h4>
@@ -208,7 +218,7 @@ $(document).ready(function () {
                 <button class="btn btn-green add-nested-constraint">+ Equals</button>
             `;
         
-            const subCard = $(`<div class="sub-card not-constraint">
+            const subCard = $(`<div class="sub-card not-constraint ${subCardClass}">
                 ${subCardContent}
                 <button class="delete-sub-card">Delete</button>
             </div>`);
@@ -353,7 +363,7 @@ $(document).ready(function () {
             `;
         }
 
-        const subCard = $(`<div class="sub-card">
+        const subCard = $(`<div class="sub-card ${subCardClass}">
             ${subCardContent}
             <button class="move-up">↑</button>
             <button class="move-down">↓</button>

@@ -590,3 +590,111 @@ h1 {
 .btn-green:hover {
     background-color: #218838;
 }
+
+.sub-card.state-equals {
+    border-left: 5px solid #28a745; /* Green for state-equals */
+}
+
+.sub-card.task-completed {
+    border-left: 5px solid #fd7e14; /* Orange for task-completed */
+}
+
+.sub-card.play-sound {
+    border-left: 5px solid #007bff; /* Blue for play-sound */
+}
+
+.sub-card.set-delay {
+    border-left: 5px solid #6c757d; /* Gray for set-delay */
+}
+
+.sub-card.add-to-state {
+    border-left: 5px solid #6c757d; /* Gray for add-to-state */
+}
+
+.sub-card.max-executions {
+    border-left: 5px solid #6c757d; /* Gray for max-executions */
+}
+
+.sub-card.not-constraint {
+    border-left: 5px solid #dc3545; /* Red for not-constraint */
+}
+
+.sub-card.set-state {
+    border-left: 5px solid #28a745; /* Green for set-state */
+}
+
+.sub-card.set-task-status {
+    border-left: 5px solid #fd7e14; /* Orange for set-task-status */
+}
+
+.sub-card.state-equals::before {
+    content: "State Equals";
+    display: block;
+    font-weight: bold;
+    color: #28a745;
+    margin-bottom: 5px;
+}
+
+.sub-card.task-completed::before {
+    content: "Task Completed";
+    display: block;
+    font-weight: bold;
+    color: #fd7e14;
+    margin-bottom: 5px;
+}
+
+.sub-card.play-sound::before {
+    content: "Play Sound";
+    display: block;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 5px;
+}
+
+.sub-card.set-delay::before {
+    content: "Set Delay";
+    display: block;
+    font-weight: bold;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.sub-card.add-to-state::before {
+    content: "Add to State";
+    display: block;
+    font-weight: bold;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.sub-card.max-executions::before {
+    content: "Max Executions";
+    display: block;
+    font-weight: bold;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.sub-card.not-constraint::before {
+    content: "Not Constraint";
+    display: block;
+    font-weight: bold;
+    color: #dc3545;
+    margin-bottom: 5px;
+}
+
+.sub-card.set-state::before {
+    content: "Set State";
+    display: block;
+    font-weight: bold;
+    color: #28a745;
+    margin-bottom: 5px;
+}
+
+.sub-card.set-task-status::before {
+    content: "Set Task Status";
+    display: block;
+    font-weight: bold;
+    color: #fd7e14;
+    margin-bottom: 5px;
+}
