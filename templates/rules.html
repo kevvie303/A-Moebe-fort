@@ -98,7 +98,6 @@
         <div id="pis" class="section-container">
             <h2>Edit Pi's</h2>
             <div id="raspberry-list"></div>
-            <button id="save-pis-btn" class="btn-green">Save Pi's</button>
         </div>
     </div>
 
@@ -115,6 +114,48 @@
         $(document).ready(function () {
             const availableServices = ["mqtt", "lights_out", "actuator", "led", "sound", "dmx", "camera", "rfid", "knocker"];
 
+            // Function to set the active section
+            function setActiveSection(section) {
+                $('.toggle-button').removeClass('active');
+                $(`.toggle-button[data-target="${section}"]`).addClass('active');
+                $('.section-container').hide();
+                $(`#${section}`).show();
+                if (section === 'rules') {
+                    $('#rules-container').show();
+                    $('#search-input').show();
+                    $('#add-rule-btn').show();
+                    $('#save-rules-btn').show();
+                    $('#save-states-btn').hide();
+                    $('#save-pis-btn').hide();
+                } else if (section === 'states') {
+                    $('#rules-container').hide();
+                    $('#search-input').hide();
+                    $('#add-rule-btn').hide();
+                    $('#save-rules-btn').hide();
+                    $('#save-states-btn').show();
+                    $('#save-pis-btn').hide();
+                } else if (section === 'pis') {
+                    $('#rules-container').hide();
+                    $('#search-input').hide();
+                    $('#add-rule-btn').hide();
+                    $('#save-rules-btn').hide();
+                    $('#save-states-btn').hide();
+                    $('#save-pis-btn').show();
+                    loadRaspberries();
+                }
+            }
+
+            // Load the last active section from localStorage
+            const lastActiveSection = localStorage.getItem('activeSection') || 'rules';
+            setActiveSection(lastActiveSection);
+
+            // Update the active section on button click
+            $('.toggle-button').click(function() {
+                const target = $(this).data('target');
+                setActiveSection(target);
+                localStorage.setItem('activeSection', target);
+            });
+
             $('#back-to-room-btn').click(function () {
                 window.location.href = '/rooms/{{ room }}';
             });
@@ -122,40 +163,6 @@
             $('#media-control-btn').click(function () {
                 window.location.href = '/media_control';
             });
-            $('.toggle-button').click(function() {
-            $('.toggle-button').removeClass('active');
-            $(this).addClass('active');
-            const target = $(this).data('target');
-            if (target === 'rules') {
-                $('#rules-container').show();
-                $('#search-input').show();
-                $('#add-rule-btn').show();
-                $('#save-rules-btn').show();
-                $('#save-states-btn').hide();
-                $('#save-pis-btn').hide();
-                $('#pis').hide();
-                $('#states').hide();
-            } else if (target === 'states') {
-                $('#rules-container').hide();
-                $('#search-input').hide();
-                $('#add-rule-btn').hide();
-                $('#save-rules-btn').hide();
-                $('#save-states-btn').show();
-                $('#save-pis-btn').hide();
-                $('#pis').hide();
-                $('#states').show();
-            } else if (target === 'pis') {
-                $('#rules-container').hide();
-                $('#search-input').hide();
-                $('#add-rule-btn').hide();
-                $('#save-rules-btn').hide();
-                $('#save-states-btn').hide();
-                $('#save-pis-btn').show();
-                $('#pis').show();
-                $('#states').hide();
-                loadRaspberries();
-            }
-        });
 
             function loadRaspberries() {
                 $.get(`/get_raspberry_pis/{{ room }}`, function (pis) {
@@ -172,6 +179,17 @@
                         const ipAddress = document.createElement('p');
                         ipAddress.textContent = `IP Address: ${pi.ip_address}`;
                         piCard.appendChild(ipAddress);
+
+                        const changeIpButton = document.createElement('button');
+                        changeIpButton.textContent = 'Change IP';
+                        changeIpButton.className = 'change-ip-btn';
+                        changeIpButton.onclick = function () {
+                            const newIp = prompt('Enter new IP address:', pi.ip_address);
+                            if (newIp) {
+                                ipAddress.textContent = `IP Address: ${newIp}`;
+                            }
+                        };
+                        piCard.appendChild(changeIpButton);
 
                         const servicesLabel = document.createElement('label');
                         servicesLabel.textContent = 'Services:';

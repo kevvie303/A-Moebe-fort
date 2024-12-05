@@ -7,7 +7,7 @@
         "pin": "22",
         "connection_type": "NO",
         "prepared": "off",
-        "awake": "on",
+        "awake": "off",
         "snoozed": "on",
         "state": "init"
     },
@@ -285,7 +285,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "init"
+        "state": "Locked"
     },
     {
         "name": "herbalist-door-lock",
@@ -321,7 +321,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "init"
+        "state": "Unlocked"
     },
     {
         "name": "humidifier",
@@ -429,7 +429,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "init"
+        "state": "Unlocked"
     },
     {
         "name": "ast-button-1",
@@ -549,7 +549,7 @@
         "prepared": "0",
         "awake": "0",
         "snoozed": "0",
-        "state": "init"
+        "state": "1"
     },
     {
         "name": "flask-rfid-1",

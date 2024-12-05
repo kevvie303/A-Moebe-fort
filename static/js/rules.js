@@ -19,7 +19,6 @@ $(document).ready(function () {
                         <div class="button-group constraints">
                             <button class="btn btn-green add-constraint" data-type="state-equals">+ Equals</button>
                             <button class="btn btn-orange add-constraint" data-type="task-completed">+ Completed</button>
-                            <button class="btn btn-blue add-constraint" data-type="task-solvable">+ Solvable</button>
                             <button class="btn btn-gray add-constraint" data-type="max-executions">+ Max Executions</button>
                             <button class="btn btn-red add-constraint" data-type="not">+ Not</button>
                         </div>
@@ -32,7 +31,7 @@ $(document).ready(function () {
                             <button class="btn btn-orange add-action" data-type="set-task-status">+ Task Status</button>
                             <button class="btn btn-blue add-action" data-type="play-sound">+ Play Sound</button>
                             <button class="btn btn-gray add-action" data-type="set-delay">+ Delay</button>
-                            <button class="btn btn-gray add-action" data-type="add-to-state">+ Add to State</button>
+                            <button class="btn btn-purple add-action" data-type="add-to-state">+ Add to State</button>
                         </div>
                         <div class="actions-container"></div>
                     </div>
@@ -175,7 +174,7 @@ $(document).ready(function () {
                     } else if (subCard.text().includes("Delay")) {
                         return `<span style="background-color: #6c757d; color: #fff; padding: 2px 4px; border-radius: 4px;">Wait ${subCard.find("input[type=number]").val()} seconds</span>`;
                     } else if (subCard.text().includes("Increase value of this state")) {
-                        return `<span style="background-color: #6c757d; color: #fff; padding: 2px 4px; border-radius: 4px;">Increase ${subCard.find(".sensor-select").val()} by ${subCard.find("input[type=number]").val()}</span>`;
+                        return `<span style="background-color: #6200EA; color: #fff; padding: 2px 4px; border-radius: 4px;">Increase ${subCard.find(".sensor-select").val()} by ${subCard.find("input[type=number]").val()}</span>`;
                     }
                     return "";
                 })
@@ -229,7 +228,6 @@ $(document).ready(function () {
                 <div class="button-group nested-constraints-buttons">
                     <button class="btn btn-green add-nested-constraint" data-type="state-equals">+ Equals</button>
                     <button class="btn btn-orange add-nested-constraint" data-type="task-completed">+ Completed</button>
-                    <button class="btn btn-blue add-nested-constraint" data-type="task-solvable">+ Solvable</button>
                     <button class="btn btn-gray add-nested-constraint" data-type="max-executions">+ Max Executions</button>
                 </div>
             `;
@@ -722,6 +720,21 @@ $(document).ready(function () {
                                 <option value="NO">NO</option>
                             </select>
                             ` : ''}
+    
+                            <label for="prepared">Prepared</label>
+                            <select id="prepared">
+                                ${allowedValues.split(', ').map(value => `<option value="${value}">${value}</option>`).join('')}
+                            </select>
+    
+                            <label for="awake">Awake</label>
+                            <select id="awake">
+                                ${allowedValues.split(', ').map(value => `<option value="${value}">${value}</option>`).join('')}
+                            </select>
+    
+                            <label for="snoozed">Snoozed</label>
+                            <select id="snoozed">
+                                ${allowedValues.split(', ').map(value => `<option value="${value}">${value}</option>`).join('')}
+                            </select>
     
                             <button class="remove-state-btn">Remove</button>
                         </div>

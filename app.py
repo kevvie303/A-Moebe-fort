@@ -283,14 +283,15 @@ def evaluate_constraint(constraint, sensor_name, sensor_state, room, rule_id=Non
     return False
 
 def handle_rules(sensor_name, sensor_state, room):
-    rules = load_rules(room)
-    for rule in rules:
-        constraints_met = all(
-            evaluate_constraint(constraint, sensor_name, sensor_state, room, rule['id'])
-            for constraint in rule['constraints']
-        )
-        if constraints_met:
-            threading.Thread(target=execute_rule, args=(rule, room)).start()  # Run execute_rule in a separate thread
+    if get_game_status(room) == {'status': 'playing'}:
+        rules = load_rules(room)
+        for rule in rules:
+            constraints_met = all(
+                evaluate_constraint(constraint, sensor_name, sensor_state, room, rule['id'])
+                for constraint in rule['constraints']
+            )
+            if constraints_met:
+                threading.Thread(target=execute_rule, args=(rule, room)).start()  # Run execute_rule in a separate thread
 
 def update_sensor_state(room, sensor_name, increment_value):
     try:
@@ -313,6 +314,7 @@ def update_sensor_state(room, sensor_name, increment_value):
 
 def execute_rule(rule, room):
     def execute_next_action(index):
+        global language
         if index >= len(rule['actions']):
             return
 
@@ -328,7 +330,10 @@ def execute_rule(rule, room):
             execute_next_action(index + 1)
         elif 'play_sound' in action and 'volume' in action:
             for pi in action['pi']:
-                publish.single(f"audio_control/{pi}/play", f"{action['volume']} {action['play_sound']}", hostname=broker_ip)
+                current_game = get_game_data(room)[-1]  # Get the current game
+                language = current_game.get("language", "nl")  # Default to Dutch if not found
+                sound_prefix = "en/" if language == "eng" else ""
+                publish.single(f"audio_control/{pi}/play", f"{action['volume']} {sound_prefix}{action['play_sound']}", hostname=broker_ip)
             execute_next_action(index + 1)
         elif 'increment' in action:
             update_sensor_state(room, action['sensor'], int(action['increment']))

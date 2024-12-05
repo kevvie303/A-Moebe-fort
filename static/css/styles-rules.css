@@ -77,6 +77,9 @@ body {
 .btn-gray {
     background-color: #6c757d;
 }
+.btn-purple {
+    background-color: #6200EA;
+}
 .btn:hover {
     opacity: 0.9;
 }
@@ -560,16 +563,16 @@ h1 {
 }
 
 .sound-button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 5px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    text-align: left;
+    text-align: center;
+    font-size: 14px;
 }
 
 .sound-button:hover {
@@ -608,7 +611,7 @@ h1 {
 }
 
 .sub-card.add-to-state {
-    border-left: 5px solid #6c757d; /* Gray for add-to-state */
+    border-left: 5px solid #6200EA; /* Gray for add-to-state */
 }
 
 .sub-card.max-executions {
@@ -663,7 +666,7 @@ h1 {
     content: "Add to State";
     display: block;
     font-weight: bold;
-    color: #6c757d;
+    color: #6200EA;
     margin-bottom: 5px;
 }
 
