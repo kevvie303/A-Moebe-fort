@@ -223,14 +223,70 @@ def load_rules(room):
     except (FileNotFoundError, json.JSONDecodeError):
         return []
 
+def get_sensor_data(room):
+    try:
+        with open(f"json/{room}/sensor_data.json", 'r') as json_file:
+            return json.load(json_file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def reset_max_executions(room):
+    try:
+        with open(f'json/{room}/rules.json', 'r') as file:
+            rules = json.load(file)
+        for rule in rules:
+            for constraint in rule['constraints']:
+                if constraint['type'] == 'max-executions':
+                    constraint['current_executions'] = 0
+        with open(f'json/{room}/rules.json', 'w') as file:
+            json.dump(rules, file, indent=4)
+    except (FileNotFoundError, json.JSONDecodeError):
+        pass
+
+def update_rule_executions(room, rule_id, constraint_type):
+    try:
+        with open(f'json/{room}/rules.json', 'r') as file:
+            rules = json.load(file)
+        for rule in rules:
+            if rule['id'] == rule_id:
+                for constraint in rule['constraints']:
+                    if constraint['type'] == constraint_type and 'current_executions' in constraint:
+                        constraint['current_executions'] += 1
+        with open(f'json/{room}/rules.json', 'w') as file:
+            json.dump(rules, file, indent=4)
+    except (FileNotFoundError, json.JSONDecodeError):
+        pass
+
+def evaluate_constraint(constraint, sensor_name, sensor_state, room, rule_id=None):
+    sensor_data = get_sensor_data(room)
+    if constraint['type'] == 'not':
+        return not any(
+            evaluate_constraint(nested_constraint, sensor_name, sensor_state, room, rule_id)
+            for nested_constraint in constraint['nestedConstraints']
+        )
+    elif constraint['type'] == 'state-equals':
+        for sensor in sensor_data:
+            if sensor['name'].lower() == constraint.get('sensor').lower():
+                return sensor['state'].lower() == constraint.get('state').lower()
+        return False
+    elif constraint['type'] == 'task-completed':
+        task_state = check_task_state(constraint.get('task'), room)
+        return task_state in [state.lower() for state in constraint.get('states', [])]
+    elif constraint['type'] == 'max-executions':
+        if 'current_executions' not in constraint:
+            constraint['current_executions'] = 0
+        if constraint['current_executions'] < int(constraint['max_executions']):
+            if rule_id:
+                update_rule_executions(room, rule_id, 'max-executions')
+            return True
+        return False
+    return False
+
 def handle_rules(sensor_name, sensor_state, room):
     rules = load_rules(room)
-    print(rules)
     for rule in rules:
         constraints_met = all(
-            (constraint.get('sensor') == sensor_name and constraint.get('state') == sensor_state) or
-            (constraint.get('task') == sensor_name and sensor_state in constraint.get('states', [])) or
-            (constraint.get('max_executions') and int(constraint['max_executions']) > 0)
+            evaluate_constraint(constraint, sensor_name, sensor_state, room, rule['id'])
             for constraint in rule['constraints']
         )
         if constraints_met:
@@ -324,7 +380,6 @@ def on_message(client, userdata, message):
     # Extract the topic and message payload
     topic = message.topic
     parts = topic.split("/")
-    print(parts)
     if len(parts) == 3 and parts[2] == "service_status":
         pi_name = parts[1]  # Extract the Pi name
         data = json.loads(message.payload.decode("utf-8"))
@@ -352,7 +407,6 @@ def on_message(client, userdata, message):
             room = "The Retriever"
         else:
             room = "Moonlight Village"
-        print(room)
         sensor_state = message.payload.decode("utf-8")
         sensor_states[sensor_name] = sensor_state
         print(f"Received MQTT message - Sensor: {sensor_name}, State: {sensor_state}")
@@ -1310,9 +1364,9 @@ def snooze_game(room):
         else:
             for device in devices:
                 if device["type"] in ["maglock", "light"]:
-                    call_control_maglock_moonlight(device["name"], "locked")
-                if device["name"] == "rem-lamp":
                     call_control_maglock_moonlight(device["name"], "unlocked")
+                if device["name"] == "rem-lamp":
+                    call_control_maglock_moonlight(device["name"], "locked")
             publish.single("led/control/mlv-herbalist", "locked", hostname=broker_ip)
             publish.single("led/control/mlv-tavern", "locked", hostname=broker_ip)
             publish.single("led/control/mlv-astronomy", "locked", hostname=broker_ip)
@@ -1463,8 +1517,6 @@ def control_maglock(room):
             return "done"
         elif sensor['name'] == maglock and sensor['type'] == 'led':
             pi_name = sensor['pi']
-            print(sensor)
-            print(pi_name)
             if action == 'unlocked':
                 publish.single(f"led/control/{pi_name}", "unlocked", hostname=broker_ip)
             else:
@@ -1478,7 +1530,6 @@ def control_maglock_route(room):
 def call_control_maglock_partial(room, maglock, action):
     global squeak_job, should_balls_drop, player_type
     sensor_data = read_sensor_data2(room)
-    print(sensor_data)
     for sensor in sensor_data:
         if sensor['name'] == maglock and (sensor['type'] == 'maglock' or sensor['type'] == 'light'):
             pi_name = sensor['pi']
@@ -2123,6 +2174,7 @@ def prepare_game(room):
         return jsonify({"message": preparedValue}), 200
 
     reset_prepare(room)
+    reset_max_executions(room)  # Reset max-executions count
 
     # Load Raspberry Pi configuration from JSON file
     with open(f'json/{room}/raspberry_pis.json', 'r') as file:

@@ -60,7 +60,7 @@
         "pi": "mlv-astronomy",
         "pin": "17",
         "connection_type": "NO",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "light_count",
@@ -402,6 +402,12 @@
         "pi": "mlv-astronomy",
         "pin": "8",
         "connection_type": "NO",
+        "state": "init"
+    },
+    {
+        "name": "sequence_tree",
+        "type": "logic",
+        "allowed_values": "0, 1, 2",
         "state": "init"
     },
     {

@@ -1,7 +1,7 @@
 [
     {
         "id": 3263,
-        "sensor_name": "# Rule 3263",
+        "sensor_name": "# Rule 3263 - When moon-puzzle is Triggered AND NOT (start-lamp is on AND lights-on is solved), do Set task moon-place to solved",
         "constraints": [
             {
                 "type": "state-equals",
@@ -12,8 +12,16 @@
                 "type": "not",
                 "nestedConstraints": [
                     {
+                        "type": "state-equals",
                         "sensor": "start-lamp",
                         "state": "on"
+                    },
+                    {
+                        "type": "task-completed",
+                        "task": "lights-on",
+                        "states": [
+                            "solved"
+                        ]
                     }
                 ]
             }
@@ -27,7 +35,7 @@
     },
     {
         "id": 2491,
-        "sensor_name": "# Rule 2491 - When moon-place is solved, do Set astronomy-door-lock to unlocked Wait 5 seconds Play test.ogg at volume 70 Set astronomy-door-lock to locked",
+        "sensor_name": "# Rule 2491",
         "constraints": [
             {
                 "type": "task-completed",
@@ -35,6 +43,11 @@
                 "states": [
                     "solved"
                 ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 1
             }
         ],
         "actions": [

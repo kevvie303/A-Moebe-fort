@@ -47,7 +47,7 @@ $(document).ready(function () {
                 const subCard = createSubCard(constraint.type, constraint.sensors, constraint.tasks, constraint);
                 if (constraint.type === "not") {
                     constraint.nestedConstraints.forEach(nestedConstraint => {
-                        const nestedCard = createSubCard("state-equals", constraint.sensors, constraint.tasks, nestedConstraint);
+                        const nestedCard = createSubCard(nestedConstraint.type, constraint.sensors, constraint.tasks, nestedConstraint);
                         // Explicitly set the state select options and selected value for nested constraints
                         const sensorSelect = nestedCard.find(".sensor-select");
                         const stateSelect = nestedCard.find(".state-select");
@@ -124,7 +124,18 @@ $(document).ready(function () {
                     if (subCard.hasClass("not-constraint")) {
                         const nestedConstraintsPreview = subCard.find(".nested-constraints .sub-card").map(function () {
                             const nestedSubCard = $(this);
-                            return `<span style="background-color: #dc3545; color: #fff; padding: 2px 4px; border-radius: 4px;">${nestedSubCard.find(".sensor-select").val()} is ${nestedSubCard.find(".state-select").val()}</span>`;
+                            if (nestedSubCard.text().includes("When this state")) {
+                                return `<span style="background-color: #28a745; color: #fff; padding: 2px 4px; border-radius: 4px;">${nestedSubCard.find(".sensor-select").val()} is ${nestedSubCard.find(".state-select").val()}</span>`;
+                            } else if (nestedSubCard.text().includes("When this task")) {
+                                const task = nestedSubCard.find("select").val();
+                                const states = nestedSubCard.find("input[type=checkbox]:checked").map(function () {
+                                    return $(this).val();
+                                }).get().join(", ");
+                                return `<span style="background-color: #fd7e14; color: #fff; padding: 2px 4px; border-radius: 4px;">${task} is ${states}</span>`;
+                            } else if (nestedSubCard.text().includes("Max executions per game")) {
+                                return `<span style="background-color: #6c757d; color: #fff; padding: 2px 4px; border-radius: 4px;">Max executions: ${nestedSubCard.find("input[type=number]").val()}</span>`;
+                            }
+                            return "";
                         }).get().join(" AND ");
                         return `<span style="background-color: #dc3545; color: #fff; padding: 2px 4px; border-radius: 4px;">NOT (${nestedConstraintsPreview})</span>`;
                     } else if (subCard.closest(".nested-constraints").length === 0) {
@@ -215,7 +226,12 @@ $(document).ready(function () {
             subCardContent = `
                 <h4>None of these constraints should be met:</h4>
                 <div class="nested-constraints"></div>
-                <button class="btn btn-green add-nested-constraint">+ Equals</button>
+                <div class="button-group nested-constraints-buttons">
+                    <button class="btn btn-green add-nested-constraint" data-type="state-equals">+ Equals</button>
+                    <button class="btn btn-orange add-nested-constraint" data-type="task-completed">+ Completed</button>
+                    <button class="btn btn-blue add-nested-constraint" data-type="task-solvable">+ Solvable</button>
+                    <button class="btn btn-gray add-nested-constraint" data-type="max-executions">+ Max Executions</button>
+                </div>
             `;
         
             const subCard = $(`<div class="sub-card not-constraint ${subCardClass}">
@@ -224,8 +240,9 @@ $(document).ready(function () {
             </div>`);
         
             subCard.find(".add-nested-constraint").click(function () {
+                const type = $(this).data("type");
                 fetchSensorsAndTasks().done(function (sensors, tasks) {
-                    const nestedCard = createSubCard("state-equals", sensors[0], tasks[0]); // Default to "state-equals"
+                    const nestedCard = createSubCard(type, sensors[0], tasks[0]);
                     subCard.find(".nested-constraints").append(nestedCard);
                 });
             });
@@ -483,10 +500,22 @@ $(document).ready(function () {
                     constraint.nestedConstraints = [];
                     subCard.find(".nested-constraints .sub-card").each(function () {
                         const nestedCard = $(this);
-                        constraint.nestedConstraints.push({
-                            sensor: nestedCard.find(".sensor-select").val(),
-                            state: nestedCard.find(".state-select").val(),
-                        });
+                        const nestedConstraint = {};
+                        if (nestedCard.text().includes("When this state")) {
+                            nestedConstraint.type = "state-equals";
+                            nestedConstraint.sensor = nestedCard.find(".sensor-select").val();
+                            nestedConstraint.state = nestedCard.find(".state-select").val();
+                        } else if (nestedCard.text().includes("When this task")) {
+                            nestedConstraint.type = "task-completed";
+                            nestedConstraint.task = nestedCard.find("select").val();
+                            nestedConstraint.states = nestedCard.find("input[type=checkbox]:checked").map(function () {
+                                return $(this).val();
+                            }).get();
+                        } else if (nestedCard.text().includes("Max executions per game")) {
+                            nestedConstraint.type = "max-executions";
+                            nestedConstraint.max_executions = nestedCard.find("input[type=number]").val();
+                        }
+                        constraint.nestedConstraints.push(nestedConstraint);
                     });
                     constraints.push(constraint); // Add only the "not" constraint
                 } else if (!subCard.closest(".nested-constraints").length) {
@@ -573,6 +602,11 @@ $(document).ready(function () {
                         constraint.type = getConstraintType(constraint);
                         constraint.sensors = sensors[0]; // Ensure sensors are correctly assigned
                         constraint.tasks = tasks[0]; // Ensure tasks are correctly assigned
+                        if (constraint.type === "not") {
+                            constraint.nestedConstraints.forEach(nestedConstraint => {
+                                nestedConstraint.type = getConstraintType(nestedConstraint);
+                            });
+                        }
                     });
                     rule.actions.forEach(action => {
                         action.type = getActionType(action);
