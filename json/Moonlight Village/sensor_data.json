@@ -6,6 +6,9 @@
         "pi": "mlv-herbalist",
         "pin": "22",
         "connection_type": "NO",
+        "prepared": "off",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -15,6 +18,9 @@
         "pi": "mlv-astronomy",
         "pin": "19",
         "connection_type": "NO",
+        "prepared": "off",
+        "awake": "off",
+        "snoozed": "off",
         "state": "init"
     },
     {
@@ -24,6 +30,9 @@
         "pi": "mlv-astronomy",
         "pin": "16",
         "connection_type": "NO",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -33,6 +42,9 @@
         "pi": "mlv-astronomy",
         "pin": "12",
         "connection_type": "NO",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -42,6 +54,9 @@
         "pi": "mlv-astronomy",
         "pin": "1",
         "connection_type": "NO",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -51,6 +66,9 @@
         "pi": "mlv-herbalist",
         "pin": "10",
         "connection_type": "NO",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -60,7 +78,10 @@
         "pi": "mlv-astronomy",
         "pin": "17",
         "connection_type": "NO",
-        "state": "Not Triggered"
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
+        "state": "init"
     },
     {
         "name": "light_count",
@@ -69,6 +90,9 @@
         "pi": "mlv-corridors",
         "pin": "17",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -78,6 +102,9 @@
         "pi": "mlv-tavern",
         "pin": "0",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -87,6 +114,9 @@
         "pi": "mlv-central",
         "pin": "19",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -96,6 +126,9 @@
         "pi": "mlv-central",
         "pin": "13",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -105,6 +138,9 @@
         "pi": "mlv-central",
         "pin": "6",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -114,6 +150,9 @@
         "pi": "mlv-plants",
         "pin": "4",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -123,6 +162,9 @@
         "pi": "mlv-plants",
         "pin": "27",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -132,6 +174,9 @@
         "pi": "mlv-plants",
         "pin": "21",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -141,6 +186,9 @@
         "pi": "mlv-plants",
         "pin": "13",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -150,6 +198,9 @@
         "pi": "mlv-plants",
         "pin": "26",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -159,6 +210,9 @@
         "pi": "mlv-plants",
         "pin": "19",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -168,6 +222,9 @@
         "pi": "mlv-plants",
         "pin": "16",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -177,6 +234,9 @@
         "pi": "mlv-plants",
         "pin": "6",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -186,6 +246,9 @@
         "pi": "mlv-plants",
         "pin": "5",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -195,6 +258,9 @@
         "pi": "mlv-tavern",
         "pin": "16",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -204,6 +270,9 @@
         "pi": "mlv-plants",
         "pin": "24",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -213,7 +282,10 @@
         "pi": "mlv-astronomy",
         "pin": "20",
         "connection_type": "NO",
-        "state": "Locked"
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
+        "state": "init"
     },
     {
         "name": "herbalist-door-lock",
@@ -222,6 +294,9 @@
         "pi": "mlv-herbalist",
         "pin": "23",
         "connection_type": "NO",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -231,6 +306,9 @@
         "pi": "mlv-tavern",
         "pin": "23",
         "connection_type": "NO",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -240,6 +318,9 @@
         "pi": "mlv-tavern",
         "pin": "0",
         "connection_type": "NO",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -249,6 +330,9 @@
         "pi": "mlv-herbalist",
         "pin": "1",
         "connection_type": "NO",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -258,6 +342,9 @@
         "pi": "mlv-plants",
         "pin": "23",
         "connection_type": "NO",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -267,6 +354,9 @@
         "pi": "mlv-plants",
         "pin": "22",
         "connection_type": "NO",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -276,6 +366,9 @@
         "pi": "mlv-central",
         "pin": "14",
         "connection_type": "NO",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -285,6 +378,9 @@
         "pi": "mlv-central",
         "pin": "15",
         "connection_type": "NO",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -294,6 +390,9 @@
         "pi": "mlv-central",
         "pin": "18",
         "connection_type": "NO",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -303,6 +402,9 @@
         "pi": "mlv-tavern",
         "pin": "12",
         "connection_type": "NO",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -312,6 +414,9 @@
         "pi": "mlv-herbalist",
         "pin": "20",
         "connection_type": "NO",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -321,6 +426,9 @@
         "pi": "mlv-plants",
         "pin": "1",
         "connection_type": "NO",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -330,6 +438,9 @@
         "pi": "mlv-astronomy",
         "pin": "6",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -339,6 +450,9 @@
         "pi": "mlv-astronomy",
         "pin": "5",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -348,6 +462,9 @@
         "pi": "mlv-astronomy",
         "pin": "13",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -357,6 +474,9 @@
         "pi": "mlv-astronomy",
         "pin": "21",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -366,6 +486,9 @@
         "pi": "mlv-astronomy",
         "pin": "27",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -375,6 +498,9 @@
         "pi": "mlv-astronomy",
         "pin": "25",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -384,6 +510,9 @@
         "pi": "mlv-astronomy",
         "pin": "24",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -393,6 +522,9 @@
         "pi": "mlv-astronomy",
         "pin": "4",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -402,13 +534,22 @@
         "pi": "mlv-astronomy",
         "pin": "8",
         "connection_type": "NO",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
         "name": "sequence_tree",
         "type": "logic",
         "allowed_values": "0, 1, 2",
-        "state": "2"
+        "pi": "undefined",
+        "pin": "",
+        "connection_type": "NC",
+        "prepared": "0",
+        "awake": "0",
+        "snoozed": "0",
+        "state": "init"
     },
     {
         "name": "flask-rfid-1",
@@ -417,6 +558,9 @@
         "pi": "mlv-herbalist",
         "pin": "-1",
         "connection_type": "NO",
+        "prepared": "584197941325",
+        "awake": "584197941325",
+        "snoozed": "584197941325",
         "state": "init"
     },
     {
@@ -426,6 +570,9 @@
         "pi": "mlv-herbalist",
         "pin": "-1",
         "connection_type": "NO",
+        "prepared": "Detected",
+        "awake": "Detected",
+        "snoozed": "Detected",
         "state": "init"
     },
     {
@@ -435,6 +582,9 @@
         "pi": "mlv-herbalist",
         "pin": "-1",
         "connection_type": "NO",
+        "prepared": "Detected",
+        "awake": "Detected",
+        "snoozed": "Detected",
         "state": "init"
     },
     {
@@ -444,6 +594,9 @@
         "pi": "mlv-herbalist",
         "pin": "-1",
         "connection_type": "NO",
+        "prepared": "Detected",
+        "awake": "Detected",
+        "snoozed": "Detected",
         "state": "init"
     },
     {
@@ -453,6 +606,9 @@
         "pi": "mlv-herbalist",
         "pin": "-1",
         "connection_type": "NO",
+        "prepared": "Active",
+        "awake": "Active",
+        "snoozed": "Active",
         "state": "init"
     },
     {
@@ -462,6 +618,9 @@
         "pi": "mlv-herbalist",
         "pin": "-1",
         "connection_type": "NO",
+        "prepared": "Active",
+        "awake": "Active",
+        "snoozed": "Active",
         "state": "init"
     }
 ]
