@@ -27,7 +27,7 @@
     },
     {
         "id": 2491,
-        "sensor_name": "# Rule 2491",
+        "sensor_name": "# Rule 2491 - When moon-place is solved, do Set astronomy-door-lock to unlocked Wait 5 seconds Play test.ogg at volume 70 Set astronomy-door-lock to locked",
         "constraints": [
             {
                 "type": "task-completed",

@@ -45,7 +45,27 @@ $(document).ready(function () {
             ruleCard.find(".rule-card-header h3").text(`# Rule ${ruleId}`);
             rule.constraints.forEach(constraint => {
                 const subCard = createSubCard(constraint.type, constraint.sensors, constraint.tasks, constraint);
-                
+                if (constraint.type === "not") {
+                    constraint.nestedConstraints.forEach(nestedConstraint => {
+                        const nestedCard = createSubCard("state-equals", constraint.sensors, constraint.tasks, nestedConstraint);
+                        // Explicitly set the state select options and selected value for nested constraints
+                        const sensorSelect = nestedCard.find(".sensor-select");
+                        const stateSelect = nestedCard.find(".state-select");
+                        
+                        // Get the sensor's allowed values
+                        const selectedSensor = sensorSelect.val();
+                        const sensorOption = sensorSelect.find(`option[value="${selectedSensor}"]`);
+                        const allowedValues = sensorOption.data("allowed-values") || '';
+                        
+                        // Populate state options
+                        const states = allowedValues ? allowedValues.split(', ') : [];
+                        stateSelect.html(states.map(state => 
+                            `<option value="${state}" ${state === nestedConstraint.state ? 'selected' : ''}>${state}</option>`
+                        ).join(''));
+                        
+                        subCard.find(".nested-constraints").append(nestedCard);
+                    });
+                }
                 // Explicitly set the state select options and selected value
                 if (constraint.type === "state-equals" || constraint.type === "set-state") {
                     const sensorSelect = subCard.find(".sensor-select");
@@ -140,7 +160,7 @@ $(document).ready(function () {
                     return "";
                 })
                 .get()
-                .join(" AND ");
+                .join(" ");
 
             // Update the header with a concise preview
             ruleCard.find(".rule-card-header h3").html(`# Rule ${ruleId} - When ${constraintsPreview}, do ${actionsPreview}`);
@@ -550,6 +570,7 @@ $(document).ready(function () {
                         action.tasks = tasks[0]; // Ensure tasks are correctly assigned
                     });
                     createRuleCard(rule);
+                    console.log(rule);
                     ruleIdCounter = Math.max(ruleIdCounter, rule.id + 1);
                 });
             });
@@ -563,6 +584,8 @@ $(document).ready(function () {
             return "task-completed";
         } else if (constraint.max_executions) {
             return "max-executions";
+        } else if (constraint.nestedConstraints) {
+            return "not";
         }
         return "";
     }
