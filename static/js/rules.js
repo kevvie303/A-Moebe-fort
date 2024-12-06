@@ -21,6 +21,7 @@ $(document).ready(function () {
                             <button class="btn btn-orange add-constraint" data-type="task-completed">+ Completed</button>
                             <button class="btn btn-gray add-constraint" data-type="max-executions">+ Max Executions</button>
                             <button class="btn btn-red add-constraint" data-type="not">+ Not</button>
+                            <button class="btn btn-blue add-constraint" data-type="or">+ Or</button>
                         </div>
                         <div class="constraints-container"></div>
                     </div>
@@ -120,7 +121,7 @@ $(document).ready(function () {
                 .find(".constraints-container .sub-card")
                 .map(function () {
                     const subCard = $(this);
-                    if (subCard.hasClass("not-constraint")) {
+                    if (subCard.hasClass("not-constraint") || subCard.hasClass("or-constraint")) {
                         const nestedConstraintsPreview = subCard.find(".nested-constraints .sub-card").map(function () {
                             const nestedSubCard = $(this);
                             if (nestedSubCard.text().includes("When this state")) {
@@ -136,7 +137,8 @@ $(document).ready(function () {
                             }
                             return "";
                         }).get().join(" AND ");
-                        return `<span style="background-color: #dc3545; color: #fff; padding: 2px 4px; border-radius: 4px;">NOT (${nestedConstraintsPreview})</span>`;
+                        const constraintType = subCard.hasClass("not-constraint") ? "NOT" : "OR";
+                        return `<span style="background-color: ${constraintType === "NOT" ? "#dc3545" : "#007bff"}; color: #fff; padding: 2px 4px; border-radius: 4px;">${constraintType} (${nestedConstraintsPreview})</span>`;
                     } else if (subCard.closest(".nested-constraints").length === 0) {
                         if (subCard.text().includes("When this state")) {
                             return `<span style="background-color: #28a745; color: #fff; padding: 2px 4px; border-radius: 4px;">${subCard.find(".sensor-select").val()} is ${subCard.find(".state-select").val()}</span>`;
@@ -221,9 +223,10 @@ $(document).ready(function () {
     function createSubCard(type, sensors = [], tasks = [], data = null) {
         let subCardContent = "";
         let subCardClass = type; // Add this line to set the class based on type
-        if (type === "not") {
+        if (type === "not" || type === "or") {
+            const constraintText = type === "not" ? "None of these constraints should be met:" : "Any of these constraints should be met:";
             subCardContent = `
-                <h4>None of these constraints should be met:</h4>
+                <h4>${constraintText}</h4>
                 <div class="nested-constraints"></div>
                 <div class="button-group nested-constraints-buttons">
                     <button class="btn btn-green add-nested-constraint" data-type="state-equals">+ Equals</button>
@@ -232,7 +235,7 @@ $(document).ready(function () {
                 </div>
             `;
         
-            const subCard = $(`<div class="sub-card not-constraint ${subCardClass}">
+            const subCard = $(`<div class="sub-card ${type}-constraint ${subCardClass}">
                 ${subCardContent}
                 <button class="delete-sub-card">Delete</button>
             </div>`);
@@ -492,9 +495,9 @@ $(document).ready(function () {
                 const subCard = $(this);
                 const constraint = {};
     
-                // Handle "not" constraints separately
-                if (subCard.hasClass("not-constraint")) {
-                    constraint.type = "not";
+                // Handle "not" and "or" constraints separately
+                if (subCard.hasClass("not-constraint") || subCard.hasClass("or-constraint")) {
+                    constraint.type = subCard.hasClass("not-constraint") ? "not" : "or";
                     constraint.nestedConstraints = [];
                     subCard.find(".nested-constraints .sub-card").each(function () {
                         const nestedCard = $(this);
@@ -515,9 +518,9 @@ $(document).ready(function () {
                         }
                         constraint.nestedConstraints.push(nestedConstraint);
                     });
-                    constraints.push(constraint); // Add only the "not" constraint
+                    constraints.push(constraint); // Add only the "not" or "or" constraint
                 } else if (!subCard.closest(".nested-constraints").length) {
-                    // Add other constraints only if they are not inside a "not" block
+                    // Add other constraints only if they are not inside a "not" or "or" block
                     if (subCard.text().includes("When this state")) {
                         constraint.type = "state-equals";
                         constraint.sensor = subCard.find(".sensor-select").val();
