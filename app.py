@@ -2083,6 +2083,11 @@ def remove_sensor(room):
 
     # Render the remove sensor page for GET requests
     return render_template('remove_sensor.html', sensors=sensors)
+@app.route('/scare_button', methods=['POST'])
+def scare_button():
+    publish.single("audio_control/mlv-central/play", "howl.ogg", hostname=broker_ip)
+    publish.single("audio_control/mlv-central/volume", "100 howl.ogg", hostname=broker_ip)
+    return "Scared the players :)"
 @app.route('/list_sensors/<room>')
 def list_sensors(room):
     # Read the sensor data from the JSON file
