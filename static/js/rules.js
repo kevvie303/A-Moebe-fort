@@ -332,7 +332,7 @@ $(document).ready(function () {
                     <label>Interval (seconds): <input type="number" class="loop-interval-input" placeholder="Interval" value="${data ? data.loop_interval : ''}"></label>
                 </div>
                 <h3>Select Pi's:</h3>
-                <div id="pi-list"></div>
+                <div class="pi-list"></div>
             `;
         } else if (type === "set-delay") {
             subCardContent = `
@@ -415,7 +415,7 @@ $(document).ready(function () {
                     <option value="" disabled selected>Select sound</option>
                 </select>
                 <h3>Select Pi's:</h3>
-                <div id="pi-list"></div>
+                <div class="pi-list"></div>
             `;
         }
 
@@ -538,6 +538,23 @@ $(document).ready(function () {
                 if (data && data.pi) {
                     data.pi.forEach(pi => {
                         subCard.find(`#pi-list input[value="${pi}"]`).prop('checked', true);
+                    });
+                }
+            });
+        }
+
+        if (type === "play-sound" || type === "set-volume" || type === "stop-loop") {
+            loadPis().then(pis => {
+                const piList = subCard.find(".pi-list");
+                pis.forEach(pi => {
+                    if (pi.services.includes('sound')) {
+                        const piCheckbox = $(`<label><input type="checkbox" value="${pi.hostname}"> ${pi.hostname}</label>`);
+                        piList.append(piCheckbox);
+                    }
+                });
+                if (data && data.pi) {
+                    data.pi.forEach(pi => {
+                        subCard.find(`.pi-list input[value="${pi}"]`).prop('checked', true);
                     });
                 }
             });
@@ -666,7 +683,7 @@ $(document).ready(function () {
                     if (action.loop) {
                         action.loop_interval = subCard.find(".loop-interval-input").val();
                     }
-                    action.pi = subCard.find("#pi-list input:checked").map(function () {
+                    action.pi = subCard.find(".pi-list input:checked").map(function () {
                         return $(this).val();
                     }).get();
                 } else if (subCard.text().includes("Delay")) {
@@ -692,7 +709,7 @@ $(document).ready(function () {
                 } else if (subCard.text().includes("Stop looping sound")) {
                     action.type = "stop-loop";
                     action.sound = subCard.find(".sound-select").val();
-                    action.pi = subCard.find("#pi-list input:checked").map(function () {
+                    action.pi = subCard.find(".pi-list input:checked").map(function () {
                         return $(this).val();
                     }).get();
                 }

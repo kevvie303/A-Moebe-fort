@@ -261,7 +261,9 @@
                 "play_sound": "boom.ogg",
                 "volume": "70",
                 "loop": false,
-                "pi": []
+                "pi": [
+                    "ret-top"
+                ]
             },
             {
                 "sensor": "right_codes",
@@ -428,7 +430,7 @@
     },
     {
         "id": 3408,
-        "sensor_name": "# Rule 3408 - When keypad is other, do Set red-led-keypad to on Wait 1 seconds Set red-led-keypad to on",
+        "sensor_name": "# Rule 3408",
         "constraints": [
             {
                 "type": "state-equals",
@@ -447,6 +449,14 @@
             {
                 "sensor": "red-led-keypad",
                 "state": "on"
+            },
+            {
+                "play_sound": "test.ogg",
+                "volume": "50",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
             }
         ]
     }
