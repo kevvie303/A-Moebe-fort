@@ -35,6 +35,7 @@ $(document).ready(function () {
                             <button class="btn btn-purple add-action" data-type="add-to-state">+ Add to State</button>
                             <button class="btn btn-yellow add-action" data-type="set-volume">+ Set Volume</button>
                             <button class="btn btn-red add-action" data-type="custom-function">+ Custom Function</button>
+                            <button class="btn btn-red add-action" data-type="stop-loop">+ Stop Loop</button>
                         </div>
                         <div class="actions-container"></div>
                     </div>
@@ -326,6 +327,10 @@ $(document).ready(function () {
                 <button type="button" class="select-sound-btn">Select Sound</button>
                 <label for="volume">Volume:</label>
                 <input type="number" id="volume" min="0" max="100" value="${data ? data.volume : 50}">
+                <label><input type="checkbox" class="loop-checkbox" ${data && data.loop ? 'checked' : ''}> Loop?</label>
+                <div class="loop-options" style="display: ${data && data.loop ? 'block' : 'none'};">
+                    <label>Interval (seconds): <input type="number" class="loop-interval-input" placeholder="Interval" value="${data ? data.loop_interval : ''}"></label>
+                </div>
                 <h3>Select Pi's:</h3>
                 <div id="pi-list"></div>
             `;
@@ -403,6 +408,15 @@ $(document).ready(function () {
                 Call custom function
                 <input type="text" class="custom-function-input" placeholder="Enter function name" value="${data ? data.function_name : ''}">
             `;
+        } else if (type === "stop-loop") {
+            subCardContent = `
+                Stop looping sound
+                <select class="sound-select">
+                    <option value="" disabled selected>Select sound</option>
+                </select>
+                <h3>Select Pi's:</h3>
+                <div id="pi-list"></div>
+            `;
         }
 
         const subCard = $(`<div class="sub-card ${subCardClass}">
@@ -461,6 +475,17 @@ $(document).ready(function () {
             });
         }
 
+        if (type === "play-sound") {
+            subCard.find(".loop-checkbox").change(function () {
+                const loopOptions = subCard.find(".loop-options");
+                if ($(this).is(":checked")) {
+                    loopOptions.show();
+                } else {
+                    loopOptions.hide();
+                }
+            });
+        }
+
         if (type === "set-volume") {
             loadSounds().then(sounds => {
                 const soundSelect = subCard.find(".sound-select");
@@ -489,6 +514,30 @@ $(document).ready(function () {
                 if (data && data.pi) {
                     data.pi.forEach(pi => {
                         subCard.find(`.pi-list input[value="${pi}"]`).prop('checked', true);
+                    });
+                }
+            });
+        }
+
+        if (type === "stop-loop") {
+            loadSounds().then(sounds => {
+                const soundSelect = subCard.find(".sound-select");
+                sounds.forEach(sound => {
+                    soundSelect.append(`<option value="${sound}" ${data && data.sound === sound ? 'selected' : ''}>${sound}</option>`);
+                });
+            });
+        
+            loadPis().then(pis => {
+                const piList = subCard.find("#pi-list");
+                pis.forEach(pi => {
+                    if (pi.services.includes('sound')) {
+                        const piCheckbox = $(`<label><input type="checkbox" value="${pi.hostname}"> ${pi.hostname}</label>`);
+                        piList.append(piCheckbox);
+                    }
+                });
+                if (data && data.pi) {
+                    data.pi.forEach(pi => {
+                        subCard.find(`#pi-list input[value="${pi}"]`).prop('checked', true);
                     });
                 }
             });
@@ -613,6 +662,10 @@ $(document).ready(function () {
                 } else if (subCard.text().includes("Play sound")) {
                     action.play_sound = subCard.find("#selected-sound").val();
                     action.volume = subCard.find("#volume").val();
+                    action.loop = subCard.find(".loop-checkbox").is(":checked");
+                    if (action.loop) {
+                        action.loop_interval = subCard.find(".loop-interval-input").val();
+                    }
                     action.pi = subCard.find("#pi-list input:checked").map(function () {
                         return $(this).val();
                     }).get();
@@ -636,6 +689,12 @@ $(document).ready(function () {
                 } else if (subCard.text().includes("Call custom function")) {
                     action.type = "custom-function";
                     action.function_name = subCard.find(".custom-function-input").val();
+                } else if (subCard.text().includes("Stop looping sound")) {
+                    action.type = "stop-loop";
+                    action.sound = subCard.find(".sound-select").val();
+                    action.pi = subCard.find("#pi-list input:checked").map(function () {
+                        return $(this).val();
+                    }).get();
                 }
             
                 actions.push(action);
@@ -724,6 +783,8 @@ $(document).ready(function () {
             return "set-volume";
         } else if (action.type === "custom-function") {
             return "custom-function";
+        } else if (action.type === "stop-loop") {
+            return "stop-loop";
         }
         return "";
     }
