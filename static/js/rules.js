@@ -45,7 +45,7 @@ $(document).ready(function () {
             ruleCard.find(".rule-card-header h3").text(`# Rule ${ruleId}`);
             rule.constraints.forEach(constraint => {
                 const subCard = createSubCard(constraint.type, constraint.sensors, constraint.tasks, constraint);
-                if (constraint.type === "not") {
+                if (constraint.type === "not" || constraint.type === "or") {
                     constraint.nestedConstraints.forEach(nestedConstraint => {
                         const nestedCard = createSubCard(nestedConstraint.type, constraint.sensors, constraint.tasks, nestedConstraint);
                         // Explicitly set the state select options and selected value for nested constraints
@@ -136,7 +136,7 @@ $(document).ready(function () {
                                 return `<span style="background-color: #6c757d; color: #fff; padding: 2px 4px; border-radius: 4px;">Max executions: ${nestedSubCard.find("input[type=number]").val()}</span>`;
                             }
                             return "";
-                        }).get().join(" AND ");
+                        }).get().join(subCard.hasClass("or-constraint") ? " OR " : " AND ");
                         const constraintType = subCard.hasClass("not-constraint") ? "NOT" : "OR";
                         return `<span style="background-color: ${constraintType === "NOT" ? "#dc3545" : "#007bff"}; color: #fff; padding: 2px 4px; border-radius: 4px;">${constraintType} (${nestedConstraintsPreview})</span>`;
                     } else if (subCard.closest(".nested-constraints").length === 0) {
@@ -630,7 +630,7 @@ $(document).ready(function () {
         } else if (constraint.max_executions) {
             return "max-executions";
         } else if (constraint.nestedConstraints) {
-            return "not";
+            return constraint.type === "or" ? "or" : "not"; // Ensure "or" type is handled correctly
         }
         return "";
     }

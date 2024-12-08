@@ -30,8 +30,15 @@
                 "nestedConstraints": [
                     {
                         "type": "state-equals",
-                        "sensor": "ir-plant-2",
+                        "sensor": "gibbs-sensor",
                         "state": "Triggered"
+                    },
+                    {
+                        "type": "task-completed",
+                        "task": "rune-puzzle",
+                        "states": [
+                            "solved"
+                        ]
                     }
                 ]
             }
