@@ -1,12 +1,19 @@
 [
     {
         "id": 5093,
-        "sensor_name": "# Rule 5093",
+        "sensor_name": "# Rule 5093 - When paw-maze is solved AND Max executions: 1, do Play test.ogg at volume 50",
         "constraints": [
             {
-                "type": "state-equals",
-                "sensor": "light-2-garden",
-                "state": "on"
+                "type": "task-completed",
+                "task": "paw-maze",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 1
             }
         ],
         "actions": [
@@ -15,13 +22,6 @@
                 "volume": "50",
                 "loop": true,
                 "loop_interval": "5",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "type": "stop-loop",
-                "sound": "test.ogg",
                 "pi": [
                     "ret-top"
                 ]
@@ -49,7 +49,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -74,7 +75,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -99,7 +101,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -124,7 +127,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -151,7 +155,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -430,7 +435,7 @@
     },
     {
         "id": 3408,
-        "sensor_name": "# Rule 3408",
+        "sensor_name": "# Rule 3408 - When keypad is other, do Set red-led-keypad to on Wait 1 seconds Set red-led-keypad to on Play test.ogg at volume 50",
         "constraints": [
             {
                 "type": "state-equals",
@@ -454,6 +459,28 @@
                 "play_sound": "test.ogg",
                 "volume": "50",
                 "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 5776,
+        "sensor_name": "# Rule 5776",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "mirror-see",
+                "states": [
+                    "solved"
+                ]
+            }
+        ],
+        "actions": [
+            {
+                "type": "stop-loop",
+                "sound": "test.ogg",
                 "pi": [
                     "ret-top"
                 ]

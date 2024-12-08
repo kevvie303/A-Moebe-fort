@@ -55,7 +55,7 @@
     {
         "task": "paw-maze",
         "description": "players have solved the maze",
-        "state": "pending",
+        "state": "solved",
         "depends_on": [
             "woef-woef"
         ]

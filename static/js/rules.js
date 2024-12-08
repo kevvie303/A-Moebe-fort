@@ -323,10 +323,10 @@ $(document).ready(function () {
         } else if (type === "play-sound") {
             subCardContent = `
                 Play sound
-                <input type="text" id="selected-sound" placeholder="Select sound..." readonly value="${data ? data.play_sound : ''}">
+                <input type="text" class="selected-sound" placeholder="Select sound..." readonly value="${data ? data.play_sound : ''}">
                 <button type="button" class="select-sound-btn">Select Sound</button>
                 <label for="volume">Volume:</label>
-                <input type="number" id="volume" min="0" max="100" value="${data ? data.volume : 50}">
+                <input type="number" class="volume" min="0" max="100" value="${data ? data.volume : 50}">
                 <label><input type="checkbox" class="loop-checkbox" ${data && data.loop ? 'checked' : ''}> Loop?</label>
                 <div class="loop-options" style="display: ${data && data.loop ? 'block' : 'none'};">
                     <label>Interval (seconds): <input type="number" class="loop-interval-input" placeholder="Interval" value="${data ? data.loop_interval : ''}"></label>
@@ -448,9 +448,21 @@ $(document).ready(function () {
                 stateSelect.val(data.state);
             }
         });
-        subCard.find('.select-sound-btn').click(function () {  
-            $('#sound-popup').show();
-            loadSounds();
+        subCard.find('.select-sound-btn').click(function () {
+            const soundPopup = $('#sound-popup');
+            soundPopup.show();
+            loadSounds().then(sounds => {
+                const soundList = soundPopup.find('#sound-list');
+                soundList.empty();
+                sounds.forEach(sound => {
+                    const soundButton = $(`<button class="sound-button">${sound}</button>`);
+                    soundButton.click(function () {
+                        subCard.find('.selected-sound').val(sound);
+                        soundPopup.hide();
+                    });
+                    soundList.append(soundButton);
+                });
+            });
         });
 
         subCard.find('.delete-sub-card').click(function () {
@@ -677,8 +689,8 @@ $(document).ready(function () {
                     action.task = subCard.find("select").val();
                     action.status = subCard.find("select:last").val();
                 } else if (subCard.text().includes("Play sound")) {
-                    action.play_sound = subCard.find("#selected-sound").val();
-                    action.volume = subCard.find("#volume").val();
+                    action.play_sound = subCard.find(".selected-sound").val();
+                    action.volume = subCard.find(".volume").val();
                     action.loop = subCard.find(".loop-checkbox").is(":checked");
                     if (action.loop) {
                         action.loop_interval = subCard.find(".loop-interval-input").val();

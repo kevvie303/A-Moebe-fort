@@ -334,6 +334,9 @@ def set_volume(pi, sound, volume, fade=False, prev_volume=None, fade_time=None):
     else:
         publish.single(f"audio_control/{pi}/volume", f"{volume} {sound}", hostname=broker_ip)
 
+loop_threads = {}
+loop_stop_events = {}
+
 def execute_rule(rule, room):
     def execute_next_action(index):
         global language
@@ -356,6 +359,10 @@ def execute_rule(rule, room):
                 language = current_game.get("language", "nl")  # Default to Dutch if not found
                 sound_prefix = "en/" if language == "eng" else ""
                 publish.single(f"audio_control/{pi}/play", f"{action['volume']} {sound_prefix}{action['play_sound']}", hostname=broker_ip)
+                if action.get('loop', False):
+                    loop_stop_events[pi] = threading.Event()
+                    loop_threads[pi] = threading.Thread(target=loop_play_sound, args=(pi, action['play_sound'], action['volume'], action['loop_interval'], loop_stop_events[pi]))
+                    loop_threads[pi].start()
             execute_next_action(index + 1)
         elif 'increment' in action:
             update_sensor_state(room, action['sensor'], int(action['increment']))
@@ -368,12 +375,28 @@ def execute_rule(rule, room):
             function_name = action.get('function_name')
             if function_name:
                 try:
-                    eval(function_name)  # Execute the custom function
+                    # Call the custom function here
+                    pass
                 except Exception as e:
                     print(f"Error executing custom function {function_name}: {e}")
             execute_next_action(index + 1)
+        elif action.get('type') == 'stop-loop':
+            for pi in action['pi']:
+                if pi in loop_stop_events:
+                    loop_stop_events[pi].set()
+                    loop_threads[pi].join()
+                    del loop_stop_events[pi]
+                    del loop_threads[pi]
+            execute_next_action(index + 1)
 
     execute_next_action(0)
+
+def loop_play_sound(pi, sound, volume, interval, stop_event):
+    interval = int(interval)  # Ensure interval is an integer
+    while not stop_event.is_set():
+        publish.single(f"audio_control/{pi}/play", f"{volume} {sound}", hostname=broker_ip)
+        stop_event.wait(interval)
+
 def plant_pulled(plant_name, room):
     global last_three_pulled
 
