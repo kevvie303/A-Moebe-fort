@@ -2662,6 +2662,7 @@ def prepare_game(room):
     else:
         publish.single("audio_control/raspberrypi/play", "bg_corridor.ogg", hostname=broker_ip)
         publish.single("led/control/mlv-corridors", "unlocked", hostname=broker_ip)
+        publish.single("led/control/mlv-herbalist", "cauldron-off", hostname=broker_ip)
         call_control_maglock_moonlight("smoke-power", "unlocked")
 
     return jsonify({"message": converted_statuses}), 200
