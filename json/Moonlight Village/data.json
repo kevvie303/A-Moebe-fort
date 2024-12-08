@@ -470,7 +470,31 @@
         "tasks": {
             "moon-place": {
                 "state": "solved",
-                "timestamp": "2024-12-05T16:34:46.056218"
+                "timestamp": "2024-12-08T18:22:39.595570"
+            },
+            "rune-puzzle": {
+                "state": "solved",
+                "timestamp": "2024-12-08T18:15:47.698129"
+            }
+        },
+        "language": "nl"
+    },
+    {
+        "id": "0854ae5e-d6fc-48eb-8dc4-4894d216b318",
+        "room": "Moonlight Village",
+        "start_time": "2024-12-08T18:28:05.512348",
+        "tasks": {
+            "moon-place": {
+                "state": "solved",
+                "timestamp": "2024-12-08T18:28:52.156177"
+            },
+            "rune-puzzle": {
+                "state": "solved",
+                "timestamp": "2024-12-08T18:28:49.939206"
+            },
+            "lights-on": {
+                "state": "solved",
+                "timestamp": "2024-12-08T18:29:55.423344"
             }
         },
         "language": "nl"

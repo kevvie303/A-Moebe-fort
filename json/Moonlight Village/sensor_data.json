@@ -21,7 +21,7 @@
         "prepared": "off",
         "awake": "off",
         "snoozed": "off",
-        "state": "init"
+        "state": "Off"
     },
     {
         "name": "rem-lamp",
@@ -33,7 +33,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "Off"
     },
     {
         "name": "lamp-post-1",
@@ -45,7 +45,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "Off"
     },
     {
         "name": "blacklight-astronomy",
@@ -57,7 +57,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "Off"
     },
     {
         "name": "new-light",
@@ -81,7 +81,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Triggered"
     },
     {
         "name": "light_count",
@@ -261,7 +261,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "entrance-door",
@@ -441,7 +441,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "ast-button-2",
@@ -453,7 +453,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "ast-button-3",
@@ -465,7 +465,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "ast-button-4",
@@ -477,7 +477,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "ast-button-5",
@@ -489,7 +489,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "ast-button-6",
@@ -501,7 +501,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "ast-button-7",
@@ -513,7 +513,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "ast-button-8",
@@ -525,7 +525,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "ast-button-9",
@@ -537,7 +537,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "sequence_tree",
@@ -549,7 +549,7 @@
         "prepared": "0",
         "awake": "0",
         "snoozed": "0",
-        "state": "1"
+        "state": "6"
     },
     {
         "name": "flask-rfid-1",

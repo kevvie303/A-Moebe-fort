@@ -275,11 +275,16 @@ def evaluate_constraint(constraint, sensor_name, sensor_state, room, rule_id=Non
     elif constraint['type'] == 'max-executions':
         if 'current_executions' not in constraint:
             constraint['current_executions'] = 0
-        if constraint['current_executions'] < int(constraint['max_executions']):
+        if constraint['current_executions'] < int(constraint['max_executions']): 
             if rule_id:
                 update_rule_executions(room, rule_id, 'max-executions')
             return True
         return False
+    elif constraint['type'] == 'or':
+        return any(
+            evaluate_constraint(nested_constraint, sensor_name, sensor_state, room, rule_id)
+            for nested_constraint in constraint['nestedConstraints']
+        )
     return False
 
 def handle_rules(sensor_name, sensor_state, room):

@@ -2,12 +2,12 @@
     {
         "task": "lights-on",
         "description": "Players have used the buttons to turn all the 5 lanterns on in the hallway.",
-        "state": "pending"
+        "state": "solved"
     },
     {
         "task": "moon-place",
         "description": "Players have placed the 3 moon pieces in the correct place on the astronomy tower (opens the door).",
-        "state": "solved",
+        "state": "pending",
         "depends_on": [
             "lights-on"
         ]
