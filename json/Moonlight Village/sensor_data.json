@@ -417,7 +417,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "init"
+        "state": "Locked"
     },
     {
         "name": "entrance-door-lock",

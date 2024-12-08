@@ -494,7 +494,43 @@
             },
             "lights-on": {
                 "state": "solved",
-                "timestamp": "2024-12-08T18:29:55.423344"
+                "timestamp": "2024-12-08T20:16:23.040473"
+            }
+        },
+        "language": "nl"
+    },
+    {
+        "id": "66174f83-f250-49ed-a8dd-5d53fe0f981d",
+        "room": "Moonlight Village",
+        "start_time": "2024-12-08T20:20:47.921992",
+        "tasks": {
+            "lights-on": {
+                "state": "solved",
+                "timestamp": "2024-12-08T20:22:09.857770"
+            }
+        },
+        "language": "nl"
+    },
+    {
+        "id": "09add89c-28cb-4cf5-b7d8-ab55dac5394a",
+        "room": "Moonlight Village",
+        "start_time": "2024-12-08T21:07:22.821955",
+        "tasks": {
+            "lights-on": {
+                "state": "solved",
+                "timestamp": "2024-12-08T21:07:28.946159"
+            }
+        },
+        "language": "nl"
+    },
+    {
+        "id": "9f9714d5-ef1c-4dab-acfa-526e03f1cde9",
+        "room": "Moonlight Village",
+        "start_time": "2024-12-08T21:08:03.853894",
+        "tasks": {
+            "lights-on": {
+                "state": "solved",
+                "timestamp": "2024-12-08T21:08:07.847164"
             }
         },
         "language": "nl"

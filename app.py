@@ -317,6 +317,21 @@ def update_sensor_state(room, sensor_name, increment_value):
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"Error updating sensor state for {sensor_name}: {e}")
 
+def set_volume(pi, sound, volume, fade=False, prev_volume=None, fade_time=None):
+    volume = float(volume)  # Ensure volume is a float
+    if fade and prev_volume is not None and fade_time is not None:
+        prev_volume = float(prev_volume)  # Ensure prev_volume is a float
+        fade_time = float(fade_time)  # Ensure fade_time is a float
+        steps = int(fade_time / fade_interval)
+        volume_step = (volume - prev_volume) / steps
+        current_volume = prev_volume
+        for _ in range(steps):
+            current_volume += volume_step
+            publish.single(f"audio_control/{pi}/volume", f"{int(current_volume)} {sound}", hostname=broker_ip)
+            time.sleep(fade_interval)
+    else:
+        publish.single(f"audio_control/{pi}/volume", f"{volume} {sound}", hostname=broker_ip)
+
 def execute_rule(rule, room):
     def execute_next_action(index):
         global language
@@ -343,9 +358,20 @@ def execute_rule(rule, room):
         elif 'increment' in action:
             update_sensor_state(room, action['sensor'], int(action['increment']))
             execute_next_action(index + 1)
+        elif action.get('type') == 'set-volume':
+            for pi in action['pi']:
+                set_volume(pi, action['sound'], action['volume'], action.get('fade', False), action.get('prev_volume'), action.get('fade_time'))
+            execute_next_action(index + 1)
+        elif action.get('type') == 'custom-function':
+            function_name = action.get('function_name')
+            if function_name:
+                try:
+                    eval(function_name)  # Execute the custom function
+                except Exception as e:
+                    print(f"Error executing custom function {function_name}: {e}")
+            execute_next_action(index + 1)
 
     execute_next_action(0)
-
 def plant_pulled(plant_name, room):
     global last_three_pulled
 

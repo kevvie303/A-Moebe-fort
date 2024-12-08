@@ -33,6 +33,8 @@ $(document).ready(function () {
                             <button class="btn btn-blue add-action" data-type="play-sound">+ Play Sound</button>
                             <button class="btn btn-gray add-action" data-type="set-delay">+ Delay</button>
                             <button class="btn btn-purple add-action" data-type="add-to-state">+ Add to State</button>
+                            <button class="btn btn-yellow add-action" data-type="set-volume">+ Set Volume</button>
+                            <button class="btn btn-red add-action" data-type="custom-function">+ Custom Function</button>
                         </div>
                         <div class="actions-container"></div>
                     </div>
@@ -262,6 +264,7 @@ $(document).ready(function () {
             // Group sensors by type
             const groupedSensors = sensors.reduce((acc, sensor) => {
                 if (!acc[sensor.type]) acc[sensor.type] = [];
+                acc[sensor.type] = acc[sensor.type] || [];
                 acc[sensor.type].push(sensor);
                 return acc;
             }, {});
@@ -379,6 +382,27 @@ $(document).ready(function () {
                     <option value="NO" ${data && data.connectionType === 'NO' ? 'selected' : ''}>NO</option>
                 </select>
             `;
+        } else if (type === "set-volume") {
+            subCardContent = `
+                Set volume for
+                <select class="sound-select">
+                    <option value="" disabled selected>Select sound</option>
+                </select>
+                to
+                <input type="number" class="volume-input" placeholder="Volume (0-100)" value="${data ? data.volume : ''}">
+                <label><input type="checkbox" class="fade-checkbox" ${data && data.fade ? 'checked' : ''}> Fade music?</label>
+                <div class="fade-options" style="display: ${data && data.fade ? 'block' : 'none'};">
+                    <label>Previous Volume: <input type="number" class="prev-volume-input" placeholder="Previous Volume (0-100)" value="${data ? data.prev_volume : ''}"></label>
+                    <label>Fade Time (seconds): <input type="number" class="fade-time-input" placeholder="Fade Time" value="${data ? data.fade_time : ''}"></label>
+                </div>
+                <h3>Select Pi's:</h3>
+                <div class="pi-list"></div>
+            `;
+        } else if (type === "custom-function") {
+            subCardContent = `
+                Call custom function
+                <input type="text" class="custom-function-input" placeholder="Enter function name" value="${data ? data.function_name : ''}">
+            `;
         }
 
         const subCard = $(`<div class="sub-card ${subCardClass}">
@@ -437,11 +461,44 @@ $(document).ready(function () {
             });
         }
 
+        if (type === "set-volume") {
+            loadSounds().then(sounds => {
+                const soundSelect = subCard.find(".sound-select");
+                sounds.forEach(sound => {
+                    soundSelect.append(`<option value="${sound}" ${data && data.sound === sound ? 'selected' : ''}>${sound}</option>`);
+                });
+            });
+
+            subCard.find(".fade-checkbox").change(function () {
+                const fadeOptions = subCard.find(".fade-options");
+                if ($(this).is(":checked")) {
+                    fadeOptions.show();
+                } else {
+                    fadeOptions.hide();
+                }
+            });
+
+            loadPis().then(pis => {
+                const piList = subCard.find(".pi-list");
+                pis.forEach(pi => {
+                    if (pi.services.includes('sound')) {
+                        const piCheckbox = $(`<label><input type="checkbox" value="${pi.hostname}"> ${pi.hostname}</label>`);
+                        piList.append(piCheckbox);
+                    }
+                });
+                if (data && data.pi) {
+                    data.pi.forEach(pi => {
+                        subCard.find(`.pi-list input[value="${pi}"]`).prop('checked', true);
+                    });
+                }
+            });
+        }
+
         return subCard;
     }
 
     function loadSounds() {
-        $.get('/get_sounds', function (sounds) {
+        return $.get('/get_sounds').then(function (sounds) {
             const soundList = $('#sound-list');
             soundList.empty();
             sounds.forEach(sound => {
@@ -452,6 +509,7 @@ $(document).ready(function () {
                 });
                 soundList.append(soundButton);
             });
+            return sounds;
         });
     }
 
@@ -463,6 +521,7 @@ $(document).ready(function () {
             piList.empty();
             pis.forEach(pi => {
                 if (pi.services.includes('sound')) {
+                    console.log("Adding Pi:", pi.hostname);
                     const piCheckbox = $(`<label><input type="checkbox" value="${pi.hostname}"> ${pi.hostname}</label>`);
                     piList.append(piCheckbox);
                 }
@@ -562,6 +621,21 @@ $(document).ready(function () {
                 } else if (subCard.text().includes("Increase value of this state")) {
                     action.sensor = subCard.find(".sensor-select").val();
                     action.increment = subCard.find("input[type=number]").val();
+                } else if (subCard.text().includes("Set volume")) {
+                    action.type = "set-volume";
+                    action.sound = subCard.find(".sound-select").val();
+                    action.volume = subCard.find(".volume-input").val();
+                    action.fade = subCard.find(".fade-checkbox").is(":checked");
+                    if (action.fade) {
+                        action.prev_volume = subCard.find(".prev-volume-input").val();
+                        action.fade_time = subCard.find(".fade-time-input").val();
+                    }
+                    action.pi = subCard.find(".pi-list input:checked").map(function () {
+                        return $(this).val();
+                    }).get();
+                } else if (subCard.text().includes("Call custom function")) {
+                    action.type = "custom-function";
+                    action.function_name = subCard.find(".custom-function-input").val();
                 }
             
                 actions.push(action);
@@ -646,6 +720,10 @@ $(document).ready(function () {
             return "set-delay";
         } else if (action.sensor && action.increment) {
             return "add-to-state";
+        } else if (action.type === "set-volume") {
+            return "set-volume";
+        } else if (action.type === "custom-function") {
+            return "custom-function";
         }
         return "";
     }

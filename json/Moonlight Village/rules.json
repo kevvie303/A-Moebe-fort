@@ -1,7 +1,7 @@
 [
     {
         "id": 3263,
-        "sensor_name": "# Rule 3263",
+        "sensor_name": "# Rule 3263 - When ast-button-1 is Triggered AND NOT (start-lamp is on AND lights-on is solved) AND OR (gibbs-sensor is Triggered OR rune-puzzle is solved), do Set task moon-place to solved",
         "constraints": [
             {
                 "type": "state-equals",
@@ -64,7 +64,7 @@
             {
                 "type": "max-executions",
                 "max_executions": "1",
-                "current_executions": 1
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -95,18 +95,27 @@
     },
     {
         "id": 2825,
-        "sensor_name": "# Rule 2825 - When entrance-door-lock is locked, do Set task lights-on to solved",
+        "sensor_name": "# Rule 2825",
         "constraints": [
             {
                 "type": "state-equals",
-                "sensor": "entrance-door-lock",
+                "sensor": "corridor-door-lock",
                 "state": "locked"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 1
             }
         ],
         "actions": [
             {
                 "task": "lights-on",
                 "status": "solved"
+            },
+            {
+                "type": "custom-function",
+                "function_name": "test_function()"
             }
         ]
     }
