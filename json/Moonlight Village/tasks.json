@@ -62,7 +62,7 @@
     },
     {
         "task": "green-potion",
-        "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
+        "description": "Bottom spot, Lupus minimus",
         "state": "pending",
         "depends_on": [
             "plant-water"
@@ -70,7 +70,7 @@
     },
     {
         "task": "purple-potion",
-        "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
+        "description": "2nd spot, Lunae Absisto",
         "state": "pending",
         "depends_on": [
             "plant-water"
@@ -78,7 +78,7 @@
     },
     {
         "task": "yellow-potion",
-        "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
+        "description": "Top spot, Tunae Debilitare",
         "state": "pending",
         "depends_on": [
             "plant-water"
@@ -86,7 +86,7 @@
     },
     {
         "task": "orange-potion",
-        "description": "Players put the flasks in the correct order on the shelf behind the book in the herbalist building. This will open a gravestone with a sigil.",
+        "description": "3rd spot, Vi Atrofia",
         "state": "pending",
         "depends_on": [
             "plant-water"
