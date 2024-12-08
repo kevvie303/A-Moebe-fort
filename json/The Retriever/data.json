@@ -50,5 +50,45 @@
             }
         },
         "language": "nl"
+    },
+    {
+        "id": "42e823e1-3e37-487b-a53e-3c8ed87cb0d0",
+        "room": "The Retriever",
+        "start_time": "2024-12-09T00:54:48.418671",
+        "tasks": {
+            "paw-maze": {
+                "state": "solved",
+                "timestamp": "2024-12-09T00:55:12.254347"
+            },
+            "mirror-see": {
+                "state": "solved",
+                "timestamp": "2024-12-09T00:57:12.945865"
+            },
+            "squid-game": {
+                "state": "solved",
+                "timestamp": "2024-12-09T00:56:45.139758"
+            }
+        },
+        "language": "nl"
+    },
+    {
+        "id": "6e95b2d9-22cd-4d8b-88e0-62c00302953a",
+        "room": "The Retriever",
+        "start_time": "2024-12-09T00:57:46.943698",
+        "tasks": {
+            "squid-game": {
+                "state": "solved",
+                "timestamp": "2024-12-09T00:57:59.138975"
+            },
+            "paw-maze": {
+                "state": "solved",
+                "timestamp": "2024-12-09T00:58:13.872628"
+            },
+            "mirror-see": {
+                "state": "solved",
+                "timestamp": "2024-12-09T00:58:27.266633"
+            }
+        },
+        "language": "nl"
     }
 ]

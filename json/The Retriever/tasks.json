@@ -88,7 +88,7 @@
     {
         "task": "mirror-see",
         "description": "players have seen the numbers through the mirrors code (794)",
-        "state": "pending",
+        "state": "solved",
         "depends_on": [
             "squeekuence"
         ]
@@ -104,7 +104,7 @@
     {
         "task": "squid-game",
         "description": "players have moved the 4 squidge to the center of the track. ",
-        "state": "pending",
+        "state": "solved",
         "depends_on": [
             "bone-slide",
             "mirror-see",

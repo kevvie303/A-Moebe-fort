@@ -358,11 +358,12 @@ def execute_rule(rule, room):
                 current_game = get_game_data(room)[-1]  # Get the current game
                 language = current_game.get("language", "nl")  # Default to Dutch if not found
                 sound_prefix = "en/" if language == "eng" else ""
-                publish.single(f"audio_control/{pi}/play", f"{action['volume']} {sound_prefix}{action['play_sound']}", hostname=broker_ip)
                 if action.get('loop', False):
                     loop_stop_events[pi] = threading.Event()
                     loop_threads[pi] = threading.Thread(target=loop_play_sound, args=(pi, action['play_sound'], action['volume'], action['loop_interval'], loop_stop_events[pi]))
                     loop_threads[pi].start()
+                else:
+                    publish.single(f"audio_control/{pi}/play", f"{action['volume']} {sound_prefix}{action['play_sound']}", hostname=broker_ip)
             execute_next_action(index + 1)
         elif 'increment' in action:
             update_sensor_state(room, action['sensor'], int(action['increment']))

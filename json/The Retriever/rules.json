@@ -486,5 +486,28 @@
                 ]
             }
         ]
+    },
+    {
+        "id": 5327,
+        "sensor_name": "# Rule 5327",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "squid-game",
+                "states": [
+                    "solved"
+                ]
+            }
+        ],
+        "actions": [
+            {
+                "play_sound": "test.ogg",
+                "volume": "50",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            }
+        ]
     }
 ]
