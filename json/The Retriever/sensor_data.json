@@ -6,6 +6,9 @@
         "pi": "ret-tree",
         "pin": "1",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -15,6 +18,9 @@
         "pi": "ret-tree",
         "pin": "7",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -24,6 +30,9 @@
         "pi": "ret-tree",
         "pin": "12",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -33,6 +42,9 @@
         "pi": "ret-tree",
         "pin": "8",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -42,6 +54,9 @@
         "pi": "ret-top",
         "pin": "15",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -51,6 +66,9 @@
         "pi": "ret-top",
         "pin": "25",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -60,6 +78,9 @@
         "pi": "ret-top",
         "pin": "17",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -69,6 +90,9 @@
         "pi": "ret-top",
         "pin": "10",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -78,6 +102,9 @@
         "pi": "ret-middle",
         "pin": "4",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -87,6 +114,9 @@
         "pi": "ret-middle",
         "pin": "7",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -96,6 +126,9 @@
         "pi": "ret-middle",
         "pin": "8",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -105,6 +138,9 @@
         "pi": "ret-middle",
         "pin": "1",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -114,6 +150,9 @@
         "pi": "ret-tree",
         "pin": "15",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -123,6 +162,9 @@
         "pi": "ret-tree",
         "pin": "21",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -132,6 +174,9 @@
         "pi": "ret-tree",
         "pin": "23",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -141,6 +186,9 @@
         "pi": "ret-top",
         "pin": "1",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -150,6 +198,9 @@
         "pi": "ret-top",
         "pin": "12",
         "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -159,6 +210,9 @@
         "pi": "ret-middle",
         "pin": "10",
         "connection_type": "NO",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "on",
         "state": "init"
     },
     {
@@ -168,6 +222,9 @@
         "pi": "ret-tree",
         "pin": "18",
         "connection_type": "NC",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -177,7 +234,10 @@
         "pi": "ret-tree",
         "pin": "14",
         "connection_type": "NC",
-        "state": "Triggered"
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
+        "state": "init"
     },
     {
         "name": "red_house_ir",
@@ -186,6 +246,9 @@
         "pi": "ret-tree",
         "pin": "20",
         "connection_type": "NC",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -195,6 +258,9 @@
         "pi": "ret-middle",
         "pin": "18",
         "connection_type": "NC",
+        "prepared": "Triggered",
+        "awake": "Triggered",
+        "snoozed": "Triggered",
         "state": "init"
     },
     {
@@ -204,6 +270,9 @@
         "pi": "ret-tree",
         "pin": "25",
         "connection_type": "NC",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -213,6 +282,9 @@
         "pi": "ret-tree",
         "pin": "4",
         "connection_type": "NC",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -222,6 +294,9 @@
         "pi": "ret-tree",
         "pin": "16",
         "connection_type": "NC",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -231,6 +306,9 @@
         "pi": "ret-top",
         "pin": "20",
         "connection_type": "NC",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -240,6 +318,9 @@
         "pi": "ret-top",
         "pin": "16",
         "connection_type": "NC",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -249,6 +330,9 @@
         "pi": "ret-top",
         "pin": "6",
         "connection_type": "NC",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -258,6 +342,9 @@
         "pi": "ret-top",
         "pin": "21",
         "connection_type": "NC",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
         "state": "init"
     },
     {
@@ -267,6 +354,21 @@
         "pi": "ret-middle",
         "pin": "6",
         "connection_type": "NO",
+        "prepared": "locked",
+        "awake": "locked",
+        "snoozed": "locked",
+        "state": "init"
+    },
+    {
+        "name": "keypad",
+        "type": "logic",
+        "allowed_values": "0, 1528, 7867, 8978, 5038, 0128, other",
+        "pi": "undefined",
+        "pin": "",
+        "connection_type": "NC",
+        "prepared": "0",
+        "awake": "0",
+        "snoozed": "0",
         "state": "init"
     },
     {
@@ -276,6 +378,21 @@
         "pi": "undefined",
         "pin": "",
         "connection_type": "NC",
+        "prepared": "0",
+        "awake": "0",
+        "snoozed": "0",
+        "state": "init"
+    },
+    {
+        "name": "right_codes",
+        "type": "logic",
+        "allowed_values": "0, 1, 2, 3, 4, 5",
+        "pi": "undefined",
+        "pin": "",
+        "connection_type": "NC",
+        "prepared": "0",
+        "awake": "0",
+        "snoozed": "0",
         "state": "init"
     }
 ]

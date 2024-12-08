@@ -267,6 +267,8 @@ def evaluate_constraint(constraint, sensor_name, sensor_state, room, rule_id=Non
     elif constraint['type'] == 'state-equals':
         for sensor in sensor_data:
             if sensor['name'].lower() == constraint.get('sensor').lower():
+                if sensor['name'].lower() == 'keypad' and sensor['state'] not in ["0128", "1528", "7867", "8978", "5038"]:
+                    return sensor['state'].lower() == 'other'
                 return sensor['state'].lower() == constraint.get('state').lower()
         return False
     elif constraint['type'] == 'task-completed':
