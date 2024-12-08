@@ -1028,12 +1028,12 @@ def solve_task(task_name, room):
         elif task_name == "sigil-all":
             if game_status == {'status': 'playing'}:
                 publish.single("audio_control/mlv-central/play", f"{sound_prefix}sigal-all-first.ogg", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/volume", f"100 {sound_prefix}sigal-all-first.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/volume", f"150 {sound_prefix}sigal-all-first.ogg", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/volume", "20 bg_central.ogg", hostname=broker_ip)
                 call_control_maglock_moonlight("dmx-power", "unlocked")
                 time.sleep(12)
                 publish.single("audio_control/mlv-central/play", f"{sound_prefix}sigil-all-second.ogg", hostname=broker_ip)
-                publish.single("audio_control/mlv-central/volume", f"100 {sound_prefix}sigil-all-second.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/volume", f"150 {sound_prefix}sigil-all-second.ogg", hostname=broker_ip)
                 time.sleep(13)
                 send_dmx_command(0, 0, 0, 0, 255)
                 time.sleep(5)
@@ -1251,18 +1251,21 @@ def solve_task(task_name, room):
                 sigil_count += 1
                 publish.single("led/control/mlv-webcam", "1/3", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/play", "howl.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/volume", "150 howl.ogg", hostname=broker_ip)
                 if sigil_count == 3:
                     solve_task("sigil-all", room)
             if task_name == "flask-place":
                 sigil_count += 1
                 publish.single("led/control/mlv-webcam", "1/3", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/play", "howl.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/volume", "150 howl.ogg", hostname=broker_ip)
                 if sigil_count == 3:
                     solve_task("sigil-all", room)
             if task_name == "telescope-place":
                 sigil_count += 1
                 publish.single("led/control/mlv-webcam", "1/3", hostname=broker_ip)
                 publish.single("audio_control/mlv-central/play", "howl.ogg", hostname=broker_ip)
+                publish.single("audio_control/mlv-central/volume", "150 howl.ogg", hostname=broker_ip)
                 if sigil_count == 3:
                     solve_task("sigil-all", room)
         with app.app_context():
@@ -2086,7 +2089,7 @@ def remove_sensor(room):
 @app.route('/scare_button', methods=['POST'])
 def scare_button():
     publish.single("audio_control/mlv-central/play", "howl.ogg", hostname=broker_ip)
-    publish.single("audio_control/mlv-central/volume", "100 howl.ogg", hostname=broker_ip)
+    publish.single("audio_control/mlv-central/volume", "150 howl.ogg", hostname=broker_ip)
     return "Scared the players :)"
 @app.route('/list_sensors/<room>')
 def list_sensors(room):
