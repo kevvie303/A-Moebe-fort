@@ -983,7 +983,7 @@ def solve_task(task_name, room):
         socketio.emit('task_update', room="all_clients")
 
         # Handle rules for the solved task
-        handle_rules(task_name, "solved", room)
+        threading.Thread(target=handle_rules, args=(task_name, "solved", room)).start()
         with app.app_context():
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):

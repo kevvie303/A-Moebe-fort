@@ -1,7 +1,7 @@
 [
     {
         "id": 7808,
-        "sensor_name": "# Rule 7808",
+        "sensor_name": "# Rule 7808 - When right_codes is 5 AND Max executions: 1, do Wait 1 seconds Play schuur_open.ogg at volume 70 Wait 5 seconds Set volume of Ambience.ogg to 70 Set shed-door-lock to locked",
         "constraints": [
             {
                 "type": "state-equals",
@@ -10,8 +10,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -42,13 +41,13 @@
             },
             {
                 "sensor": "shed-door-lock",
-                "state": "unlocked"
+                "state": "locked"
             }
         ]
     },
     {
         "id": 6702,
-        "sensor_name": "# Rule 6702 - When fence-decrypt is solved AND Max executions: 1, do Set green-led-keypad to on Wait 1 seconds Set green-led-keypad to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play hek.ogg at volume 70 Wait 5 seconds Increase sequence_tree by 1",
+        "sensor_name": "# Rule 6702 - When fence-decrypt is solved AND Max executions: 1, do Set green-led-keypad to on Wait 1 seconds Set green-led-keypad to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play hek.ogg at volume 70 Wait 5 seconds Increase light-1-garden by 1",
         "constraints": [
             {
                 "type": "task-completed",
@@ -59,8 +58,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -101,7 +99,7 @@
                 "delay": "5"
             },
             {
-                "sensor": "sequence_tree",
+                "sensor": "light-1-garden",
                 "increment": "1"
             }
         ]
@@ -119,8 +117,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -179,8 +176,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -239,8 +235,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -288,7 +283,7 @@
     },
     {
         "id": 4415,
-        "sensor_name": "# Rule 4415 - When squeekuence is solved AND Max executions: 1, do Stop looping sound squeekence.ogg Play hok.ogg at volume 70 Set volume of Ambience.ogg to 3 Set laser-2 to on Set lab-hatch-lock to unlocked",
+        "sensor_name": "# Rule 4415 - When squeekuence is solved AND Max executions: 1, do Stop looping sound squeekence.ogg Play Background.ogg at volume 70 Set volume of Ambience.ogg to 3 Set laser-2 to on Set lab-hatch-lock to unlocked",
         "constraints": [
             {
                 "type": "task-completed",
@@ -299,8 +294,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -312,7 +306,7 @@
                 ]
             },
             {
-                "play_sound": "hok.ogg",
+                "play_sound": "Background.ogg",
                 "volume": "70",
                 "loop": false,
                 "pi": [
@@ -342,7 +336,7 @@
     },
     {
         "id": 8412,
-        "sensor_name": "# Rule 8412 - When woef-woef is solved AND Max executions: 1, do Stop looping sound Gull.ogg Stop looping sound Duck.ogg Stop looping sound Eagle.ogg",
+        "sensor_name": "# Rule 8412 - When woef-woef is solved AND Max executions: 1, do Stop looping sound Gull.ogg Stop looping sound Duck.ogg Stop looping sound Eagle.ogg Play hok.ogg at volume 70 Set doghouse-lock to unlocked",
         "constraints": [
             {
                 "type": "task-completed",
@@ -353,8 +347,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -379,7 +372,18 @@
                     "ret-top"
                 ]
             },
-            {}
+            {
+                "play_sound": "hok.ogg",
+                "volume": "70",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "sensor": "doghouse-lock",
+                "state": "unlocked"
+            }
         ]
     },
     {
@@ -395,8 +399,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -449,7 +452,7 @@
     },
     {
         "id": 2311,
-        "sensor_name": "# Rule 2311 - When green_house_ir is Triggered AND sequence_tree is 0, do Set green-led to on Increase sequence_tree by 1",
+        "sensor_name": "# Rule 2311 - When green_house_ir is Triggered AND null is null, do Set green-led to on Increase light-1-garden by 1",
         "constraints": [
             {
                 "type": "state-equals",
@@ -458,8 +461,8 @@
             },
             {
                 "type": "state-equals",
-                "sensor": "sequence_tree",
-                "state": "0"
+                "sensor": null,
+                "state": null
             }
         ],
         "actions": [
@@ -468,14 +471,14 @@
                 "state": "on"
             },
             {
-                "sensor": "sequence_tree",
+                "sensor": "light-1-garden",
                 "increment": "1"
             }
         ]
     },
     {
         "id": 2312,
-        "sensor_name": "# Rule 2312 - When red_house_ir is Triggered AND sequence_tree is 1, do Set red-led to on Increase sequence_tree by 1",
+        "sensor_name": "# Rule 2312 - When red_house_ir is Triggered AND null is null, do Set red-led to on Increase light-1-garden by 1",
         "constraints": [
             {
                 "type": "state-equals",
@@ -484,8 +487,8 @@
             },
             {
                 "type": "state-equals",
-                "sensor": "sequence_tree",
-                "state": "1"
+                "sensor": null,
+                "state": null
             }
         ],
         "actions": [
@@ -494,14 +497,14 @@
                 "state": "on"
             },
             {
-                "sensor": "sequence_tree",
+                "sensor": "light-1-garden",
                 "increment": "1"
             }
         ]
     },
     {
         "id": 2313,
-        "sensor_name": "# Rule 2313 - When red_house_ir is Triggered AND sequence_tree is 0, do Set red-led to on Wait 1 seconds Set green-led to off Set red-led to off Set sequence_tree to 0",
+        "sensor_name": "# Rule 2313 - When red_house_ir is Triggered AND null is null, do Set red-led to on Wait 1 seconds Set green-led to off Set red-led to off Set null to null",
         "constraints": [
             {
                 "type": "state-equals",
@@ -510,8 +513,8 @@
             },
             {
                 "type": "state-equals",
-                "sensor": "sequence_tree",
-                "state": "0"
+                "sensor": null,
+                "state": null
             }
         ],
         "actions": [
@@ -531,14 +534,14 @@
                 "state": "off"
             },
             {
-                "sensor": "sequence_tree",
-                "state": "0"
+                "sensor": null,
+                "state": null
             }
         ]
     },
     {
         "id": 2314,
-        "sensor_name": "# Rule 2314 - When blue_house_ir is Triggered AND sequence_tree is 2, do Set task tree-lights to solved",
+        "sensor_name": "# Rule 2314 - When blue_house_ir is Triggered AND null is null, do Set task tree-lights to solved",
         "constraints": [
             {
                 "type": "state-equals",
@@ -547,8 +550,8 @@
             },
             {
                 "type": "state-equals",
-                "sensor": "sequence_tree",
-                "state": "2"
+                "sensor": null,
+                "state": null
             }
         ],
         "actions": [
@@ -560,7 +563,7 @@
     },
     {
         "id": 2315,
-        "sensor_name": "# Rule 2315 - When blue_house_ir is Triggered AND NOT (sequence_tree is 2), do Set green-led to on Wait 1 seconds Set red-led to off Set green-led to off Set blue-led to off Set sequence_tree to 0",
+        "sensor_name": "# Rule 2315 - When blue_house_ir is Triggered AND NOT (null is null), do Set green-led to on Wait 1 seconds Set red-led to off Set green-led to off Set blue-led to off Set null to null",
         "constraints": [
             {
                 "type": "state-equals",
@@ -572,8 +575,8 @@
                 "nestedConstraints": [
                     {
                         "type": "state-equals",
-                        "sensor": "sequence_tree",
-                        "state": "2"
+                        "sensor": null,
+                        "state": null
                     }
                 ]
             }
@@ -599,14 +602,14 @@
                 "state": "off"
             },
             {
-                "sensor": "sequence_tree",
-                "state": "0"
+                "sensor": null,
+                "state": null
             }
         ]
     },
     {
         "id": 8521,
-        "sensor_name": "# Rule 8521 - When tree-lights is solved AND Max executions: 1, do Set blue-led to off Set green-led to off Set red-led to off Wait 1 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 1 seconds Set blue-led to off Set green-led to off Set red-led to off Wait 1 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 1 seconds Set blue-led to off Set green-led to off Set red-led to off Wait 1 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 1 seconds Set blue-led to off Set green-led to off Set red-led to off Set volume of  to 5 Wait 2 seconds Play boom.ogg at volume 70 Wait 7 seconds Increase right_codes by 1",
+        "sensor_name": "# Rule 8521 - When tree-lights is solved AND Max executions: 1, do Set blue-led to off Set green-led to off Set red-led to off Wait 1 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 1 seconds Set blue-led to off Set green-led to off Set red-led to off Wait 1 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 1 seconds Set blue-led to off Set green-led to off Set red-led to off Wait 1 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 1 seconds Set blue-led to off Set green-led to off Set red-led to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play boom.ogg at volume 70 Wait 7 seconds Increase right_codes by 1",
         "constraints": [
             {
                 "type": "task-completed",
@@ -617,8 +620,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 1
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -766,8 +768,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -788,8 +789,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -810,8 +810,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -842,8 +841,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -866,8 +864,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -888,8 +885,7 @@
         "constraints": [
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 1
+                "max_executions": "1"
             },
             {
                 "type": "game-state",
@@ -943,8 +939,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 1
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -974,7 +969,7 @@
     },
     {
         "id": 6627,
-        "sensor_name": "# Rule 6627 - When right_codes is 0 AND Max executions: 1, do Play goed_bezig.ogg at volume 70 Wait 6 seconds Set volume of  to 70",
+        "sensor_name": "# Rule 6627 - When right_codes is 2 AND Max executions: 1, do Play goed_bezig.ogg at volume 70 Wait 6 seconds Set volume of Ambience.ogg to 70",
         "constraints": [
             {
                 "type": "state-equals",
@@ -983,8 +978,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -1008,6 +1002,76 @@
                 "fade_time": "2",
                 "pi": [
                     "ret-top"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 8457,
+        "sensor_name": "# Rule 8457",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "squid-game",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "top_left_light",
+                "state": "on"
+            },
+            {
+                "sensor": "top_right_light",
+                "state": "on"
+            },
+            {
+                "sensor": "bottom_right_light",
+                "state": "on"
+            },
+            {
+                "sensor": "bottom_left_light",
+                "state": "on"
+            },
+            {
+                "play_sound": "gelukt.ogg",
+                "volume": "5",
+                "loop": false,
+                "pi": [
+                    "ret-middle"
+                ]
+            },
+            {
+                "delay": "3"
+            },
+            {
+                "sensor": "sliding-door-lock",
+                "state": "unlocked"
+            },
+            {
+                "delay": "6"
+            },
+            {
+                "type": "set-volume",
+                "sound": "Background.ogg",
+                "volume": "0",
+                "fade": false,
+                "pi": [
+                    "ret-middle"
+                ]
+            },
+            {
+                "play_sound": "Dogsout.ogg",
+                "volume": "5",
+                "loop": false,
+                "pi": [
+                    "ret-middle"
                 ]
             }
         ]
