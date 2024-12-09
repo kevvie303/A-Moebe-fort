@@ -16,7 +16,7 @@ import requests
 import subprocess
 import signal
 import sys
-from threading import Thread
+from threading import Thread, Event
 import threading
 import logging
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -301,7 +301,7 @@ def handle_rules(sensor_name, sensor_state, room):
                 for constraint in rule['constraints']
             )
             if constraints_met:
-                threading.Thread(target=execute_rule, args=(rule, room)).start()  # Run execute_rule in a separate thread
+                execute_rule(rule, room)
 
 def update_sensor_state(room, sensor_name, increment_value):
     try:
@@ -2042,6 +2042,15 @@ def save_game_data(room, game_data):
     data_file_path = os.path.join('json', room, 'data.json')
     with open(data_file_path, 'w') as file:
         json.dump(game_data, file, indent=4)
+
+room_threads = {}
+room_stop_events = {}
+
+def periodic_rule_handler(room):
+    while not room_stop_events[room].is_set():
+        handle_rules(None, None, room)
+        time.sleep(1)
+
 @app.route('/timer/start/<room>', methods=['POST'])
 def start_timer(room):
     global timer_value, speed, timer_running, timer_thread, start_time, bird_job, language
@@ -2086,6 +2095,11 @@ def start_timer(room):
             send_dmx_command(0, 0, 0, 0, 255)
             time.sleep(9)
             send_dmx_command(0, 0, 0, 0, 0)
+        if room not in room_threads:
+            room_stop_events[room] = Event()
+            room_threads[room] = Thread(target=periodic_rule_handler, args=(room,))
+            room_threads[room].daemon = True
+            room_threads[room].start()
         return 'Timer started'
 @app.route('/timer/stop/<room>', methods=['POST'])
 def stop_timer(room):
@@ -2106,7 +2120,11 @@ def stop_timer(room):
     if start_time is not None:
         write_game_data(start_time, end_time)
     start_time = None
-
+    if room in room_threads:
+        room_stop_events[room].set()
+        room_threads[room].join()
+        del room_threads[room]
+        del room_stop_events[room]
     return 'Timer stopped'
 
 @app.route('/timer/speed/<room>', methods=['POST'])

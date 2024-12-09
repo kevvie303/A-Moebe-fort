@@ -7,7 +7,7 @@
     {
         "task": "number-feel",
         "description": "Players have felt the right numbers, 0128, and filled it in, in the keypad",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "dog-house",

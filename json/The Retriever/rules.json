@@ -180,7 +180,7 @@
             {
                 "type": "max-executions",
                 "max_executions": "1",
-                "current_executions": 0
+                "current_executions": 1
             }
         ],
         "actions": [
@@ -944,7 +944,7 @@
             {
                 "type": "max-executions",
                 "max_executions": "1",
-                "current_executions": 0
+                "current_executions": 1
             }
         ],
         "actions": [
@@ -979,12 +979,12 @@
             {
                 "type": "state-equals",
                 "sensor": "right_codes",
-                "state": "0"
+                "state": "2"
             },
             {
                 "type": "max-executions",
                 "max_executions": "1",
-                "current_executions": 0
+                "current_executions": 1
             }
         ],
         "actions": [
