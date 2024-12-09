@@ -21,7 +21,7 @@
         "prepared": "off",
         "awake": "off",
         "snoozed": "off",
-        "state": "Off"
+        "state": "init"
     },
     {
         "name": "rem-lamp",
@@ -33,7 +33,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "Off"
+        "state": "init"
     },
     {
         "name": "lamp-post-1",
@@ -45,7 +45,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "Off"
+        "state": "init"
     },
     {
         "name": "blacklight-astronomy",
@@ -57,7 +57,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "Off"
+        "state": "init"
     },
     {
         "name": "new-light",
@@ -77,30 +77,6 @@
         "allowed_values": "Triggered, Not Triggered",
         "pi": "mlv-astronomy",
         "pin": "17",
-        "connection_type": "NO",
-        "prepared": "Triggered",
-        "awake": "Triggered",
-        "snoozed": "Triggered",
-        "state": "Triggered"
-    },
-    {
-        "name": "light_count",
-        "type": "Sensor",
-        "allowed_values": "Triggered, Not Triggered",
-        "pi": "mlv-corridors",
-        "pin": "17",
-        "connection_type": "NO",
-        "prepared": "Triggered",
-        "awake": "Triggered",
-        "snoozed": "Triggered",
-        "state": "init"
-    },
-    {
-        "name": "knocker",
-        "type": "Sensor",
-        "allowed_values": "Triggered, Not Triggered",
-        "pi": "mlv-tavern",
-        "pin": "0",
         "connection_type": "NO",
         "prepared": "Triggered",
         "awake": "Triggered",
@@ -261,7 +237,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "Not Triggered"
+        "state": "init"
     },
     {
         "name": "entrance-door",
@@ -285,7 +261,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "Locked"
+        "state": "init"
     },
     {
         "name": "herbalist-door-lock",
@@ -321,7 +297,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "Unlocked"
+        "state": "init"
     },
     {
         "name": "humidifier",
@@ -417,7 +393,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "Locked"
+        "state": "init"
     },
     {
         "name": "entrance-door-lock",
@@ -429,7 +405,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "Unlocked"
+        "state": "init"
     },
     {
         "name": "ast-button-1",
@@ -441,7 +417,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "Not Triggered"
+        "state": "init"
     },
     {
         "name": "ast-button-2",
@@ -453,7 +429,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "Not Triggered"
+        "state": "init"
     },
     {
         "name": "ast-button-3",
@@ -465,7 +441,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "Not Triggered"
+        "state": "init"
     },
     {
         "name": "ast-button-4",
@@ -477,7 +453,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "Not Triggered"
+        "state": "init"
     },
     {
         "name": "ast-button-5",
@@ -489,7 +465,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "Not Triggered"
+        "state": "init"
     },
     {
         "name": "ast-button-6",
@@ -501,7 +477,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "Not Triggered"
+        "state": "init"
     },
     {
         "name": "ast-button-7",
@@ -513,7 +489,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "Not Triggered"
+        "state": "init"
     },
     {
         "name": "ast-button-8",
@@ -525,7 +501,7 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "Not Triggered"
+        "state": "init"
     },
     {
         "name": "ast-button-9",
@@ -537,19 +513,79 @@
         "prepared": "Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "Not Triggered"
+        "state": "init"
     },
     {
-        "name": "sequence_tree",
+        "name": "knocker",
         "type": "logic",
-        "allowed_values": "0, 1, 2",
-        "pi": "undefined",
+        "allowed_values": "solved, unsolved",
+        "pi": "mlv-tavern",
+        "pin": "0",
+        "connection_type": "NO",
+        "prepared": "unsolved",
+        "awake": "unsolved",
+        "snoozed": "unsolved",
+        "state": "init"
+    },
+    {
+        "name": "light_count",
+        "type": "logic",
+        "allowed_values": "0, 1, 2, 3, 4, 5",
+        "pi": "mlv-corridors",
         "pin": "",
-        "connection_type": "NC",
+        "connection_type": "NO",
         "prepared": "0",
         "awake": "0",
         "snoozed": "0",
-        "state": "6"
+        "state": "init"
+    },
+    {
+        "name": "first_potion_solvable",
+        "type": "logic",
+        "allowed_values": "False, True",
+        "pi": "undefined",
+        "pin": "",
+        "connection_type": "NC",
+        "prepared": "False",
+        "awake": "False",
+        "snoozed": "False",
+        "state": "init"
+    },
+    {
+        "name": "second_potion_solvable",
+        "type": "logic",
+        "allowed_values": "False, True",
+        "pi": "undefined",
+        "pin": "",
+        "connection_type": "NC",
+        "prepared": "False",
+        "awake": "False",
+        "snoozed": "False",
+        "state": "init"
+    },
+    {
+        "name": "third_potion_solvable",
+        "type": "logic",
+        "allowed_values": "False, True",
+        "pi": "undefined",
+        "pin": "",
+        "connection_type": "NC",
+        "prepared": "False",
+        "awake": "False",
+        "snoozed": "False",
+        "state": "init"
+    },
+    {
+        "name": "fourth_potion_solvable",
+        "type": "logic",
+        "allowed_values": "False, True",
+        "pi": "undefined",
+        "pin": "",
+        "connection_type": "NC",
+        "prepared": "False",
+        "awake": "False",
+        "snoozed": "False",
+        "state": "init"
     },
     {
         "name": "flask-rfid-1",
@@ -558,45 +594,45 @@
         "pi": "mlv-herbalist",
         "pin": "-1",
         "connection_type": "NO",
-        "prepared": "584197941325",
-        "awake": "584197941325",
-        "snoozed": "584197941325",
+        "prepared": "0",
+        "awake": "0",
+        "snoozed": "0",
         "state": "init"
     },
     {
         "name": "flask-rfid-2",
         "type": "rfid",
-        "allowed_values": "Detected, Not Detected",
+        "allowed_values": "584197875788, 0",
         "pi": "mlv-herbalist",
         "pin": "-1",
         "connection_type": "NO",
-        "prepared": "Detected",
-        "awake": "Detected",
-        "snoozed": "Detected",
+        "prepared": "0",
+        "awake": "0",
+        "snoozed": "0",
         "state": "init"
     },
     {
         "name": "flask-rfid-3",
         "type": "rfid",
-        "allowed_values": "Detected, Not Detected",
+        "allowed_values": "584196892797, 0",
         "pi": "mlv-herbalist",
         "pin": "-1",
         "connection_type": "NO",
-        "prepared": "Detected",
-        "awake": "Detected",
-        "snoozed": "Detected",
+        "prepared": "0",
+        "awake": "0",
+        "snoozed": "0",
         "state": "init"
     },
     {
         "name": "flask-rfid-4",
         "type": "rfid",
-        "allowed_values": "Detected, Not Detected",
+        "allowed_values": "584196958334, 0",
         "pi": "mlv-herbalist",
         "pin": "-1",
         "connection_type": "NO",
-        "prepared": "Detected",
-        "awake": "Detected",
-        "snoozed": "Detected",
+        "prepared": "0",
+        "awake": "0",
+        "snoozed": "0",
         "state": "init"
     },
     {

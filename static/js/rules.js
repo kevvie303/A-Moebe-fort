@@ -754,6 +754,8 @@ $(document).ready(function () {
     function loadRules() {
         $.get(`/get_rules/${roomName}`, function (rules) {
             fetchSensorsAndTasks().done(function (sensors, tasks) {
+                // Sort rules by id in ascending order
+                rules.sort((a, b) => a.id - b.id);
                 rules.forEach(rule => {
                     rule.constraints.forEach(constraint => {
                         constraint.type = getConstraintType(constraint);

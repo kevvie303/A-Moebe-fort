@@ -1,46 +1,78 @@
 [
     {
-        "id": 3263,
-        "sensor_name": "# Rule 3263 - When ast-button-1 is Triggered AND NOT (start-lamp is on AND lights-on is solved) AND OR (gibbs-sensor is Triggered OR rune-puzzle is solved), do Set task moon-place to solved",
+        "id": 4566,
+        "sensor_name": "# Rule 4566",
         "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "ast-button-1",
-                "state": "Triggered"
-            },
-            {
-                "type": "not",
-                "nestedConstraints": [
-                    {
-                        "type": "state-equals",
-                        "sensor": "start-lamp",
-                        "state": "on"
-                    },
-                    {
-                        "type": "task-completed",
-                        "task": "lights-on",
-                        "states": [
-                            "solved"
-                        ]
-                    }
-                ]
-            },
             {
                 "type": "or",
                 "nestedConstraints": [
                     {
                         "type": "state-equals",
-                        "sensor": "gibbs-sensor",
-                        "state": "Triggered"
+                        "sensor": "ir-plant-5",
+                        "state": "Not Triggered"
                     },
                     {
-                        "type": "task-completed",
-                        "task": "rune-puzzle",
-                        "states": [
-                            "solved"
-                        ]
+                        "type": "state-equals",
+                        "sensor": "ir-plant-6",
+                        "state": "Not Triggered"
+                    },
+                    {
+                        "type": "state-equals",
+                        "sensor": "ir-plant-4",
+                        "state": "Not Triggered"
+                    },
+                    {
+                        "type": "state-equals",
+                        "sensor": "ir-plant-2",
+                        "state": "Not Triggered"
+                    },
+                    {
+                        "type": "state-equals",
+                        "sensor": "ir-plant-1",
+                        "state": "Not Triggered"
+                    },
+                    {
+                        "type": "state-equals",
+                        "sensor": "ir-plant-3",
+                        "state": "Not Triggered"
+                    },
+                    {
+                        "type": "state-equals",
+                        "sensor": "ir-plant-9",
+                        "state": "Not Triggered"
+                    },
+                    {
+                        "type": "state-equals",
+                        "sensor": "ir-plant-8",
+                        "state": "Not Triggered"
+                    },
+                    {
+                        "type": "state-equals",
+                        "sensor": "ir-plant-7",
+                        "state": "Not Triggered"
                     }
                 ]
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "plant_pulled(sensor_name, room)"
+            }
+        ]
+    },
+    {
+        "id": 9850,
+        "sensor_name": "# Rule 9850 - When moon-puzzle is Triggered AND Max executions: 1, do Set task moon-place to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "moon-puzzle",
+                "state": "Triggered"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -51,71 +83,65 @@
         ]
     },
     {
-        "id": 2491,
-        "sensor_name": "# Rule 2491 - When moon-place is solved AND Max executions: 1, do Set astronomy-door-lock to unlocked Wait 5 seconds Play test.ogg at volume 70 Set astronomy-door-lock to locked Increase sequence_tree by 1",
+        "id": 8875,
+        "sensor_name": "# Rule 8875 - When gibbs-sensor is Triggered AND Max executions: 1, do Set task gibbs to solved",
         "constraints": [
             {
-                "type": "task-completed",
-                "task": "moon-place",
-                "states": [
-                    "solved"
-                ]
+                "type": "state-equals",
+                "sensor": "gibbs-sensor",
+                "state": "Triggered"
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
             {
-                "sensor": "astronomy-door-lock",
-                "state": "unlocked"
-            },
-            {
-                "delay": "5"
-            },
-            {
-                "play_sound": "test.ogg",
-                "volume": "70",
-                "pi": [
-                    "mlv-central",
-                    "mlv-astronomy"
-                ]
-            },
-            {
-                "sensor": "astronomy-door-lock",
-                "state": "locked"
-            },
-            {
-                "sensor": "sequence_tree",
-                "increment": "1"
+                "task": "gibbs",
+                "status": "solved"
             }
         ]
     },
     {
-        "id": 2825,
-        "sensor_name": "# Rule 2825",
+        "id": 6394,
+        "sensor_name": "# Rule 6394 - When knocker is solved AND Max executions: 1, do Set task knocker-solve to solved",
         "constraints": [
             {
                 "type": "state-equals",
-                "sensor": "corridor-door-lock",
-                "state": "locked"
+                "sensor": "knocker",
+                "state": "solved"
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 1
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "task": "knocker-solve",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 5381,
+        "sensor_name": "# Rule 5381 - When light_count is 5 AND Max executions: 1, do Set task lights-on to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "light_count",
+                "state": "5"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
             }
         ],
         "actions": [
             {
                 "task": "lights-on",
                 "status": "solved"
-            },
-            {
-                "type": "custom-function",
-                "function_name": "test_function()"
             }
         ]
     }
