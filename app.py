@@ -985,6 +985,9 @@ def solve_task(task_name, room):
             return jsonify({'message': 'Task updated successfully'})
     except (FileNotFoundError, json.JSONDecodeError):
         return jsonify({'message': 'Error updating task'})
+def solve_laser():
+    publish.single("actuator/control/ret-laser", "100", hostname=broker_ip)
+    return "Laser solved"
 PRESETS_FILE = 'json/Moonlight Village/presets.json'
 @app.route('/presets', methods=['GET'])
 def get_presets():

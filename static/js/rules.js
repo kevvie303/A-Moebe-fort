@@ -211,7 +211,8 @@ $(document).ready(function () {
         ruleCard.find(".rule-card-body").hide();
         generatePreview();
 
-        $("#rules-container").append(ruleCard);
+        // Append the new rule card to the top of the container
+        $("#rules-container").prepend(ruleCard);
     }
 
     function filterRules() {
