@@ -313,7 +313,7 @@ $(document).ready(function () {
                     ${tasks.map(task => `<option value="${task.task}" ${data && data.task === task.task ? 'selected' : ''}>${task.task}</option>`).join('')}
                 </select>
                 has been
-                <label><input type="checkbox" value="solved" ${data && data.states.includes('solved') ? 'checked' : ''}> Solved</label>
+                <label><input type="checkbox" value="solved" ${data ? (data.states.includes('solved') ? 'checked' : '') : 'checked'}> Solved</label>
                 <label><input type="checkbox" value="skipped" ${data && data.states.includes('skipped') ? 'checked' : ''}> Skipped</label>
                 <label><input type="checkbox" value="auto-solved" ${data && data.states.includes('auto-solved') ? 'checked' : ''}> Auto-solved</label>
             `;
@@ -389,7 +389,7 @@ $(document).ready(function () {
         } else if (type === "max-executions") {
             subCardContent = `
                 Max executions per game
-                <input type="number" placeholder="Enter max executions" value="${data ? data.max_executions : ''}">
+                <input type="number" placeholder="Enter max executions" value="${data ? data.max_executions : 1}">
             `;
         } else if (type === "state-config") {
             subCardContent = `
