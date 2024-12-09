@@ -2261,6 +2261,29 @@ def wait_for_statuses(pi_config, timeout=5):
 pi_service_statuses = {}
 preparedValue = {}
 timeout_duration = 3
+def set_sensors_to_prepared(room):
+    try:
+        with open(f'json/{room}/sensor_data.json', 'r') as file:
+            sensor_data = json.load(file)
+        
+        for sensor in sensor_data:
+            if 'prepared' in sensor:
+                sensor['state'] = sensor['prepared']
+        
+        with open(f'json/{room}/sensor_data.json', 'w') as file:
+            json.dump(sensor_data, file, indent=4)
+        
+        # Apply the prepared states to the actual devices
+        for sensor in sensor_data:
+            if sensor['type'] == 'maglock' or sensor['type'] == 'light':
+                call_control_maglock_partial(room, sensor['name'], sensor['state'])
+            elif sensor['type'] == 'led':
+                publish.single(f"led/control/{sensor['pi']}", sensor['state'], hostname=broker_ip)
+            elif sensor['type'] == 'sensor':
+                update_sensor_state(room, sensor['name'], int(sensor['state']))
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error setting sensors to prepared state: {e}")
+
 @app.route('/prepare/<room>', methods=['POST'])
 def prepare_game(room):
     global client, pi_service_statuses, language, preparedValue, should_hint_shed_play, new_init_time
@@ -2351,6 +2374,8 @@ def prepare_game(room):
         publish.single("audio_control/raspberrypi/play", "bg_corridor.ogg", hostname=broker_ip)
         publish.single("led/control/mlv-corridors", "unlocked", hostname=broker_ip)
         call_control_maglock_moonlight("smoke-power", "unlocked")
+
+    set_sensors_to_prepared(room)
 
     return jsonify({"message": converted_statuses}), 200
 

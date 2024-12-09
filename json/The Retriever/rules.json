@@ -120,7 +120,7 @@
             {
                 "type": "max-executions",
                 "max_executions": "1",
-                "current_executions": 1
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -180,7 +180,7 @@
             {
                 "type": "max-executions",
                 "max_executions": "1",
-                "current_executions": 1
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -501,7 +501,7 @@
     },
     {
         "id": 2313,
-        "sensor_name": "# Rule 2313 - When red_house_ir is Triggered AND sequence_tree is 0, do Set red-led to on Wait 0.5 seconds Set green-led to off Set red-led to off Set sequence_tree to 0",
+        "sensor_name": "# Rule 2313 - When red_house_ir is Triggered AND sequence_tree is 0, do Set red-led to on Wait 1 seconds Set green-led to off Set red-led to off Set sequence_tree to 0",
         "constraints": [
             {
                 "type": "state-equals",
@@ -520,7 +520,7 @@
                 "state": "on"
             },
             {
-                "delay": "0.5"
+                "delay": "1"
             },
             {
                 "sensor": "green-led",
@@ -560,7 +560,7 @@
     },
     {
         "id": 2315,
-        "sensor_name": "# Rule 2315 - When blue_house_ir is Triggered AND NOT (sequence_tree is 2), do Set green-led to on Wait 0.5 seconds Set red-led to off Set green-led to off Set blue-led to off Set sequence_tree to 0",
+        "sensor_name": "# Rule 2315 - When blue_house_ir is Triggered AND NOT (sequence_tree is 2), do Set green-led to on Wait 1 seconds Set red-led to off Set green-led to off Set blue-led to off Set sequence_tree to 0",
         "constraints": [
             {
                 "type": "state-equals",
@@ -584,7 +584,7 @@
                 "state": "on"
             },
             {
-                "delay": "0.5"
+                "delay": "1"
             },
             {
                 "sensor": "red-led",
@@ -606,7 +606,7 @@
     },
     {
         "id": 8521,
-        "sensor_name": "# Rule 8521 - When tree-lights is solved AND Max executions: 1, do Set blue-led to off Set green-led to off Set red-led to off Wait 0.5 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 0.5 seconds Set blue-led to off Set green-led to off Set red-led to off Wait 0.5 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 0.5 seconds Set blue-led to off Set green-led to off Set red-led to off Wait 0.5 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 0.5 seconds Set blue-led to off Set green-led to off Set red-led to off Set volume of  to 5 Wait 2 seconds Play boom.ogg at volume 70 Wait 7 seconds Increase right_codes by 1",
+        "sensor_name": "# Rule 8521 - When tree-lights is solved AND Max executions: 1, do Set blue-led to off Set green-led to off Set red-led to off Wait 1 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 1 seconds Set blue-led to off Set green-led to off Set red-led to off Wait 1 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 1 seconds Set blue-led to off Set green-led to off Set red-led to off Wait 1 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 1 seconds Set blue-led to off Set green-led to off Set red-led to off Set volume of  to 5 Wait 2 seconds Play boom.ogg at volume 70 Wait 7 seconds Increase right_codes by 1",
         "constraints": [
             {
                 "type": "task-completed",
@@ -618,7 +618,7 @@
             {
                 "type": "max-executions",
                 "max_executions": "1",
-                "current_executions": 0
+                "current_executions": 1
             }
         ],
         "actions": [
@@ -635,7 +635,7 @@
                 "state": "off"
             },
             {
-                "delay": "0.5"
+                "delay": "1"
             },
             {
                 "sensor": "blue-led",
@@ -650,7 +650,7 @@
                 "state": "on"
             },
             {
-                "delay": "0.5"
+                "delay": "1"
             },
             {
                 "sensor": "blue-led",
@@ -665,7 +665,7 @@
                 "state": "off"
             },
             {
-                "delay": "0.5"
+                "delay": "1"
             },
             {
                 "sensor": "blue-led",
@@ -680,7 +680,7 @@
                 "state": "on"
             },
             {
-                "delay": "0.5"
+                "delay": "1"
             },
             {
                 "sensor": "blue-led",
@@ -695,7 +695,7 @@
                 "state": "off"
             },
             {
-                "delay": "0.5"
+                "delay": "1"
             },
             {
                 "sensor": "blue-led",
@@ -710,7 +710,7 @@
                 "state": "on"
             },
             {
-                "delay": "0.5"
+                "delay": "1"
             },
             {
                 "sensor": "blue-led",
@@ -726,7 +726,7 @@
             },
             {
                 "type": "set-volume",
-                "sound": "",
+                "sound": "Ambience.ogg",
                 "volume": "5",
                 "fade": true,
                 "prev_volume": "70",
@@ -984,7 +984,7 @@
             {
                 "type": "max-executions",
                 "max_executions": "1",
-                "current_executions": 1
+                "current_executions": 0
             }
         ],
         "actions": [

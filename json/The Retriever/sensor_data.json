@@ -9,7 +9,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "light-2-garden",
@@ -21,7 +21,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "light-3-garden",
@@ -33,7 +33,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "light-4-garden",
@@ -45,7 +45,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "light-1-shed",
@@ -57,7 +57,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "light-1-alley",
@@ -69,7 +69,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "blacklight",
@@ -81,7 +81,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "portal-light",
@@ -93,7 +93,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "top_left_light",
@@ -105,7 +105,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "top_right_light",
@@ -117,7 +117,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "bottom_right_light",
@@ -129,7 +129,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "bottom_left_light",
@@ -141,7 +141,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "green-led",
@@ -153,7 +153,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "red-led",
@@ -165,7 +165,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "blue-led",
@@ -177,7 +177,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "green-led-keypad",
@@ -189,7 +189,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "red-led-keypad",
@@ -201,7 +201,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "laser-2",
@@ -213,7 +213,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "init"
+        "state": "on"
     },
     {
         "name": "blue_house_ir",
@@ -222,10 +222,10 @@
         "pi": "ret-tree",
         "pin": "18",
         "connection_type": "NC",
-        "prepared": "Triggered",
-        "awake": "Triggered",
-        "snoozed": "Triggered",
-        "state": "init"
+        "prepared": "Not Triggered",
+        "awake": "Not Triggered",
+        "snoozed": "Not Triggered",
+        "state": "Not Triggered"
     },
     {
         "name": "green_house_ir",
@@ -234,10 +234,10 @@
         "pi": "ret-tree",
         "pin": "14",
         "connection_type": "NC",
-        "prepared": "Triggered",
+        "prepared": "Not Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "red_house_ir",
@@ -246,10 +246,10 @@
         "pi": "ret-tree",
         "pin": "20",
         "connection_type": "NC",
-        "prepared": "Triggered",
+        "prepared": "Not Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "maze-sensor",
@@ -258,10 +258,10 @@
         "pi": "ret-middle",
         "pin": "18",
         "connection_type": "NC",
-        "prepared": "Triggered",
+        "prepared": "Not Triggered",
         "awake": "Triggered",
         "snoozed": "Triggered",
-        "state": "init"
+        "state": "Not Triggered"
     },
     {
         "name": "entrance-door-lock",
@@ -273,7 +273,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "init"
+        "state": "locked"
     },
     {
         "name": "doghouse-lock",
@@ -285,7 +285,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "init"
+        "state": "locked"
     },
     {
         "name": "shed-door-lock",
@@ -297,7 +297,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "init"
+        "state": "locked"
     },
     {
         "name": "lab-hatch-lock",
@@ -309,7 +309,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "init"
+        "state": "locked"
     },
     {
         "name": "sliding-door-lock",
@@ -321,7 +321,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "init"
+        "state": "locked"
     },
     {
         "name": "ball-drop-lock",
@@ -333,7 +333,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "init"
+        "state": "locked"
     },
     {
         "name": "exit-door-lock",
@@ -345,7 +345,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "init"
+        "state": "locked"
     },
     {
         "name": "laser-1",
@@ -357,7 +357,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "init"
+        "state": "locked"
     },
     {
         "name": "keypad",
@@ -369,7 +369,7 @@
         "prepared": "0",
         "awake": "0",
         "snoozed": "0",
-        "state": "init"
+        "state": "0"
     },
     {
         "name": "sequence_tree",
@@ -381,7 +381,7 @@
         "prepared": "0",
         "awake": "0",
         "snoozed": "0",
-        "state": "init"
+        "state": "0"
     },
     {
         "name": "right_codes",
@@ -393,6 +393,6 @@
         "prepared": "0",
         "awake": "0",
         "snoozed": "0",
-        "state": "2"
+        "state": "1"
     }
 ]
