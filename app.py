@@ -287,6 +287,9 @@ def evaluate_constraint(constraint, sensor_name, sensor_state, room, rule_id=Non
             evaluate_constraint(nested_constraint, sensor_name, sensor_state, room, rule_id)
             for nested_constraint in constraint['nestedConstraints']
         )
+    elif constraint['type'] == 'game-state':
+        game_status = get_game_status(room)
+        return game_status['status'].lower() == constraint.get('state').lower()
     return False
 
 def handle_rules(sensor_name, sensor_state, room):

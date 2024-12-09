@@ -22,6 +22,7 @@ $(document).ready(function () {
                             <button class="btn btn-gray add-constraint" data-type="max-executions">+ Max Executions</button>
                             <button class="btn btn-red add-constraint" data-type="not">+ Not</button>
                             <button class="btn btn-blue add-constraint" data-type="or">+ Or</button>
+                            <button class="btn btn-purple add-constraint" data-type="game-state">+ Game State</button>
                         </div>
                         <div class="constraints-container"></div>
                     </div>
@@ -70,7 +71,7 @@ $(document).ready(function () {
                     });
                 }
                 // Explicitly set the state select options and selected value
-                if (constraint.type === "state-equals" || constraint.type === "set-state") {
+                if (constraint.type === "state-equals" || constraint.type === "set-state" || constraint.type === "game-state") {
                     const sensorSelect = subCard.find(".sensor-select");
                     const stateSelect = subCard.find(".state-select");
                     
@@ -157,6 +158,8 @@ $(document).ready(function () {
                             return `<span style="background-color: #fd7e14; color: #fff; padding: 2px 4px; border-radius: 4px;">${task} is ${states}</span>`;
                         } else if (subCard.text().includes("Max executions per game")) {
                             return `<span style="background-color: #6c757d; color: #fff; padding: 2px 4px; border-radius: 4px;">Max executions: ${subCard.find("input[type=number]").val()}</span>`;
+                        } else if (subCard.text().includes("When the game has been")) {
+                            return `<span style="background-color: #6200EA; color: #fff; padding: 2px 4px; border-radius: 4px;">Game ${subCard.find(".game-state-select").val()}</span>`;
                         }
                     }
                     return "";
@@ -313,6 +316,14 @@ $(document).ready(function () {
                 <label><input type="checkbox" value="solved" ${data && data.states.includes('solved') ? 'checked' : ''}> Solved</label>
                 <label><input type="checkbox" value="skipped" ${data && data.states.includes('skipped') ? 'checked' : ''}> Skipped</label>
                 <label><input type="checkbox" value="auto-solved" ${data && data.states.includes('auto-solved') ? 'checked' : ''}> Auto-solved</label>
+            `;
+        } else if (type === "game-state") {
+            subCardContent = `
+                When the game has been
+                <select class="game-state-select">
+                    <option value="started" ${data && data.state === 'started' ? 'selected' : ''}>Started</option>
+                    <option value="stopped" ${data && data.state === 'stopped' ? 'selected' : ''}>Stopped</option>
+                </select>
             `;
         } else if (type === "set-task-status") {
             subCardContent = `
@@ -638,6 +649,9 @@ $(document).ready(function () {
                 } else if (subCard.text().includes("Max executions per game")) {
                     constraint.type = "max-executions";
                     constraint.max_executions = subCard.find("input[type=number]").val();
+                } else if (subCard.text().includes("When the game has been")) {
+                    constraint.type = "game-state";
+                    constraint.state = subCard.find(".game-state-select").val();
                 }
                 constraints.push(constraint);
             }
@@ -715,12 +729,26 @@ $(document).ready(function () {
             contentType: "application/json",
             data: JSON.stringify(rules),
             success: function () {
-                alert("Rules saved successfully!");
+                showNotification("Rules saved successfully!");
             },
             error: function () {
-                alert("Failed to save rules.");
+                showNotification("Failed to save rules.", true);
             },
         });
+    }
+
+    function showNotification(message, isError = false) {
+        const notification = $(`
+            <div class="notification ${isError ? 'error' : 'success'}">
+                ${message}
+            </div>
+        `);
+        $("body").append(notification);
+        setTimeout(() => {
+            notification.fadeOut(300, () => {
+                notification.remove();
+            });
+        }, 3000);
     }
 
     function loadRules() {
@@ -757,6 +785,8 @@ $(document).ready(function () {
             return "task-completed";
         } else if (constraint.max_executions) {
             return "max-executions";
+        } else if (constraint.state) {
+            return "game-state";
         } else if (constraint.nestedConstraints) {
             return constraint.type === "or" ? "or" : "not"; // Ensure "or" type is handled correctly
         }

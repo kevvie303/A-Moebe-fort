@@ -1,11 +1,60 @@
 [
     {
-        "id": 8509,
-        "sensor_name": "# Rule 8509",
+        "id": 3795,
+        "sensor_name": "# Rule 3795 - When Max executions: 1 AND Game started, do Play Gull.ogg at volume 100 Wait 8 seconds Play Duck.ogg at volume 50 Wait 8 seconds Play Eagle.ogg at volume 50",
+        "constraints": [
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            },
+            {
+                "type": "game-state",
+                "state": "started"
+            }
+        ],
+        "actions": [
+            {
+                "play_sound": "Gull.ogg",
+                "volume": "100",
+                "loop": true,
+                "loop_interval": "60",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "8"
+            },
+            {
+                "play_sound": "Duck.ogg",
+                "volume": "50",
+                "loop": true,
+                "loop_interval": "60",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "8"
+            },
+            {
+                "play_sound": "Eagle.ogg",
+                "volume": "50",
+                "loop": true,
+                "loop_interval": "60",
+                "pi": [
+                    "ret-top"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 5093,
+        "sensor_name": "# Rule 5093 - When paw-maze is solved AND Max executions: 1, do Play squeek.ogg at volume 70",
         "constraints": [
             {
                 "type": "task-completed",
-                "task": "laser-game",
+                "task": "paw-maze",
                 "states": [
                     "solved"
                 ]
@@ -17,46 +66,10 @@
         ],
         "actions": [
             {
-                "type": "custom-function",
-                "function_name": "solve_laser()"
-            }
-        ]
-    },
-    {
-        "id": 3408,
-        "sensor_name": "# Rule 3408 - When keypad is other, do Set red-led-keypad to on Wait 1 seconds Set red-led-keypad to off Play test.ogg at volume 50 Set volume of test2.ogg to 70",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "keypad",
-                "state": "other"
-            }
-        ],
-        "actions": [
-            {
-                "sensor": "red-led-keypad",
-                "state": "on"
-            },
-            {
-                "delay": "1"
-            },
-            {
-                "sensor": "red-led-keypad",
-                "state": "off"
-            },
-            {
-                "play_sound": "test.ogg",
-                "volume": "50",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "type": "set-volume",
-                "sound": "test2.ogg",
+                "play_sound": "squeek.ogg",
                 "volume": "70",
-                "fade": false,
+                "loop": true,
+                "loop_interval": "30",
                 "pi": [
                     "ret-top"
                 ]
@@ -64,159 +77,112 @@
         ]
     },
     {
-        "id": 2311,
-        "sensor_name": "# Rule 2311 - When green_house_ir is Triggered AND sequence_tree is 0, do Set green-led to on Increase sequence_tree by 1",
+        "id": 2733,
+        "sensor_name": "# Rule 2733 - When OR (keypad is 7867 OR keypad is 8978) AND Max executions: 1, do Increase right_codes by 1 Set task kite-count to solved",
         "constraints": [
             {
-                "type": "state-equals",
-                "sensor": "green_house_ir",
-                "state": "Triggered"
+                "type": "or",
+                "nestedConstraints": [
+                    {
+                        "type": "state-equals",
+                        "sensor": "keypad",
+                        "state": "7867"
+                    },
+                    {
+                        "type": "state-equals",
+                        "sensor": "keypad",
+                        "state": "8978"
+                    }
+                ]
             },
             {
-                "type": "state-equals",
-                "sensor": "sequence_tree",
-                "state": "0"
+                "type": "max-executions",
+                "max_executions": "1"
             }
         ],
         "actions": [
             {
-                "sensor": "green-led",
-                "state": "on"
-            },
-            {
-                "sensor": "sequence_tree",
+                "sensor": "right_codes",
                 "increment": "1"
-            }
-        ]
-    },
-    {
-        "id": 2312,
-        "sensor_name": "# Rule 2312 - When red_house_ir is Triggered AND sequence_tree is 1, do Set red-led to on Increase sequence_tree by 1",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "red_house_ir",
-                "state": "Triggered"
             },
             {
-                "type": "state-equals",
-                "sensor": "sequence_tree",
-                "state": "1"
-            }
-        ],
-        "actions": [
-            {
-                "sensor": "red-led",
-                "state": "on"
-            },
-            {
-                "sensor": "sequence_tree",
-                "increment": "1"
-            }
-        ]
-    },
-    {
-        "id": 2313,
-        "sensor_name": "# Rule 2313 - When red_house_ir is Triggered AND sequence_tree is 0, do Set red-led to on Wait 0.5 seconds Set green-led to off Set red-led to off Set sequence_tree to 0",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "red_house_ir",
-                "state": "Triggered"
-            },
-            {
-                "type": "state-equals",
-                "sensor": "sequence_tree",
-                "state": "0"
-            }
-        ],
-        "actions": [
-            {
-                "sensor": "red-led",
-                "state": "on"
-            },
-            {
-                "delay": "0.5"
-            },
-            {
-                "sensor": "green-led",
-                "state": "off"
-            },
-            {
-                "sensor": "red-led",
-                "state": "off"
-            },
-            {
-                "sensor": "sequence_tree",
-                "state": "0"
-            }
-        ]
-    },
-    {
-        "id": 2314,
-        "sensor_name": "# Rule 2314 - When blue_house_ir is Triggered AND sequence_tree is 2, do Set task tree-lights to solved",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "blue_house_ir",
-                "state": "Triggered"
-            },
-            {
-                "type": "state-equals",
-                "sensor": "sequence_tree",
-                "state": "2"
-            }
-        ],
-        "actions": [
-            {
-                "task": "tree-lights",
+                "task": "kite-count",
                 "status": "solved"
             }
         ]
     },
     {
-        "id": 2315,
-        "sensor_name": "# Rule 2315 - When blue_house_ir is Triggered AND NOT (sequence_tree is 2), do Set green-led to on Wait 0.5 seconds Set red-led to off Set green-led to off Set blue-led to off Set sequence_tree to 0",
+        "id": 6829,
+        "sensor_name": "# Rule 6829 - When keypad is 5038 AND Max executions: 1, do Increase right_codes by 1 Set task fence-decrypt to solved",
         "constraints": [
             {
                 "type": "state-equals",
-                "sensor": "blue_house_ir",
-                "state": "Triggered"
+                "sensor": "keypad",
+                "state": "5038"
             },
             {
-                "type": "not",
-                "nestedConstraints": [
-                    {
-                        "type": "state-equals",
-                        "sensor": "sequence_tree",
-                        "state": "2"
-                    }
-                ]
+                "type": "max-executions",
+                "max_executions": "1"
             }
         ],
         "actions": [
             {
-                "sensor": "green-led",
-                "state": "on"
+                "sensor": "right_codes",
+                "increment": "1"
             },
             {
-                "delay": "0.5"
+                "task": "fence-decrypt",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 6828,
+        "sensor_name": "# Rule 6828 - When keypad is 1528 AND Max executions: 1, do Increase right_codes by 1 Set task flowers to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "keypad",
+                "state": "1528"
             },
             {
-                "sensor": "red-led",
-                "state": "off"
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "right_codes",
+                "increment": "1"
             },
             {
-                "sensor": "green-led",
-                "state": "off"
+                "task": "flowers",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 6827,
+        "sensor_name": "# Rule 6827 - When keypad is 0128 AND Max executions: 1, do Increase right_codes by 1 Set task number-feel to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "keypad",
+                "state": "0128"
             },
             {
-                "sensor": "blue-led",
-                "state": "off"
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "right_codes",
+                "increment": "1"
             },
             {
-                "sensor": "sequence_tree",
-                "state": "0"
+                "task": "number-feel",
+                "status": "solved"
             }
         ]
     },
@@ -354,122 +320,210 @@
         ]
     },
     {
-        "id": 6827,
-        "sensor_name": "# Rule 6827 - When keypad is 0128 AND Max executions: 1, do Increase right_codes by 1 Set task number-feel to solved",
+        "id": 2315,
+        "sensor_name": "# Rule 2315 - When blue_house_ir is Triggered AND NOT (sequence_tree is 2), do Set green-led to on Wait 0.5 seconds Set red-led to off Set green-led to off Set blue-led to off Set sequence_tree to 0",
         "constraints": [
             {
                 "type": "state-equals",
-                "sensor": "keypad",
-                "state": "0128"
+                "sensor": "blue_house_ir",
+                "state": "Triggered"
             },
             {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "sensor": "right_codes",
-                "increment": "1"
-            },
-            {
-                "task": "number-feel",
-                "status": "solved"
-            }
-        ]
-    },
-    {
-        "id": 6828,
-        "sensor_name": "# Rule 6828 - When keypad is 1528 AND Max executions: 1, do Increase right_codes by 1 Set task flowers to solved",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "keypad",
-                "state": "1528"
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "sensor": "right_codes",
-                "increment": "1"
-            },
-            {
-                "task": "flowers",
-                "status": "solved"
-            }
-        ]
-    },
-    {
-        "id": 6829,
-        "sensor_name": "# Rule 6829 - When keypad is 5038 AND Max executions: 1, do Increase right_codes by 1 Set task fence-decrypt to solved",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "keypad",
-                "state": "5038"
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "sensor": "right_codes",
-                "increment": "1"
-            },
-            {
-                "task": "fence-decrypt",
-                "status": "solved"
-            }
-        ]
-    },
-    {
-        "id": 2733,
-        "sensor_name": "# Rule 2733 - When OR (keypad is 7867 OR keypad is 8978) AND Max executions: 1, do Increase right_codes by 1 Set task kite-count to solved",
-        "constraints": [
-            {
-                "type": "or",
+                "type": "not",
                 "nestedConstraints": [
                     {
                         "type": "state-equals",
-                        "sensor": "keypad",
-                        "state": "7867"
-                    },
-                    {
-                        "type": "state-equals",
-                        "sensor": "keypad",
-                        "state": "8978"
+                        "sensor": "sequence_tree",
+                        "state": "2"
                     }
                 ]
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
             }
         ],
         "actions": [
             {
-                "sensor": "right_codes",
-                "increment": "1"
+                "sensor": "green-led",
+                "state": "on"
             },
             {
-                "task": "kite-count",
+                "delay": "0.5"
+            },
+            {
+                "sensor": "red-led",
+                "state": "off"
+            },
+            {
+                "sensor": "green-led",
+                "state": "off"
+            },
+            {
+                "sensor": "blue-led",
+                "state": "off"
+            },
+            {
+                "sensor": "sequence_tree",
+                "state": "0"
+            }
+        ]
+    },
+    {
+        "id": 2314,
+        "sensor_name": "# Rule 2314 - When blue_house_ir is Triggered AND sequence_tree is 2, do Set task tree-lights to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "blue_house_ir",
+                "state": "Triggered"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "sequence_tree",
+                "state": "2"
+            }
+        ],
+        "actions": [
+            {
+                "task": "tree-lights",
                 "status": "solved"
             }
         ]
     },
     {
-        "id": 5093,
-        "sensor_name": "# Rule 5093 - When paw-maze is solved AND Max executions: 1, do Play squeek.ogg at volume 70",
+        "id": 2313,
+        "sensor_name": "# Rule 2313 - When red_house_ir is Triggered AND sequence_tree is 0, do Set red-led to on Wait 0.5 seconds Set green-led to off Set red-led to off Set sequence_tree to 0",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "red_house_ir",
+                "state": "Triggered"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "sequence_tree",
+                "state": "0"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "red-led",
+                "state": "on"
+            },
+            {
+                "delay": "0.5"
+            },
+            {
+                "sensor": "green-led",
+                "state": "off"
+            },
+            {
+                "sensor": "red-led",
+                "state": "off"
+            },
+            {
+                "sensor": "sequence_tree",
+                "state": "0"
+            }
+        ]
+    },
+    {
+        "id": 2312,
+        "sensor_name": "# Rule 2312 - When red_house_ir is Triggered AND sequence_tree is 1, do Set red-led to on Increase sequence_tree by 1",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "red_house_ir",
+                "state": "Triggered"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "sequence_tree",
+                "state": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "red-led",
+                "state": "on"
+            },
+            {
+                "sensor": "sequence_tree",
+                "increment": "1"
+            }
+        ]
+    },
+    {
+        "id": 2311,
+        "sensor_name": "# Rule 2311 - When green_house_ir is Triggered AND sequence_tree is 0, do Set green-led to on Increase sequence_tree by 1",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "green_house_ir",
+                "state": "Triggered"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "sequence_tree",
+                "state": "0"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "green-led",
+                "state": "on"
+            },
+            {
+                "sensor": "sequence_tree",
+                "increment": "1"
+            }
+        ]
+    },
+    {
+        "id": 3408,
+        "sensor_name": "# Rule 3408 - When keypad is other, do Set red-led-keypad to on Wait 1 seconds Set red-led-keypad to off Play test.ogg at volume 50 Set volume of test2.ogg to 70",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "keypad",
+                "state": "other"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "red-led-keypad",
+                "state": "on"
+            },
+            {
+                "delay": "1"
+            },
+            {
+                "sensor": "red-led-keypad",
+                "state": "on"
+            },
+            {
+                "play_sound": "test.ogg",
+                "volume": "50",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "type": "set-volume",
+                "sound": "test2.ogg",
+                "volume": "70",
+                "fade": false,
+                "pi": [
+                    "ret-top"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 8509,
+        "sensor_name": "# Rule 8509 - When laser-game is solved AND Max executions: 1, do Call function solve_laser()",
         "constraints": [
             {
                 "type": "task-completed",
-                "task": "paw-maze",
+                "task": "laser-game",
                 "states": [
                     "solved"
                 ]
@@ -481,14 +535,50 @@
         ],
         "actions": [
             {
-                "play_sound": "squeek.ogg",
-                "volume": "70",
-                "loop": true,
-                "loop_interval": "30",
+                "type": "custom-function",
+                "function_name": "solve_laser()"
+            }
+        ]
+    },
+    {
+        "id": 8412,
+        "sensor_name": "# Rule 8412 - When woef-woef is solved AND Max executions: 1, do Stop looping sound Gull.ogg Stop looping sound Duck.ogg Stop looping sound Eagle.ogg",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "woef-woef",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "type": "stop-loop",
+                "sound": "Gull.ogg",
                 "pi": [
                     "ret-top"
                 ]
-            }
+            },
+            {
+                "type": "stop-loop",
+                "sound": "Duck.ogg",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "type": "stop-loop",
+                "sound": "Eagle.ogg",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {}
         ]
     }
 ]
