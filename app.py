@@ -259,6 +259,15 @@ def update_rule_executions(room, rule_id, constraint_type):
 
 def evaluate_constraint(constraint, sensor_name, sensor_state, room, rule_id=None):
     sensor_data = get_sensor_data(room)
+    if constraint['type'] == 'max-executions':
+        if 'current_executions' not in constraint:
+            constraint['current_executions'] = 0
+        if constraint['current_executions'] < int(constraint['max_executions']): 
+            if rule_id:
+                update_rule_executions(room, rule_id, 'max-executions')
+            return True
+        return False
+    # ...existing code...
     if constraint['type'] == 'not':
         return not any(
             evaluate_constraint(nested_constraint, sensor_name, sensor_state, room, rule_id)
@@ -274,14 +283,6 @@ def evaluate_constraint(constraint, sensor_name, sensor_state, room, rule_id=Non
     elif constraint['type'] == 'task-completed':
         task_state = check_task_state(constraint.get('task'), room)
         return task_state in [state.lower() for state in constraint.get('states', [])]
-    elif constraint['type'] == 'max-executions':
-        if 'current_executions' not in constraint:
-            constraint['current_executions'] = 0
-        if constraint['current_executions'] < int(constraint['max_executions']): 
-            if rule_id:
-                update_rule_executions(room, rule_id, 'max-executions')
-            return True
-        return False
     elif constraint['type'] == 'or':
         return any(
             evaluate_constraint(nested_constraint, sensor_name, sensor_state, room, rule_id)
@@ -335,7 +336,7 @@ def set_volume(pi, sound, volume, fade=False, prev_volume=None, fade_time=None):
             publish.single(f"audio_control/{pi}/volume", f"{int(current_volume)} {sound}", hostname=broker_ip)
             time.sleep(fade_interval)
     else:
-        publish.single(f"audio_control/{pi}/volume", f"{volume} {sound}", hostname=broker_ip)
+        publish.single(f"audio_control/{pi}/volume", f"{int(volume)} {sound}", hostname=broker_ip)
 
 loop_threads = {}
 loop_stop_events = {}

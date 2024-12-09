@@ -10,7 +10,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -58,7 +59,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -117,7 +119,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -176,7 +179,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -235,7 +239,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -294,7 +299,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 1
             }
         ],
         "actions": [
@@ -347,7 +353,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -399,7 +406,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -620,7 +628,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -768,7 +777,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -789,7 +799,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -810,7 +821,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -841,7 +853,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -864,7 +877,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -885,7 +899,8 @@
         "constraints": [
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 1
             },
             {
                 "type": "game-state",
@@ -939,7 +954,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -978,7 +994,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -1019,7 +1036,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 1
             }
         ],
         "actions": [
@@ -1060,7 +1078,7 @@
             {
                 "type": "set-volume",
                 "sound": "Background.ogg",
-                "volume": "0",
+                "volume": "1",
                 "fade": false,
                 "pi": [
                     "ret-middle"

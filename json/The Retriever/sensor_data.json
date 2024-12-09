@@ -57,7 +57,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "On"
+        "state": "on"
     },
     {
         "name": "light-1-alley",
@@ -69,7 +69,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "On"
+        "state": "on"
     },
     {
         "name": "blacklight",
@@ -81,7 +81,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "On"
+        "state": "on"
     },
     {
         "name": "portal-light",
@@ -93,7 +93,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "On"
+        "state": "on"
     },
     {
         "name": "top_left_light",
@@ -333,7 +333,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "Locked"
+        "state": "locked"
     },
     {
         "name": "exit-door-lock",
@@ -345,7 +345,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "Locked"
+        "state": "locked"
     },
     {
         "name": "laser-1",
