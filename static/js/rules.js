@@ -33,7 +33,7 @@ $(document).ready(function () {
                             <button class="btn btn-blue add-action" data-type="play-sound">+ Play Sound</button>
                             <button class="btn btn-gray add-action" data-type="set-delay">+ Delay</button>
                             <button class="btn btn-purple add-action" data-type="add-to-state">+ Add to State</button>
-                            <button class="btn btn-yellow add-action" data-type="set-volume">+ Set Volume</button>
+                            <button class="btn btn-blue add-action" data-type="set-volume">+ Set Volume</button>
                             <button class="btn btn-red add-action" data-type="custom-function">+ Custom Function</button>
                             <button class="btn btn-red add-action" data-type="stop-loop">+ Stop Loop</button>
                         </div>
@@ -175,11 +175,17 @@ $(document).ready(function () {
                     } else if (subCard.text().includes("Set task")) {
                         return `<span style="background-color: #fd7e14; color: #fff; padding: 2px 4px; border-radius: 4px;">Set task ${subCard.find("select").val()} to ${subCard.find("select:last").val()}</span>`;
                     } else if (subCard.text().includes("Play sound")) {
-                        return `<span style="background-color: #007bff; color: #fff; padding: 2px 4px; border-radius: 4px;">Play ${subCard.find("input[type=text]").val()} at volume ${subCard.find("input[type=number]").val()}</span>`;
+                        return `<span style="background-color: #007bff; color: #fff; padding: 2px 4px; border-radius: 4px;">Play ${subCard.find(".selected-sound").val()} at volume ${subCard.find(".volume").val()}</span>`;
                     } else if (subCard.text().includes("Delay")) {
                         return `<span style="background-color: #6c757d; color: #fff; padding: 2px 4px; border-radius: 4px;">Wait ${subCard.find("input[type=number]").val()} seconds</span>`;
                     } else if (subCard.text().includes("Increase value of this state")) {
                         return `<span style="background-color: #6200EA; color: #fff; padding: 2px 4px; border-radius: 4px;">Increase ${subCard.find(".sensor-select").val()} by ${subCard.find("input[type=number]").val()}</span>`;
+                    } else if (subCard.text().includes("Set volume")) {
+                        return `<span style="background-color: #007bff; color: #fff; padding: 2px 4px; border-radius: 4px;">Set volume of ${subCard.find(".selected-sound").val()} to ${subCard.find(".volume-input").val()}</span>`;
+                    } else if (subCard.text().includes("Call custom function")) {
+                        return `<span style="background-color: #dc3545; color: #fff; padding: 2px 4px; border-radius: 4px;">Call function ${subCard.find(".custom-function-input").val()}</span>`;
+                    } else if (subCard.text().includes("Stop looping sound")) {
+                        return `<span style="background-color: #dc3545; color: #fff; padding: 2px 4px; border-radius: 4px;">Stop looping sound ${subCard.find(".selected-sound").val()}</span>`;
                     }
                     return "";
                 })
@@ -390,9 +396,8 @@ $(document).ready(function () {
         } else if (type === "set-volume") {
             subCardContent = `
                 Set volume for
-                <select class="sound-select">
-                    <option value="" disabled selected>Select sound</option>
-                </select>
+                <input type="text" class="selected-sound" placeholder="Select sound..." readonly value="${data ? data.sound : ''}">
+                <button type="button" class="select-sound-btn">Select Sound</button>
                 to
                 <input type="number" class="volume-input" placeholder="Volume (0-100)" value="${data ? data.volume : ''}">
                 <label><input type="checkbox" class="fade-checkbox" ${data && data.fade ? 'checked' : ''}> Fade music?</label>
@@ -411,9 +416,8 @@ $(document).ready(function () {
         } else if (type === "stop-loop") {
             subCardContent = `
                 Stop looping sound
-                <select class="sound-select">
-                    <option value="" disabled selected>Select sound</option>
-                </select>
+                <input type="text" class="selected-sound" placeholder="Select sound..." readonly value="${data ? data.sound : ''}">
+                <button type="button" class="select-sound-btn">Select Sound</button>
                 <h3>Select Pi's:</h3>
                 <div class="pi-list"></div>
             `;
@@ -500,7 +504,7 @@ $(document).ready(function () {
 
         if (type === "set-volume") {
             loadSounds().then(sounds => {
-                const soundSelect = subCard.find(".sound-select");
+                const soundSelect = subCard.find(".selected-sound");
                 sounds.forEach(sound => {
                     soundSelect.append(`<option value="${sound}" ${data && data.sound === sound ? 'selected' : ''}>${sound}</option>`);
                 });
@@ -512,45 +516,6 @@ $(document).ready(function () {
                     fadeOptions.show();
                 } else {
                     fadeOptions.hide();
-                }
-            });
-
-            loadPis().then(pis => {
-                const piList = subCard.find(".pi-list");
-                pis.forEach(pi => {
-                    if (pi.services.includes('sound')) {
-                        const piCheckbox = $(`<label><input type="checkbox" value="${pi.hostname}"> ${pi.hostname}</label>`);
-                        piList.append(piCheckbox);
-                    }
-                });
-                if (data && data.pi) {
-                    data.pi.forEach(pi => {
-                        subCard.find(`.pi-list input[value="${pi}"]`).prop('checked', true);
-                    });
-                }
-            });
-        }
-
-        if (type === "stop-loop") {
-            loadSounds().then(sounds => {
-                const soundSelect = subCard.find(".sound-select");
-                sounds.forEach(sound => {
-                    soundSelect.append(`<option value="${sound}" ${data && data.sound === sound ? 'selected' : ''}>${sound}</option>`);
-                });
-            });
-        
-            loadPis().then(pis => {
-                const piList = subCard.find("#pi-list");
-                pis.forEach(pi => {
-                    if (pi.services.includes('sound')) {
-                        const piCheckbox = $(`<label><input type="checkbox" value="${pi.hostname}"> ${pi.hostname}</label>`);
-                        piList.append(piCheckbox);
-                    }
-                });
-                if (data && data.pi) {
-                    data.pi.forEach(pi => {
-                        subCard.find(`#pi-list input[value="${pi}"]`).prop('checked', true);
-                    });
                 }
             });
         }
@@ -705,7 +670,7 @@ $(document).ready(function () {
                     action.increment = subCard.find("input[type=number]").val();
                 } else if (subCard.text().includes("Set volume")) {
                     action.type = "set-volume";
-                    action.sound = subCard.find(".sound-select").val();
+                    action.sound = subCard.find(".selected-sound").val(); // Fix here
                     action.volume = subCard.find(".volume-input").val();
                     action.fade = subCard.find(".fade-checkbox").is(":checked");
                     if (action.fade) {
@@ -720,7 +685,7 @@ $(document).ready(function () {
                     action.function_name = subCard.find(".custom-function-input").val();
                 } else if (subCard.text().includes("Stop looping sound")) {
                     action.type = "stop-loop";
-                    action.sound = subCard.find(".sound-select").val();
+                    action.sound = subCard.find(".selected-sound").val(); // Fix here
                     action.pi = subCard.find(".pi-list input:checked").map(function () {
                         return $(this).val();
                     }).get();

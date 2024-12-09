@@ -12,8 +12,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 1
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -49,8 +48,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -75,8 +73,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -101,8 +98,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -127,8 +123,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -155,8 +150,7 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
+                "max_executions": "1"
             }
         ],
         "actions": [
@@ -435,7 +429,7 @@
     },
     {
         "id": 3408,
-        "sensor_name": "# Rule 3408 - When keypad is other, do Set red-led-keypad to on Wait 1 seconds Set red-led-keypad to on Play test.ogg at volume 50",
+        "sensor_name": "# Rule 3408",
         "constraints": [
             {
                 "type": "state-equals",
@@ -462,12 +456,22 @@
                 "pi": [
                     "ret-top"
                 ]
+            },
+            {
+                "type": "set-volume",
+                "sound": "test2.ogg",
+                "volume": "70",
+                "fade": false,
+                "pi": [
+                    "ret-top",
+                    "ret-top"
+                ]
             }
         ]
     },
     {
         "id": 5776,
-        "sensor_name": "# Rule 5776",
+        "sensor_name": "# Rule 5776 - When mirror-see is solved, do Stop looping sound undefined",
         "constraints": [
             {
                 "type": "task-completed",
@@ -480,7 +484,7 @@
         "actions": [
             {
                 "type": "stop-loop",
-                "sound": "test.ogg",
+                "sound": "test2.ogg",
                 "pi": [
                     "ret-top"
                 ]
@@ -489,7 +493,7 @@
     },
     {
         "id": 5327,
-        "sensor_name": "# Rule 5327",
+        "sensor_name": "# Rule 5327 - When squid-game is solved, do Play test2.ogg at volume 50",
         "constraints": [
             {
                 "type": "task-completed",
@@ -501,7 +505,7 @@
         ],
         "actions": [
             {
-                "play_sound": "test.ogg",
+                "play_sound": "test2.ogg",
                 "volume": "50",
                 "loop": false,
                 "pi": [

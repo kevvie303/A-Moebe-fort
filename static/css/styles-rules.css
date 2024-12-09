@@ -596,42 +596,67 @@ h1 {
 
 .sub-card.state-equals {
     border-left: 5px solid #28a745; /* Green for state-equals */
+    border-top: 5px solid #28a745;
 }
 
 .sub-card.task-completed {
     border-left: 5px solid #fd7e14; /* Orange for task-completed */
+    border-top: 5px solid #fd7e14;
 }
 
 .sub-card.play-sound {
     border-left: 5px solid #007bff; /* Blue for play-sound */
+    border-top: 5px solid #007bff;
 }
 
 .sub-card.set-delay {
     border-left: 5px solid #6c757d; /* Gray for set-delay */
+    border-top: 5px solid #6c757d;
 }
 
 .sub-card.add-to-state {
     border-left: 5px solid #6200EA; /* Gray for add-to-state */
+    border-top: 5px solid #6200EA;
 }
 
 .sub-card.max-executions {
     border-left: 5px solid #6c757d; /* Gray for max-executions */
+    border-top: 5px solid #6c757d;
 }
 
 .sub-card.not-constraint {
     border-left: 5px solid #dc3545; /* Red for not-constraint */
+    border-top: 5px solid #dc3545;
 }
 
 .sub-card.set-state {
     border-left: 5px solid #28a745; /* Green for set-state */
+    border-top: 5px solid #28a745;
 }
 
 .sub-card.set-task-status {
     border-left: 5px solid #fd7e14; /* Orange for set-task-status */
+    border-top: 5px solid #fd7e14;
 }
 
 .sub-card.or-constraint {
     border-left: 5px solid #007bff; /* Blue for or-constraint */
+    border-top: 5px solid #007bff;
+}
+
+.sub-card.set-volume {
+    border-left: 5px solid #007bff; /* Gray for set-volume */
+    border-top: 5px solid #007bff;
+}
+
+.sub-card.custom-function {
+    border-left: 5px solid #dc3545; /* Gray for custom-function */
+    border-top: 5px solid #dc3545;
+}
+
+.sub-card.stop-loop {
+    border-left: 5px solid #dc3545;
+    border-top: 5px solid #dc3545;
 }
 
 .sub-card.or-constraint::before {
@@ -712,4 +737,44 @@ h1 {
     font-weight: bold;
     color: #fd7e14;
     margin-bottom: 5px;
+}
+
+.sub-card.set-volume::before {
+    content: "Set Volume";
+    display: block;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 5px;
+}
+
+.sub-card.custom-function::before {
+    content: "Call Custom Function";
+    display: block;
+    font-weight: bold;
+    color: #dc3545;
+    margin-bottom: 5px;
+}
+
+.sub-card.stop-loop::before {
+    content: "Stop Looping Sound";
+    display: block;
+    font-weight: bold;
+    color: #dc3545;
+    margin-bottom: 5px;
+}
+
+.select-sound-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.select-sound-btn:hover {
+    background-color: #0056b3;
 }
