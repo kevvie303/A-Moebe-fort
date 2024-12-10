@@ -1,63 +1,22 @@
 [
     {
-        "id": 4566,
-        "sensor_name": "# Rule 4566",
+        "id": 4111,
+        "sensor_name": "# Rule 4111",
         "constraints": [
             {
-                "type": "or",
-                "nestedConstraints": [
-                    {
-                        "type": "state-equals",
-                        "sensor": "ir-plant-5",
-                        "state": "Not Triggered"
-                    },
-                    {
-                        "type": "state-equals",
-                        "sensor": "ir-plant-6",
-                        "state": "Not Triggered"
-                    },
-                    {
-                        "type": "state-equals",
-                        "sensor": "ir-plant-4",
-                        "state": "Not Triggered"
-                    },
-                    {
-                        "type": "state-equals",
-                        "sensor": "ir-plant-2",
-                        "state": "Not Triggered"
-                    },
-                    {
-                        "type": "state-equals",
-                        "sensor": "ir-plant-1",
-                        "state": "Not Triggered"
-                    },
-                    {
-                        "type": "state-equals",
-                        "sensor": "ir-plant-3",
-                        "state": "Not Triggered"
-                    },
-                    {
-                        "type": "state-equals",
-                        "sensor": "ir-plant-9",
-                        "state": "Not Triggered"
-                    },
-                    {
-                        "type": "state-equals",
-                        "sensor": "ir-plant-8",
-                        "state": "Not Triggered"
-                    },
-                    {
-                        "type": "state-equals",
-                        "sensor": "ir-plant-7",
-                        "state": "Not Triggered"
-                    }
-                ]
+                "type": "state-equals",
+                "sensor": "sigil-count",
+                "state": "3"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
             }
         ],
         "actions": [
             {
-                "type": "custom-function",
-                "function_name": "plant_pulled(sensor_name, room)"
+                "task": "sigil-all",
+                "status": "solved"
             }
         ]
     },
@@ -83,6 +42,33 @@
         ]
     },
     {
+        "id": 8967,
+        "sensor_name": "# Rule 8967 - When moon-place is solved AND Max executions: 1, do Set astronomy-door-lock to unlocked Call function led_astronomy()",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "moon-place",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "astronomy-door-lock",
+                "state": "unlocked"
+            },
+            {
+                "type": "custom-function",
+                "function_name": "led_astronomy()"
+            }
+        ]
+    },
+    {
         "id": 8875,
         "sensor_name": "# Rule 8875 - When gibbs-sensor is Triggered AND Max executions: 1, do Set task gibbs to solved",
         "constraints": [
@@ -100,6 +86,569 @@
             {
                 "task": "gibbs",
                 "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 8000,
+        "sensor_name": "# Rule 8000 - When plant-9-logic is true AND ir-plant-9 is Not Triggered, do Set plant-9-logic to false",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-9-logic",
+                "state": "true"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-9",
+                "state": "Not Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "plant-9-logic",
+                "state": "false"
+            }
+        ]
+    },
+    {
+        "id": 7999,
+        "sensor_name": "# Rule 7999 - When plant-8-logic is true AND ir-plant-8 is Not Triggered, do Set plant-8-logic to false",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-8-logic",
+                "state": "true"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-8",
+                "state": "Not Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "plant-8-logic",
+                "state": "false"
+            }
+        ]
+    },
+    {
+        "id": 7998,
+        "sensor_name": "# Rule 7998 - When plant-7-logic is true AND ir-plant-7 is Not Triggered, do Set plant-7-logic to false",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-7-logic",
+                "state": "true"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-7",
+                "state": "Not Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "plant-7-logic",
+                "state": "false"
+            }
+        ]
+    },
+    {
+        "id": 7997,
+        "sensor_name": "# Rule 7997 - When plant-6-logic is true AND ir-plant-6 is Not Triggered, do Set plant-6-logic to false",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-6-logic",
+                "state": "true"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-6",
+                "state": "Not Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "plant-6-logic",
+                "state": "false"
+            }
+        ]
+    },
+    {
+        "id": 7996,
+        "sensor_name": "# Rule 7996 - When plant-5-logic is true AND ir-plant-5 is Not Triggered, do Set plant-5-logic to false",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-5-logic",
+                "state": "true"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-5",
+                "state": "Not Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "plant-5-logic",
+                "state": "false"
+            }
+        ]
+    },
+    {
+        "id": 7995,
+        "sensor_name": "# Rule 7995 - When plant-4-logic is true AND ir-plant-4 is Not Triggered, do Set plant-4-logic to false",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-4-logic",
+                "state": "true"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-4",
+                "state": "Not Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "plant-4-logic",
+                "state": "false"
+            }
+        ]
+    },
+    {
+        "id": 7994,
+        "sensor_name": "# Rule 7994 - When plant-3-logic is true AND ir-plant-3 is Not Triggered, do Set plant-3-logic to false",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-3-logic",
+                "state": "true"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-3",
+                "state": "Not Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "plant-3-logic",
+                "state": "false"
+            }
+        ]
+    },
+    {
+        "id": 7993,
+        "sensor_name": "# Rule 7993 - When plant-2-logic is true AND ir-plant-2 is Not Triggered, do Set plant-2-logic to false",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-2-logic",
+                "state": "true"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-2",
+                "state": "Not Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "plant-2-logic",
+                "state": "false"
+            }
+        ]
+    },
+    {
+        "id": 7992,
+        "sensor_name": "# Rule 7992 - When plant-1-logic is true AND ir-plant-1 is Not Triggered, do Set plant-1-logic to false",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-1-logic",
+                "state": "true"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-1",
+                "state": "Not Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "plant-1-logic",
+                "state": "false"
+            }
+        ]
+    },
+    {
+        "id": 7443,
+        "sensor_name": "# Rule 7443 - When plant-9-logic is false AND ir-plant-9 is Triggered, do Call function plant_pulled(sensor_name, room) Set plant-9-logic to true",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-9-logic",
+                "state": "false"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-9",
+                "state": "Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "plant_pulled(sensor_name, room)"
+            },
+            {
+                "sensor": "plant-9-logic",
+                "state": "true"
+            }
+        ]
+    },
+    {
+        "id": 7442,
+        "sensor_name": "# Rule 7442 - When plant-8-logic is false AND ir-plant-8 is Triggered, do Call function plant_pulled(sensor_name, room) Set plant-8-logic to true",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-8-logic",
+                "state": "false"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-8",
+                "state": "Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "plant_pulled(sensor_name, room)"
+            },
+            {
+                "sensor": "plant-8-logic",
+                "state": "true"
+            }
+        ]
+    },
+    {
+        "id": 7441,
+        "sensor_name": "# Rule 7441 - When plant-7-logic is false AND ir-plant-7 is Triggered, do Call function plant_pulled(sensor_name, room) Set plant-7-logic to true",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-7-logic",
+                "state": "false"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-7",
+                "state": "Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "plant_pulled(sensor_name, room)"
+            },
+            {
+                "sensor": "plant-7-logic",
+                "state": "true"
+            }
+        ]
+    },
+    {
+        "id": 7440,
+        "sensor_name": "# Rule 7440 - When plant-6-logic is false AND ir-plant-6 is Triggered, do Call function plant_pulled(sensor_name, room) Set plant-6-logic to true",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-6-logic",
+                "state": "false"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-6",
+                "state": "Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "plant_pulled(sensor_name, room)"
+            },
+            {
+                "sensor": "plant-6-logic",
+                "state": "true"
+            }
+        ]
+    },
+    {
+        "id": 7439,
+        "sensor_name": "# Rule 7439 - When plant-5-logic is false AND ir-plant-5 is Triggered, do Call function plant_pulled(sensor_name, room) Set plant-5-logic to true",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-5-logic",
+                "state": "false"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-5",
+                "state": "Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "plant_pulled(sensor_name, room)"
+            },
+            {
+                "sensor": "plant-5-logic",
+                "state": "true"
+            }
+        ]
+    },
+    {
+        "id": 7438,
+        "sensor_name": "# Rule 7438 - When plant-4-logic is false AND ir-plant-4 is Triggered, do Call function plant_pulled(sensor_name, room) Set plant-4-logic to true",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-4-logic",
+                "state": "false"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-4",
+                "state": "Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "plant_pulled(sensor_name, room)"
+            },
+            {
+                "sensor": "plant-4-logic",
+                "state": "true"
+            }
+        ]
+    },
+    {
+        "id": 7437,
+        "sensor_name": "# Rule 7437 - When plant-3-logic is false AND ir-plant-3 is Triggered, do Call function plant_pulled(sensor_name, room) Set plant-3-logic to true",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-3-logic",
+                "state": "false"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-3",
+                "state": "Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "plant_pulled(sensor_name, room)"
+            },
+            {
+                "sensor": "plant-3-logic",
+                "state": "true"
+            }
+        ]
+    },
+    {
+        "id": 7436,
+        "sensor_name": "# Rule 7436 - When plant-2-logic is false AND ir-plant-2 is Triggered, do Call function plant_pulled(sensor_name, room) Set plant-2-logic to true",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-2-logic",
+                "state": "false"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-2",
+                "state": "Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "plant_pulled(sensor_name, room)"
+            },
+            {
+                "sensor": "plant-2-logic",
+                "state": "true"
+            }
+        ]
+    },
+    {
+        "id": 7435,
+        "sensor_name": "# Rule 7435 - When plant-1-logic is false AND ir-plant-1 is Triggered, do Call function plant_pulled(sensor_name, room) Set plant-1-logic to true",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "plant-1-logic",
+                "state": "false"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "ir-plant-1",
+                "state": "Triggered"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "plant_pulled(sensor_name, room)"
+            },
+            {
+                "sensor": "plant-1-logic",
+                "state": "true"
+            }
+        ]
+    },
+    {
+        "id": 7092,
+        "sensor_name": "# Rule 7092 - When flask-rfid-4 is 584196958334 AND fourth_potion_solvable is True AND Max executions: 1, do Set task yellow-potion to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "flask-rfid-4",
+                "state": "584196958334"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "fourth_potion_solvable",
+                "state": "True"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "task": "yellow-potion",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 6995,
+        "sensor_name": "# Rule 6995 - When flask-place is solved AND Max executions: 1, do Call function third_moon() Increase sigil-count by 1 Play howl.ogg at volume 150",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "flask-place",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "third_moon()"
+            },
+            {
+                "sensor": "sigil-count",
+                "increment": "1"
+            },
+            {
+                "play_sound": "howl.ogg",
+                "volume": "150",
+                "loop": false,
+                "pi": [
+                    "mlv-central"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 6994,
+        "sensor_name": "# Rule 6994 - When telescope-place is solved AND Max executions: 1, do Call function third_moon() Increase sigil-count by 1 Play howl.ogg at volume 150",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "telescope-place",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "third_moon()"
+            },
+            {
+                "sensor": "sigil-count",
+                "increment": "1"
+            },
+            {
+                "play_sound": "howl.ogg",
+                "volume": "150",
+                "loop": false,
+                "pi": [
+                    "mlv-central"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 6993,
+        "sensor_name": "# Rule 6993 - When barrel-place is solved AND Max executions: 1, do Call function third_moon() Increase sigil-count by 1 Play howl.ogg at volume 150",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "barrel-place",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "third_moon()"
+            },
+            {
+                "sensor": "sigil-count",
+                "increment": "1"
+            },
+            {
+                "play_sound": "howl.ogg",
+                "volume": "150",
+                "loop": false,
+                "pi": [
+                    "mlv-central"
+                ]
             }
         ]
     },
@@ -125,6 +674,284 @@
         ]
     },
     {
+        "id": 6394,
+        "sensor_name": "# Rule 6394 - When purple-potion is solved AND Max executions: 1, do Set humidifier to unlocked Call function cauldron_off() Increase potion-count by 1",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "purple-potion",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "humidifier",
+                "state": "unlocked"
+            },
+            {
+                "type": "custom-function",
+                "function_name": "cauldron_off()"
+            },
+            {
+                "sensor": "potion-count",
+                "increment": "1"
+            }
+        ]
+    },
+    {
+        "id": 6393,
+        "sensor_name": "# Rule 6393 - When yellow-potion is solved AND Max executions: 1, do Set humidifier to unlocked Call function cauldron_off() Increase potion-count by 1",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "yellow-potion",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "humidifier",
+                "state": "unlocked"
+            },
+            {
+                "type": "custom-function",
+                "function_name": "cauldron_off()"
+            },
+            {
+                "sensor": "potion-count",
+                "increment": "1"
+            }
+        ]
+    },
+    {
+        "id": 6392,
+        "sensor_name": "# Rule 6392 - When green-potion is solved AND Max executions: 1, do Set humidifier to unlocked Call function cauldron_off() Increase potion-count by 1",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "green-potion",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "humidifier",
+                "state": "unlocked"
+            },
+            {
+                "type": "custom-function",
+                "function_name": "cauldron_off()"
+            },
+            {
+                "sensor": "potion-count",
+                "increment": "1"
+            }
+        ]
+    },
+    {
+        "id": 6391,
+        "sensor_name": "# Rule 6391 - When green-potion is solved AND Max executions: 1, do Set humidifier to unlocked Call function cauldron_off() Increase potion-count by 1",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "green-potion",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "humidifier",
+                "state": "unlocked"
+            },
+            {
+                "type": "custom-function",
+                "function_name": "cauldron_off()"
+            },
+            {
+                "sensor": "potion-count",
+                "increment": "1"
+            }
+        ]
+    },
+    {
+        "id": 6276,
+        "sensor_name": "# Rule 6276 - When potion-all is solved AND Max executions: 1, do Set wolfsbane-lock to unlocked",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "potion-all",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "wolfsbane-lock",
+                "state": "unlocked"
+            }
+        ]
+    },
+    {
+        "id": 6188,
+        "sensor_name": "# Rule 6188 - When final-sequence is solved AND Max executions: 1, do Call function stop_sequence() Call function play_final_video() Set volume of tense.ogg to 1 Play final_sequence.ogg at volume 150 Wait 53 seconds Play thanks.ogg at volume 150 Wait 13 seconds Set tavern-door-lock to unlocked",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "final-sequence",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "stop_sequence()"
+            },
+            {
+                "type": "custom-function",
+                "function_name": "play_final_video()"
+            },
+            {
+                "type": "set-volume",
+                "sound": "tense.ogg",
+                "volume": "1",
+                "fade": false,
+                "pi": [
+                    "mlv-central"
+                ]
+            },
+            {
+                "play_sound": "final_sequence.ogg",
+                "volume": "150",
+                "loop": false,
+                "pi": [
+                    "mlv-central"
+                ]
+            },
+            {
+                "delay": "53"
+            },
+            {
+                "play_sound": "thanks.ogg",
+                "volume": "150",
+                "loop": false,
+                "pi": [
+                    "mlv-central"
+                ]
+            },
+            {
+                "delay": "13"
+            },
+            {
+                "sensor": "tavern-door-lock",
+                "state": "unlocked"
+            }
+        ]
+    },
+    {
+        "id": 6080,
+        "sensor_name": "# Rule 6080 - When gibbs is solved AND Max executions: 1, do Set secret-door-lock to unlocked Call function handle_preset(",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "gibbs",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "secret-door-lock",
+                "state": "unlocked"
+            },
+            {
+                "type": "custom-function",
+                "function_name": "handle_preset("
+            }
+        ]
+    },
+    {
+        "id": 5660,
+        "sensor_name": "# Rule 5660 - When lights-on is solved AND Max executions: 1, do Set corridor-door-lock to unlocked Play bg_central.ogg at volume 70 Set volume of bg_corridor.ogg to 5",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "lights-on",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "corridor-door-lock",
+                "state": "unlocked"
+            },
+            {
+                "play_sound": "bg_central.ogg",
+                "volume": "70",
+                "loop": false,
+                "pi": [
+                    "mlv-central"
+                ]
+            },
+            {
+                "type": "set-volume",
+                "sound": "bg_corridor.ogg",
+                "volume": "5",
+                "fade": true,
+                "prev_volume": "70",
+                "fade_time": "5",
+                "pi": [
+                    "raspberrypi"
+                ]
+            }
+        ]
+    },
+    {
         "id": 5381,
         "sensor_name": "# Rule 5381 - When light_count is 5 AND Max executions: 1, do Set task lights-on to solved",
         "constraints": [
@@ -142,6 +969,306 @@
             {
                 "task": "lights-on",
                 "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 5288,
+        "sensor_name": "# Rule 5288 - When flask-rfid-3 is 584196892797 AND third_potion_solvable is True AND Max executions: 1, do Set task purple-potion to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "flask-rfid-3",
+                "state": "584196892797"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "third_potion_solvable",
+                "state": "True"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "task": "purple-potion",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 4910,
+        "sensor_name": "# Rule 4910 - When constellations is solved AND Max executions: 1, do Set blacklight-astronomy to off",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "constellations",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "blacklight-astronomy",
+                "state": "off"
+            }
+        ]
+    },
+    {
+        "id": 4746,
+        "sensor_name": "# Rule 4746 - When knocker-solve is solved AND Max executions: 1, do Set tavern-door-lock to unlocked Call function led_tavern()",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "knocker-solve",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "tavern-door-lock",
+                "state": "unlocked"
+            },
+            {
+                "type": "custom-function",
+                "function_name": "led_tavern()"
+            }
+        ]
+    },
+    {
+        "id": 3855,
+        "sensor_name": "# Rule 3855 - When flask-rfid-2 is 584197875788 AND second_potion_solvable is True AND Max executions: 1, do Set task orange-potion to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "flask-rfid-2",
+                "state": "584197875788"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "second_potion_solvable",
+                "state": "True"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "task": "orange-potion",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 3321,
+        "sensor_name": "# Rule 3321 - When flask-rfid-1 is 584197941325 AND first_potion_solvable is True AND Max executions: 1, do Set task green-potion to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "flask-rfid-1",
+                "state": "584197941325"
+            },
+            {
+                "type": "state-equals",
+                "sensor": "first_potion_solvable",
+                "state": "True"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "task": "green-potion",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 2360,
+        "sensor_name": "# Rule 2360 - When potion-count is 4 AND Max executions: 1, do Set task potion-all to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "potion-count",
+                "state": "4"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "task": "potion-all",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 2141,
+        "sensor_name": "# Rule 2141 - When sigil-all is solved, do Play sigal-all-first.ogg at volume 150 Set volume of bg_central.ogg to 20 Set dmx-power to locked Wait 12 seconds Play sigil-all-second.ogg at volume 150 Wait 13 seconds Call function send_dmx_command(0, 0, 0, 0, 255) Wait 5 seconds Call function send_dmx_command(0, 0, 0, 0, 0) Set lamp-post-2 to off Set lamp-post-1 to off Set ritual-puzzle-lock to unlocked Set volume of bg_central.ogg to 1 Play tense.ogg at volume 150 Call function start_sequence()",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "sigil-all",
+                "states": [
+                    "solved"
+                ]
+            }
+        ],
+        "actions": [
+            {
+                "play_sound": "sigal-all-first.ogg",
+                "volume": "150",
+                "loop": false,
+                "pi": [
+                    "mlv-central"
+                ]
+            },
+            {
+                "type": "set-volume",
+                "sound": "bg_central.ogg",
+                "volume": "20",
+                "fade": false,
+                "pi": [
+                    "mlv-central"
+                ]
+            },
+            {
+                "sensor": "dmx-power",
+                "state": "locked"
+            },
+            {
+                "delay": "12"
+            },
+            {
+                "play_sound": "sigil-all-second.ogg",
+                "volume": "150",
+                "loop": false,
+                "pi": [
+                    "mlv-central"
+                ]
+            },
+            {
+                "delay": "13"
+            },
+            {
+                "type": "custom-function",
+                "function_name": "send_dmx_command(0, 0, 0, 0, 255)"
+            },
+            {
+                "delay": "5"
+            },
+            {
+                "type": "custom-function",
+                "function_name": "send_dmx_command(0, 0, 0, 0, 0)"
+            },
+            {
+                "sensor": "lamp-post-2",
+                "state": "off"
+            },
+            {
+                "sensor": "lamp-post-1",
+                "state": "off"
+            },
+            {
+                "sensor": "ritual-puzzle-lock",
+                "state": "unlocked"
+            },
+            {
+                "type": "set-volume",
+                "sound": "bg_central.ogg",
+                "volume": "1",
+                "fade": false,
+                "pi": [
+                    "mlv-central"
+                ]
+            },
+            {
+                "play_sound": "tense.ogg",
+                "volume": "150",
+                "loop": false,
+                "pi": [
+                    "mlv-central"
+                ]
+            },
+            {
+                "type": "custom-function",
+                "function_name": "start_sequence()"
+            }
+        ]
+    },
+    {
+        "id": 1826,
+        "sensor_name": "# Rule 1826 - When planets is solved AND Max executions: 1, do Call function led_astronomy_off() Set blacklight-astronomy to on Set rem-lamp to on",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "planets",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "led_astronomy_off()"
+            },
+            {
+                "sensor": "blacklight-astronomy",
+                "state": "on"
+            },
+            {
+                "sensor": "rem-lamp",
+                "state": "on"
+            }
+        ]
+    },
+    {
+        "id": 1486,
+        "sensor_name": "# Rule 1486 - When plant-water is solved AND Max executions: 1, do Wait 1 seconds Set herbalist-door-lock to locked",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "plant-water",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "delay": "1"
+            },
+            {
+                "sensor": "herbalist-door-lock",
+                "state": "locked"
             }
         ]
     }

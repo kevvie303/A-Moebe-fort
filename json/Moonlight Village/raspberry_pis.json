@@ -64,5 +64,12 @@
             "actuator",
             "led"
         ]
+    },
+    {
+        "hostname": "raspberrypi",
+        "ip_address": "192.168.0.103",
+        "services": [
+            "sound"
+        ]
     }
 ]
