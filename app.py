@@ -433,20 +433,35 @@ def check_potion(room):
                 print(f"{color.capitalize()} potion is solvable!")
 
                 # Set the correct solvable potion flag and reset others
-                # reset_potion_flags()
                 if color == "green":
                     first_potion_solvable = True
+                    update_sensor_data(room, "first_potion_solvable", "True")
                 elif color == "orange":
                     second_potion_solvable = True
+                    update_sensor_data(room, "second_potion_solvable", "True")
                 elif color == "purple":
                     third_potion_solvable = True
+                    update_sensor_data(room, "third_potion_solvable", "True")
                 elif color == "yellow":
                     fourth_potion_solvable = True
+                    update_sensor_data(room, "fourth_potion_solvable", "True")
             return
 
     # If no match, reset the pulled plants list
-    #last_three_pulled = []
     print("Wrong combination, try again.")
+
+def update_sensor_data(room, sensor_name, state):
+    try:
+        with open(f'json/{room}/sensor_data.json', 'r') as file:
+            sensor_data = json.load(file)
+        for sensor in sensor_data:
+            if sensor['name'] == sensor_name:
+                sensor['state'] = state
+                break
+        with open(f'json/{room}/sensor_data.json', 'w') as file:
+            json.dump(sensor_data, file, indent=4)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error updating sensor data for {sensor_name}: {e}")
 
 def reset_plants():
     global last_three_pulled
@@ -992,6 +1007,25 @@ def solve_task(task_name, room):
 def solve_laser():
     publish.single("actuator/control/ret-laser", "100", hostname=broker_ip)
     return "Laser solved"
+def led_astronomy():
+    publish.single("led/control/mlv-astronomy", "unlocked", hostname=broker_ip)
+    return "Astronomy LED solved"
+def led_tavern():
+    publish.single("led/control/mlv-tavern", "unlocked", hostname=broker_ip)
+    return "Tavern LED solved"
+def led_herbalist():
+    publish.single("led/control/mlv-herbalist", "unlocked", hostname=broker_ip)
+    publish.single("led/control/mlv-herbalist", "cauldron-off", hostname=broker_ip)
+    return "Herbalist LED solved"
+def third_moon():
+    publish.single("led/control/mlv-webcam", "1/3", hostname=broker_ip)
+    return "Third moon solved"
+def cauldron_off():
+    publish.single("led/control/mlv-herbalist", "cauldron-off", hostname=broker_ip)
+    return "Cauldron off"
+def play_final_video():
+    publish.single("video_control/mlv-tavern/play", "final_sequence.mp4", hostname=broker_ip)
+    return "Final video played"
 PRESETS_FILE = 'json/Moonlight Village/presets.json'
 @app.route('/presets', methods=['GET'])
 def get_presets():

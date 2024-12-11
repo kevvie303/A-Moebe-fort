@@ -816,6 +816,14 @@
                 "state": "on"
             },
             {
+                "play_sound": "correct.ogg",
+                "volume": "50",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
                 "delay": "1"
             },
             {
@@ -942,6 +950,14 @@
                 "state": "on"
             },
             {
+                "play_sound": "correct.ogg",
+                "volume": "50",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
                 "delay": "1"
             },
             {
@@ -999,6 +1015,14 @@
             {
                 "sensor": "green-led-keypad",
                 "state": "on"
+            },
+            {
+                "play_sound": "correct.ogg",
+                "volume": "50",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
             },
             {
                 "delay": "1"

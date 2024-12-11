@@ -1,26 +1,5 @@
 [
     {
-        "id": 4111,
-        "sensor_name": "# Rule 4111",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "sigil-count",
-                "state": "3"
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "task": "sigil-all",
-                "status": "solved"
-            }
-        ]
-    },
-    {
         "id": 9850,
         "sensor_name": "# Rule 9850 - When moon-puzzle is Triggered AND Max executions: 1, do Set task moon-place to solved",
         "constraints": [
@@ -1049,6 +1028,27 @@
         ]
     },
     {
+        "id": 4111,
+        "sensor_name": "# Rule 4111 - When sigil-count is 3 AND Max executions: 1, do Set task sigil-all to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "sigil-count",
+                "state": "3"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1"
+            }
+        ],
+        "actions": [
+            {
+                "task": "sigil-all",
+                "status": "solved"
+            }
+        ]
+    },
+    {
         "id": 3855,
         "sensor_name": "# Rule 3855 - When flask-rfid-2 is 584197875788 AND second_potion_solvable is True AND Max executions: 1, do Set task orange-potion to solved",
         "constraints": [
@@ -1217,7 +1217,7 @@
     },
     {
         "id": 1826,
-        "sensor_name": "# Rule 1826 - When planets is solved AND Max executions: 1, do Call function led_astronomy_off() Set blacklight-astronomy to on Set rem-lamp to on",
+        "sensor_name": "# Rule 1826",
         "constraints": [
             {
                 "type": "task-completed",
@@ -1242,13 +1242,13 @@
             },
             {
                 "sensor": "rem-lamp",
-                "state": "on"
+                "state": "off"
             }
         ]
     },
     {
         "id": 1486,
-        "sensor_name": "# Rule 1486 - When plant-water is solved AND Max executions: 1, do Wait 1 seconds Set herbalist-door-lock to locked",
+        "sensor_name": "# Rule 1486",
         "constraints": [
             {
                 "type": "task-completed",
@@ -1268,7 +1268,11 @@
             },
             {
                 "sensor": "herbalist-door-lock",
-                "state": "locked"
+                "state": "unlocked"
+            },
+            {
+                "type": "custom-function",
+                "function_name": "led_herbalist()"
             }
         ]
     }
