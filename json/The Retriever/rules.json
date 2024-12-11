@@ -875,6 +875,14 @@
                 "state": "on"
             },
             {
+                "play_sound": "correct.ogg",
+                "volume": "50",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
                 "delay": "1"
             },
             {
