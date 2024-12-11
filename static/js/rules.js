@@ -190,6 +190,9 @@ $(document).ready(function () {
                         return `<span style="background-color: #dc3545; color: #fff; padding: 2px 4px; border-radius: 4px;">Call function ${subCard.find(".custom-function-input").val()}</span>`;
                     } else if (subCard.text().includes("Stop looping sound")) {
                         return `<span style="background-color: #dc3545; color: #fff; padding: 2px 4px; border-radius: 4px;">Stop looping sound ${subCard.find(".selected-sound").val()}</span>`;
+                    } else if (subCard.text().includes("Control LED")) {
+                        const selectedLED = subCard.find(".led-select").val();
+                        return `<span style="background-color: #6f42c1; color: #fff; padding: 2px 4px; border-radius: 4px;">Control LED ${selectedLED}</span>`;
                     }
                     return "";
                 })
@@ -438,14 +441,14 @@ $(document).ready(function () {
             subCardContent = `
                 <h4>Control LED</h4>
                 <select class="led-select">
-                    <option value="" disabled selected>Select LED</option>
+                    <option value="" disabled>Select LED</option>
                     ${sensors.filter(sensor => sensor.type === "led").map(led => `
-                        <option value="${led.name}">${led.name}</option>
+                        <option value="${led.name}" ${data && data.led === led.name ? 'selected' : ''}>${led.name}</option>
                     `).join('')}
                 </select>
                 <select class="state-select">
-                    <option value="on">On</option>
-                    <option value="off">Off</option>
+                    <option value="on" ${data && data.state === 'on' ? 'selected' : ''}>On</option>
+                    <option value="off" ${data && data.state === 'off' ? 'selected' : ''}>Off</option>
                 </select>
             `;
         }
