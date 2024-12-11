@@ -37,6 +37,7 @@ $(document).ready(function () {
                             <button class="btn btn-blue add-action" data-type="set-volume">+ Set Volume</button>
                             <button class="btn btn-red add-action" data-type="custom-function">+ Custom Function</button>
                             <button class="btn btn-red add-action" data-type="stop-loop">+ Stop Loop</button>
+                            <button class="btn btn-purple add-action" data-type="control-led">+ Control LED</button>
                         </div>
                         <div class="actions-container"></div>
                     </div>
@@ -433,6 +434,20 @@ $(document).ready(function () {
                 <h3>Select Pi's:</h3>
                 <div class="pi-list"></div>
             `;
+        } else if (type === "control-led") {
+            subCardContent = `
+                <h4>Control LED</h4>
+                <select class="led-select">
+                    <option value="" disabled selected>Select LED</option>
+                    ${sensors.filter(sensor => sensor.type === "led").map(led => `
+                        <option value="${led.name}">${led.name}</option>
+                    `).join('')}
+                </select>
+                <select class="state-select">
+                    <option value="on">On</option>
+                    <option value="off">Off</option>
+                </select>
+            `;
         }
 
         const subCard = $(`<div class="sub-card ${subCardClass}">
@@ -704,6 +719,10 @@ $(document).ready(function () {
                     action.pi = subCard.find(".pi-list input:checked").map(function () {
                         return $(this).val();
                     }).get();
+                } else if (subCard.text().includes("Control LED")) {
+                    action.type = "control-led";
+                    action.led = subCard.find(".led-select").val();
+                    action.state = subCard.find(".state-select").val();
                 }
             
                 actions.push(action);
@@ -812,6 +831,8 @@ $(document).ready(function () {
             return "custom-function";
         } else if (action.type === "stop-loop") {
             return "stop-loop";
+        } else if (action.type === "control-led") {
+            return "control-led";
         }
         return "";
     }
@@ -848,6 +869,7 @@ $(document).ready(function () {
             logic: '',
             rfid: 'Detected, Not Detected',
             different: 'Active, Inactive',
+            led: 'on, off'
         };
     
         // Fetch available Pis from raspberry_pis.json

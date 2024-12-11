@@ -342,6 +342,7 @@ loop_threads = {}
 loop_stop_events = {}
 
 def execute_rule(rule, room):
+
     def execute_next_action(index):
         global language
         if index >= len(rule['actions']):
@@ -392,6 +393,17 @@ def execute_rule(rule, room):
                     loop_threads[pi].join()
                     del loop_stop_events[pi]
                     del loop_threads[pi]
+            execute_next_action(index + 1)
+        elif action.get('type') == 'control-led':
+            sensor_data = get_sensor_data(room)
+            led_name = action.get('led_name')
+            state = action.get('state')
+            # Find the pi connected to the led
+            led = next((s for s in sensor_data if s['name'] == led_name), None)
+            if led:
+                pi = led['pi']
+                message = "unlocked" if state == "on" else "locked"
+                publish.single(f"led/control/{pi}", message, hostname=broker_ip)
             execute_next_action(index + 1)
 
     execute_next_action(0)

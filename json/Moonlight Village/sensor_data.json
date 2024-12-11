@@ -711,9 +711,12 @@
         "name": "sigil-count",
         "type": "logic",
         "allowed_values": "0, 1, 2, 3",
-        "prepared": "",
-        "awake": "",
-        "snoozed": "",
+        "pi": "undefined",
+        "pin": "",
+        "connection_type": "NC",
+        "prepared": "0",
+        "awake": "0",
+        "snoozed": "0",
         "state": "init"
     },
     {
@@ -786,6 +789,18 @@
         "prepared": "Active",
         "awake": "Active",
         "snoozed": "Active",
+        "state": "init"
+    },
+    {
+        "name": "led-corridor",
+        "type": "led",
+        "allowed_values": "on, off",
+        "pi": "mlv-corridors",
+        "pin": "",
+        "connection_type": "NC",
+        "prepared": "on",
+        "awake": "on",
+        "snoozed": "off",
         "state": "init"
     }
 ]

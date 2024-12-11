@@ -93,6 +93,13 @@
                 <button class="add-state-btn" data-section="different">Add State</button>
                 <div class="state-list"></div>
             </div>
+
+            <!-- LEDs Section -->
+            <div class="state-section" id="led">
+                <h2>LEDs</h2>
+                <button class="add-state-btn" data-section="led">Add State</button>
+                <div class="state-list"></div>
+            </div>
         </div>
 
         <div id="pis" class="section-container">
@@ -113,6 +120,16 @@
     <script>
         $(document).ready(function () {
             const availableServices = ["mqtt", "lights_out", "actuator", "led", "sound", "dmx", "camera", "rfid", "knocker"];
+            const defaultValues = {
+                light: 'on, off',
+                Sensor: 'Triggered, Not Triggered',
+                maglock: 'locked, unlocked',
+                button: 'Triggered, Not Triggered',
+                logic: '',
+                rfid: 'Detected, Not Detected',
+                different: 'Active, Inactive',
+                led: 'on, off'
+            };
 
             // Function to set the active section
             function setActiveSection(section) {
