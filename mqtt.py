@@ -275,8 +275,8 @@ def on_message(client, userdata, message):
     if get_game_status() == {'status': 'playing'}:
         if sensor_name == "rfid_corridor":
             print(sensor_state)
-            mendez1 = 584185540695
-            mendez2 = 584199238531
+            mendez1 = 584193283640
+            mendez2 = 584185120044
             mendez3 = 584184252114
             mendez4 = 584190275286
             roosenthaal1 = 584198160159
