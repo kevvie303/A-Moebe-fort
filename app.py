@@ -314,7 +314,6 @@ def on_message(client, userdata, message):
 
         # For other types of messages (e.g., sensor states), you can handle them as before
     else:
-        print("ran")
         sensor_name = parts[-1]  # Extract the last part of the topic (sensor name)
         sensor_state = message.payload.decode("utf-8")
         sensor_states[sensor_name] = sensor_state
@@ -322,6 +321,7 @@ def on_message(client, userdata, message):
 
         if sensor_name in sensor_states:
             sensor_states[sensor_name] = sensor_state
+            update_json_file()
             socketio.emit('sensor_update', room="all_clients")
             socketio.emit('checklist_update', room="all_clients")
             print("State changed. Updated JSON.")
