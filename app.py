@@ -197,6 +197,85 @@ def remove_existing_ogg():
     for file in os.listdir("."):
         if file.endswith(".ogg"):
             os.remove(file)
+def handle_rules(sensor_name, sensor_state):
+    if get_game_status() == {'status': 'playing'}:
+        if sensor_name == "rfid_corridor":
+            print(sensor_state)
+            mendez1 = 584193283640
+            mendez2 = 584185120044
+            mendez3 = 584184252114
+            mendez4 = 584190275286
+            roosenthaal1 = 584198160159
+            roosenthaal2 = 584183068095
+            roosenthaal3 = 584191180531
+            roosenthaal4 = 584194717134
+            sensor_state_int = int(sensor_state)
+            print(roosenthaal2)
+            if sensor_state_int == mendez1 or sensor_state_int == mendez2 or sensor_state_int == mendez3 or sensor_state_int == mendez4:
+                if check_task_state("scan-mendez") == "pending":
+                    solve_task("scan-mendez")
+                print("Correct code")
+            elif sensor_state_int == roosenthaal1 or sensor_state_int == roosenthaal2 or sensor_state_int == roosenthaal3 or sensor_state_int == roosenthaal4:
+                if check_task_state("scan-rosenthal") == "pending":
+                    solve_task("scan-rosenthal")
+                print("Correct code")
+        if check_rule("jas-1"):
+            if check_task_state("kapstok-zuidafrika") == "pending":
+                solve_task("kapstok-zuidafrika")
+        if check_rule("jas-1") == False:
+            if check_task_state("kapstok-zuidafrika") == "solved":
+                pend_task("kapstok-zuidafrika")
+        if check_rule("jas-2"):
+            if check_task_state("kapstok-italie") == "pending":
+                solve_task("kapstok-italie")
+        if check_rule("jas-2") == False:
+            if check_task_state("kapstok-italie") == "solved":
+                pend_task("kapstok-italie")
+        if check_rule("jas-3"):
+            if check_task_state("kapstok-ijsland") == "pending":
+                solve_task("kapstok-ijsland")
+        if check_rule("jas-3") == False:
+            if check_task_state("kapstok-ijsland") == "solved":
+                pend_task("kapstok-ijsland")
+        if check_rule("jas-1") and check_rule("jas-2") and check_rule("jas-3"):
+            if check_task_state("kapstok-allemaal") == "pending":
+                solve_task("kapstok-allemaal")
+        if check_rule("grenade-3"):
+            if check_task_state("granaat-tomsk") == "pending":
+                solve_task("granaat-tomsk")
+        if check_rule("grenade-3") == False:
+            if check_task_state("granaat-tomsk") == "solved":
+                pend_task("granaat-tomsk")
+        if check_rule("grenade-2"):
+            if check_task_state("granaat-khabarovsk") == "pending":
+                solve_task("granaat-khabarovsk")
+        if check_rule("grenade-2") == False:
+            if check_task_state("granaat-khabarovsk") == "solved":
+                pend_task("granaat-khabarovsk")
+        if check_rule("grenade-1"):
+            if check_task_state("granaat-soratov") == "pending":
+                solve_task("granaat-soratov")
+        if check_rule("grenade-1") == False:
+            if check_task_state("granaat-soratov") == "solved":
+                pend_task("granaat-soratov")
+        if check_rule("grenade-1") and check_rule("grenade-2") and check_rule("grenade-3"):
+            if check_task_state("granaat-allemaal") == "pending":
+                solve_task("granaat-allemaal")
+        if check_rule("camera_button"):
+            if check_task_state("Stroomstoring") == "pending" and check_task_state("3-objecten") == "solved":
+                solve_task("Stroomstoring")
+        if check_rule("ehbo-kist") == False:
+            if check_task_state("Medicijnkastje-open") == "pending":
+                solve_task("Medicijnkastje-open")
+        if check_rule("nightstand") == False:
+            if check_task_state("Poster") == "pending":
+                solve_task("Poster")
+        if check_rule("3-objects"):
+            if check_task_state("3-objecten") == "pending":
+                solve_task("3-objecten")
+        if check_rule("alarm-button"):
+            if check_task_state("alarm-knop") == "pending":
+                solve_task("alarm-knop")
 broker_ip = "192.168.50.253"  # IP address of the broker Raspberry Pi
 #broker_ip = "100.103.58.104"
 # Define the topic prefix to subscribe to (e.g., "sensor_state/")
@@ -245,7 +324,7 @@ def on_message(client, userdata, message):
             socketio.emit('sensor_update', room="all_clients")
             socketio.emit('checklist_update', room="all_clients")
             print("State changed. Updated JSON.")
-
+        threading.Thread(target=handle_rules, args=(sensor_name, sensor_state)).start()
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
@@ -404,68 +483,6 @@ def check_rule(item_name):
     except Exception as e:
         print(f"Error reading JSON file: {e}")
         return False
-#def check_rule(sensor_name):
-    global sequence
-    if sensor_name == 'green_house_ir' and sensor_states.get(sensor_name) == 'Triggered' and sequence == 0:
-        pi3.exec_command("raspi-gpio set 15 op dh")
-        print("1")
-        sequence = 1
-    if sensor_name == 'red_house_ir' and sensor_states.get(sensor_name) == 'Triggered' and sequence == 1:
-        pi3.exec_command("raspi-gpio set 21 op dh")
-        print("2")
-        sequence = 2
-    elif sensor_name == 'red_house_ir' and sensor_states.get(sensor_name) == 'Triggered' and sequence <= 0:
-        pi3.exec_command("raspi-gpio set 21 op dh")
-        time.sleep(0.5)
-        pi3.exec_command("raspi-gpio set 21 op dl")
-        pi3.exec_command("raspi-gpio set 15 op dl")
-        sequence = 0
-    if sensor_name == 'blue_house_ir' and sensor_states.get(sensor_name) == 'Triggered' and sequence == 2:
-        solve_task("tree-lights")
-        print("3")
-        pi3.exec_command("raspi-gpio set 23 op dh")
-        fade_out_thread = threading.Thread(target=fade_music_out)
-        fade_out_thread.start()
-        time.sleep(1)
-        pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
-        time.sleep(1)
-        pi3.exec_command("raspi-gpio set 23 op dh \n raspi-gpio set 21 op dh \n raspi-gpio set 15 op dh")
-        time.sleep(1)
-        pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
-        time.sleep(1)
-        pi3.exec_command("raspi-gpio set 23 op dh \n raspi-gpio set 21 op dh \n raspi-gpio set 15 op dh")
-        time.sleep(1)
-        pi3.exec_command("raspi-gpio set 23 op dl \n raspi-gpio set 21 op dl \n raspi-gpio set 15 op dl")
-        sequence = 0
-        time.sleep(1)
-        pi3.exec_command("mpg123 -a hw:0,0 Music/Tree-solve.mp3")
-        time.sleep(7)
-        fade_in_thread = threading.Thread(target=fade_music_in)
-        fade_in_thread.start()
-    elif sensor_name == 'blue_house_ir' and sensor_states.get(sensor_name) == 'Triggered' and sequence != 2:
-        pi3.exec_command("raspi-gpio set 23 op dh")
-        time.sleep(0.5)
-        pi3.exec_command("raspi-gpio set 23 op dl")
-        pi3.exec_command("raspi-gpio set 21 op dl")
-        pi3.exec_command("raspi-gpio set 15 op dl")
-        sequence = 0
-
-    if sensor_name == 'top_left_kraken' and sensor_states.get(sensor_name) == 'Triggered':
-        pi2.exec_command('raspi-gpio set 12 op dh')
-    else:
-        pi2.exec_command('raspi-gpio set 12 op dl')
-    if sensor_name == 'bottom_left_kraken' and sensor_states.get(sensor_name) == 'Triggered':
-        pi2.exec_command('raspi-gpio set 1 op dh')
-    else:
-        pi2.exec_command('raspi-gpio set 1 op dl')
-    if sensor_name == 'top_right_kraken' and sensor_states.get(sensor_name) == 'Triggered':
-        pi2.exec_command('raspi-gpio set 7 op dh')
-    else:
-        pi2.exec_command('raspi-gpio set 7 op dl')
-    if sensor_name == 'bottom_right_kraken' and sensor_states.get(sensor_name) == 'Triggered':
-        pi2.exec_command('raspi-gpio set 8 op dh')
-    else:
-        pi2.exec_command('raspi-gpio set 8 op dl')
 # Create an MQTT client instance
 client = mqtt.Client()
 
@@ -656,6 +673,7 @@ def fade_music_out(file):
     global broker_ip
     print(file)
     if file == "alarm":
+        time.sleep(120)
         initial_volume = 100
         final_volume = 10
     else:
@@ -962,9 +980,9 @@ def solve_task(task_name):
                 publish.single("audio_control/for-poepdoos/stop", "WC.ogg", hostname=broker_ip)
                 publish.single("audio_control/all/play", "alarm.ogg", hostname="192.168.50.253")
                 publish.single("audio_control/all/volume", "100 alarm.ogg", hostname="192.168.50.253")
-                time.sleep(120)
                 alarmfaded = True
-                fade_music_out("alarm")
+                fade_out_thread = threading.Thread(target=fade_music_out, args=("alarm",))
+                fade_out_thread.start()
         elif task_name == "einddeur-open":
             if game_status == {'status': 'playing'}:
                 stop_timer()
@@ -1396,45 +1414,6 @@ def get_sensor_status_pi2(sensor_number):
         return 'unknown'
 with open('json/sensor_data.json', 'r') as json_file:
     sensors = json.load(json_file)
-def monitor_sensor_statuses():
-    global sequence, should_hint_shed_play
-    global code1, code2, code3, code4, code5
-    global codesCorrect
-    global last_keypad_code
-    while True:
-        #green_house_ir_status = get_ir_sensor_status(14)
-        #red_house_ir_status = get_ir_sensor_status(20)
-        #blue_house_ir_status = get_ir_sensor_status(18)
-        #entrance_door_status = get_sensor_status(14)
-        sinus_status = get_sinus_status()
-        #top_left_kraken = get_sensor_status_pi2(15)
-        #bottom_left_kraken = get_sensor_status_pi2(16)
-        #top_right_kraken = get_sensor_status_pi2(20)
-        #bottom_right_kraken = get_sensor_status_pi2(23)
-        last_used_keypad_code = get_shed_keypad_code()
-        if last_used_keypad_code != last_keypad_code:
-            last_keypad_code = last_used_keypad_code  # Update the last keypad code
-            if last_used_keypad_code == "1528" and code1 == False:
-                code1 = True
-                solve_task("flowers")
-            elif (last_used_keypad_code == "7867" or last_used_keypad_code == "8978") and code2 == False:
-                code2 = True
-                solve_task("kite-count")
-            elif last_used_keypad_code == "0128" and code3 == False:
-                code3 = True
-                solve_task("number-feel")
-            elif last_used_keypad_code == "5038" and code4 == False:
-                code4 = True
-                solve_task("fence-decrypt")
-            else:
-                ssh.exec_command("raspi-gpio set 12 op dh")
-                time.sleep(1)
-                ssh.exec_command("raspi-gpio set 12 op dl")
-        if sinus_status == "solved" and aborted == False:
-            solve_task("sinus-game")
-            #pi2.exec_command("mpg123 -a hw:1,0 Music/pentakill.mp3")
-        time.sleep(0.1)
-# Start a new thread for monitoring sensor statuses
 @app.route('/reset-checklist', methods=['POST'])
 def reset_checklist():
     try:
@@ -1553,67 +1532,8 @@ def list_sensors():
 
     # Render the template with the updated sensor data
     return render_template('list_sensors.html', sensors=sensors)
-def start_bird_sounds():
-    pi3.exec_command("mpg123 -a hw:1,0 Music/Gull.mp3")
-    time.sleep(8)
-    pi3.exec_command("mpg123 -a hw:1,0 Music/Duck.mp3")
-    time.sleep(8)
-    pi3.exec_command("mpg123 -a hw:1,0 Music/Eagle.mp3")
-def start_squeak():
-    pi3.exec_command("mpg123 -a hw:0,0 Music/squeek.mp3")
-
-API_URL_IR_SENSORS = 'http://192.168.0.114:5001/ir-sensor/status/'
-
-def get_ir_sensor_status(sensor_number):
-    try:
-        response = requests.get(API_URL_IR_SENSORS + str(sensor_number))
-        if response.status_code == 200:
-            return response.json().get('status')
-        else:
-            return 'unknown'
-    except requests.exceptions.RequestException:
-        return 'unknown'
-sensor_thread = threading.Thread(target=monitor_sensor_statuses)
-sensor_thread.daemon = True
-
-API_URL_SINUS = 'http://192.168.0.105:5001/sinus-game/state'
-
-def get_sinus_status():
-    try:
-        response = requests.get(API_URL_SINUS)
-        if response.status_code == 200:
-            return response.json().get('state')
-        else:
-            return 'unknown'
-    except requests.exceptions.RequestException:
-        return 'unknown'
-#@app.route('/turn_on', methods=['POST'])
-#def turn_on():
-    maglock = request.form['maglock']
-    return turn_on_maglock(maglock)
-
-#@app.route('/turn_off', methods=['POST'])
-#def turn_off():
-    maglock = request.form['maglock']
-    return turn_off_maglock(maglock)
 
 
-@app.route('/send_script')
-def send_script():
-    script_path = 'test.py'
-    target_ip = '192.168.1.28'
-    target_username = 'pi'
-    target_directory = '~/'
-
-    # Construct the scp command
-    scp_command = f'scp {script_path} {target_username}@{target_ip}:{target_directory}'
-
-    try:
-        # Execute the scp command
-        subprocess.run(scp_command, shell=True, check=True)
-        return 'Script sent successfully!'
-    except subprocess.CalledProcessError as e:
-        return f'Error occurred while sending script: {e}'
 def synchronize_music_to_pi(pi_info, music_files):
     if 'services' in pi_info and 'sound' in pi_info['services']:
         ip_address = pi_info['ip_address']
@@ -1678,21 +1598,6 @@ def renew_sd(selected_pi):
             ssh.close()
     else:
         return "Pi Not Found"
-def reset_sensors():
-    global sensor_1_triggered, sensor_2_triggered
-    if sensor_2_triggered or sensor_1_triggered:
-        time.sleep(1)
-        sensor_1_triggered = False
-        sensor_2_triggered = False
-        print("Trigger flags reset.")
-
-def continuous_reset_sensors():
-    while True:
-        reset_sensors()
-def execute_code():
-    stdin.write('0\n')
-    stdin.flush()
-    print("Code executed on the server Pi.")
 
 @app.route('/reboot_pi', methods=['POST'])
 def reboot_pi():
@@ -1717,25 +1622,6 @@ def reboot_pi():
         return jsonify({"message": f"Reboot command sent to {ip_address}"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
-@app.route('/trigger', methods=['POST'])
-def handle_trigger():
-    global sensor_1_triggered, sensor_2_triggered
-
-    sensor_data = request.get_json()
-    # print("Sensor triggered:", sensor_data["sensor"])
-
-    if sensor_data["sensor"] == "Sensor 1":
-        sensor_1_triggered = True
-    elif sensor_data["sensor"] == "Sensor 2":
-        sensor_2_triggered = True
-    elif sensor_data["sensor"] == "turn off":
-        sensor_1_triggered = False
-        sensor_2_triggered = False
-    if sensor_1_triggered and sensor_2_triggered:
-        execute_code()
-    return "Trigger handled."
 def handle_interrupt(signal, frame):
     client.loop_stop()
     print("Interrupt received. Shutting down...")
