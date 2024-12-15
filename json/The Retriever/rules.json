@@ -1,107 +1,27 @@
 [
     {
-        "id": 8457,
-        "sensor_name": "# Rule 8457 - When squid-game is solved AND Max executions: 1, do Set top_left_light to on Set top_right_light to on Set bottom_right_light to on Set bottom_left_light to on Play gelukt.ogg at volume 5 Wait 3 seconds Set sliding-door-lock to unlocked Wait 6 seconds Set volume of Background.ogg to 1 Play Dogsout.ogg at volume 5",
-        "constraints": [
-            {
-                "type": "task-completed",
-                "task": "squid-game",
-                "states": [
-                    "solved"
-                ]
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "sensor": "top_left_light",
-                "state": "on"
-            },
-            {
-                "sensor": "top_right_light",
-                "state": "on"
-            },
-            {
-                "sensor": "bottom_right_light",
-                "state": "on"
-            },
-            {
-                "sensor": "bottom_left_light",
-                "state": "on"
-            },
-            {
-                "play_sound": "gelukt.ogg",
-                "volume": "5",
-                "loop": false,
-                "pi": [
-                    "ret-middle"
-                ]
-            },
-            {
-                "delay": "3"
-            },
-            {
-                "sensor": "sliding-door-lock",
-                "state": "unlocked"
-            },
-            {
-                "delay": "6"
-            },
-            {
-                "type": "set-volume",
-                "sound": "Background.ogg",
-                "volume": "1",
-                "fade": false,
-                "pi": [
-                    "ret-middle"
-                ]
-            },
-            {
-                "play_sound": "Dogsout.ogg",
-                "volume": "5",
-                "loop": false,
-                "pi": [
-                    "ret-middle"
-                ]
-            }
-        ]
-    },
-    {
-        "id": 6627,
-        "sensor_name": "# Rule 6627 - When right_codes is 2 AND Max executions: 1, do Play goed_bezig.ogg at volume 70 Wait 6 seconds Set volume of Ambience.ogg to 70",
+        "id": 7081,
+        "sensor_name": "# Rule 7081",
         "constraints": [
             {
                 "type": "state-equals",
                 "sensor": "right_codes",
-                "state": "2"
+                "state": "3"
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
-            {
-                "play_sound": "goed_bezig.ogg",
-                "volume": "70",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "6"
-            },
             {
                 "type": "set-volume",
                 "sound": "Ambience.ogg",
                 "volume": "70",
                 "fade": true,
                 "prev_volume": "5",
-                "fade_time": "2",
+                "fade_time": "3",
                 "pi": [
                     "ret-top"
                 ]
@@ -109,212 +29,31 @@
         ]
     },
     {
-        "id": 7204,
-        "sensor_name": "# Rule 7204 - When right_codes is 1 AND Max executions: 1, do Play after1code.ogg at volume 70 Wait 4 seconds Set volume of Ambience.ogg to 70",
+        "id": 7082,
+        "sensor_name": "# Rule 7081",
         "constraints": [
             {
                 "type": "state-equals",
                 "sensor": "right_codes",
-                "state": "1"
+                "state": "4"
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
-            {
-                "play_sound": "after1code.ogg",
-                "volume": "70",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "4"
-            },
             {
                 "type": "set-volume",
                 "sound": "Ambience.ogg",
                 "volume": "70",
                 "fade": true,
                 "prev_volume": "5",
-                "fade_time": "2",
+                "fade_time": "3",
                 "pi": [
                     "ret-top"
                 ]
-            }
-        ]
-    },
-    {
-        "id": 3795,
-        "sensor_name": "# Rule 3795 - When Max executions: 1 AND Game started, do Play Gull.ogg at volume 100 Wait 8 seconds Play Duck.ogg at volume 50 Wait 8 seconds Play Eagle.ogg at volume 50",
-        "constraints": [
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            },
-            {
-                "type": "game-state",
-                "state": "started"
-            }
-        ],
-        "actions": [
-            {
-                "play_sound": "Gull.ogg",
-                "volume": "100",
-                "loop": true,
-                "loop_interval": "60",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "8"
-            },
-            {
-                "play_sound": "Duck.ogg",
-                "volume": "50",
-                "loop": true,
-                "loop_interval": "60",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "8"
-            },
-            {
-                "play_sound": "Eagle.ogg",
-                "volume": "50",
-                "loop": true,
-                "loop_interval": "60",
-                "pi": [
-                    "ret-top"
-                ]
-            }
-        ]
-    },
-    {
-        "id": 5093,
-        "sensor_name": "# Rule 5093 - When paw-maze is solved AND Max executions: 1, do Play squeek.ogg at volume 70",
-        "constraints": [
-            {
-                "type": "task-completed",
-                "task": "paw-maze",
-                "states": [
-                    "solved"
-                ]
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "play_sound": "squeek.ogg",
-                "volume": "70",
-                "loop": true,
-                "loop_interval": "30",
-                "pi": [
-                    "ret-top"
-                ]
-            }
-        ]
-    },
-    {
-        "id": 2733,
-        "sensor_name": "# Rule 2733 - When OR (keypad is 7867 OR keypad is 8978) AND Max executions: 1, do Set task kite-count to solved",
-        "constraints": [
-            {
-                "type": "or",
-                "nestedConstraints": [
-                    {
-                        "type": "state-equals",
-                        "sensor": "keypad",
-                        "state": "7867"
-                    },
-                    {
-                        "type": "state-equals",
-                        "sensor": "keypad",
-                        "state": "8978"
-                    }
-                ]
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "task": "kite-count",
-                "status": "solved"
-            }
-        ]
-    },
-    {
-        "id": 6829,
-        "sensor_name": "# Rule 6829 - When keypad is 5038 AND Max executions: 1, do Set task fence-decrypt to solved",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "keypad",
-                "state": "5038"
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "task": "fence-decrypt",
-                "status": "solved"
-            }
-        ]
-    },
-    {
-        "id": 6828,
-        "sensor_name": "# Rule 6828 - When keypad is 1528 AND Max executions: 1, do Set task flowers to solved",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "keypad",
-                "state": "1528"
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "task": "flowers",
-                "status": "solved"
-            }
-        ]
-    },
-    {
-        "id": 6827,
-        "sensor_name": "# Rule 6827 - When keypad is 0128 AND Max executions: 1, do Set task number-feel to solved",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "keypad",
-                "state": "0128"
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "task": "number-feel",
-                "status": "solved"
             }
         ]
     },
@@ -331,7 +70,8 @@
             },
             {
                 "type": "max-executions",
-                "max_executions": "1"
+                "max_executions": "1",
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -461,6 +201,825 @@
             },
             {
                 "delay": "7"
+            },
+            {
+                "sensor": "right_codes",
+                "increment": "1"
+            }
+        ]
+    },
+    {
+        "id": 8509,
+        "sensor_name": "# Rule 8509 - When laser-game is solved AND Max executions: 1, do Call function solve_laser()",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "laser-game",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "type": "custom-function",
+                "function_name": "solve_laser()"
+            }
+        ]
+    },
+    {
+        "id": 8457,
+        "sensor_name": "# Rule 8457 - When squid-game is solved AND Max executions: 1, do Set top_left_light to on Set top_right_light to on Set bottom_right_light to on Set bottom_left_light to on Play gelukt.ogg at volume 5 Wait 3 seconds Set sliding-door-lock to unlocked Wait 6 seconds Set volume of Background.ogg to 1 Play Dogsout.ogg at volume 5",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "squid-game",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "top_left_light",
+                "state": "on"
+            },
+            {
+                "sensor": "top_right_light",
+                "state": "on"
+            },
+            {
+                "sensor": "bottom_right_light",
+                "state": "on"
+            },
+            {
+                "sensor": "bottom_left_light",
+                "state": "on"
+            },
+            {
+                "play_sound": "gelukt.ogg",
+                "volume": "5",
+                "loop": false,
+                "pi": [
+                    "ret-middle"
+                ]
+            },
+            {
+                "delay": "3"
+            },
+            {
+                "sensor": "sliding-door-lock",
+                "state": "unlocked"
+            },
+            {
+                "delay": "6"
+            },
+            {
+                "type": "set-volume",
+                "sound": "Background.ogg",
+                "volume": "1",
+                "fade": false,
+                "pi": [
+                    "ret-middle"
+                ]
+            },
+            {
+                "play_sound": "Dogsout.ogg",
+                "volume": "5",
+                "loop": false,
+                "pi": [
+                    "ret-middle"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 8412,
+        "sensor_name": "# Rule 8412 - When woef-woef is solved AND Max executions: 1, do Stop looping sound Gull.ogg Stop looping sound Duck.ogg Stop looping sound Eagle.ogg Play hok.ogg at volume 70 Set doghouse-lock to unlocked",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "woef-woef",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "type": "stop-loop",
+                "sound": "Gull.ogg",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "type": "stop-loop",
+                "sound": "Duck.ogg",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "type": "stop-loop",
+                "sound": "Eagle.ogg",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "play_sound": "hok.ogg",
+                "volume": "70",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "sensor": "doghouse-lock",
+                "state": "unlocked"
+            }
+        ]
+    },
+    {
+        "id": 8075,
+        "sensor_name": "# Rule 8075 - When number-feel is solved AND Max executions: 1, do Set green-led-keypad to on Play correct-effect.ogg at volume 50 Wait 1 seconds Set green-led-keypad to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play plantenbak.ogg at volume 70 Wait 5 seconds Increase right_codes by 1",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "number-feel",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "green-led-keypad",
+                "state": "on"
+            },
+            {
+                "play_sound": "correct-effect.ogg",
+                "volume": "50",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "1"
+            },
+            {
+                "sensor": "green-led-keypad",
+                "state": "off"
+            },
+            {
+                "type": "set-volume",
+                "sound": "Ambience.ogg",
+                "volume": "5",
+                "fade": true,
+                "prev_volume": "70",
+                "fade_time": "2",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "2"
+            },
+            {
+                "play_sound": "plantenbak.ogg",
+                "volume": "70",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "5"
+            },
+            {
+                "sensor": "right_codes",
+                "increment": "1"
+            }
+        ]
+    },
+    {
+        "id": 7808,
+        "sensor_name": "# Rule 7808 - When right_codes is 5 AND Max executions: 1, do Wait 1 seconds Play schuur_open.ogg at volume 70 Wait 5 seconds Set volume of Ambience.ogg to 70 Set shed-door-lock to unlocked",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "right_codes",
+                "state": "5"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "delay": "1"
+            },
+            {
+                "play_sound": "schuur_open.ogg",
+                "volume": "70",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "5"
+            },
+            {
+                "type": "set-volume",
+                "sound": "Ambience.ogg",
+                "volume": "70",
+                "fade": true,
+                "prev_volume": "5",
+                "fade_time": "2",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "sensor": "shed-door-lock",
+                "state": "unlocked"
+            }
+        ]
+    },
+    {
+        "id": 7204,
+        "sensor_name": "# Rule 7204 - When right_codes is 1 AND Max executions: 1, do Play after1code.ogg at volume 70 Wait 4 seconds Set volume of Ambience.ogg to 70",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "right_codes",
+                "state": "1"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "play_sound": "after1code.ogg",
+                "volume": "70",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "4"
+            },
+            {
+                "type": "set-volume",
+                "sound": "Ambience.ogg",
+                "volume": "70",
+                "fade": true,
+                "prev_volume": "5",
+                "fade_time": "2",
+                "pi": [
+                    "ret-top"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 6829,
+        "sensor_name": "# Rule 6829 - When keypad is 5038 AND Max executions: 1, do Set task fence-decrypt to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "keypad",
+                "state": "5038"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 2
+            }
+        ],
+        "actions": [
+            {
+                "task": "fence-decrypt",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 6828,
+        "sensor_name": "# Rule 6828 - When keypad is 1528 AND Max executions: 1, do Set task flowers to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "keypad",
+                "state": "1528"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "task": "flowers",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 6827,
+        "sensor_name": "# Rule 6827 - When keypad is 0128 AND Max executions: 1, do Set task number-feel to solved",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "keypad",
+                "state": "0128"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "task": "number-feel",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 6702,
+        "sensor_name": "# Rule 6702 - When fence-decrypt is solved AND Max executions: 1, do Set green-led-keypad to on Play correct-effect.ogg at volume 50 Wait 1 seconds Set green-led-keypad to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play hek.ogg at volume 70 Wait 5 seconds Increase right_codes by 1",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "fence-decrypt",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 2
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "green-led-keypad",
+                "state": "on"
+            },
+            {
+                "play_sound": "correct-effect.ogg",
+                "volume": "50",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "1"
+            },
+            {
+                "sensor": "green-led-keypad",
+                "state": "off"
+            },
+            {
+                "type": "set-volume",
+                "sound": "Ambience.ogg",
+                "volume": "5",
+                "fade": true,
+                "prev_volume": "70",
+                "fade_time": "2",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "2"
+            },
+            {
+                "play_sound": "hek.ogg",
+                "volume": "70",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "5"
+            },
+            {
+                "sensor": "right_codes",
+                "increment": "1"
+            }
+        ]
+    },
+    {
+        "id": 6627,
+        "sensor_name": "# Rule 6627 - When right_codes is 2 AND Max executions: 1, do Play goed_bezig.ogg at volume 70 Wait 6 seconds Set volume of Ambience.ogg to 70",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "right_codes",
+                "state": "2"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 4
+            }
+        ],
+        "actions": [
+            {
+                "play_sound": "goed_bezig.ogg",
+                "volume": "70",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "6"
+            },
+            {
+                "type": "set-volume",
+                "sound": "Ambience.ogg",
+                "volume": "70",
+                "fade": true,
+                "prev_volume": "5",
+                "fade_time": "2",
+                "pi": [
+                    "ret-top"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 5705,
+        "sensor_name": "# Rule 5705 - When kite-count is solved AND Max executions: 1, do Set green-led-keypad to on Play correct-effect.ogg at volume 50 Wait 1 seconds Set green-led-keypad to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play vlieger.ogg at volume 50 Wait 5 seconds Increase right_codes by 1",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "kite-count",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "green-led-keypad",
+                "state": "on"
+            },
+            {
+                "play_sound": "correct-effect.ogg",
+                "volume": "50",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "1"
+            },
+            {
+                "sensor": "green-led-keypad",
+                "state": "off"
+            },
+            {
+                "type": "set-volume",
+                "sound": "Ambience.ogg",
+                "volume": "5",
+                "fade": true,
+                "prev_volume": "70",
+                "fade_time": "2",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "2"
+            },
+            {
+                "play_sound": "vlieger.ogg",
+                "volume": "50",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "5"
+            },
+            {
+                "sensor": "right_codes",
+                "increment": "1"
+            }
+        ]
+    },
+    {
+        "id": 5093,
+        "sensor_name": "# Rule 5093 - When paw-maze is solved AND Max executions: 1, do Play squeek.ogg at volume 70",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "paw-maze",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "play_sound": "squeek.ogg",
+                "volume": "70",
+                "loop": true,
+                "loop_interval": "30",
+                "pi": [
+                    "ret-top"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 4415,
+        "sensor_name": "# Rule 4415 - When squeekuence is solved AND Max executions: 1, do Stop looping sound squeekence.ogg Play Background.ogg at volume 70 Set volume of Ambience.ogg to 3 Set laser-2 to on Set lab-hatch-lock to unlocked",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "squeekuence",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "type": "stop-loop",
+                "sound": "squeekence.ogg",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "play_sound": "Background.ogg",
+                "volume": "70",
+                "loop": false,
+                "pi": [
+                    "ret-middle"
+                ]
+            },
+            {
+                "type": "set-volume",
+                "sound": "Ambience.ogg",
+                "volume": "3",
+                "fade": true,
+                "prev_volume": "70",
+                "fade_time": "5",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "sensor": "laser-2",
+                "state": "on"
+            },
+            {
+                "sensor": "lab-hatch-lock",
+                "state": "unlocked"
+            }
+        ]
+    },
+    {
+        "id": 3795,
+        "sensor_name": "# Rule 3795 - When Max executions: 1 AND Game started, do Play Gull.ogg at volume 100 Wait 8 seconds Play Duck.ogg at volume 50 Wait 8 seconds Play Eagle.ogg at volume 50",
+        "constraints": [
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 1
+            },
+            {
+                "type": "game-state",
+                "state": "started"
+            }
+        ],
+        "actions": [
+            {
+                "play_sound": "Gull.ogg",
+                "volume": "100",
+                "loop": true,
+                "loop_interval": "60",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "8"
+            },
+            {
+                "play_sound": "Duck.ogg",
+                "volume": "50",
+                "loop": true,
+                "loop_interval": "60",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "8"
+            },
+            {
+                "play_sound": "Eagle.ogg",
+                "volume": "50",
+                "loop": true,
+                "loop_interval": "60",
+                "pi": [
+                    "ret-top"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 3408,
+        "sensor_name": "# Rule 3408 - When keypad is other, do Set red-led-keypad to on Wait 1 seconds Set red-led-keypad to on Play test.ogg at volume 50 Set volume of test2.ogg to 70",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "keypad",
+                "state": "other"
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "red-led-keypad",
+                "state": "on"
+            },
+            {
+                "delay": "1"
+            },
+            {
+                "sensor": "red-led-keypad",
+                "state": "on"
+            },
+            {
+                "play_sound": "test.ogg",
+                "volume": "50",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "type": "set-volume",
+                "sound": "test2.ogg",
+                "volume": "70",
+                "fade": false,
+                "pi": [
+                    "ret-top"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2733,
+        "sensor_name": "# Rule 2733 - When OR (keypad is 7867 OR keypad is 8978) AND Max executions: 1, do Set task kite-count to solved",
+        "constraints": [
+            {
+                "type": "or",
+                "nestedConstraints": [
+                    {
+                        "type": "state-equals",
+                        "sensor": "keypad",
+                        "state": "7867"
+                    },
+                    {
+                        "type": "state-equals",
+                        "sensor": "keypad",
+                        "state": "8978"
+                    }
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "task": "kite-count",
+                "status": "solved"
+            }
+        ]
+    },
+    {
+        "id": 2449,
+        "sensor_name": "# Rule 2449 - When flowers is solved AND Max executions: 1, do Set green-led-keypad to on Play correct-effect.ogg at volume 50 Wait 1 seconds Set green-led-keypad to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play bloemen.ogg at volume 70 Wait 10 seconds Increase right_codes by 1",
+        "constraints": [
+            {
+                "type": "task-completed",
+                "task": "flowers",
+                "states": [
+                    "solved"
+                ]
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "sensor": "green-led-keypad",
+                "state": "on"
+            },
+            {
+                "play_sound": "correct-effect.ogg",
+                "volume": "50",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "1"
+            },
+            {
+                "sensor": "green-led-keypad",
+                "state": "off"
+            },
+            {
+                "type": "set-volume",
+                "sound": "Ambience.ogg",
+                "volume": "5",
+                "fade": true,
+                "prev_volume": "70",
+                "fade_time": "2",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "2"
+            },
+            {
+                "play_sound": "bloemen.ogg",
+                "volume": "70",
+                "loop": false,
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "delay": "10"
             },
             {
                 "sensor": "right_codes",
@@ -622,489 +1181,6 @@
             {
                 "sensor": "sequence_tree",
                 "increment": "1"
-            }
-        ]
-    },
-    {
-        "id": 3408,
-        "sensor_name": "# Rule 3408 - When keypad is other, do Set red-led-keypad to on Wait 1 seconds Set red-led-keypad to on Play test.ogg at volume 50 Set volume of test2.ogg to 70",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "keypad",
-                "state": "other"
-            }
-        ],
-        "actions": [
-            {
-                "sensor": "red-led-keypad",
-                "state": "on"
-            },
-            {
-                "delay": "1"
-            },
-            {
-                "sensor": "red-led-keypad",
-                "state": "on"
-            },
-            {
-                "play_sound": "test.ogg",
-                "volume": "50",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "type": "set-volume",
-                "sound": "test2.ogg",
-                "volume": "70",
-                "fade": false,
-                "pi": [
-                    "ret-top"
-                ]
-            }
-        ]
-    },
-    {
-        "id": 8509,
-        "sensor_name": "# Rule 8509 - When laser-game is solved AND Max executions: 1, do Call function solve_laser()",
-        "constraints": [
-            {
-                "type": "task-completed",
-                "task": "laser-game",
-                "states": [
-                    "solved"
-                ]
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "type": "custom-function",
-                "function_name": "solve_laser()"
-            }
-        ]
-    },
-    {
-        "id": 8412,
-        "sensor_name": "# Rule 8412 - When woef-woef is solved AND Max executions: 1, do Stop looping sound Gull.ogg Stop looping sound Duck.ogg Stop looping sound Eagle.ogg Play hok.ogg at volume 70 Set doghouse-lock to unlocked",
-        "constraints": [
-            {
-                "type": "task-completed",
-                "task": "woef-woef",
-                "states": [
-                    "solved"
-                ]
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "type": "stop-loop",
-                "sound": "Gull.ogg",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "type": "stop-loop",
-                "sound": "Duck.ogg",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "type": "stop-loop",
-                "sound": "Eagle.ogg",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "play_sound": "hok.ogg",
-                "volume": "70",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "sensor": "doghouse-lock",
-                "state": "unlocked"
-            }
-        ]
-    },
-    {
-        "id": 4415,
-        "sensor_name": "# Rule 4415 - When squeekuence is solved AND Max executions: 1, do Stop looping sound squeekence.ogg Play Background.ogg at volume 70 Set volume of Ambience.ogg to 3 Set laser-2 to on Set lab-hatch-lock to unlocked",
-        "constraints": [
-            {
-                "type": "task-completed",
-                "task": "squeekuence",
-                "states": [
-                    "solved"
-                ]
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "type": "stop-loop",
-                "sound": "squeekence.ogg",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "play_sound": "Background.ogg",
-                "volume": "70",
-                "loop": false,
-                "pi": [
-                    "ret-middle"
-                ]
-            },
-            {
-                "type": "set-volume",
-                "sound": "Ambience.ogg",
-                "volume": "3",
-                "fade": true,
-                "prev_volume": "70",
-                "fade_time": "5",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "sensor": "laser-2",
-                "state": "on"
-            },
-            {
-                "sensor": "lab-hatch-lock",
-                "state": "unlocked"
-            }
-        ]
-    },
-    {
-        "id": 2449,
-        "sensor_name": "# Rule 2449 - When flowers is solved AND Max executions: 1, do Set green-led-keypad to on Wait 1 seconds Set green-led-keypad to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play bloemen.ogg at volume 70 Wait 10 seconds Increase right_codes by 1",
-        "constraints": [
-            {
-                "type": "task-completed",
-                "task": "flowers",
-                "states": [
-                    "solved"
-                ]
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "sensor": "green-led-keypad",
-                "state": "on"
-            },
-            {
-                "play_sound": "correct.ogg",
-                "volume": "50",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "1"
-            },
-            {
-                "sensor": "green-led-keypad",
-                "state": "off"
-            },
-            {
-                "type": "set-volume",
-                "sound": "Ambience.ogg",
-                "volume": "5",
-                "fade": true,
-                "prev_volume": "70",
-                "fade_time": "2",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "2"
-            },
-            {
-                "play_sound": "bloemen.ogg",
-                "volume": "70",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "10"
-            },
-            {
-                "sensor": "right_codes",
-                "increment": "1"
-            }
-        ]
-    },
-    {
-        "id": 5705,
-        "sensor_name": "# Rule 5705 - When kite-count is solved AND Max executions: 1, do Set green-led-keypad to on Wait 1 seconds Set green-led-keypad to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play vlieger.ogg at volume 50 Wait 5 seconds Increase right_codes by 1",
-        "constraints": [
-            {
-                "type": "task-completed",
-                "task": "kite-count",
-                "states": [
-                    "solved"
-                ]
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "sensor": "green-led-keypad",
-                "state": "on"
-            },
-            {
-                "play_sound": "correct.ogg",
-                "volume": "50",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "1"
-            },
-            {
-                "sensor": "green-led-keypad",
-                "state": "off"
-            },
-            {
-                "type": "set-volume",
-                "sound": "Ambience.ogg",
-                "volume": "5",
-                "fade": true,
-                "prev_volume": "70",
-                "fade_time": "2",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "2"
-            },
-            {
-                "play_sound": "vlieger.ogg",
-                "volume": "50",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "5"
-            },
-            {
-                "sensor": "right_codes",
-                "increment": "1"
-            }
-        ]
-    },
-    {
-        "id": 8075,
-        "sensor_name": "# Rule 8075 - When number-feel is solved AND Max executions: 1, do Set green-led-keypad to on Wait 1 seconds Set green-led-keypad to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play plantenbak.ogg at volume 70 Wait 5 seconds Increase right_codes by 1",
-        "constraints": [
-            {
-                "type": "task-completed",
-                "task": "number-feel",
-                "states": [
-                    "solved"
-                ]
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "sensor": "green-led-keypad",
-                "state": "on"
-            },
-            {
-                "play_sound": "correct.ogg",
-                "volume": "50",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "1"
-            },
-            {
-                "sensor": "green-led-keypad",
-                "state": "off"
-            },
-            {
-                "type": "set-volume",
-                "sound": "Ambience.ogg",
-                "volume": "5",
-                "fade": true,
-                "prev_volume": "70",
-                "fade_time": "2",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "2"
-            },
-            {
-                "play_sound": "plantenbak.ogg",
-                "volume": "70",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "5"
-            },
-            {
-                "sensor": "right_codes",
-                "increment": "1"
-            }
-        ]
-    },
-    {
-        "id": 6702,
-        "sensor_name": "# Rule 6702 - When fence-decrypt is solved AND Max executions: 1, do Set green-led-keypad to on Wait 1 seconds Set green-led-keypad to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play hek.ogg at volume 70 Wait 5 seconds Increase light-1-garden by 1",
-        "constraints": [
-            {
-                "type": "task-completed",
-                "task": "fence-decrypt",
-                "states": [
-                    "solved"
-                ]
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "sensor": "green-led-keypad",
-                "state": "on"
-            },
-            {
-                "play_sound": "correct.ogg",
-                "volume": "50",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "1"
-            },
-            {
-                "sensor": "green-led-keypad",
-                "state": "off"
-            },
-            {
-                "type": "set-volume",
-                "sound": "Ambience.ogg",
-                "volume": "5",
-                "fade": true,
-                "prev_volume": "70",
-                "fade_time": "2",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "2"
-            },
-            {
-                "play_sound": "hek.ogg",
-                "volume": "70",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "5"
-            },
-            {
-                "sensor": "light-1-garden",
-                "increment": "1"
-            }
-        ]
-    },
-    {
-        "id": 7808,
-        "sensor_name": "# Rule 7808",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "right_codes",
-                "state": "5"
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1"
-            }
-        ],
-        "actions": [
-            {
-                "delay": "1"
-            },
-            {
-                "play_sound": "schuur_open.ogg",
-                "volume": "70",
-                "loop": false,
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "delay": "5"
-            },
-            {
-                "type": "set-volume",
-                "sound": "Ambience.ogg",
-                "volume": "70",
-                "fade": true,
-                "prev_volume": "5",
-                "fade_time": "2",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "sensor": "shed-door-lock",
-                "state": "unlocked"
             }
         ]
     }

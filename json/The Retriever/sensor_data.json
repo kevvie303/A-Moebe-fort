@@ -185,11 +185,11 @@
         "allowed_values": "on, off",
         "pi": "ret-top",
         "pin": "1",
-        "connection_type": "NO",
-        "prepared": "on",
-        "awake": "on",
-        "snoozed": "on",
-        "state": "on"
+        "connection_type": "NC",
+        "prepared": "off",
+        "awake": "off",
+        "snoozed": "off",
+        "state": "On"
     },
     {
         "name": "red-led-keypad",
@@ -197,11 +197,11 @@
         "allowed_values": "on, off",
         "pi": "ret-top",
         "pin": "12",
-        "connection_type": "NO",
-        "prepared": "on",
-        "awake": "on",
-        "snoozed": "on",
-        "state": "on"
+        "connection_type": "NC",
+        "prepared": "off",
+        "awake": "off",
+        "snoozed": "off",
+        "state": "off"
     },
     {
         "name": "laser-2",
@@ -264,7 +264,7 @@
         "state": "Not Triggered"
     },
     {
-        "name": "entraNOe-door-lock",
+        "name": "entrance-door-lock",
         "type": "maglock",
         "allowed_values": "locked, unlocked",
         "pi": "ret-tree",
@@ -309,7 +309,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "Locked"
+        "state": "locked"
     },
     {
         "name": "sliding-door-lock",
@@ -321,7 +321,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "Locked"
+        "state": "locked"
     },
     {
         "name": "ball-drop-lock",
@@ -369,7 +369,7 @@
         "prepared": "0",
         "awake": "0",
         "snoozed": "0",
-        "state": "0"
+        "state": "5038"
     },
     {
         "name": "sequence_tree",
@@ -393,6 +393,6 @@
         "prepared": "0",
         "awake": "0",
         "snoozed": "0",
-        "state": "0"
+        "state": "1"
     }
 ]

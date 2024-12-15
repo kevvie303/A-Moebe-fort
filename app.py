@@ -243,30 +243,24 @@ def reset_max_executions(room):
     except (FileNotFoundError, json.JSONDecodeError):
         pass
 
-def update_rule_executions(room, rule_id, constraint_type):
-    try:
-        with open(f'json/{room}/rules.json', 'r') as file:
-            rules = json.load(file)
-        for rule in rules:
-            if rule['id'] == rule_id:
-                for constraint in rule['constraints']:
-                    if constraint['type'] == constraint_type and 'current_executions' in constraint:
-                        constraint['current_executions'] += 1
-        with open(f'json/{room}/rules.json', 'w') as file:
-            json.dump(rules, file, indent=4)
-    except (FileNotFoundError, json.JSONDecodeError):
-        pass
+executed_rules = {}  # Dictionary to track executed rules
+
+def reset_executed_rules():
+    global executed_rules
+    executed_rules = {}
+
+def update_rule_executions(room, rule_id):
+    global executed_rules
+    if rule_id not in executed_rules:
+        executed_rules[rule_id] = 0
+    executed_rules[rule_id] += 1
 
 def evaluate_constraint(constraint, sensor_name, sensor_state, room, rule_id=None):
     sensor_data = get_sensor_data(room)
     if constraint['type'] == 'max-executions':
-        if 'current_executions' not in constraint:
-            constraint['current_executions'] = 0
-        if constraint['current_executions'] < int(constraint['max_executions']): 
-            if rule_id:
-                update_rule_executions(room, rule_id, 'max-executions')
-            return True
-        return False
+        if rule_id in executed_rules and executed_rules[rule_id] >= int(constraint['max_executions']):
+            return False
+        return True
     # ...existing code...
     if constraint['type'] == 'not':
         return not any(
@@ -302,6 +296,7 @@ def handle_rules(sensor_name, sensor_state, room):
                 for constraint in rule['constraints']
             )
             if constraints_met:
+                update_rule_executions(room, rule['id'])
                 execute_rule(rule, room)
 
 def update_sensor_state(room, sensor_name, increment_value):
@@ -350,6 +345,10 @@ def execute_rule(rule, room):
 
         action = rule['actions'][index]
         if 'sensor' in action and 'state' in action:
+            if action['state'] == "on":
+                action['state'] = "locked"
+            elif action['state'] == "off":
+                action['state'] = "unlocked"
             call_control_maglock_partial(room, action['sensor'], action['state'])
             execute_next_action(index + 1)
         elif 'task' in action and 'status' in action:
@@ -2323,6 +2322,11 @@ def set_sensors_to_prepared(room):
         # Apply the prepared states to the actual devices
         for sensor in sensor_data:
             if sensor['type'] == 'maglock' or sensor['type'] == 'light':
+                if sensor['state'] == "on":
+                    sensor['state'] = "locked"
+                elif sensor['state'] == "off":
+                    sensor['state'] = "unlocked"
+                print(f"Setting {sensor['name']} to {sensor['state']}")
                 call_control_maglock_partial(room, sensor['name'], sensor['state'])
             elif sensor['type'] == 'led':
                 publish.single(f"led/control/{sensor['pi']}", sensor['state'], hostname=broker_ip)
@@ -2353,6 +2357,7 @@ def prepare_game(room):
 
     reset_prepare(room)
     reset_max_executions(room)  # Reset max-executions count
+    reset_executed_rules()  # Reset executed rules when preparing the game
 
     # Load Raspberry Pi configuration from JSON file
     with open(f'json/{room}/raspberry_pis.json', 'r') as file:
