@@ -1,63 +1,5 @@
 [
     {
-        "id": 7081,
-        "sensor_name": "# Rule 7081",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "right_codes",
-                "state": "3"
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
-            }
-        ],
-        "actions": [
-            {
-                "type": "set-volume",
-                "sound": "Ambience.ogg",
-                "volume": "70",
-                "fade": true,
-                "prev_volume": "5",
-                "fade_time": "3",
-                "pi": [
-                    "ret-top"
-                ]
-            }
-        ]
-    },
-    {
-        "id": 7082,
-        "sensor_name": "# Rule 7081",
-        "constraints": [
-            {
-                "type": "state-equals",
-                "sensor": "right_codes",
-                "state": "4"
-            },
-            {
-                "type": "max-executions",
-                "max_executions": "1",
-                "current_executions": 0
-            }
-        ],
-        "actions": [
-            {
-                "type": "set-volume",
-                "sound": "Ambience.ogg",
-                "volume": "70",
-                "fade": true,
-                "prev_volume": "5",
-                "fade_time": "3",
-                "pi": [
-                    "ret-top"
-                ]
-            }
-        ]
-    },
-    {
         "id": 8521,
         "sensor_name": "# Rule 8521 - When tree-lights is solved AND Max executions: 1, do Set blue-led to off Set green-led to off Set red-led to off Wait 1 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 1 seconds Set blue-led to off Set green-led to off Set red-led to off Wait 1 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 1 seconds Set blue-led to off Set green-led to off Set red-led to off Wait 1 seconds Set blue-led to on Set green-led to on Set red-led to on Wait 1 seconds Set blue-led to off Set green-led to off Set red-led to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play boom.ogg at volume 70 Wait 7 seconds Increase right_codes by 1",
         "constraints": [
@@ -75,6 +17,27 @@
             }
         ],
         "actions": [
+            {
+                "type": "stop-loop",
+                "sound": "Gull.ogg",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "type": "stop-loop",
+                "sound": "Duck.ogg",
+                "pi": [
+                    "ret-top"
+                ]
+            },
+            {
+                "type": "stop-loop",
+                "sound": "Eagle.ogg",
+                "pi": [
+                    "ret-top"
+                ]
+            },
             {
                 "sensor": "blue-led",
                 "state": "off"
@@ -322,27 +285,6 @@
         ],
         "actions": [
             {
-                "type": "stop-loop",
-                "sound": "Gull.ogg",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "type": "stop-loop",
-                "sound": "Duck.ogg",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
-                "type": "stop-loop",
-                "sound": "Eagle.ogg",
-                "pi": [
-                    "ret-top"
-                ]
-            },
-            {
                 "play_sound": "hok.ogg",
                 "volume": "70",
                 "loop": false,
@@ -358,7 +300,7 @@
     },
     {
         "id": 8075,
-        "sensor_name": "# Rule 8075 - When number-feel is solved AND Max executions: 1, do Set green-led-keypad to on Play correct-effect.ogg at volume 50 Wait 1 seconds Set green-led-keypad to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play plantenbak.ogg at volume 70 Wait 5 seconds Increase right_codes by 1",
+        "sensor_name": "# Rule 8075 - When number-feel is solved AND Max executions: 1, do Set green-led-keypad to on Play correct-effect.ogg at volume 50 Wait 1 seconds Set green-led-keypad to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play plantenbak.ogg at volume 70 Wait 7 seconds Increase right_codes by 1",
         "constraints": [
             {
                 "type": "task-completed",
@@ -416,7 +358,7 @@
                 ]
             },
             {
-                "delay": "5"
+                "delay": "7"
             },
             {
                 "sensor": "right_codes",
@@ -512,6 +454,64 @@
         ]
     },
     {
+        "id": 7082,
+        "sensor_name": "# Rule 7082 - When right_codes is 4 AND Max executions: 1, do Set volume of Ambience.ogg to 70",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "right_codes",
+                "state": "4"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "type": "set-volume",
+                "sound": "Ambience.ogg",
+                "volume": "70",
+                "fade": true,
+                "prev_volume": "5",
+                "fade_time": "3",
+                "pi": [
+                    "ret-top"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 7081,
+        "sensor_name": "# Rule 7081 - When right_codes is 3 AND Max executions: 1, do Set volume of Ambience.ogg to 70",
+        "constraints": [
+            {
+                "type": "state-equals",
+                "sensor": "right_codes",
+                "state": "3"
+            },
+            {
+                "type": "max-executions",
+                "max_executions": "1",
+                "current_executions": 0
+            }
+        ],
+        "actions": [
+            {
+                "type": "set-volume",
+                "sound": "Ambience.ogg",
+                "volume": "70",
+                "fade": true,
+                "prev_volume": "5",
+                "fade_time": "3",
+                "pi": [
+                    "ret-top"
+                ]
+            }
+        ]
+    },
+    {
         "id": 6829,
         "sensor_name": "# Rule 6829 - When keypad is 5038 AND Max executions: 1, do Set task fence-decrypt to solved",
         "constraints": [
@@ -523,7 +523,7 @@
             {
                 "type": "max-executions",
                 "max_executions": "1",
-                "current_executions": 2
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -591,7 +591,7 @@
             {
                 "type": "max-executions",
                 "max_executions": "1",
-                "current_executions": 2
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -657,7 +657,7 @@
             {
                 "type": "max-executions",
                 "max_executions": "1",
-                "current_executions": 4
+                "current_executions": 0
             }
         ],
         "actions": [
@@ -687,7 +687,7 @@
     },
     {
         "id": 5705,
-        "sensor_name": "# Rule 5705 - When kite-count is solved AND Max executions: 1, do Set green-led-keypad to on Play correct-effect.ogg at volume 50 Wait 1 seconds Set green-led-keypad to off Set volume of Ambience.ogg to 5 Wait 2 seconds Play vlieger.ogg at volume 50 Wait 5 seconds Increase right_codes by 1",
+        "sensor_name": "# Rule 5705",
         "constraints": [
             {
                 "type": "task-completed",
@@ -745,7 +745,7 @@
                 ]
             },
             {
-                "delay": "5"
+                "delay": "7"
             },
             {
                 "sensor": "right_codes",
@@ -843,7 +843,7 @@
             {
                 "type": "max-executions",
                 "max_executions": "1",
-                "current_executions": 1
+                "current_executions": 0
             },
             {
                 "type": "game-state",
@@ -1049,7 +1049,7 @@
         ],
         "actions": [
             {
-                "sensor": "green-led",
+                "sensor": "blue-led",
                 "state": "on"
             },
             {

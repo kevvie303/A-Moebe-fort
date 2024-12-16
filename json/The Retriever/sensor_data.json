@@ -149,11 +149,11 @@
         "allowed_values": "on, off",
         "pi": "ret-tree",
         "pin": "15",
-        "connection_type": "NO",
-        "prepared": "on",
+        "connection_type": "NC",
+        "prepared": "off",
         "awake": "on",
         "snoozed": "on",
-        "state": "on"
+        "state": "On"
     },
     {
         "name": "red-led",
@@ -161,11 +161,11 @@
         "allowed_values": "on, off",
         "pi": "ret-tree",
         "pin": "21",
-        "connection_type": "NO",
-        "prepared": "on",
+        "connection_type": "NC",
+        "prepared": "off",
         "awake": "on",
         "snoozed": "on",
-        "state": "on"
+        "state": "On"
     },
     {
         "name": "blue-led",
@@ -173,11 +173,11 @@
         "allowed_values": "on, off",
         "pi": "ret-tree",
         "pin": "23",
-        "connection_type": "NO",
-        "prepared": "on",
+        "connection_type": "NC",
+        "prepared": "off",
         "awake": "on",
         "snoozed": "on",
-        "state": "on"
+        "state": "On"
     },
     {
         "name": "green-led-keypad",
@@ -213,7 +213,7 @@
         "prepared": "on",
         "awake": "on",
         "snoozed": "on",
-        "state": "on"
+        "state": "Off"
     },
     {
         "name": "blue_house_ir",
@@ -285,7 +285,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "locked"
+        "state": "Locked"
     },
     {
         "name": "shed-door-lock",
@@ -297,7 +297,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "locked"
+        "state": "Locked"
     },
     {
         "name": "lab-hatch-lock",
@@ -309,7 +309,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "locked"
+        "state": "Locked"
     },
     {
         "name": "sliding-door-lock",
@@ -321,7 +321,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "locked"
+        "state": "Locked"
     },
     {
         "name": "ball-drop-lock",
@@ -333,7 +333,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "locked"
+        "state": "Locked"
     },
     {
         "name": "exit-door-lock",
@@ -342,10 +342,10 @@
         "pi": "ret-top",
         "pin": "21",
         "connection_type": "NO",
-        "prepared": "locked",
+        "prepared": "unlocked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "locked"
+        "state": "Unlocked"
     },
     {
         "name": "laser-1",
@@ -357,7 +357,7 @@
         "prepared": "locked",
         "awake": "locked",
         "snoozed": "locked",
-        "state": "locked"
+        "state": "Unlocked"
     },
     {
         "name": "keypad",
@@ -369,7 +369,7 @@
         "prepared": "0",
         "awake": "0",
         "snoozed": "0",
-        "state": "5038"
+        "state": "1528"
     },
     {
         "name": "sequence_tree",
@@ -381,7 +381,7 @@
         "prepared": "0",
         "awake": "0",
         "snoozed": "0",
-        "state": "0"
+        "state": "2"
     },
     {
         "name": "right_codes",
@@ -393,6 +393,6 @@
         "prepared": "0",
         "awake": "0",
         "snoozed": "0",
-        "state": "1"
+        "state": "5"
     }
 ]

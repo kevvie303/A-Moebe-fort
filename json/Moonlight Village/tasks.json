@@ -2,7 +2,7 @@
     {
         "task": "lights-on",
         "description": "Players have used the buttons to turn all the 5 lanterns on in the hallway.",
-        "state": "solved"
+        "state": "pending"
     },
     {
         "task": "moon-place",

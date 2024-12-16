@@ -69,7 +69,6 @@ kraken2 = False
 kraken3 = False
 kraken4 = False
 codesCorrect = 0
-bird_job = False
 squeak_job = False
 should_hint_shed_play = False
 start_time = None
@@ -974,7 +973,7 @@ def get_task_status(room):
     
 @app.route('/solve_task/<task_name>/<room>', methods=['POST'])
 def solve_task(task_name, room):
-    global start_time, sequence, code1, code2, code3, code4, code5, codesCorrect, squeak_job, bird_job, should_hint_shed_play, sigil_count
+    global start_time, sequence, code1, code2, code3, code4, code5, codesCorrect, squeak_job, should_hint_shed_play, sigil_count
     global first_potion_solvable, second_potion_solvable, third_potion_solvable, fourth_potion_solvable, potion_count
     global new_init_time, timer_values, new_init_time_retriever, new_init_time_moon, language
     file_path = os.path.join('json', room, 'tasks.json')
@@ -1273,7 +1272,7 @@ def stop_sequence():
     return jsonify({'message': 'Sequence stopped and DMX values reset to 0.', 'status': 'success'})
 @app.route('/skip_task/<task_name>/<room>', methods=['POST'])
 def skip_task(task_name, room):
-    global bird_job, code1, code2, code3, code4, code5, sequence, codesCorrect
+    global code1, code2, code3, code4, code5, sequence, codesCorrect
     file_path = os.path.join('json', room, 'tasks.json')
 
     try:
@@ -1288,9 +1287,6 @@ def skip_task(task_name, room):
             call_control_maglock_retriever("blue-led", "locked")
             call_control_maglock_retriever("green-led", "locked")
             call_control_maglock_retriever("red-led", "locked")
-            if bird_job == True:
-                scheduler.remove_job('birdjob')
-                bird_job = False
         elif task_name == "flowers":
             code1 = True
             codesCorrect += 1
@@ -1616,10 +1612,7 @@ def play_music(room):
     return jsonify({"status": "success"})
 @app.route('/stop_music/<room>', methods=['POST'])
 def stop_music(room):
-    global squeak_job, bird_job
-    if bird_job == True:
-        scheduler.remove_job('birdjob')
-        bird_job = False
+    global squeak_job
     if squeak_job == True:
         scheduler.remove_job('squeakjob')
         squeak_job = False
@@ -2099,7 +2092,7 @@ def periodic_rule_handler(room):
 
 @app.route('/timer/start/<room>', methods=['POST'])
 def start_timer(room):
-    global timer_value, speed, timer_running, timer_thread, start_time, bird_job, language
+    global timer_value, speed, timer_running, timer_thread, start_time, language
     game_id = str(uuid.uuid4())
     # Create new game entry
     new_game = {
@@ -2126,9 +2119,6 @@ def start_timer(room):
         socketio.emit('sensor_update', room="all_clients")
         # Your existing code to start the timer
         update_game_status('playing', room)
-        if bird_job == False and room == "The Retriever":
-            scheduler.add_job(start_bird_sounds, 'interval', minutes=1, id='birdjob')
-            bird_job = True
         start_time = datetime.now()
         if room == "The Retriever":
             fade_music_out("Lounge", room)
@@ -2149,7 +2139,7 @@ def start_timer(room):
         return 'Timer started'
 @app.route('/timer/stop/<room>', methods=['POST'])
 def stop_timer(room):
-    global timer_thread, timer_running, kraken1, kraken2, kraken3, kraken4, bird_job, start_time, sigil_count
+    global timer_thread, timer_running, kraken1, kraken2, kraken3, kraken4, start_time, sigil_count
     if room in timer_threads and timer_threads[room].is_alive():
         timer_running[room] = False
         print("Stopping timer thread")
